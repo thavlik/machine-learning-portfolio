@@ -1,0 +1,9 @@
+.git/
+.gitignore
+.vscode/
+__pycache__/
+data/
+README.md
+src/logs/
+*.mp4
+*.part

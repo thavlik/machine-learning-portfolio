@@ -1,0 +1,42 @@
+# Basic VAE except with adversarial loss (and optionally without MSE)
+entrypoint: basic_adversarial
+
+manual_seed: 1498
+
+model_params:
+  name: 'BasicAdversarial'
+  
+  latent_dim: 256
+  
+  encoder:
+    hidden_dims: [256, 512, 1024, 2048]
+  
+  decoder:
+    hidden_dims: [2048, 1024, 512, 256]
+
+  # Optional original MSE loss term weight
+  mse_weight: 1.0
+
+  discriminator:
+    hidden_dims: [128, 256, 512, 1024]
+
+exp_params:
+  dataset:
+    loader: doom
+    path: ../dataset/links.txt
+    cache_path: ../dataset/cache
+  
+  # Learning rate for all trainable parameters
+  learning_rate: 0.000001
+  
+  # Batch size for all trainable parameters
+  batch_size: 256
+
+trainer_params:
+  gpus: 1
+  max_epochs: 10000000
+
+logging_params:
+  save_dir: "logs/"
+  name: "BasicAdversarial"
+

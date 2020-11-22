@@ -1,0 +1,43 @@
+# This VAE is regularized by ensuring temporally local
+# observations in X are spatially local in Z, such that
+# continuous paths through X correlate with a continuous
+# path thtrough Z, hopefully capturing causality.
+entrypoint: temporal_distance
+
+model_params:
+  name: 'TemporalDistance'
+  
+  latent_dim: 256
+  
+  encoder:
+    hidden_dims: [256, 512, 1024, 2048]
+  
+  decoder:
+    hidden_dims: [2048, 1024, 512, 256]
+
+  # In addition to MSE loss, we add the distances between
+  # encodings of subsequent frames. 
+  temporal_distance_loss_weight: 0.001
+  
+exp_params:
+  dataset:
+    loader: doom
+    path: ../dataset/links.txt
+    cache_path: ../dataset/cache
+    num_frames: 32
+  
+  # Learning rate for all trainable parameters
+  learning_rate: 0.000001
+  
+  # Batch size for all trainable parameters
+  batch_size: 256
+
+trainer_params:
+  gpus: 1
+  max_epochs: 10000000
+
+logging_params:
+  save_dir: "logs/"
+  name: "TemporalDistance"
+
+manual_seed: 13880

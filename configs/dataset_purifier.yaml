@@ -1,0 +1,46 @@
+# Dataset "purifier" that predicts whether a frame is
+# from Doom and the bounding coordinates (in case of
+# windowed or letterbox)
+entrypoint: dataset_purifier
+
+# The base VAE experiment to use for unsupervised pretraining.
+base_experiment: ../configs/basic_mse.yaml
+
+model_params:
+  # This model takes the frame as input (which is resized to
+  # the input resolution) and outputs a bounding rect and
+  # probability of being Doom vs. not Doom (including, but
+  # not limited to, pause screens)
+  name: 'DatasetPurifier'
+
+  # Because this model and the VAE trained in the base
+  # experiment share a latent space, this value must
+  # match the base experiment.
+  latent_dim: 256
+
+  # In enabled, the model will source every other layer
+  # from the base experiment's decoder.
+  sandwich: true
+
+  # If `sandwich` is `true`, these values must match
+  # the hidden_dims of the base experiment's decoder.
+  # Otherwise, these values can be anything.
+  hidden_dims: [2048, 1024, 512, 256]
+
+exp_params:
+  dataset:
+    loader: doom
+    path: ../dataset/links.txt
+    cache_path: ../dataset/cache
+  learning_rate: 0.000001
+  batch_size: 256
+
+trainer_params:
+  gpus: 1
+  max_epochs: 10000000
+
+logging_params:
+  save_dir: "logs/"
+  name: "DatasetPurifier"
+
+manual_seed: 19821
