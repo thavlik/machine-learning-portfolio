@@ -35,3 +35,5 @@ Please open an issue or pull request if you would like to contribute.
 - ~~Implement datasets~~
 - ~~Resnet boilerplate~~
 
+# License
+TODO: MIT license boilerplate

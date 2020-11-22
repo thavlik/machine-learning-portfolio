@@ -1,0 +1,4 @@
+# TODO: config for classifier experiment utilizing VAE latent space as input
+
+# TODO: describe this option
+end_to_end: false

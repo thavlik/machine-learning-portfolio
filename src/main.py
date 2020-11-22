@@ -88,7 +88,7 @@ parser.add_argument('--config',  '-c',
                     dest="filename",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='../configs/basic_mse.yaml')
+                    default='../configs/doom/vae/basic_mse.yaml')
 parser.add_argument('--log-epoch',
                     dest="log_epoch",
                     metavar='LOG_EPOCH',
