@@ -10,12 +10,12 @@ parser.add_argument('--input',  '-i',
                     dest="input",
                     metavar='INPUT',
                     help='path to text file containing youtube video or playlist links',
-                    default='../dataset/full.txt')
+                    default='../dataset/doom/full.txt')
 parser.add_argument('--output',
                     dest="output",
                     metavar='OUTPUT',
                     help='output file path',
-                    default='../dataset/compiled.json')
+                    default='../dataset/doom/compiled.json')
 parser.add_argument('--download',
                     dest="download",
                     metavar='DOWNLOAD',
@@ -25,7 +25,7 @@ parser.add_argument('--cache_dir',
                     dest="cache_dir",
                     metavar='CACHE_DIR',
                     help='video download path',
-                    default='../dataset/cache')
+                    default='../dataset/doom/cache')
 args = parser.parse_args()
 
 
