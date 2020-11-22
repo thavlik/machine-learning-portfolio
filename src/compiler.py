@@ -20,12 +20,17 @@ parser.add_argument('--download',
                     dest="download",
                     metavar='DOWNLOAD',
                     help='download videos if true',
-                    default=True)
+                    default=False)
 parser.add_argument('--cache_dir',
                     dest="cache_dir",
                     metavar='CACHE_DIR',
                     help='video download path',
                     default='../dataset/doom/cache')
+parser.add_argument('--clean',
+                    dest="clean",
+                    metavar='CLEAN',
+                    help='remove missing videos from output records (do not download)',
+                    default=False)
 args = parser.parse_args()
 
 
@@ -79,13 +84,22 @@ def process_video(video, ydl, download):
             print(f'Failed to download {id}: {sys.exc_info()}')
 
 
+if args.clean:
+    new_videos = [video
+                  for video in videos
+                  if os.path.exists(os.path.join(args.cache_dir,
+                                                 video['id'] + '.mp4'))]
+    print(f'Removed {len(videos)-len(new_videos)} videos')
+    videos = new_videos
+    write_videos()
+    sys.exit(0)
+
 with open(args.input, "r") as f:
     lines = [line.strip() for line in f]
 
 with youtube_dl.YoutubeDL({
     'verbose': True,
     'outtmpl': args.cache_dir + '/%(id)s.%(ext)s',
-    # 'cachedir': args.cache_dir,
 }) as ydl:
     for line in lines:
         if line in completed:
