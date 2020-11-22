@@ -175,9 +175,10 @@ class VideoDataset(data.Dataset):
         self.frames_per_example = num_frames * (skip_frames + 1) - skip_frames
         total_examples = 0
         for video in self.videos:
-            total_frames = video['duration'] * video['fps']
+            total_frames = floor(video['duration'] * video['fps'])
             num_examples = total_frames - self.frames_per_example + 1
             num_examples = floor(num_examples / stride_frames)
+            video['num_frames'] = total_frames
             video['num_examples'] = num_examples
             total_examples += num_examples
         self.total_examples = total_examples
@@ -223,7 +224,6 @@ if __name__ == '__main__':
                       num_frames=num_frames)
     ex = ds[0]
     assert ex.shape == (num_frames, 3, height, width)
-
     print('done')
 """    
     with open('../dataset/timothybrown.txt', 'r') as file:
