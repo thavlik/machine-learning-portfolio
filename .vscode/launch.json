@@ -27,6 +27,15 @@
             "program": "${workspaceFolder}/src/compiler.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src"
+        },
+        {
+            "name": "Python: compiler.py clean",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/compiler.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src",
+            "args": ["--clean", "True"]
         }
     ]
 }

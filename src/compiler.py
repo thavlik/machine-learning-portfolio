@@ -25,7 +25,7 @@ parser.add_argument('--cache_dir',
                     dest="cache_dir",
                     metavar='CACHE_DIR',
                     help='video download path',
-                    default='../dataset/doom/cache')
+                    default='E:/cache')
 parser.add_argument('--clean',
                     dest="clean",
                     metavar='CLEAN',
@@ -74,7 +74,9 @@ def process_video(video, ydl, download):
     })
     id = video['id']
     path = os.path.join(args.cache_dir, id + '.mp4')
-    if download and not os.path.exists(path):
+    if os.path.exists(path):
+        print(f'{id} already downloaded')
+    elif download:
         try:
             ydl.extract_info(
                 f'https://youtube.com/watch?v={id}',

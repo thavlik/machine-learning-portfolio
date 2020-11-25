@@ -24,7 +24,7 @@ def ensure_video_downloaded(id: str,
                             ext: str,
                             cache_path: str,
                             download: bool):
-    path = os.path.join(cache_path, f'{id}.{ext}')
+    path = os.path.join(cache_path, f'{id}.mp4')
     if os.path.exists(path):
         return path
     elif not download:
@@ -48,6 +48,7 @@ def ensure_video_downloaded(id: str,
 
 def get_raw_frames(id: str,
                    ext: str,
+                   total_frames: int,
                    start_frame: int,
                    num_frames: int,
                    skip_frames: int,
@@ -57,20 +58,17 @@ def get_raw_frames(id: str,
     cap = cv2.VideoCapture(path)
     if not cap.isOpened():
         raise ValueError(f"Error opening video stream or file")
-    frames_per_example = num_frames * (skip_frames + 1) - skip_frames
-    end_frame = start_frame + frames_per_example
     frames = []
-    frame_no = 0  # global frame counter
     idx = 0  # counter that starts at the right frame
-    while cap.isOpened() and frame_no < end_frame:
+    t = start_frame/total_frames
+    cap.set(cv2.CAP_PROP_POS_FRAMES, t)
+    while len(frames) < num_frames:
         ret, frame = cap.read()
-        if ret != True:
+        if not ret:
             break
-        if frame_no >= start_frame:
-            if idx % (skip_frames + 1) == 0:
-                frames.append(frame)
-            idx += 1
-        frame_no += 1
+        if idx % (skip_frames + 1) == 0:
+            frames.append(frame)
+        idx += 1
     cap.release()
     if len(frames) != num_frames:
         raise ValueError(f"expect {num_frames} frames, got {len(frames)}")
@@ -89,6 +87,7 @@ def resize_frames(frames,
 
 def get_frames(id: str,
                ext: str,
+               total_frames: int,
                start_frame: int,
                num_frames: int,
                skip_frames: int,
@@ -98,6 +97,7 @@ def get_frames(id: str,
                download: bool):
     frames = get_raw_frames(id=id,
                             ext=ext,
+                            total_frames=total_frames,
                             start_frame=start_frame,
                             num_frames=num_frames,
                             skip_frames=skip_frames,
@@ -197,6 +197,7 @@ class VideoDataset(data.Dataset):
                                  f" with only {video['num_frames']} frames")
             return get_frames(id=video['id'],
                               ext=video['ext'],
+                              total_frames=video['num_frames'],
                               start_frame=start_frame,
                               num_frames=self.num_frames,
                               skip_frames=self.skip_frames,
@@ -214,6 +215,7 @@ class VideoDataset(data.Dataset):
 if __name__ == '__main__':
     import youtube_dl
     import cv2
+    import time
     width = 640
     height = 480
     num_frames = 9
@@ -222,8 +224,21 @@ if __name__ == '__main__':
                       width=width,
                       height=height,
                       num_frames=num_frames)
-    ex = ds[0]
-    assert ex.shape == (num_frames, 3, height, width)
+    i = 0
+    n = 30
+    start = time.time()
+    samples = []
+    while True:
+        idx = np.random.randint(0, ds.total_examples)
+        example = ds[idx]
+        assert example.shape == (num_frames, 3, height, width)
+        i += 1
+        if i % n == 0:
+            delta = time.time() - start
+            avg = delta / n
+            samples.append(avg)
+            print(f'{avg} seconds per example ({np.mean(samples)} seconds cumulative average)')
+            start = time.time()
     print('done')
 """    
     with open('../dataset/timothybrown.txt', 'r') as file:
