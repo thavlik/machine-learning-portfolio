@@ -25,7 +25,7 @@ parser.add_argument('--cache_dir',
                     dest="cache_dir",
                     metavar='CACHE_DIR',
                     help='video download path',
-                    default='E:/cache')
+                    default='/data/cache')
 parser.add_argument('--clean',
                     dest="clean",
                     metavar='CLEAN',
