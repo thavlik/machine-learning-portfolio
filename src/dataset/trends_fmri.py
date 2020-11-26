@@ -13,6 +13,7 @@ class TReNDSfMRIDataset(data.Dataset):
 
     def __getitem__(self, index):
         path = os.path.join(self.dir, self.files[index])
+        # reference: https://www.kaggle.com/mks2192/reading-matlab-mat-files-and-eda
         f = h5py.File(path, 'r')
         data = f['SM_feature']
         array = data[()]
