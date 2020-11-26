@@ -3,7 +3,7 @@ Variational autoencoders (VAE) and other experiments trained on DOOM 1/2 gamepla
 ## Motivation
 Latent representations and unsupervised pretraining boost data efficiency on more challenging supervised [1] and reinforcement learning tasks [2]. The goal of this project is to provide both the Doom and machine learning communities with:
 - High quality datasets comprised of Doom gameplay
-- Various ready-to-run VAE experiments
+- Various ready-to-run experiments
 - Suitable boilerplate for derivative projects
 
 ## The Data
