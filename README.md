@@ -2,8 +2,8 @@
 This is a repository of my personal machine learning projects.
 
 ## Experiments
-- [rsna-intracranial](experiments/rsna-intracranial/README.md)
-- [doom](experiments/doom/README.md)
+- [rsna-intracranial](experiments/rsna-intracranial/)
+- [doom](experiments/doom/)
 
 ## Relevant Literature
 1. [3FabRec: Fast Few-shot Face alignment by Reconstruction](https://arxiv.org/abs/1911.10448)
