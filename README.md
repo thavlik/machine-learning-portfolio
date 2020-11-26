@@ -2,12 +2,20 @@
 This is a repository of my personal machine learning projects.
 
 ## Experiments
-Many experiments with unrelated datasets share almost all of their code. This repository was designed to showcase how well-designed ML boilerplate facilitates its own reuse.
-- [rsna-intracranial](experiments/rsna-intracranial/)
-- [cq500](experiments/cq500/)
-- [tends-fmri](experiments/trends-fmri/)
-- [deeplesion](experiments/deeplesion/)
+This repository was designed to showcase how well-designed ML boilerplate encourages its reuse. The same unsupervised modeling experiment can run on any of the datasets. Some datasets may not have any supervised tasks implemented, even if ground truth is available.
+
+### Medical Imaging
+- [RSNA Intracranial Hemorrhage](experiments/rsna-intracranial/)
+- [CQ500](experiments/cq500/)
+- [TReNDS fMRI](experiments/trends-fmri/)
+- [DeepLesion](experiments/deeplesion/)
+
+### Video Games
 - [doom](experiments/doom/)
+
+### Reference
+Additional reference datasets are pulled from [torchvision](https://pytorch.org/docs/stable/torchvision/datasets.html).
+TODO: organize experiments around reference datasets
 
 ## Relevant Literature
 Many of the ideas implemented in this repository were first detailed in the following papers:
