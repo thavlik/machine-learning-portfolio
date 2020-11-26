@@ -7,15 +7,30 @@ import torch
 import numpy as np
 from models import BasicVAE
 from basic_experiment import BasicExperiment
+from basic_prediction import BasicPrediction
+
+
+def basic_prediction(config: dict,
+                     dataset_name: str,
+                     dataset_params: dict,
+                     dataset_val_params: dict = {}):
+    model = BasicVAE(**config['model_params'])
+    return BasicPrediction(model,
+                           dataset_name=dataset_name,
+                           dataset_params=dataset_params,
+                           dataset_val_params=dataset_val_params,
+                           params=config['exp_params'])
 
 
 def vae(config: dict,
         dataset_name: str,
-        dataset_params: dict):
+        dataset_params: dict,
+        dataset_val_params: dict = {}):
     model = BasicVAE(**config['model_params'])
     return BasicExperiment(model,
                            dataset_name=dataset_name,
                            dataset_params=dataset_params,
+                           dataset_val_params=dataset_val_params,
                            params=config['exp_params'])
 
 
@@ -26,10 +41,11 @@ def load_config(path):
 
 def load_dataset(path):
     ds = load_config(path)
-    return ds['name'], ds['params']
+    return ds['name'], ds['params'], ds['val_params']
 
 
 experiments = {
+    'basic_prediction': basic_prediction,
     'vae': vae,
 }
 
@@ -88,10 +104,11 @@ parser.add_argument('--save-dir',
 
 args = parser.parse_args()
 config = load_config(args.config)
-dataset_name, dataset_params = load_dataset(args.dataset)
+dataset_name, dataset_params, dataset_val_params = load_dataset(args.dataset)
 cudnn.deterministic = True
 cudnn.benchmark = False
 experiment_main(config,
                 dataset_name,
                 dataset_params,
+                dataset_val_params,
                 save_dir=args.save_dir)

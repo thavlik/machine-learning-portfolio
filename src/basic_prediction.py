@@ -9,23 +9,22 @@ from models.base import BaseVAE
 from utils import data_loader
 from dataset import get_dataset
 
-
-class BasicExperiment(pl.LightningModule):
+class BasicPrediction(pl.LightningModule):
 
     def __init__(self,
                  vae_model: BaseVAE,
                  params: dict,
                  dataset_name: str,
                  dataset_params: dict,
-                 dataset_params_val: dict = {}) -> None:
-        super(BasicExperiment, self).__init__()
+                 dataset_val_params: dict = {}) -> None:
+        super(BasicPrediction, self).__init__()
 
         self.model = vae_model
         self.params = params
         self.curr_device = None
         self.dataset_name = dataset_name
         self.dataset_params = dataset_params
-        self.dataset_params_val = dataset_params_val
+        self.dataset_val_params = dataset_val_params
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
@@ -128,7 +127,7 @@ class BasicExperiment(pl.LightningModule):
     def val_dataloader(self):
         dataset = get_dataset(self.dataset_name, {{
             **self.dataset_params,
-            **self.dataset_params_val,
+            **self.dataset_val_params,
         }})
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],

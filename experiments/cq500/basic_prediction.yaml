@@ -1,1 +1,18 @@
-# TODO: vanilla cq500 prediction task
+entrypoint: basic_prediction
+
+model_params:
+  name: 'CQ500BasicPrediction'
+  hidden_dims: [256, 512]
+
+exp_params:
+  learning_rate: 0.0002
+  batch_size: 128
+
+trainer_params:
+  max_epochs: 10000000
+  check_val_every_n_epoch: 200
+
+logging_params:
+  name: "CQ500BasicPrediction"
+
+manual_seed: 1498
