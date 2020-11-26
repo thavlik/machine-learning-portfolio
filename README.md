@@ -2,10 +2,13 @@
 This is a repository of my personal machine learning projects.
 
 ## Experiments
+Many experiments with unrelated datasets share almost all of their code. This repository was designed to showcase how well-designed ML boilerplate facilitates its own reuse.
 - [rsna-intracranial](experiments/rsna-intracranial/)
 - [doom](experiments/doom/)
 
 ## Relevant Literature
+Many of the ideas implemented in this repository were first detailed in the following papers:
+
 1. [3FabRec: Fast Few-shot Face alignment by Reconstruction](https://arxiv.org/abs/1911.10448)
 2. [DARLA: Improving Zero-Shot Transfer in Reinforcement Learning](https://arxiv.org/abs/1707.08475)
 3. [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196)
