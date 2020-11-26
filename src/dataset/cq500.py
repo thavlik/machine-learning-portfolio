@@ -2,7 +2,7 @@ import os
 import numpy as np
 import torch
 import torch.utils.data as data
-import pydicom
+
 
 class CQ500Dataset(data.Dataset):
     def __init__(self, dir: str):
