@@ -9,30 +9,14 @@ from models import BasicVAE
 from basic_experiment import BasicExperiment
 
 
-def basic_adversarial(config):
-    raise NotImplementedError
-
-
-def basic_mse(config):
+def vae(config: dict,
+        dataset_name: str,
+        dataset_params: dict):
     model = BasicVAE(**config['model_params'])
     return BasicExperiment(model,
+                           dataset_name=dataset_name,
+                           dataset_params=dataset_params,
                            params=config['exp_params'])
-
-
-def basic_fid(config):
-    raise NotImplementedError
-
-
-def dataset_purifier(config):
-    raise NotImplementedError
-
-
-def temporal_discriminator(config):
-    raise NotImplementedError
-
-
-def temporal_distance(config):
-    raise NotImplementedError
 
 
 def load_config(path):
@@ -40,17 +24,20 @@ def load_config(path):
         return yaml.safe_load(file)
 
 
+def load_dataset(path):
+    ds = load_config(path)
+    return ds['name'], ds['params']
+
+
 experiments = {
-    'basic_adversarial': basic_adversarial,
-    'basic_fid': basic_fid,
-    'basic_mse': basic_mse,
-    'dataset_purifier': dataset_purifier,
-    'temporal_discriminator': temporal_discriminator,
-    'temporal_distance': temporal_distance,
+    'vae': vae,
 }
 
 
-def experiment_main(config):
+def experiment_main(config: dict,
+                    dataset_name: str,
+                    dataset_params: dict,
+                    save_dir: str):
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     entrypoint = config['entrypoint']
@@ -62,7 +49,7 @@ def experiment_main(config):
     assert fn != None, f"unknown entrypoint '{entrypoint}'"
     experiment = fn(config).to(device)
     tt_logger = TestTubeLogger(
-        save_dir=config['logging_params']['save_dir'],
+        save_dir=save_dir,
         name=config['logging_params']['name'],
         debug=False,
         create_git_tag=False,
@@ -75,7 +62,6 @@ def experiment_main(config):
                      val_percent_check=1.,
                      num_sanity_val_steps=5,
                      early_stop_callback=False,
-                     check_val_every_n_epoch=args.log_epoch,
                      **config['trainer_params'])
     print(f"======= Training {config['model_params']['name']} =======")
     runner.fit(experiment)
@@ -85,17 +71,27 @@ def experiment_main(config):
 parser = argparse.ArgumentParser(
     description='Doom VAE training entrypoint')
 parser.add_argument('--config',  '-c',
-                    dest="filename",
+                    dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='../configs/doom/vae/basic_mse.yaml')
-parser.add_argument('--log-epoch',
-                    dest="log_epoch",
-                    metavar='LOG_EPOCH',
-                    help='number of epochs per validation pass',
-                    default=200)
+                    default='../experiments/vae/basic_mse.yaml')
+parser.add_argument('--dataset', '-d',
+                    dest="dataset",
+                    metavar='DATASET',
+                    help='path to the dataset config file',
+                    default='../data/doom/single_frame.yaml')
+parser.add_argument('--save-dir',
+                    dest="save_dir",
+                    metavar='SAVE_DIR',
+                    help='Save directory for logs and screenshots',
+                    default='../logs')
+
 args = parser.parse_args()
-config = load_config(args.filename)
+config = load_config(args.config)
+dataset_name, dataset_params = load_dataset(args.dataset)
 cudnn.deterministic = True
 cudnn.benchmark = False
-experiment_main(config)
+experiment_main(config,
+                dataset_name,
+                dataset_params,
+                save_dir=args.save_dir)

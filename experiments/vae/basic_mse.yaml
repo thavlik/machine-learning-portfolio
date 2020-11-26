@@ -1,5 +1,5 @@
 # Basic VAE trained on the dataset
-entrypoint: basic_mse
+entrypoint: vae
 
 model_params:
   name: 'BasicMSE'
@@ -7,19 +7,15 @@ model_params:
   hidden_dims: [256, 512]
 
 exp_params:
-  dataset:
-    loader: doom
-    path: ../dataset/links.txt
-    cache_path: ../dataset/cache
   learning_rate: 0.0002
   batch_size: 128
 
 trainer_params:
   gpus: 1
   max_epochs: 10000000
+  check_val_every_n_epoch: 200
 
 logging_params:
-  save_dir: "logs/"
   name: "BasicMSE"
 
 manual_seed: 1498

@@ -7,26 +7,42 @@ from torchvision.datasets import CelebA
 import pytorch_lightning as pl
 from models.base import BaseVAE
 from utils import data_loader
-from dataset import DoomDataset
+from dataset import *
 
 
-def get_dataset(dataset_params):
-    if dataset_params['loader'] == 'doom':
-        return DoomDataset(**dataset_params['options'])
+def get_dataset(name: str, params: dict):
+    if name == 'cq500':
+        return CQ500Dataset(**params)
+    elif name == 'deeplesion':
+        return DeepLesionDataset(**params)
+    elif name == 'reference':
+        return ReferenceDataset(**params)
+    elif name == 'rsna-intracranial':
+        return RSNAIntracranialDataset(**params)
+    elif name == 'trends-fmri':
+        return TReNDSfMRIDataset(**params)
+    elif name == 'video':
+        return VideoDataset(**params)
     else:
-        raise ValueError(f"unknown loader {dataset_params['loader']}")
+        raise ValueError(f"unknown dataset loader '{name}'")
 
 
 class BasicExperiment(pl.LightningModule):
 
     def __init__(self,
                  vae_model: BaseVAE,
-                 params: dict) -> None:
+                 params: dict,
+                 dataset_name: str,
+                 dataset_params: dict,
+                 dataset_params_val: dict = {}) -> None:
         super(BasicExperiment, self).__init__()
 
         self.model = vae_model
         self.params = params
         self.curr_device = None
+        self.dataset_name = dataset_name
+        self.dataset_params = dataset_params
+        self.dataset_params_val = dataset_params_val
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
@@ -36,7 +52,8 @@ class BasicExperiment(pl.LightningModule):
         self.curr_device = real_img.device
 
         results = self.forward(real_img, labels=labels)
-        kld_weight = self.params['kld_weight'] * self.params['batch_size']/self.num_train_imgs
+        kld_weight = self.params['kld_weight'] * \
+            self.params['batch_size']/self.num_train_imgs
         train_loss = self.model.loss_function(*results,
                                               optimizer_idx=optimizer_idx,
                                               batch_idx=batch_idx,
@@ -52,7 +69,8 @@ class BasicExperiment(pl.LightningModule):
         self.curr_device = real_img.device
 
         results = self.forward(real_img, labels=labels)
-        kld_weight = self.params['kld_weight'] * self.params['batch_size']/self.num_train_imgs
+        kld_weight = self.params['kld_weight'] * \
+            self.params['batch_size']/self.num_train_imgs
         val_loss = self.model.loss_function(*results,
                                             optimizer_idx=optimizer_idx,
                                             batch_idx=batch_idx,
@@ -116,7 +134,7 @@ class BasicExperiment(pl.LightningModule):
 
     @data_loader
     def train_dataloader(self):
-        dataset = get_dataset(self.params['dataset'])
+        dataset = get_dataset(self.dataset_name, self.dataset_params)
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
@@ -125,10 +143,13 @@ class BasicExperiment(pl.LightningModule):
 
     @data_loader
     def val_dataloader(self):
-        dataset = get_dataset(self.params['dataset'])
+        dataset = get_dataset(self.dataset_name, {{
+            **self.dataset_params,
+            **self.dataset_params_val,
+        }})
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
-                                            shuffle=True,
+                                            shuffle=False,
                                             drop_last=True)
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader
