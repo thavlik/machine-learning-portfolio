@@ -16,3 +16,6 @@ The dataset is compiled by taking the original videos (~167 Gb worth) and re-enc
 
 TODO: The compiler is currently a work in progress. When the dataset is compiled, this page will link to it.
 
+## TODO
+- Dataset compiler
+- ~~Doom gameplay video links~~

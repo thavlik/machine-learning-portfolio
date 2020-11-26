@@ -4,7 +4,9 @@ This is a repository of my personal machine learning projects.
 ## Experiments
 Many experiments with unrelated datasets share almost all of their code. This repository was designed to showcase how well-designed ML boilerplate facilitates its own reuse.
 - [rsna-intracranial](experiments/rsna-intracranial/)
+- [cq500](experiments/cq500/)
 - [tends-fmri](experiments/trends-fmri/)
+- [deeplesion](experiments/deeplesion/)
 - [doom](experiments/doom/)
 
 ## Relevant Literature
@@ -19,8 +21,6 @@ Many of the ideas implemented in this repository were first detailed in the foll
 - Progressive growing decoder a la [3]
 - Implement beta loss term from [4]
 - Implement FID(orig, recons) loss
-- Dataset compiler
-- ~~Doom gameplay video links~~
 - ~~Implement entrypoints~~
 - ~~Implement datasets~~
 - ~~Resnet boilerplate~~
