@@ -24,6 +24,6 @@ class CQ500Dataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    ds = CQ500Dataset('../../data/cq500')
+    ds = CQ500Dataset('E:/cq500')
     print(ds[0].shape)
     print(ds[1].shape)

@@ -5,3 +5,5 @@ youtube-dl
 boto3
 h5py
 nilearn
+pylibjpeg
+pylibjpeg-libjpeg
