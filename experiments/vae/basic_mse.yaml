@@ -11,7 +11,6 @@ exp_params:
   batch_size: 128
 
 trainer_params:
-  gpus: 1
   max_epochs: 10000000
   check_val_every_n_epoch: 200
 
