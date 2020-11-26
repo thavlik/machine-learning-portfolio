@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import pydicom
-from dicom_util import raw_dicom_pixels, normalized_dicom_pixels
+from dicom_util import normalized_dicom_pixels
 
 
 class RSNAIntracranialDataset(data.Dataset):
