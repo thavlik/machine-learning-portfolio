@@ -24,6 +24,6 @@ class TReNDSfMRIDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    ds = TReNDSfMRIDataset('../../data/trends-fmri/fMRI_train')
+    ds = TReNDSfMRIDataset('E:/trends-fmri/fMRI_test')
     print(ds[0].shape)
     print(ds[1].shape)
