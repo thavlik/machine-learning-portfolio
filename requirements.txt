@@ -4,3 +4,4 @@ pytorch-lightning==1.0.7
 youtube-dl
 boto3
 h5py
+nilearn
