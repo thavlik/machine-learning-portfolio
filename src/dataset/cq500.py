@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import pydicom
-from dicom_util import normalized_dicom_pixels
+from dicom_util import raw_dicom_pixels
 
 
 class CQ500Dataset(data.Dataset):
@@ -16,7 +16,7 @@ class CQ500Dataset(data.Dataset):
 
     def __getitem__(self, index):
         ds = pydicom.dcmread(self.files[index], stop_before_pixels=False)
-        data = normalized_dicom_pixels(ds)
+        data = raw_dicom_pixels(ds)
         return data
 
     def __len__(self):
