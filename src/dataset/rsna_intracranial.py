@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import pydicom
+from dicom_util import raw_dicom_pixels, normalized_dicom_pixels
 
 
 class RSNAIntracranialDataset(data.Dataset):
@@ -14,14 +15,21 @@ class RSNAIntracranialDataset(data.Dataset):
     def __getitem__(self, index):
         path = os.path.join(self.dir, self.files[index])
         ds = pydicom.dcmread(path, stop_before_pixels=False)
-        data = ds.PixelData
-        return data
+        data = normalized_dicom_pixels(ds)
+        return (data, ds)
 
     def __len__(self):
         return len(self.files)
 
 
 if __name__ == '__main__':
-    ds = RSNAIntracranialDataset('../../data/rsna-intracranial/stage_2_train')
-    print(ds[0].shape)
-    print(ds[1].shape)
+    import matplotlib.pylab as plt
+    ds = RSNAIntracranialDataset('E:/rsna-intracranial/stage_2_test')
+    fig = plt.figure(figsize=(15, 10))
+    columns = 5
+    rows = 4
+    for i in range(1, columns*rows + 1):
+        d, dcm = ds[i]
+        fig.add_subplot(rows, columns, i)
+        plt.imshow(dcm.pixel_array, cmap=plt.cm.bone)
+    plt.show()
