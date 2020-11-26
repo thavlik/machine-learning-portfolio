@@ -4,6 +4,7 @@ This is a repository of my personal machine learning projects.
 ## Experiments
 Many experiments with unrelated datasets share almost all of their code. This repository was designed to showcase how well-designed ML boilerplate facilitates its own reuse.
 - [rsna-intracranial](experiments/rsna-intracranial/)
+- [tends-fmri](experiments/trends-fmri/)
 - [doom](experiments/doom/)
 
 ## Relevant Literature
