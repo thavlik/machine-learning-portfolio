@@ -16,7 +16,7 @@ class RSNAIntracranialDataset(data.Dataset):
         path = os.path.join(self.dir, self.files[index])
         ds = pydicom.dcmread(path, stop_before_pixels=False)
         data = normalized_dicom_pixels(ds)
-        return (data, ds)
+        return data
 
     def __len__(self):
         return len(self.files)
@@ -29,7 +29,6 @@ if __name__ == '__main__':
     columns = 5
     rows = 4
     for i in range(1, columns*rows + 1):
-        d, dcm = ds[i]
         fig.add_subplot(rows, columns, i)
-        plt.imshow(dcm.pixel_array, cmap=plt.cm.bone)
+        plt.imshow(ds[i], cmap=plt.cm.bone)
     plt.show()
