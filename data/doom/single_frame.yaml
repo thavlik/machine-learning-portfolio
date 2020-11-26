@@ -1,0 +1,9 @@
+loader: video
+
+params:
+  input_path: ../data/doom/compiled.json
+  cache_path: E:/cache/
+  num_frames: 1
+  width: 320
+  height: 240
+
