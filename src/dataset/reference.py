@@ -5,10 +5,9 @@ class ReferenceDataset(data.Dataset):
     """ Reference dataset loader that proxies a torchvision dataset
     """
     def __init__(self,
-                 name: str,
-                 params: dict):
+                 **params: dict):
         super(ReferenceDataset, self).__init__()
-        self.ds = getattr(datasets, name)(**params)
+        self.ds = getattr(datasets, params['name'])(**params['params'])
 
     def __getitem__(self, index):
         return self.ds[index]

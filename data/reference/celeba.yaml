@@ -1,0 +1,7 @@
+loader: reference
+
+params:
+  name: CelebA
+  params:
+    root: "E:/celeba"
+
