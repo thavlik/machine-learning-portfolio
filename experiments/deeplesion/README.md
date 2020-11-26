@@ -2,3 +2,4 @@ These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesio
 
 ## TODO
 - Get data all in one place
+- Write dataset class
