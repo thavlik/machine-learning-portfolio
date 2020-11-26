@@ -237,39 +237,7 @@ if __name__ == '__main__':
             delta = time.time() - start
             avg = delta / n
             samples.append(avg)
-            print(f'{avg} seconds per example ({np.mean(samples)} seconds cumulative average)')
+            print(
+                f'{avg} seconds per example ({np.mean(samples)} seconds cumulative average)')
             start = time.time()
     print('done')
-"""    
-    with open('../dataset/timothybrown.txt', 'r') as file:
-        items = [line for line in file]
-
-    def process_video(video):
-        cap = cv2.VideoCapture(f'{video["id"]}.{video["ext"]}')
-        # Check if camera opened successfully
-        if not cap.isOpened():
-            raise ValueError(f"Error opening video stream or file")
-        while(cap.isOpened()):
-            ret, frame = cap.read()
-            if ret == True:
-                # frame is good
-                pass
-            else:
-                break
-        cap.release()
-
-    with youtube_dl.YoutubeDL({'outtmpl': '%(id)s.%(ext)s'}) as ydl:
-        for item in items:
-            result = ydl.extract_info(
-                item,
-                download=False,
-            )
-            if 'entries' in result:
-                # It is a playlist
-                for video in result['entries']:
-                    process_video(video)
-            else:
-                # Just a single video
-                video = result
-                process_video(video)
-"""

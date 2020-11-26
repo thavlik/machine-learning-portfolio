@@ -4,9 +4,10 @@ import torch
 import torch.utils.data as data
 import h5py
 
-class TReNDSDataset(data.Dataset):
+
+class TReNDSfMRIDataset(data.Dataset):
     def __init__(self, dir: str):
-        super(TReNDSDataset, self).__init__()
+        super(TReNDSfMRIDataset, self).__init__()
         self.dir = dir
         self.files = os.listdir(dir)
 
@@ -22,6 +23,6 @@ class TReNDSDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    ds = TReNDSDataset('../../data/trends-fmri/fMRI_train')
+    ds = TReNDSfMRIDataset('../../data/trends-fmri/fMRI_train')
     print(ds[0].shape)
     print(ds[1].shape)
