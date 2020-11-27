@@ -12,7 +12,7 @@ exp_params:
   batch_size: 8
   warmup_steps: 512
   plot:
-    fn: 'plot2d_dcm'
+    fn: 'dcm'
     params:
       rows: 4
       cols: 4
