@@ -39,7 +39,8 @@ class TReNDSfMRIDataset(data.Dataset):
 
     def __getitem__(self, index):
         path = os.path.join(self.dir, self.files[index])
-        return torch.Tensor(load_subject(path, self.mask).get_data())
+        data = load_subject(path, self.mask).get_data()
+        return torch.Tensor(data)
 
     def __len__(self):
         return len(self.files)
