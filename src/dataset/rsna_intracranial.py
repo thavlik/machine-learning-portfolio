@@ -98,10 +98,8 @@ if __name__ == '__main__':
     import matplotlib.pylab as plt
     #ds = RSNAIntracranialDataset('E:/rsna-intracranial/stage_2_test')
     ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
-                                 s3_path='s3://rsna-intracranial/stage_2_train')
-    print(ds[3][0].shape)
-    print(ds[600000][0].shape)
-
+                                 s3_path='s3://rsna-intracranial/stage_2_train',
+                                 download=False)
     fig = plt.figure(figsize=(15, 10))
     columns = 5
     rows = 4
