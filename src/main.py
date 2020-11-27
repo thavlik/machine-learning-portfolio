@@ -94,7 +94,7 @@ parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='../experiments/vae/basic_mse.yaml')
+                    default='../experiments/vae2d/basic_mse.yaml')
 parser.add_argument('--dataset', '-d',
                     dest="dataset",
                     metavar='DATASET',

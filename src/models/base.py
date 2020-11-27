@@ -8,8 +8,7 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 class BaseVAE(nn.Module):
     def __init__(self,
                  name: str,
-                 latent_dim: int,
-                 enable_fid: bool) -> None:
+                 latent_dim: int) -> None:
         super(BaseVAE, self).__init__()
         self.name = name
         self.latent_dim = latent_dim
