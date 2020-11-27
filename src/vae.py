@@ -121,10 +121,3 @@ class VAEExperiment(pl.LightningModule):
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader
 
-
-if __name__ == '__main__':
-    plot2d(torch.rand(12, 1, 512, 512),
-           torch.rand(12, 1, 512, 512),
-           'plot.png',
-           dict(rows=4,
-                cols=4))
