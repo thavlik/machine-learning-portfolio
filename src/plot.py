@@ -23,7 +23,8 @@ def plot1d(recons: Tensor,
 def plot2d(recons: Tensor,
            orig: Tensor,
            out_path: str,
-           params: dict):
+           params: dict,
+           imshow_args: dict = {}):
     rows = params['rows']
     cols = params['cols']
     if 'thumbnail_size' in params:
@@ -52,16 +53,28 @@ def plot2d(recons: Tensor,
             img = to_pil(img)
             if img.size != (thumbnail_height, thumbnail_width):
                 img = resize(img)
-            grid[i].imshow(img)
+            grid[i].imshow(img, **imshow_args)
             i += 1
         if done:
             break
     fig.savefig(out_path)
 
 
+def plot2d_dcm(recons: Tensor,
+               orig: Tensor,
+               out_path: str,
+               params: dict):
+    return plot2d(recons,
+                  orig,
+                  out_path,
+                  params,
+                  dict(cmap=plt.cm.bone))
+
+
 plot_fn = {
     'plot1d': plot2d,
     'plot2d': plot2d,
+    'plot2d_dcm': plot2d_dcm,
 }
 
 
