@@ -110,7 +110,7 @@ class ResNetVAE2d(BaseVAE):
         recons = args[0]
         orig = args[1]
 
-        fid_weight = kwargs['fid_weight']
+        fid_weight = kwargs.get('fid_weight', 0.0)
         if fid_weight != 0.0:
             fid_loss = self.fid(orig, recons)
             result['FID_Loss'] = fid_loss
