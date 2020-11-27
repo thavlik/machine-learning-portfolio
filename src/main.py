@@ -10,6 +10,7 @@ from vae import VAEExperiment
 from dataset import ReferenceDataset
 
 dataset_dims = {
+    'eeg': (1, 8192),
     'cq500': (1, 512, 512),
     'deeplesion': (1, 512, 512),
     'rsna-intracranial': (1, 512, 512),
@@ -29,8 +30,24 @@ def get_example_shape(dataset: dict):
     return dataset_dims[loader]
 
 
-def vae(config: dict,
-        dataset: dict):
+def vae1d(config: dict,
+          dataset: dict):
+    c, l = get_example_shape(dataset)
+    exp_params = config['exp_params']
+    model_name = config['model_params']['name']
+    if model_name not in models:
+        raise ValueError(f'unknown model "{model_name}"')
+    model = models[model_name](**config['model_params'],
+                               length=l,
+                               channels=c,
+                               enable_fid='fid_weight' in exp_params)
+    return VAEExperiment(model,
+                         params=exp_params,
+                         dataset=dataset)
+
+
+def vae2d(config: dict,
+          dataset: dict):
     c, h, w = get_example_shape(dataset)
     exp_params = config['exp_params']
     model_name = config['model_params']['name']
@@ -46,13 +63,32 @@ def vae(config: dict,
                          dataset=dataset)
 
 
+def vae3d(config: dict,
+          dataset: dict):
+    c, d, h, w = get_example_shape(dataset)
+    exp_params = config['exp_params']
+    model_name = config['model_params']['name']
+    if model_name not in models:
+        raise ValueError(f'unknown model "{model_name}"')
+    model = models[model_name](**config['model_params'],
+                               width=w,
+                               height=h,
+                               depth=d,
+                               channels=c)
+    return VAEExperiment(model,
+                         params=exp_params,
+                         dataset=dataset)
+
+
 def load_config(path):
     with open(path, 'r') as file:
         return yaml.safe_load(file)
 
 
 experiments = {
-    'vae': vae,
+    'vae1d': vae1d,
+    'vae2d': vae2d,
+    'vae3d': vae3d,
 }
 
 
