@@ -6,32 +6,15 @@ import torch.backends.cudnn as cudnn
 import torch
 import numpy as np
 from models import BasicVAE
-from basic_experiment import BasicExperiment
-from basic_prediction import BasicPrediction
-
-
-def basic_prediction(config: dict,
-                     dataset_name: str,
-                     dataset_params: dict,
-                     dataset_val_params: dict = {}):
-    model = BasicVAE(**config['model_params'])
-    return BasicPrediction(model,
-                           dataset_name=dataset_name,
-                           dataset_params=dataset_params,
-                           dataset_val_params=dataset_val_params,
-                           params=config['exp_params'])
+from vae import VAEExperiment
 
 
 def vae(config: dict,
-        dataset_name: str,
-        dataset_params: dict,
-        dataset_val_params: dict = {}):
+        dataset: dict):
     model = BasicVAE(**config['model_params'])
-    return BasicExperiment(model,
-                           dataset_name=dataset_name,
-                           dataset_params=dataset_params,
-                           dataset_val_params=dataset_val_params,
-                           params=config['exp_params'])
+    return VAEExperiment(model,
+                         params=config['exp_params'],
+                         dataset=dataset)
 
 
 def load_config(path):
@@ -39,20 +22,13 @@ def load_config(path):
         return yaml.safe_load(file)
 
 
-def load_dataset(path):
-    ds = load_config(path)
-    return ds['name'], ds['params'], ds['val_params']
-
-
 experiments = {
-    'basic_prediction': basic_prediction,
     'vae': vae,
 }
 
 
 def experiment_main(config: dict,
-                    dataset_name: str,
-                    dataset_params: dict,
+                    dataset: dict,
                     save_dir: str):
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
@@ -63,7 +39,7 @@ def experiment_main(config: dict,
         device = torch.device('cpu')
     fn = experiments.get(entrypoint, None)
     assert fn != None, f"unknown entrypoint '{entrypoint}'"
-    experiment = fn(config).to(device)
+    experiment = fn(config, dataset).to(device)
     tt_logger = TestTubeLogger(
         save_dir=save_dir,
         name=config['logging_params']['name'],
@@ -104,11 +80,9 @@ parser.add_argument('--save-dir',
 
 args = parser.parse_args()
 config = load_config(args.config)
-dataset_name, dataset_params, dataset_val_params = load_dataset(args.dataset)
+dataset = load_config(args.dataset)
 cudnn.deterministic = True
 cudnn.benchmark = False
 experiment_main(config,
-                dataset_name,
-                dataset_params,
-                dataset_val_params,
+                dataset=dataset,
                 save_dir=args.save_dir)

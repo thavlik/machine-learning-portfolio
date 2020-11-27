@@ -7,7 +7,9 @@ model_params:
   hidden_dims: [256, 512]
 
 exp_params:
-  learning_rate: 0.0002
+  optimizer:
+    lr: 0.0002
+    weight_decay: 0.00001
   batch_size: 128
 
 trainer_params:

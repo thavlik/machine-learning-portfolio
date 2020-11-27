@@ -10,22 +10,18 @@ from utils import data_loader
 from dataset import get_dataset
 
 
-class BasicExperiment(pl.LightningModule):
+class VAEExperiment(pl.LightningModule):
 
     def __init__(self,
                  vae_model: BaseVAE,
                  params: dict,
-                 dataset_name: str,
-                 dataset_params: dict,
-                 dataset_params_val: dict = {}) -> None:
-        super(BasicExperiment, self).__init__()
+                 dataset: dict) -> None:
+        super(VAEExperiment, self).__init__()
 
         self.model = vae_model
         self.params = params
         self.curr_device = None
-        self.dataset_name = dataset_name
-        self.dataset_params = dataset_params
-        self.dataset_params_val = dataset_params_val
+        self.dataset = dataset
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
@@ -83,41 +79,15 @@ class BasicExperiment(pl.LightningModule):
         raise NotImplementedError
 
     def configure_optimizers(self):
-        optims = []
+        optims = [optim.Adam(self.model.parameters(),
+                             **self.params['optimizer'])]
         scheds = []
-        optimizer = optim.Adam(self.model.parameters(),
-                               lr=self.params['lr'],
-                               weight_decay=self.params['weight_decay'])
-        optims.append(optimizer)
-        # Check if more than 1 optimizer is required (Used for adversarial training)
-        try:
-            if self.params['lr_2'] is not None:
-                optimizer2 = optim.Adam(getattr(self.model, self.params['submodel']).parameters(),
-                                        lr=self.params['lr_2'])
-                optims.append(optimizer2)
-        except:
-            pass
-        try:
-            if self.params['scheduler_gamma'] is not None:
-                scheduler = optim.lr_scheduler.ExponentialLR(optims[0],
-                                                             gamma=self.params['scheduler_gamma'])
-                scheds.append(scheduler)
-
-                # Check if another scheduler is required for the second optimizer
-                try:
-                    if self.params['scheduler_gamma_2'] is not None:
-                        scheduler2 = optim.lr_scheduler.ExponentialLR(optims[1],
-                                                                      gamma=self.params['scheduler_gamma_2'])
-                        scheds.append(scheduler2)
-                except:
-                    pass
-                return optims, scheds
-        except:
-            return optims
+        return optims, scheds
 
     @data_loader
     def train_dataloader(self):
-        dataset = get_dataset(self.dataset_name, self.dataset_params)
+        dataset = get_dataset(self.dataset['loader'],
+                              self.dataset.get('training', {}))
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
@@ -126,10 +96,10 @@ class BasicExperiment(pl.LightningModule):
 
     @data_loader
     def val_dataloader(self):
-        dataset = get_dataset(self.dataset_name, {{
-            **self.dataset_params,
-            **self.dataset_params_val,
-        }})
+        dataset = get_dataset(self.dataset['loader'], {
+            **self.dataset.get('training', {}),
+            **self.dataset.get('validation', {}),
+        })
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,
