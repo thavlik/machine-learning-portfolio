@@ -2,90 +2,16 @@ import yaml
 import argparse
 from pytorch_lightning.loggers import TestTubeLogger
 from pytorch_lightning import Trainer
-import torch.backends.cudnn as cudnn
 import torch
+import torch.backends.cudnn as cudnn
 import numpy as np
-from models import models
-from vae import VAEExperiment
-from dataset import ReferenceDataset
-
-dataset_dims = {
-    'eeg': (1, 8192),  # channels, length
-    'cq500': (1, 512, 512),  # channels, height, width
-    'deeplesion': (1, 512, 512),
-    'rsna-intracranial': (1, 512, 512),
-    'trends-fmri': (53, 63, 52, 53),
-}
-
-
-def get_example_shape(dataset: dict):
-    loader = dataset['loader']
-    if loader == 'reference':
-        return ReferenceDataset(**dataset['params'])[0].shape
-    if loader == 'video':
-        params = dataset['training']
-        return (3, params['height'], params['width'])
-    if loader not in dataset_dims:
-        raise ValueError(f'unknown dataset "{loader}"')
-    return dataset_dims[loader]
-
-
-def create_model(name: str, **kwargs):
-    if name not in models:
-        raise ValueError(f'unknown model "{name}"')
-    return models[name](**kwargs)
-
-
-def vae1d(config: dict,
-          dataset: dict):
-    c, l = get_example_shape(dataset)
-    model = create_model(**config['model_params'],
-                         length=l,
-                         channels=c)
-    exp_params = config['exp_params']
-    return VAEExperiment(model,
-                         params=exp_params,
-                         dataset=dataset)
-
-
-def vae2d(config: dict,
-          dataset: dict):
-    c, h, w = get_example_shape(dataset)
-    exp_params = config['exp_params']
-    model = create_model(**config['model_params'],
-                         width=w,
-                         height=h,
-                         channels=c,
-                         enable_fid='fid_weight' in exp_params)
-    return VAEExperiment(model,
-                         params=exp_params,
-                         dataset=dataset)
-
-
-def vae3d(config: dict,
-          dataset: dict):
-    c, d, h, w = get_example_shape(dataset)
-    model = create_model(**config['model_params'],
-                         width=w,
-                         height=h,
-                         depth=d,
-                         channels=c)
-    exp_params = config['exp_params']
-    return VAEExperiment(model,
-                         params=exp_params,
-                         dataset=dataset)
+from models import create_model
+from experiments import create_experiment
 
 
 def load_config(path):
-    with open(path, 'r') as file:
-        return yaml.safe_load(file)
-
-
-experiments = {
-    'vae1d': vae1d,
-    'vae2d': vae2d,
-    'vae3d': vae3d,
-}
+    with open(path, 'r') as f:
+        return yaml.safe_load(f)
 
 
 def experiment_main(config: dict,
@@ -98,9 +24,7 @@ def experiment_main(config: dict,
         device = torch.device('cuda')
     else:
         device = torch.device('cpu')
-    if entrypoint not in experiments:
-        raise ValueError(f"unknown entrypoint '{entrypoint}'")
-    experiment = experiments[entrypoint](config, dataset).cuda()
+    experiment = create_experiment(entrypoint, config, dataset).cuda()
     tt_logger = TestTubeLogger(
         save_dir=save_dir,
         name=config['logging_params']['name'],

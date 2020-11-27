@@ -11,3 +11,10 @@ models = {
     'ResNetVAE2d': ResNetVAE2d,
     'ResNetVAE3d': ResNetVAE3d,
 }
+
+
+def create_model(name: str, **kwargs):
+    if name not in models:
+        raise ValueError(f'unknown model "{name}" '
+                         f'valid options are {models}')
+    return models[name](**kwargs)
