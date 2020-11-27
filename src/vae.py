@@ -1,3 +1,4 @@
+import os
 import math
 import torch
 import numpy as np
@@ -7,7 +8,6 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import CelebA
 import pytorch_lightning as pl
 from models.base import BaseVAE
-from utils import data_loader
 from dataset import get_dataset
 from abc import abstractmethod
 from plotly.subplots import make_subplots
@@ -71,11 +71,10 @@ class VAEExperiment(pl.LightningModule):
 
         return val_loss
 
-    def validation_end(self, outputs):
+    def validation_epoch_end(self, outputs: dict):
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
-        tensorboard_logs = {'avg_val_loss': avg_loss}
+        self.log('avg_val_loss', avg_loss)
         self.sample_images()
-        return {'val_loss': avg_loss, 'log': tensorboard_logs}
 
     def sample_images(self):
         # Get sample reconstruction image
@@ -83,7 +82,10 @@ class VAEExperiment(pl.LightningModule):
         test_input = test_input[:8]
         test_input = test_input.to(self.curr_device)
         recons = self.model.generate(test_input, labels=[])
-        out_path = f"{self.logger.save_dir}{self.logger.name}/version_{self.logger.version}/recons_{self.logger.name}_{self.current_epoch}.png"
+        out_path = os.path.join(self.logger.save_dir,
+                                self.logger.name,
+                                f"version_{self.logger.version}",
+                                f"recons_{self.logger.name}_{self.current_epoch}.png")
         orig = test_input.data.cpu()
         recons = recons.data.cpu()
         fn = get_plot_fn(self.params['plot']['fn'])
@@ -96,7 +98,6 @@ class VAEExperiment(pl.LightningModule):
         scheds = []
         return optims, scheds
 
-    @data_loader
     def train_dataloader(self):
         dataset = get_dataset(self.dataset['loader'],
                               self.dataset.get('training', {}))
@@ -107,7 +108,6 @@ class VAEExperiment(pl.LightningModule):
                           drop_last=True,
                           num_workers=self.dataset.get('num_workers', 0))
 
-    @data_loader
     def val_dataloader(self):
         dataset = get_dataset(self.dataset['loader'], {
             **self.dataset.get('training', {}),
@@ -120,4 +120,3 @@ class VAEExperiment(pl.LightningModule):
                                             num_workers=self.dataset.get('num_workers', 0))
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader
-

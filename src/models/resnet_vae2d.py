@@ -41,15 +41,16 @@ class ResNetVAE2d(BaseVAE):
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
-            modules.append(BasicBlock2d(in_features, h_dim))
-            modules.append(nn.MaxPool2d((2, 1)))
+            modules.append(BasicBlock2d(in_features,
+                                        h_dim))
+            modules.append(nn.MaxPool2d(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * height // 2**len(hidden_dims)
+        in_features = hidden_dims[-1] * width * height // (2**len(hidden_dims))**2
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),
@@ -97,7 +98,7 @@ class ResNetVAE2d(BaseVAE):
 
     def decode(self, z: Tensor) -> Tensor:
         x = self.decoder_input(z)
-        x = x.view(x.shape[0], self.hidden_dims[0], 2, 2)
+        x = x.view(x.shape[0], self.hidden_dims[-1], 2, 2)
         x = self.decoder(x)
         x = x.view(x.shape[0], self.channels, self.height, self.width)
         return x
