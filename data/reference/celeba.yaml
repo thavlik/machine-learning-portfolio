@@ -1,7 +1,11 @@
 loader: reference
 
-params:
+training:
   name: CelebA
   params:
     root: "E:/celeba"
 
+validation:
+  name: CelebA
+  params:
+    root: "E:/celeba"

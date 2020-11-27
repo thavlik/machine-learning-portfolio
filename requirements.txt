@@ -8,3 +8,4 @@ nilearn
 pylibjpeg
 pylibjpeg-libjpeg
 matplotlib
+envsubst
