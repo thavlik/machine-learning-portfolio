@@ -34,7 +34,7 @@ class RSNAIntracranialDataset(data.Dataset):
         self.download = download
         if not self.download:
             if not os.path.exists(dcm_path):
-                raise ValueError(f'{dcm_path} does not exist')
+                raise ValueError(f'Directory {dcm_path} does not exist')
             self.files = [f for f in os.listdir(dcm_path)
                           if f.endswith('.dcm')]
         else:
