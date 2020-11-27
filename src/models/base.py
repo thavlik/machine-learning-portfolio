@@ -3,7 +3,7 @@ from torch import nn, Tensor
 from torch.nn import functional as F
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
-from .inception import InceptionV3
+
 
 class BaseVAE(nn.Module):
     def __init__(self,
@@ -13,16 +13,11 @@ class BaseVAE(nn.Module):
         super(BaseVAE, self).__init__()
         self.name = name
         self.latent_dim = latent_dim
-        self.enable_fid = enable_fid
-        if enable_fid:
-            input_dim = 2048
-            block_idx = InceptionV3.BLOCK_INDEX_BY_DIM[input_dim]
-            self.inception = InceptionV3([block_idx])
 
     @abstractmethod
     def encode(self, input: Tensor) -> List[Tensor]:
         raise NotImplementedError
-    
+
     @abstractmethod
     def decode(self, input: Tensor) -> Any:
         raise NotImplementedError
@@ -60,38 +55,23 @@ class BaseVAE(nn.Module):
     def loss_function(self,
                       *args,
                       **kwargs) -> dict:
-        """
-        Computes the VAE loss function.
-        KL(N(\mu, \sigma), N(0, 1)) = \log \frac{1}{\sigma} + \frac{\sigma^2 + \mu^2}{2} - \frac{1}{2}
-        :param args:
-        :param kwargs:
-        :return:
-        """
         recons = args[0]
         input = args[1]
         mu = args[2]
         log_var = args[3]
 
-        # Account for the minibatch samples from the dataset
-        kld_weight = kwargs['kld_weight']
         recons_loss = F.mse_loss(recons, input)
 
-        kld_loss = torch.mean(-0.5 * torch.sum(1 +
-                                               log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
+        result = {'loss': recons_loss,
+                  'Reconstruction_Loss': recons_loss}
 
-        result = {'Reconstruction_Loss': recons_loss,
-                  'KLD_Loss': -kld_loss}
+        if 'kld_weight' in kwargs:
+            kld_weight = kwargs['kld_weight']
+            kld_loss = torch.mean(-0.5 * torch.sum(1 +
+                                                   log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
+            result['KLD_Loss'] = kld_loss
+            result['loss'] += kld_weight * kld_loss
 
-        loss = recons_loss + kld_weight * kld_loss
-
-        fid_weight = kwargs['fid_weight']
-        if fid_weight != 0.0:
-            fid_loss = 0.0
-            result['FID_Loss'] = fid_loss
-            loss += fid_weight * fid_loss
-            raise NotImplementedError
-
-        result['loss'] = loss
         return result
 
     def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:

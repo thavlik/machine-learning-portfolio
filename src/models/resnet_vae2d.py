@@ -7,9 +7,10 @@ from torch import nn, Tensor
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
+from .inception import InceptionV3
 
 
-class ResNetVAE(BaseVAE):
+class ResNetVAE2d(BaseVAE):
 
     def __init__(self,
                  name: str,
@@ -21,13 +22,18 @@ class ResNetVAE(BaseVAE):
                  channels: int = 3,
                  enable_fid: bool = False,
                  output_activation: str = 'sigmoid') -> None:
-        super(ResNetVAE, self).__init__(name=name,
-                                        latent_dim=latent_dim,
-                                        enable_fid=enable_fid)
+        super(ResNetVAE2d, self).__init__(name=name,
+                                          latent_dim=latent_dim)
         self.width = width
         self.height = height
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
+
+        self.enable_fid = enable_fid
+        if enable_fid:
+            input_dim = 2048
+            block_idx = InceptionV3.BLOCK_INDEX_BY_DIM[input_dim]
+            self.inception = InceptionV3([block_idx])
 
         # Encoder
         modules = []
@@ -93,3 +99,17 @@ class ResNetVAE(BaseVAE):
         x = self.decoder(x)
         x = x.view(x.shape[0], self.channels, self.height, self.width)
         return x
+
+    def loss_function(self,
+                      *args,
+                      **kwargs) -> dict:
+        result = super(ResNetVAE2d, self).loss_function(*args, **kwargs)
+
+        fid_weight = kwargs['fid_weight']
+        if fid_weight != 0.0:
+            fid_loss = 0.0
+            result['FID_Loss'] = fid_loss
+            result['loss'] += fid_loss * fid_weight
+            raise NotImplementedError
+
+        return result
