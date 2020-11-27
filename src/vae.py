@@ -4,18 +4,19 @@ import torch
 import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
+from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
-from torchvision.datasets import CelebA
+from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
-from models.base import BaseVAE
 from dataset import get_dataset
 from abc import abstractmethod
 from plotly.subplots import make_subplots
 from plotly.graph_objects import Figure
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
-from torchvision.transforms import Resize, ToPILImage, ToTensor
+from typing import Callable, Optional
 from plot import get_plot_fn
+from models.base import BaseVAE
 
 
 class VAEExperiment(pl.LightningModule):
@@ -97,6 +98,31 @@ class VAEExperiment(pl.LightningModule):
                              **self.params['optimizer'])]
         scheds = []
         return optims, scheds
+
+    def optimizer_step(
+        self,
+        epoch: int,
+        batch_idx: int,
+        optimizer: Optimizer,
+        optimizer_idx: int,
+        optimizer_closure: Optional[Callable],
+        on_tpu: bool,
+        using_native_amp: bool,
+        using_lbfgs: bool,
+    ) -> None:
+        # warm up lr, linear ramp
+        warmup_steps = self.params.get('warmup_steps', 0)
+        if warmup_steps > 0 and self.trainer.global_step < self.warmup_steps:
+            lr_scale = min(1.0, float(
+                self.trainer.global_step + 1) / float(warmup_steps))
+            lr = lr_scale * self.params['optimizer']['lr']
+            for pg in optimizer.param_groups:
+                pg['lr'] = lr
+            self.log('lr', lr, prog_bar=True)
+
+        # update params
+        optimizer.step(closure=optimizer_closure)
+        optimizer.zero_grad()
 
     def train_dataloader(self):
         dataset = get_dataset(self.dataset['loader'],

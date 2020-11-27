@@ -18,8 +18,8 @@ class ResNetVAE2d(BaseVAE):
                  width: int = 320,
                  height: int = 200,
                  channels: int = 3,
-                 enable_fid: bool = False,
                  output_activation: str = 'sigmoid',
+                 enable_fid: bool = False,
                  fid_blocks: List[int] = [2048]) -> None:
         super(ResNetVAE2d, self).__init__(latent_dim=latent_dim)
         self.width = width

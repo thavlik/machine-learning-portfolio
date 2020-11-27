@@ -3,13 +3,14 @@ entrypoint: vae2d
 model_params:
   name: 'ResNetVAE2d'
   latent_dim: 256
-  hidden_dims: [8, 16, 32]
+  hidden_dims: [64, 64, 128, 128]
 
 exp_params:
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
-  batch_size: 2
+  batch_size: 8
+  warmup_steps: 512
   plot:
     fn: 'plot2d'
     params:
