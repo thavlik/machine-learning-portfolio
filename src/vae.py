@@ -53,7 +53,8 @@ class VAEExperiment(pl.LightningModule):
         val_loss = self.model.loss_function(*results,
                                             optimizer_idx=optimizer_idx,
                                             batch_idx=batch_idx,
-                                            kld_weight=kld_weight)
+                                            kld_weight=kld_weight,
+                                            fid_weight=self.params.get('fid_weight', 0.0))
 
         return val_loss
 
