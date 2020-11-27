@@ -1,9 +1,9 @@
 import torch
 from torch import nn, Tensor
+from torch.nn import functional as F
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from .inception import InceptionV3
-
 
 class BaseVAE(nn.Module):
     def __init__(self,

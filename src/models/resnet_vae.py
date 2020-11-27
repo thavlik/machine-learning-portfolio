@@ -64,9 +64,9 @@ class ResNetVAE(BaseVAE):
                 f'Unknown activation function "{output_activation}"')
 
         hidden_dims.reverse()
-        self.decoder_input = nn.Linear(latent_dim, height * 4)
+        self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 4)
         modules = []
-        in_features = height
+        in_features = hidden_dims[0]
         for h_dim in hidden_dims:
             modules.append(TransposeBasicBlock(in_features, h_dim))
             in_features = h_dim
@@ -75,9 +75,7 @@ class ResNetVAE(BaseVAE):
             nn.Conv2d(hidden_dims[-1],
                       width * height * channels // 4,
                       kernel_size=3,
-                      padding=1)
-        )
-        self.decoder_final = nn.Sequential(
+                      padding=1),
             act_options[output_activation](),
         )
 
@@ -91,8 +89,7 @@ class ResNetVAE(BaseVAE):
 
     def decode(self, z: Tensor) -> Tensor:
         x = self.decoder_input(z)
-        x = x.view(x.shape[0], self.height, 2, 2)
+        x = x.view(x.shape[0], self.hidden_dims[0], 2, 2)
         x = self.decoder(x)
-        x = self.decoder_final(x)
         x = x.view(x.shape[0], self.channels, self.height, self.width)
         return x
