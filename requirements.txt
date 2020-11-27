@@ -7,3 +7,4 @@ h5py
 nilearn
 pylibjpeg
 pylibjpeg-libjpeg
+matplotlib
