@@ -99,8 +99,8 @@ if __name__ == '__main__':
     #ds = RSNAIntracranialDataset('E:/rsna-intracranial/stage_2_test')
     ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
                                  s3_path='s3://rsna-intracranial/stage_2_train')
-    print(ds[3].shape)
-    print(ds[700000].shape)
+    print(ds[3][0].shape)
+    print(ds[600000][0].shape)
 
     fig = plt.figure(figsize=(15, 10))
     columns = 5
