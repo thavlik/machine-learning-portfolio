@@ -86,8 +86,14 @@ def get_plot_fn(name: str):
 
 
 if __name__ == '__main__':
-    plot2d(torch.rand(12, 1, 512, 512),
-           torch.rand(12, 1, 512, 512),
-           'plot.png',
-           dict(rows=4,
-                cols=4))
+    from dataset import RSNAIntracranialDataset
+    ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
+                                 s3_path='s3://rsna-intracranial/stage_2_train',
+                                 download=False)
+    batch = [ds[i][0].unsqueeze(dim=0) for i in range(16)]
+    batch = torch.cat(batch, dim=0)
+    plot2d_dcm(batch,
+               batch,
+               'plot.png',
+               dict(rows=4,
+                    cols=4))
