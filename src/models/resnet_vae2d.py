@@ -21,7 +21,8 @@ class ResNetVAE2d(BaseVAE):
                  height: int = 200,
                  channels: int = 3,
                  enable_fid: bool = False,
-                 output_activation: str = 'sigmoid') -> None:
+                 output_activation: str = 'sigmoid',
+                 fid_blocks: List[int] = [2048]) -> None:
         super(ResNetVAE2d, self).__init__(name=name,
                                           latent_dim=latent_dim)
         self.width = width
@@ -31,9 +32,13 @@ class ResNetVAE2d(BaseVAE):
 
         self.enable_fid = enable_fid
         if enable_fid:
-            input_dim = 2048
-            block_idx = InceptionV3.BLOCK_INDEX_BY_DIM[input_dim]
-            self.inception = InceptionV3([block_idx])
+            for block in fid_blocks:
+                if block not in InceptionV3.BLOCK_INDEX_BY_DIM:
+                    raise ValueError(f'Invalid fid_block {block}, '
+                                     f'valid options are {InceptionV3.BLOCK_INDEX_BY_DIM}')
+            block_idx = [InceptionV3.BLOCK_INDEX_BY_DIM[i]
+                         for i in fid_blocks]
+            self.inception = InceptionV3(block_idx)
 
         # Encoder
         modules = []
@@ -115,8 +120,10 @@ class ResNetVAE2d(BaseVAE):
             result['loss'] += fid_loss * fid_weight
 
         return result
-    
+
     def fid(self, a: Tensor, b: Tensor) -> Tensor:
-        a = self.inception(a)[0]
-        b = self.inception(b)[0]
-        return torch.mean((b - a) ** 2)
+        a = self.inception(a)
+        b = self.inception(b)
+        d = torch.sum([torch.mean((x - y) ** 2)
+                       for x, y in zip(a, b)])
+        return d
