@@ -30,20 +30,18 @@ def get_example_shape(dataset: dict):
     return dataset_dims[loader]
 
 
-def create_model(model_name, **kwargs):
-    if model_name not in models:
-        raise ValueError(f'unknown model "{model_name}"')
-    return models[model_name](**kwargs)
+def create_model(name: str, **kwargs):
+    if name not in models:
+        raise ValueError(f'unknown model "{name}"')
+    return models[name](**kwargs)
 
 
 def vae1d(config: dict,
           dataset: dict):
     c, l = get_example_shape(dataset)
-    model = create_model(config['model_params']['name'],
-                         **config['model_params'],
+    model = create_model(**config['model_params'],
                          length=l,
-                         channels=c,
-                         enable_fid='fid_weight' in exp_params)
+                         channels=c)
     exp_params = config['exp_params']
     return VAEExperiment(model,
                          params=exp_params,
@@ -54,8 +52,7 @@ def vae2d(config: dict,
           dataset: dict):
     c, h, w = get_example_shape(dataset)
     exp_params = config['exp_params']
-    model = create_model(config['model_params']['name'],
-                         **config['model_params'],
+    model = create_model(**config['model_params'],
                          width=w,
                          height=h,
                          channels=c,
@@ -68,8 +65,7 @@ def vae2d(config: dict,
 def vae3d(config: dict,
           dataset: dict):
     c, d, h, w = get_example_shape(dataset)
-    model = create_model(config['model_params']['name'],
-                         **config['model_params'],
+    model = create_model(**config['model_params'],
                          width=w,
                          height=h,
                          depth=d,

@@ -13,7 +13,6 @@ from .inception import InceptionV3
 class ResNetVAE2d(BaseVAE):
 
     def __init__(self,
-                 name: str,
                  latent_dim: int,
                  hidden_dims: List[int],
                  dropout: float = 0.4,
@@ -23,8 +22,7 @@ class ResNetVAE2d(BaseVAE):
                  enable_fid: bool = False,
                  output_activation: str = 'sigmoid',
                  fid_blocks: List[int] = [2048]) -> None:
-        super(ResNetVAE2d, self).__init__(name=name,
-                                          latent_dim=latent_dim)
+        super(ResNetVAE2d, self).__init__(latent_dim=latent_dim)
         self.width = width
         self.height = height
         self.channels = channels

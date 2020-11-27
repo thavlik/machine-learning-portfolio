@@ -13,15 +13,13 @@ from .inception import InceptionV3
 class ResNetVAE1d(BaseVAE):
 
     def __init__(self,
-                 name: str,
                  latent_dim: int,
                  hidden_dims: List[int],
                  dropout: float = 0.4,
                  length: int = 128,
                  channels: int = 1,
                  output_activation: str = 'sigmoid') -> None:
-        super(ResNetVAE1d, self).__init__(name=name,
-                                          latent_dim=latent_dim)
+        super(ResNetVAE1d, self).__init__(latent_dim=latent_dim)
         self.length = length
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
