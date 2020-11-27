@@ -79,7 +79,7 @@ class RSNAIntracranialDataset(data.Dataset):
             ds = pydicom.dcmread(path, stop_before_pixels=False)
             return normalized_dicom_pixels(ds)
         elif not self.download:
-            raise ValueError(f'{path} does not exist')
+            raise ValueError(f'File {path} does not exist')
         dir = os.path.dirname(path)
         if not os.path.exists(dir):
             os.makedirs(dir)
