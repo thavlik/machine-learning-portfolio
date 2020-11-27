@@ -105,11 +105,18 @@ class ResNetVAE2d(BaseVAE):
                       **kwargs) -> dict:
         result = super(ResNetVAE2d, self).loss_function(*args, **kwargs)
 
+        recons = args[0]
+        orig = args[1]
+
         fid_weight = kwargs['fid_weight']
         if fid_weight != 0.0:
-            fid_loss = 0.0
+            fid_loss = self.fid(orig, recons)
             result['FID_Loss'] = fid_loss
             result['loss'] += fid_loss * fid_weight
-            raise NotImplementedError
 
         return result
+    
+    def fid(self, a: Tensor, b: Tensor) -> Tensor:
+        a = self.inception(a)[0]
+        b = self.inception(b)[0]
+        return torch.mean((b - a) ** 2)
