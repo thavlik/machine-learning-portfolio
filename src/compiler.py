@@ -11,7 +11,7 @@ parser.add_argument('--input',  '-i',
                     metavar='INPUT',
                     help='path to text file containing youtube video or playlist links',
                     default='../dataset/doom/full.txt')
-parser.add_argument('--output',
+parser.add_argument('--output', '-o',
                     dest="output",
                     metavar='OUTPUT',
                     help='output file path',
@@ -25,7 +25,7 @@ parser.add_argument('--cache_dir',
                     dest="cache_dir",
                     metavar='CACHE_DIR',
                     help='video download path',
-                    default='/data/cache')
+                    default='E:/cache')
 parser.add_argument('--clean',
                     dest="clean",
                     metavar='CLEAN',
@@ -121,3 +121,5 @@ with youtube_dl.YoutubeDL({
         write_videos()
         completed.append(line)
         write_completed()
+
+# TODO: resample videos
