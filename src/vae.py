@@ -34,11 +34,12 @@ class VAEExperiment(pl.LightningModule):
         results = self.forward(real_img, labels=labels)
         kld_weight = self.params.get('kld_weight', 0.0) * \
             self.params['batch_size']/self.num_train_imgs
-        train_loss = self.model.loss_function(*results,
-                                              optimizer_idx=optimizer_idx,
-                                              batch_idx=batch_idx,
-                                              kld_weight=kld_weight,
-                                              fid_weight=self.params.get('fid_weight', 0.0))
+        kwargs = dict(optimizer_idx=optimizer_idx,
+                      batch_idx=batch_idx,
+                      kld_weight=kld_weight)
+        if 'fid_weight' in self.params:
+            kwargs['fid_weight'] = self.params['fid_weight']
+        train_loss = self.model.loss_function(*results, **kwargs)
 
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})

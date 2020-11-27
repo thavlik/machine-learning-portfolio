@@ -1,8 +1,8 @@
-entrypoint: vae2d
+entrypoint: vae3d
 
 model_params:
-  name: 'ResNetVAE2d'
-  latent_dim: 128
+  name: 'ResNetVAE3d'
+  latent_dim: 512
   hidden_dims: [32, 64, 32]
 
 exp_params:
@@ -17,6 +17,6 @@ trainer_params:
   check_val_every_n_epoch: 200
 
 logging_params:
-  name: "VAE2d_BasicMSE"
+  name: "VAE3d_BasicMSE"
 
 manual_seed: 1498
