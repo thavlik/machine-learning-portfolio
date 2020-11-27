@@ -11,9 +11,11 @@ from vae import VAEExperiment
 
 def vae(config: dict,
         dataset: dict):
-    model = BasicVAE(**config['model_params'])
+    exp_params = config['exp_params']
+    model = BasicVAE(**config['model_params'],
+                     enable_fid='fid_weight' in exp_params)
     return VAEExperiment(model,
-                         params=config['exp_params'],
+                         params=exp_params,
                          dataset=dataset)
 
 
