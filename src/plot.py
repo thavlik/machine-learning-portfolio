@@ -119,13 +119,6 @@ def plot_video(recons: Tensor,
                 break
             # Original on left, recons on right
             video = torch.cat([orig[i], recons[i]], dim=-1)
-            # Make sure it's normalized
-            mu, stddev = torch.std_mean(video)
-            video -= mu
-            video /= stddev
-            video *= 0.5
-            video += 0.5
-            video = torch.clamp(video, 0.0, 1.0)
             video *= 255.0
             video = video.byte()
             video_cols.append(video)
