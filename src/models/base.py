@@ -19,9 +19,11 @@ class BaseVAE(nn.Module):
             block_idx = InceptionV3.BLOCK_INDEX_BY_DIM[input_dim]
             self.inception = InceptionV3([block_idx])
 
+    @abstractmethod
     def encode(self, input: Tensor) -> List[Tensor]:
         raise NotImplementedError
-
+    
+    @abstractmethod
     def decode(self, input: Tensor) -> Any:
         raise NotImplementedError
 
