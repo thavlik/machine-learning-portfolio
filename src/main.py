@@ -118,7 +118,7 @@ def experiment_main(config: dict,
 
 
 parser = argparse.ArgumentParser(
-    description='Doom VAE training entrypoint')
+    description='thavlik portfolio entrypoint')
 parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
