@@ -7,14 +7,6 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 
 
-def add_fig1d(orig: Tensor,
-              recons: Tensor,
-              fig: Figure,
-              row: int,
-              col: int):
-    pass
-
-
 def plot1d(recons: Tensor,
            orig: Tensor,
            out_path: str,
@@ -23,15 +15,9 @@ def plot1d(recons: Tensor,
     cols = params['cols']
     fig = make_subplots(rows=rows, cols=cols)
     raise NotImplementedError
-    return fig
-
-
-def add_fig2d(orig: Tensor,
-              recons: Tensor,
-              fig: Figure,
-              row: int,
-              col: int):
-    pass
+    fig.write_image(out_path,
+                    width=params['width'],
+                    height=params['height'])
 
 
 def plot2d(recons: Tensor,
