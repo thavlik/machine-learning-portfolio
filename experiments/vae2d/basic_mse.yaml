@@ -10,6 +10,11 @@ exp_params:
     lr: 0.0002
     weight_decay: 0.00001
   batch_size: 4
+  plot:
+    fn: 'plot2d'
+    params:
+      rows: 8
+      cols: 2
 
 trainer_params:
   max_epochs: 10000000

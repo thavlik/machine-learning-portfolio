@@ -1,5 +1,6 @@
 import math
 import torch
+import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -8,6 +9,91 @@ import pytorch_lightning as pl
 from models.base import BaseVAE
 from utils import data_loader
 from dataset import get_dataset
+from abc import abstractmethod
+from plotly.subplots import make_subplots
+from plotly.graph_objects import Figure
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
+from torchvision.transforms import Resize, ToPILImage, ToTensor
+
+
+def resize2d(x,
+             width: int,
+             height: int):
+    to_pil = ToPILImage()
+    resize = Resize((height, width))
+    to_tensor = ToTensor()
+    return to_tensor(resize(to_pil(torch.Tensor(x))))
+
+
+def add_fig1d(orig: Tensor,
+              recons: Tensor,
+              fig: Figure,
+              row: int,
+              col: int):
+    pass
+
+
+def plot1d(recons: Tensor,
+           orig: Tensor,
+           out_path: str,
+           params: dict):
+    rows = params['rows']
+    cols = params['cols']
+    fig = make_subplots(rows=rows, cols=cols)
+    raise NotImplementedError
+    return fig
+
+
+def add_fig2d(orig: Tensor,
+              recons: Tensor,
+              fig: Figure,
+              row: int,
+              col: int):
+    pass
+
+
+def plot2d(recons: Tensor,
+           orig: Tensor,
+           out_path: str,
+           params: dict):
+    rows = params['rows']
+    cols = params['cols']
+    if 'thumbnail_size' in params:
+        thumbnail_width = params['thumbnail_size']
+        thumbnail_height = params['thumbnail_size']
+    else:
+        thumbnail_width = params.get('thumbnail_width', 512)
+        thumbnail_height = params.get('thumbnail_height', 256)
+    scaling = params.get('scaling', 2.0)
+    fig = plt.figure(figsize=(cols * scaling, rows * scaling))
+    grid = ImageGrid(fig,
+                     111,  # similar to subplot(111)
+                     nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
+                     axes_pad=0.1)  # pad between axes in inch.
+    i = 0
+    n = min(rows * cols, orig.shape[0])
+    to_pil = ToPILImage()
+    for _ in range(rows):
+        done = False
+        for _ in range(cols):
+            if i >= n:
+                done = True
+                break
+            img = torch.cat([orig[i], recons[i]], dim=-1)
+            if img.shape[-2] != (thumbnail_height, thumbnail_width):
+                img = resize2d(img, thumbnail_width, thumbnail_height)
+            grid[i].imshow(to_pil(img))
+            i += 1
+        if done:
+            break
+    fig.savefig(out_path)
+
+
+plot_fn = {
+    'plot1d': plot2d,
+    'plot2d': plot2d,
+}
 
 
 class VAEExperiment(pl.LightningModule):
@@ -77,11 +163,9 @@ class VAEExperiment(pl.LightningModule):
         out_path = f"{self.logger.save_dir}{self.logger.name}/version_{self.logger.version}/recons_{self.logger.name}_{self.current_epoch}.png"
         orig = test_input.data.cpu()
         recons = recons.data.cpu()
-        fig = self.plot(orig, recons)
+        fn = plot_fn[self.params['plot']['fn']]
+        fn(orig, recons, out_path, self.params['plot']['params'])
         del test_input, recons
-
-    def plot(self, orig, recon):
-        raise NotImplementedError
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
@@ -113,3 +197,11 @@ class VAEExperiment(pl.LightningModule):
                                             num_workers=self.dataset.get('num_workers', 0))
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader
+
+
+if __name__ == '__main__':
+    plot2d(torch.rand(12, 1, 512, 512),
+           torch.rand(12, 1, 512, 512),
+           'plot.png',
+           dict(rows=4,
+                cols=4))
