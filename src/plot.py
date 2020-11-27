@@ -131,13 +131,15 @@ def plot_video(recons: Tensor,
         video_rows.append(video_row)
         if done:
             break
+
     # Concatenate all rows into a single video
     video_array = torch.cat(video_rows, dim=-2)
     # [T, C, H, W] -> [T, W, H, C] -> [T, H, W, C]
     video_array = torch.transpose(video_array, 1, -1)
     video_array = torch.transpose(video_array, 1, 2)
+    # Monochrome to RGB
     video_array = video_array.repeat(1, 1, 1, 3)
-    
+
     # Export the tensor as a video
     write_video(out_path, video_array, fps, options=dict())
 
