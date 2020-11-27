@@ -1,37 +1,35 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
-import numpy as np
 
-
-def conv3x3(in_planes, out_planes, stride=1):
-    return nn.Conv2d(in_planes,
-                     out_planes,
-                     kernel_size=3,
-                     stride=stride,
-                     padding=1,
-                     bias=False)
-
-
-class BasicBlock(nn.Module):
+class BasicBlock1d(nn.Module):
     expansion = 1
 
     def __init__(self, in_planes, planes, stride=1):
-        super(BasicBlock, self).__init__()
-        self.conv1 = conv3x3(in_planes, planes, stride)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = conv3x3(planes, planes)
-        self.bn2 = nn.BatchNorm2d(planes)
+        super(BasicBlock1d, self).__init__()
+        self.conv1 = nn.Conv1d(in_planes,
+                               planes,
+                               kernel_size=3,
+                               stride=stride,
+                               padding=1,
+                               bias=False)
+        self.bn1 = nn.BatchNorm1d(planes)
+        self.conv2 = nn.Conv1d(planes,
+                               planes,
+                               kernel_size=3,
+                               stride=1,
+                               padding=1,
+                               bias=False)
+        self.bn2 = nn.BatchNorm1d(planes)
 
         if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes,
+                nn.Conv1d(in_planes,
                           self.expansion * planes,
                           kernel_size=1,
                           stride=stride,
                           bias=False),
-                nn.BatchNorm2d(self.expansion * planes)
+                nn.BatchNorm1d(self.expansion * planes)
             )
         else:
             self.shortcut = None
@@ -45,34 +43,34 @@ class BasicBlock(nn.Module):
         return out
 
 
-class TransposeBasicBlock(nn.Module):
+class TransposeBasicBlock1d(nn.Module):
     expansion = 1
 
     def __init__(self, in_planes, planes, stride=1):
-        super(TransposeBasicBlock, self).__init__()
-        self.conv1 = nn.ConvTranspose2d(in_planes,
+        super(TransposeBasicBlock1d, self).__init__()
+        self.conv1 = nn.ConvTranspose1d(in_planes,
                                         planes,
                                         kernel_size=3,
                                         stride=stride,
                                         padding=1,
                                         bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.ConvTranspose2d(planes,
+        self.bn1 = nn.BatchNorm1d(planes)
+        self.conv2 = nn.ConvTranspose1d(planes,
                                         planes,
                                         kernel_size=3,
                                         stride=1,
                                         padding=1,
                                         bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm1d(planes)
 
         if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
-                nn.ConvTranspose2d(in_planes,
-                                   planes,
+                nn.ConvTranspose1d(in_planes,
+                                   self.expansion * planes,
                                    kernel_size=1,
                                    stride=stride,
                                    bias=False),
-                nn.BatchNorm2d(planes)
+                nn.BatchNorm1d(planes)
             )
         else:
             self.shortcut = None

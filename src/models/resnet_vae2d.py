@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from .base import BaseVAE
-from .resnet import BasicBlock, TransposeBasicBlock
+from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
 from torch import nn, Tensor
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
@@ -44,7 +44,7 @@ class ResNetVAE2d(BaseVAE):
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
-            modules.append(BasicBlock(in_features, h_dim))
+            modules.append(BasicBlock2d(in_features, h_dim))
             modules.append(nn.MaxPool2d((2, 1)))
             in_features = h_dim
         self.encoder = nn.Sequential(
@@ -79,7 +79,7 @@ class ResNetVAE2d(BaseVAE):
         modules = []
         in_features = hidden_dims[0]
         for h_dim in hidden_dims:
-            modules.append(TransposeBasicBlock(in_features, h_dim))
+            modules.append(TransposeBasicBlock2d(in_features, h_dim))
             in_features = h_dim
         self.decoder = nn.Sequential(
             *modules,
