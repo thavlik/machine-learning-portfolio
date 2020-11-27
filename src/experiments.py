@@ -51,7 +51,9 @@ experiments = {
 }
 
 
-def create_experiment(entrypoint: str, config: dict, dataset: dict):
+def create_experiment(entrypoint: str,
+                      config: dict,
+                      dataset: dict):
     if entrypoint not in experiments:
         raise ValueError(f'unknown entrypoint "{entrypoint}" '
                          f'valid options are {experiments}')
