@@ -5,7 +5,7 @@ from pytorch_lightning import Trainer
 import torch.backends.cudnn as cudnn
 import torch
 import numpy as np
-from models import ResNetVAE2d
+from models import models
 from vae import VAEExperiment
 from dataset import ReferenceDataset
 
@@ -32,9 +32,6 @@ def get_example_shape(dataset: dict):
 def vae(config: dict,
         dataset: dict):
     c, h, w = get_example_shape(dataset)
-    models = {
-        'ResNetVAE2d': ResNetVAE2d,
-    }
     exp_params = config['exp_params']
     model_name = config['model_params']['name']
     if model_name not in models:
