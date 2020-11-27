@@ -1,3 +1,4 @@
+import torch
 from torch import nn, Tensor
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
@@ -6,9 +7,11 @@ from .inception import InceptionV3
 
 class BaseVAE(nn.Module):
     def __init__(self,
+                 name: str,
                  latent_dim: int,
                  enable_fid: bool) -> None:
         super(BaseVAE, self).__init__()
+        self.name = name
         self.latent_dim = latent_dim
         self.enable_fid = enable_fid
         if enable_fid:
@@ -39,9 +42,7 @@ class BaseVAE(nn.Module):
         """
         z = torch.randn(num_samples,
                         self.latent_dim)
-
         z = z.to(current_device)
-
         samples = self.decode(z)
         return samples
 

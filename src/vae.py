@@ -28,7 +28,8 @@ class VAEExperiment(pl.LightningModule):
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
-        self.curr_device = real_img.device
+        self.curr_device = self.device
+        real_img = real_img.to(self.curr_device)
 
         results = self.forward(real_img, labels=labels)
         kld_weight = self.params['kld_weight'] * \
@@ -36,7 +37,8 @@ class VAEExperiment(pl.LightningModule):
         train_loss = self.model.loss_function(*results,
                                               optimizer_idx=optimizer_idx,
                                               batch_idx=batch_idx,
-                                              kld_weight=kld_weight)
+                                              kld_weight=kld_weight,
+                                              fid_weight=self.params.get('fid_weight', 0.0))
 
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
@@ -45,7 +47,8 @@ class VAEExperiment(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
-        self.curr_device = real_img.device
+        self.curr_device = self.device
+        real_img = real_img.to(self.curr_device)
 
         results = self.forward(real_img, labels=labels)
         kld_weight = self.params['kld_weight'] * \

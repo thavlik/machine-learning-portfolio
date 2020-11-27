@@ -1,2 +1,2 @@
-from .base import *
-from .basic_vae import *
+from .base import BaseVAE
+from .resnet_vae import ResNetVAE

@@ -1,19 +1,49 @@
 import yaml
 import argparse
-from pytorch_lightning.logging import TestTubeLogger
+from pytorch_lightning.loggers import TestTubeLogger
 from pytorch_lightning import Trainer
 import torch.backends.cudnn as cudnn
 import torch
 import numpy as np
-from models import BasicVAE
+from models import ResNetVAE
 from vae import VAEExperiment
+from dataset import ReferenceDataset
+
+dataset_dims = {
+    'cq500': (1, 512, 512),
+    'deeplesion': (1, 512, 512),
+    'rsna-intracranial': (1, 512, 512),
+    'trends-fmri': (53, 63, 52, 53),
+}
+
+
+def get_example_shape(dataset: dict):
+    loader = dataset['loader']
+    if loader == 'reference':
+        return ReferenceDataset(**dataset['params'])[0].shape
+    if loader == 'video':
+        params = dataset['training']
+        return (3, params['height'], params['width'])
+    if loader not in dataset_dims:
+        raise ValueError(f'unknown dataset "{loader}"')
+    return dataset_dims[loader]
 
 
 def vae(config: dict,
         dataset: dict):
+    c, h, w = get_example_shape(dataset)
+    models = {
+        'ResNetVAE': ResNetVAE,
+    }
     exp_params = config['exp_params']
-    model = BasicVAE(**config['model_params'],
-                     enable_fid='fid_weight' in exp_params)
+    model_name = config['model_params']['name']
+    if model_name not in models:
+        raise ValueError(f'unknown model "{model_name}"')
+    model = models[model_name](**config['model_params'],
+                               width=w,
+                               height=h,
+                               channels=c,
+                               enable_fid='fid_weight' in exp_params)
     return VAEExperiment(model,
                          params=exp_params,
                          dataset=dataset)
@@ -39,23 +69,19 @@ def experiment_main(config: dict,
         device = torch.device('cuda')
     else:
         device = torch.device('cpu')
-    fn = experiments.get(entrypoint, None)
-    assert fn != None, f"unknown entrypoint '{entrypoint}'"
-    experiment = fn(config, dataset).to(device)
+    if entrypoint not in experiments:
+        raise ValueError(f"unknown entrypoint '{entrypoint}'")
+    experiment = experiments[entrypoint](config, dataset).cuda()
     tt_logger = TestTubeLogger(
         save_dir=save_dir,
         name=config['logging_params']['name'],
         debug=False,
         create_git_tag=False,
     )
-    runner = Trainer(default_save_path=f"{tt_logger.save_dir}",
+    runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,
-                     logger=tt_logger,
-                     log_save_interval=100,
-                     train_percent_check=1.,
-                     val_percent_check=1.,
                      num_sanity_val_steps=5,
-                     early_stop_callback=False,
+                     logger=tt_logger,
                      **config['trainer_params'])
     print(f"======= Training {config['model_params']['name']} =======")
     runner.fit(experiment)
@@ -73,7 +99,7 @@ parser.add_argument('--dataset', '-d',
                     dest="dataset",
                     metavar='DATASET',
                     help='path to the dataset config file',
-                    default='../data/doom/single_frame.yaml')
+                    default='../data/rsna_intracranial.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',

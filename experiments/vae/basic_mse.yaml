@@ -1,19 +1,19 @@
-# Basic VAE trained on the dataset
 entrypoint: vae
 
 model_params:
-  name: 'BasicMSE'
-  latent_dim: 256
-  hidden_dims: [256, 512]
+  name: 'ResNetVAE'
+  latent_dim: 128
+  hidden_dims: [32, 64, 32]
 
 exp_params:
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
-  batch_size: 128
+  batch_size: 4
 
 trainer_params:
   max_epochs: 10000000
+  log_every_n_steps: 200
   check_val_every_n_epoch: 200
 
 logging_params:

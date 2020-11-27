@@ -1,8 +1,10 @@
 loader: rsna-intracranial
 
 training:
-  dcm_path: ${DATA_ROOT}/rsna-intracranial/stage_2_train
+  dcm_path: E:/rsna-intracranial/stage_2_train
+  s3_path: s3://rsna-intracranial/stage_2_train
 
 validation:
-  dcm_path: ${DATA_ROOT}/rsna-intracranial/stage_2_test
+  dcm_path: E:/rsna-intracranial/stage_2_test
+  s3_path: s3://rsna-intracranial/stage_2_test
 

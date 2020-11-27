@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.utils.data as data
 import pydicom
-from dicom_util import normalized_dicom_pixels
+from .dicom_util import normalized_dicom_pixels
 import boto3
 import tempfile
 
@@ -77,7 +77,7 @@ class RSNAIntracranialDataset(data.Dataset):
         path = os.path.join(self.dcm_path, file)
         if os.path.exists(path):
             ds = pydicom.dcmread(path, stop_before_pixels=False)
-            return normalized_dicom_pixels(ds)
+            return (normalized_dicom_pixels(ds), [])
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
         dir = os.path.dirname(path)
@@ -88,7 +88,7 @@ class RSNAIntracranialDataset(data.Dataset):
             obj.download_fileobj(f)
         ds = pydicom.dcmread(path, stop_before_pixels=False)
         data = normalized_dicom_pixels(ds)
-        return data
+        return (data, [])
 
     def __len__(self):
         return len(self.files)

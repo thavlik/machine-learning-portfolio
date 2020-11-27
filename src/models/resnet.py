@@ -68,11 +68,11 @@ class TransposeBasicBlock(nn.Module):
         if stride != 1 or in_planes != self.expansion * planes:
             self.shortcut = nn.Sequential(
                 nn.ConvTranspose2d(in_planes,
-                                   self.expansion * planes,
+                                   planes,
                                    kernel_size=1,
                                    stride=stride,
                                    bias=False),
-                nn.BatchNorm2d(self.expansion * planes)
+                nn.BatchNorm2d(planes)
             )
         else:
             self.shortcut = None

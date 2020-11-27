@@ -32,6 +32,6 @@ def normalized_dicom_pixels(ds):
     x = np.array(x, dtype='float32')
     x = x * slope + intercept
     x = torch.Tensor(x)
-    x = x.view(512, 512)
-    assert x.shape == torch.Size([512, 512]), f'got shape {ds.shape}'
+    x = x.view(1, 512, 512)
+    assert x.shape == torch.Size([1, 512, 512]), f'got shape {ds.shape}'
     return x
