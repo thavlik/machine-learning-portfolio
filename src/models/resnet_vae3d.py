@@ -11,7 +11,6 @@ from .inception import InceptionV3
 
 
 class ResNetVAE3d(BaseVAE):
-
     def __init__(self,
                  latent_dim: int,
                  hidden_dims: List[int],

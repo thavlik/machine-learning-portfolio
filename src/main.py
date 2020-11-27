@@ -10,8 +10,8 @@ from vae import VAEExperiment
 from dataset import ReferenceDataset
 
 dataset_dims = {
-    'eeg': (1, 8192),
-    'cq500': (1, 512, 512),
+    'eeg': (1, 8192),  # channels, length
+    'cq500': (1, 512, 512),  # channels, height, width
     'deeplesion': (1, 512, 512),
     'rsna-intracranial': (1, 512, 512),
     'trends-fmri': (53, 63, 52, 53),
