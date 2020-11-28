@@ -20,12 +20,10 @@ def experiment_main(config: dict,
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config, dataset).cuda()
-    tt_logger = TestTubeLogger(
-        save_dir=save_dir,
-        name=config['logging_params']['name'],
-        debug=False,
-        create_git_tag=False,
-    )
+    tt_logger = TestTubeLogger(save_dir=save_dir,
+                               name=config['logging_params']['name'],
+                               debug=False,
+                               create_git_tag=False)
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,
                      num_sanity_val_steps=5,
