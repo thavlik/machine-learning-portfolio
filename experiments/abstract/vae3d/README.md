@@ -9,3 +9,6 @@ Several derivatives VAE experiments are available in the separate yaml files.
 ## Compatible Datasets
 This experiment can be applied to the following datasets:
 - doom
+
+## Results
+(TODO: insert picture of validation results)

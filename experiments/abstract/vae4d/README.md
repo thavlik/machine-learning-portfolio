@@ -10,3 +10,5 @@ Several derivatives VAE experiments are available in the separate yaml files:
 This experiment can be applied to the following datasets:
 - [TReNDS Neuroimaging](https://www.kaggle.com/c/trends-assessment-prediction/)
 
+## Results
+(TODO: insert picture of validation results)

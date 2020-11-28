@@ -10,3 +10,6 @@ Several derivatives VAE experiments are available in the separate yaml files.
 ## Compatible Datasets
 This experiment can be applied to the following datasets:
 - [Grasp-and-Lift EEG Detection](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
+
+## Results
+(TODO: insert picture of validation results)

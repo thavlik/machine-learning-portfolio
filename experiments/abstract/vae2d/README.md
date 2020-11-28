@@ -13,3 +13,6 @@ This experiment can be applied to the following datasets:
 - [CQ500](http://headctstudy.qure.ai/dataset)
 - [DeepLesion](https://www.nih.gov/news-events/news-releases/
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html)
+
+## Results
+(TODO: insert picture of validation results)
