@@ -78,16 +78,19 @@ class VAEExperiment(pl.LightningModule):
     def sample_images(self):
         # Get sample reconstruction image
         plot = self.params['plot']
-        rows = plot['rows']
-        cols = plot['cols']
+        plot_params = plot['params']
+        rows = plot_params['rows']
+        cols = plot_params['cols']
         n = rows * cols
         recons = []
+        test_input = []
         for _ in range(n):
-            test_input, _ = next(iter(self.sample_dataloader))
-            test_input = test_input.to(self.curr_device)
-            x = self.model.generate(test_input, labels=[])
-            x = x.unsqueeze(0)
+            x, _ = next(iter(self.sample_dataloader))
+            x = x.to(self.curr_device)
+            test_input.append(x)
+            x = self.model.generate(x, labels=[])
             recons.append(x)
+        test_input = torch.cat(test_input, dim=0)
         recons = torch.cat(recons, dim=0)
         out_path = os.path.join(self.logger.save_dir,
                                 self.logger.name,
