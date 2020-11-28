@@ -45,12 +45,6 @@ def plot2d(orig: Tensor,
            imshow_args: dict = {}):
     rows = params['rows']
     cols = params['cols']
-    if 'thumbnail_size' in params:
-        thumbnail_width = params['thumbnail_size']
-        thumbnail_height = params['thumbnail_size']
-    else:
-        thumbnail_width = params.get('thumbnail_width', 256)
-        thumbnail_height = params.get('thumbnail_height', 256)
     scaling = params.get('scaling', 1.0)
     fig = plt.figure(figsize=(cols * scaling, rows * scaling),
                      dpi=params.get('dpi', 110))
@@ -61,7 +55,6 @@ def plot2d(orig: Tensor,
     i = 0
     n = min(rows * cols, orig.shape[0])
     to_pil = ToPILImage()
-    resize = Resize((thumbnail_height, thumbnail_width * 2))
     for _ in range(rows):
         done = False
         for _ in range(cols):
@@ -70,8 +63,6 @@ def plot2d(orig: Tensor,
                 break
             img = torch.cat([orig[i], recons[i]], dim=-1)
             img = to_pil(img)
-            if img.size != (thumbnail_height, thumbnail_width):
-                img = resize(img)
             ax = grid[i]
             ax.axis('off')
             ax.imshow(img, **imshow_args)
