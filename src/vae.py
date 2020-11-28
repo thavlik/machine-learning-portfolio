@@ -23,14 +23,12 @@ class VAEExperiment(pl.LightningModule):
 
     def __init__(self,
                  vae_model: BaseVAE,
-                 params: dict,
-                 dataset: dict) -> None:
+                 params: dict) -> None:
         super(VAEExperiment, self).__init__()
 
         self.model = vae_model
         self.params = params
         self.curr_device = None
-        self.dataset = dataset
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
@@ -125,8 +123,8 @@ class VAEExperiment(pl.LightningModule):
         optimizer.zero_grad()
 
     def train_dataloader(self):
-        dataset = get_dataset(self.dataset['loader'],
-                              self.dataset.get('training', {}))
+        dataset = get_dataset(self.params['data']['name'],
+                              self.params['data'].get('training', {}))
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
@@ -135,14 +133,14 @@ class VAEExperiment(pl.LightningModule):
                           num_workers=self.dataset.get('num_workers', 0))
 
     def val_dataloader(self):
-        dataset = get_dataset(self.dataset['loader'], {
-            **self.dataset.get('training', {}),
-            **self.dataset.get('validation', {}),
+        dataset = get_dataset(self.params['data']['name'], {
+            **self.params['data'].get('training', {}),
+            **self.params['data'].get('validation', {}),
         })
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,
                                             drop_last=True,
-                                            num_workers=self.dataset.get('num_workers', 0))
+                                            **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader

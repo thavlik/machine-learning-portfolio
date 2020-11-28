@@ -15,11 +15,10 @@ def load_config(path):
 
 
 def experiment_main(config: dict,
-                    dataset: dict,
                     save_dir: str):
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
-    experiment = create_experiment(config, dataset).cuda()
+    experiment = create_experiment(config).cuda()
     tt_logger = TestTubeLogger(save_dir=save_dir,
                                name=config['logging_params']['name'],
                                debug=False,
@@ -41,11 +40,6 @@ parser.add_argument('--config',  '-c',
                     metavar='FILE',
                     help='path to the experiment config file',
                     default='../experiments/vae2d/basic_mse.yaml')
-parser.add_argument('--dataset', '-d',
-                    dest="dataset",
-                    metavar='DATASET',
-                    help='path to the dataset config file',
-                    default='../data/rsna_intracranial.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',
@@ -54,9 +48,7 @@ parser.add_argument('--save-dir',
 
 args = parser.parse_args()
 config = load_config(args.config)
-dataset = load_config(args.dataset)
 cudnn.deterministic = True
 cudnn.benchmark = False
 experiment_main(config,
-                dataset=dataset,
                 save_dir=args.save_dir)

@@ -34,8 +34,9 @@ def plot2d(recons: Tensor,
     else:
         thumbnail_width = params.get('thumbnail_width', 256)
         thumbnail_height = params.get('thumbnail_height', 256)
-    scaling = params.get('scaling', 2.0)
-    fig = plt.figure(figsize=(cols * scaling, rows * scaling))
+    scaling = params.get('scaling', 1.0)
+    fig = plt.figure(figsize=(cols * scaling, rows * scaling),
+                     dpi=params.get('dpi', 110))
     grid = ImageGrid(fig,
                      111,  # similar to subplot(111)
                      nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
@@ -187,7 +188,7 @@ if __name__ == '__main__':
         thumbnail_size=512,
     ))
 
-    #plot2d_dcm(batch,
+    # plot2d_dcm(batch,
     #           batch,
     #           'plot.png',
     #           dict(rows=4,

@@ -10,6 +10,17 @@ exp_params:
     lr: 0.0002
     weight_decay: 0.00001
   batch_size: 128
+  data:
+    name: rsna-intracranial
+    loader:
+      num_workers: 4
+    training:
+      dcm_path: E:/rsna-intracranial/stage_2_train
+      s3_path: s3://rsna-intracranial/stage_2_train
+      download: false
+    validation:
+      dcm_path: E:/rsna-intracranial/stage_2_test
+      s3_path: s3://rsna-intracranial/stage_2_test
 
 trainer_params:
   max_epochs: 10000000

@@ -11,6 +11,17 @@ exp_params:
     weight_decay: 0.00001
   batch_size: 8
   warmup_steps: 512
+  data:
+    name: rsna-intracranial
+    loader:
+      num_workers: 4
+    training:
+      dcm_path: E:/rsna-intracranial/stage_2_train
+      s3_path: s3://rsna-intracranial/stage_2_train
+      download: false
+    validation:
+      dcm_path: E:/rsna-intracranial/stage_2_test
+      s3_path: s3://rsna-intracranial/stage_2_test
   plot:
     fn: 'dcm'
     params:
@@ -23,6 +34,6 @@ trainer_params:
   check_val_every_n_epoch: 1
 
 logging_params:
-  name: "VAE2d_BasicMSE"
+  name: "RSNA_ResNetVAE2d_BasicMSE"
 
 manual_seed: 1498
