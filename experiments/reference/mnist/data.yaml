@@ -6,3 +6,4 @@ exp_params:
       params:
         root: E:/mnist
         download: true
+  batch_size: 64

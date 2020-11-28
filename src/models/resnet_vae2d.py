@@ -9,6 +9,19 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
 
+pool_fn = {
+    'max': nn.MaxPool2d,
+    'min': nn.MaxPool2d,
+    'avg': nn.AvgPool2d,
+}
+
+
+def get_pool_fn(name: str) -> nn.Module:
+    if name not in pool_fn:
+        raise ValueError(f'Unknown pool function "{name}", '
+                         f'valid options are {pool_fn}')
+    return pool_fn[name]
+
 
 class ResNetVAE2d(BaseVAE):
     def __init__(self,
@@ -20,6 +33,7 @@ class ResNetVAE2d(BaseVAE):
                  channels: int = 3,
                  output_activation: str = 'sigmoid',
                  enable_fid: bool = False,
+                 pooling: str = None,
                  fid_blocks: List[int] = [2048]) -> None:
         super(ResNetVAE2d, self).__init__(latent_dim=latent_dim)
         self.width = width
@@ -37,20 +51,27 @@ class ResNetVAE2d(BaseVAE):
                          for i in fid_blocks]
             self.inception = InceptionV3(block_idx)
 
-        # Encoder
         modules = []
         in_features = channels
+        if pooling != None:
+            pool_fn = get_pool_fn(pooling)
         for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features,
                                         h_dim))
-            #modules.append(nn.MaxPool2d(2))
+            if pooling != None:
+                modules.append(pool_fn(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * height 
+        in_features = hidden_dims[-1] * width * height
+        if pooling != None:
+            pooling /= 4**len(hidden_dims)
+            if abs(in_features - ceil(in_features)) > 0:
+                raise ValueError('noninteger number of features')
+            in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),

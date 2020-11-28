@@ -1,3 +1,6 @@
+model_params:
+  pooling: max
+  
 exp_params:
   data:
     name: rsna-intracranial
