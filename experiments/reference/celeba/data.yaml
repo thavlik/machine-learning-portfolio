@@ -1,0 +1,6 @@
+exp_params:
+  data:
+    name: reference
+    params:
+      name: CelebA
+      params: {}

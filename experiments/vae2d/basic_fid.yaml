@@ -1,7 +1,0 @@
-base: experiments/vae2d/basic_mse.yaml
-
-exp_params:
-  fid_weight: 1.0
-
-
-

@@ -1,0 +1,3 @@
+base:
+  - experiments/vae2d/mse.yaml
+  - experiments/reference/celeba/data.yaml
