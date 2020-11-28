@@ -197,57 +197,51 @@ def fmri_prob_atlas(orig: Tensor,
     i = 0
     n = min(rows * cols, orig.shape[0])
 
-    try:
-        # Save the individual probability atlases to separate png files
-        for _ in range(rows):
-            done = False
-            for _ in range(cols):
-                if i >= n:
-                    done = True
-                    break
-                save_prob_atlas(orig[i], f'{out_path}_{i}_orig.tmp.png')
-                save_prob_atlas(recons[i], f'{out_path}_{i}_recons.tmp.png')
-                i += 1
-            if done:
+    # Save the individual probability atlases to separate png files
+    for _ in range(rows):
+        done = False
+        for _ in range(cols):
+            if i >= n:
+                done = True
                 break
+            save_prob_atlas(orig[i], f'{out_path}_{i}_orig.tmp.png')
+            save_prob_atlas(recons[i], f'{out_path}_{i}_recons.tmp.png')
+            i += 1
+        if done:
+            break
 
-        # Arrange all of the png files into a grid
-        orig = []
-        recons = []
-        to_tensor = ToTensor()
+    # Arrange all of the png files into a grid
+    orig = []
+    recons = []
+    to_tensor = ToTensor()
 
-        def load_png(path):
-            return to_tensor(Image.open(path)).unsqueeze(dim=0)
+    def tmpimg_to_tensor(path):
+        img = to_tensor(Image.open(path)).unsqueeze(dim=0)
+        os.remove(path)
+        return img
 
-        i = 0
-        for _ in range(rows):
-            done = False
-            for _ in range(cols):
-                if i >= n:
-                    done = True
-                    break
-                orig.append(load_png(f'{out_path}_{i}_orig.tmp.png'))
-                recons.append(load_png(f'{out_path}_{i}_recons.tmp.png'))
-                i += 1
-            if done:
+    i = 0
+    for _ in range(rows):
+        done = False
+        for _ in range(cols):
+            if i >= n:
+                done = True
                 break
+            orig.append(tmpimg_to_tensor(f'{out_path}_{i}_orig.tmp.png'))
+            recons.append(tmpimg_to_tensor(f'{out_path}_{i}_recons.tmp.png'))
+            i += 1
+        if done:
+            break
 
-        orig = torch.cat(orig, dim=0)
-        recons = torch.cat(recons, dim=0)
-        plot2d(orig=orig,
-               recons=recons,
-               out_path=out_path,
-               rows=rows,
-               cols=cols,
-               display=display,
-               **kwargs)
-    finally:
-        try:
-            for i in range(n):
-                os.remove(f'{out_path}_{i}_orig.tmp.png')
-                os.remove(f'{out_path}_{i}_recons.tmp.png')
-        except:
-            pass
+    orig = torch.cat(orig, dim=0)
+    recons = torch.cat(recons, dim=0)
+    plot2d(orig=orig,
+           recons=recons,
+           out_path=out_path,
+           rows=rows,
+           cols=cols,
+           display=display,
+           **kwargs)
 
 
 def fmri_stat_map_video(orig: Tensor,
@@ -259,11 +253,12 @@ def fmri_stat_map_video(orig: Tensor,
                         mask_path: str,
                         rows: int,
                         cols: int,
-                        fps: int = 1):
-    """
+                        fps: int = 1,
+                        format: str = 'gif'):
     mask = nl.image.load_img(mask_path)
     num_frames = orig.shape[1]
     n = min(orig.shape[0], rows * cols)
+
     def plot_frame(x, out_path):
         x = nl.image.new_img_like(mask,
                                   x.numpy(),
@@ -298,7 +293,7 @@ def fmri_stat_map_video(orig: Tensor,
                                f'{out_path}_{i}_{frame}_orig.tmp.png')
                 r = o
                 # r = plot_frame(recons[i, :, :, :, frame],
-                #               f'{out_path}_{i}_{frame}_recons.tmp.png')
+                #              f'{out_path}_{i}_{frame}_recons.tmp.png')
                 f = torch.cat([o, r], dim=-2)
                 frame_cols.append(f)
                 i += 1
@@ -309,24 +304,34 @@ def fmri_stat_map_video(orig: Tensor,
         frame_rows = torch.cat(frame_rows, dim=-2)
         ToPILImage()(frame_rows).save(f'{out_path}_{frame}.tmp.png')
         frames.append(frame_rows.unsqueeze(0))
-    """
-    if os.name == 'nt':
-        # Use WSL Debian
-        # TODO: think about getting ffmpeg working natively on windows
-        # If you are running this code and encounter a problem, please
-        # open an issue.
-        cmd = f'ffmpeg -y -framerate {fps} -i $(wslpath {out_path}_%d.tmp.png) -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 $(wslpath {out_path}.gif)'
-        proc = subprocess.run(['debian.exe', 'run', cmd], capture_output=True)
-    else:
-        cmd = f'ffmpeg -y -framerate {fps} -i {out_path}_%d.tmp.png -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {out_path}.gif'
+
+    def path(p):
+        if os.name == 'nt':
+            return f'$(wslpath {p})'
+        return p
+
+    def run(cmd):
+        if os.name == 'nt':
+            return subprocess.run(['debian.exe', 'run', cmd], capture_output=True)
         proc = subprocess.run(['sh', '-c', cmd], capture_output=True)
-    if proc.returncode != 0:
-        msg = f'expected exit code 0 from ffmpeg, got exit code {proc.returncode}: {proc.stdout.decode("unicode_escape")}'
-        if proc.stderr:
-            msg += ' ' + proc.stderr.decode('unicode_escape')
-        raise ValueError(msg)
-    #for i in range(num_frames):
-    #    os.remove(f'{out_path}_{i}.tmp.png')
+        if proc.returncode != 0:
+            msg = f'expected exit code 0 from ffmpeg, got exit code {proc.returncode}: {proc.stdout.decode("unicode_escape")}'
+            if proc.stderr:
+                msg += ' ' + proc.stderr.decode('unicode_escape')
+            raise ValueError(msg)
+
+    in_path = path(f'{out_path}_%d.tmp.png')
+    webm_path = path(f'{out_path}.webm')
+    run(f'ffmpeg -y -framerate {fps} -i {in_path} -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {webm_path}')
+    if format == 'gif':
+        gif_path = path(f'{out_path}.gif')
+        run(f'ffmpeg -y -i {webm_path} {gif_path}')
+        os.remove(f'{out_path}.webm')
+    elif format != 'webm':
+        raise ValueError('unknown format')
+    for i in range(num_frames):
+        os.remove(f'{out_path}_{i}.tmp.png')
+
 
 plot_fn = {
     'timeseries': timeseries,
@@ -373,8 +378,8 @@ if __name__ == '__main__':
         out_path='test',
         bg_img='E:/trends-fmri/ch2better.nii',
         mask_path='E:/trends-fmri/fMRI_mask.nii',
-        rows=4,
-        cols=4,
+        rows=1,
+        cols=1,
         scaling=3.0,
         dpi=330,
         suptitle=dict(y=0.91),
