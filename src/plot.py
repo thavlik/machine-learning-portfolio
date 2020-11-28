@@ -10,6 +10,7 @@ from torchvision.io import write_video
 import nilearn as nl
 import nilearn.plotting as nlplt
 from dataset.trends_fmri import load_subject
+from PIL import Image
 
 
 def plot_title(template: str,
@@ -48,6 +49,7 @@ def plot2d(orig: Tensor,
            out_path: str,
            rows: int,
            cols: int,
+           display: str = 'horizontal',
            scaling: float = 1.0,
            dpi: int = 110,
            title: str = None,
@@ -62,13 +64,18 @@ def plot2d(orig: Tensor,
     i = 0
     n = min(rows * cols, orig.shape[0])
     to_pil = ToPILImage()
+    displays = {
+        'horizontal': -1,
+        'vertical': -2,
+    }
+    dim = displays[display]
     for _ in range(rows):
         done = False
         for _ in range(cols):
             if i >= n:
                 done = True
                 break
-            img = torch.cat([orig[i], recons[i]], dim=-1)
+            img = torch.cat([orig[i], recons[i]], dim=dim)
             img = to_pil(img)
             ax = grid[i]
             ax.axis('off')
@@ -162,39 +169,84 @@ def plot_video(orig: Tensor,
 
 def fmri_prob_atlas(orig: Tensor,
                     recons: Tensor,
-                    model_name: str,
-                    epoch: int,
                     out_path: str,
                     rows: int,
                     cols: int,
                     bg_img: str,
                     mask_path: str,
+                    display: str = 'vertical',
                     view_type: str = 'filled_contours',
                     draw_cross: bool = False,
-                    threshold='auto'):
+                    threshold: str = 'auto',
+                    **kwargs):
+    mask = nl.image.load_img(mask_path)
+
+    def save_prob_atlas(x, out_path):
+        img = nl.image.new_img_like(mask,
+                                    x.numpy(),
+                                    affine=mask.affine,
+                                    copy_header=True)
+        nlplt.plot_prob_atlas(img,
+                              bg_img=bg_img,
+                              view_type=view_type,
+                              draw_cross=draw_cross,
+                              threshold=threshold)
+        plt.savefig(out_path)
+
     i = 0
     n = min(rows * cols, orig.shape[0])
-    mask = nl.image.load_img(mask_path)
-    for _ in range(rows):
-        done = False
-        for _ in range(cols):
-            if i >= n:
-                done = True
-                break
-            img = nl.image.new_img_like(mask,
-                                        orig[i].numpy(),
-                                        affine=mask.affine,
-                                        copy_header=True)
-            nlplt.plot_prob_atlas(img,
-                                  bg_img=bg_img,
-                                  view_type=view_type,
-                                  draw_cross=draw_cross,
-                                  threshold=threshold)
-            plt.savefig(out_path + f'_{i}.png')
-            i += 1
-        if done:
-            break
 
+    try:
+        # Save the individual probability atlases to separate png files
+        for _ in range(rows):
+            done = False
+            for _ in range(cols):
+                if i >= n:
+                    done = True
+                    break
+                save_prob_atlas(orig[i], out_path + f'_{i}_orig.png')
+                save_prob_atlas(recons[i], out_path + f'_{i}_recons.png')
+                i += 1
+            if done:
+                break
+
+        # Arrange all of the png files into a grid
+        orig = []
+        recons = []
+        to_tensor = ToTensor()
+
+        def load_png(path):
+            return to_tensor(Image.open(path)).unsqueeze(dim=0)
+
+        i = 0
+        for _ in range(rows):
+            done = False
+            for _ in range(cols):
+                if i >= n:
+                    done = True
+                    break
+                orig.append(load_png(out_path + f'_{i}_orig.png'))
+                recons.append(load_png(out_path + f'_{i}_orig.png'))
+                i += 1
+            if done:
+                break
+
+        orig = torch.cat(orig, dim=0)
+        recons = torch.cat(recons, dim=0)
+        plot2d(orig=orig,
+               recons=recons,
+               out_path=out_path,
+               rows=rows,
+               cols=cols,
+               display=display,
+               **kwargs)
+    finally:
+        try:
+            for i in range(n):
+                os.remove(out_path + f'_{i}_orig.png')
+                os.remove(out_path + f'_{i}_recons.png')
+        except:
+            pass
 
 def fmri_stat_map_video(orig: Tensor,
                         recons: Tensor,
@@ -250,8 +302,13 @@ if __name__ == '__main__':
         mask_path='E:/trends-fmri/fMRI_mask.nii',
         rows=4,
         cols=4,
+        scaling=3.0,
+        dpi=330,
+        suptitle=dict(y=0.91),
+        title='fMRI Original (top) vs. Reconstruction (bottom)',
     )
 
+    """
     ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
                                  s3_path='s3://rsna-intracranial/stage_2_train',
                                  download=False)
@@ -276,7 +333,7 @@ if __name__ == '__main__':
         fps=fps,
         thumbnail_size=512,
     ))
-
+    """
     # plot2d_dcm(batch,
     #           batch,
     #           'plot.png',
