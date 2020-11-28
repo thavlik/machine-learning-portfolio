@@ -13,11 +13,11 @@ These experiments showcase unsupervised modeling tasks on a variety of both medi
 
 ### Supervised
 These experiments make use of ground truth provided with the data. Ground truth for medical imagery typically constitutes that of an attending physician.
-- [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/)
-- [CQ500](experiments/cq500/)
-- [TReNDS fMRI](experiments/trends-fmri/)
-- [DeepLesion](experiments/deeplesion/)
-- [Grasp-and-Lift EEG Detectiton](experiments/eeg/)
+- [RSNA Intracranial Hemorrhage Prediction](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection)
+- [CQ500](http://headctstudy.qure.ai/dataset)
+- [TReNDS fMRI](https://www.kaggle.com/c/trends-assessment-prediction/data)
+- [DeepLesion](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images)
+- [Grasp-and-Lift EEG Detectiton](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html), for non-medical reference
 
 ## Relevant Literature
