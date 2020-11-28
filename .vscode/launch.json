@@ -21,6 +21,15 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Python: main.py MNIST",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--config", "experiments/reference/mnist/vae_fid.yaml"]
+        },
+        {
             "name": "Python: compiler.py",
             "type": "python",
             "request": "launch",

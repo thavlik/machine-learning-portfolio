@@ -8,8 +8,22 @@ from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.io import write_video
 
 
+def plot_title(template: str,
+               model: str,
+               epoch: int):
+    replacements = {
+        '${model}': model,
+        '${epoch}': epoch,
+    }
+    interpolated = template
+    for k, v in replacements.items():
+        interpolated = interpolated.replace(k, str(v))
+    return interpolated
+
+
 def timeseries(orig: Tensor,
                recons: Tensor,
+               model_name: str,
                epoch: int,
                out_path: str,
                params: dict):
@@ -24,6 +38,7 @@ def timeseries(orig: Tensor,
 
 def plot2d(orig: Tensor,
            recons: Tensor,
+           model_name: str,
            epoch: int,
            out_path: str,
            params: dict,
@@ -63,18 +78,24 @@ def plot2d(orig: Tensor,
             i += 1
         if done:
             break
-    fig.suptitle(f'Epoch {epoch}', **params.get('suptitle', {}))
+    if 'title' in params:
+        interpolated = plot_title(params['title'],
+                                  model_name,
+                                  epoch)
+        fig.suptitle(interpolated, **params.get('suptitle', {}))
     fig.tight_layout()
     fig.savefig(out_path, bbox_inches='tight')
 
 
 def plot2d_dcm(orig: Tensor,
                recons: Tensor,
+               model_name: str,
                epoch: int,
                out_path: str,
                params: dict):
     return plot2d(orig,
                   recons,
+                  model_name,
                   epoch,
                   out_path,
                   params,
@@ -83,6 +104,7 @@ def plot2d_dcm(orig: Tensor,
 
 def plot_video(orig: Tensor,
                recons: Tensor,
+               model_name: str,
                epoch: int,
                out_path: str,
                params: dict):

@@ -7,3 +7,6 @@ exp_params:
         root: E:/mnist
         download: true
   batch_size: 64
+  plot:
+    params:
+      title: "${model}, MNIST (Epoch ${epoch})"

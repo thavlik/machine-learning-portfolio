@@ -1,6 +1,7 @@
 experiment: vae2d
 
 model_params:
+  arch: 'ResNetVAE2d'
   name: 'ResNetVAE2d'
   latent_dim: 256
   hidden_dims: [64, 128, 128, 64]
@@ -14,6 +15,7 @@ exp_params:
   plot:
     fn: 'plot2d'
     params:
+      title: "Epoch ${epoch}"
       scaling: 1.0
       rows: 4
       cols: 4

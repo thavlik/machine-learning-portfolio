@@ -12,6 +12,7 @@ from .inception import InceptionV3
 
 class ResNetVAE3d(BaseVAE):
     def __init__(self,
+                 name: str,
                  latent_dim: int,
                  hidden_dims: List[int],
                  dropout: float = 0.4,
@@ -21,7 +22,8 @@ class ResNetVAE3d(BaseVAE):
                  channels: int = 3,
                  enable_fid: bool = False,
                  output_activation: str = 'sigmoid') -> None:
-        super(ResNetVAE3d, self).__init__(latent_dim=latent_dim)
+        super(ResNetVAE3d, self).__init__(name=name,
+                                          latent_dim=latent_dim)
         self.width = width
         self.height = height
         self.depth = depth
@@ -40,7 +42,8 @@ class ResNetVAE3d(BaseVAE):
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * height * depth // 2**len(hidden_dims)
+        in_features = hidden_dims[-1] * width * \
+            height * depth // 2**len(hidden_dims)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),
@@ -90,5 +93,6 @@ class ResNetVAE3d(BaseVAE):
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[0], 2, 2, 2)
         x = self.decoder(x)
-        x = x.view(x.shape[0], self.channels, self.depth, self.height, self.width)
+        x = x.view(x.shape[0], self.channels,
+                   self.depth, self.height, self.width)
         return x
