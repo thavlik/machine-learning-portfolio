@@ -15,18 +15,18 @@ mask_niimg = ds.mask
 
 subject_niimg = load_subject(subject_filename, mask_niimg)
 
-grid_size = int(np.ceil(np.sqrt(subject_niimg.shape[0])))
-fig, axes = plt.subplots(grid_size, grid_size,
-                         figsize=(grid_size*10, grid_size*10))
-[axi.set_axis_off() for axi in axes.ravel()]
-row = -1
-for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
-    col = i % grid_size
-    if col == 0:
-        row += 1
-    nlplt.plot_stat_map(cur_img, bg_img=smri_filename, title="IC %d" %
-                        i, axes=axes[row, col], threshold=3, colorbar=False)
-plt.show()
+#grid_size = int(np.ceil(np.sqrt(subject_niimg.shape[0])))
+#fig, axes = plt.subplots(grid_size, grid_size,
+#                         figsize=(grid_size*10, grid_size*10))
+#[axi.set_axis_off() for axi in axes.ravel()]
+#row = -1
+#for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
+#    col = i % grid_size
+#    if col == 0:
+#        row += 1
+#    nlplt.plot_stat_map(cur_img, bg_img=smri_filename, title="IC %d" %
+#                        i, axes=axes[row, col], threshold=3, colorbar=False)
+#plt.show()
 
 print("Image shape is %s" % (str(subject_niimg.shape)))
 num_components = subject_niimg.shape[-1]

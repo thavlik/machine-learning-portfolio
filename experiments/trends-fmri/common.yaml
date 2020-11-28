@@ -1,0 +1,22 @@
+model_params:
+  pooling: max
+  
+exp_params:
+  data:
+    name: trends-fmri
+    loader:
+      num_workers: 0
+      drop_last: true
+    training:
+      path: E:/trends-fmri/train
+    validation:
+      path: E:/trends-fmri/test
+  plot:
+  - fn: fmri_prob_atlas
+    params:
+      title: "${model}, RSNA Intracranial Hemorrhage CT Slices (Epoch ${epoch})"
+      scaling: 2.0
+      suptitle:
+        y: 0.78
+  - fn: fmri_stat_map_video
+    params: {}

@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from torch import Tensor
 from plotly.subplots import make_subplots
@@ -6,6 +7,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.io import write_video
+import nilearn as nl
+import nilearn.plotting as nlplt
 
 
 def plot_title(template: str,
@@ -168,10 +171,41 @@ def plot_video(orig: Tensor,
     write_video(out_path, video_array, fps)
 
 
+def fmri_prob_atlas(orig: Tensor,
+                    recons: Tensor,
+                    model_name: str,
+                    epoch: int,
+                    out_path: str,
+                    params: dict):
+    smri_filename = params['smri_filename']
+    raise NotImplementedError
+
+
+def fmri_stat_map_video(orig: Tensor,
+                        recons: Tensor,
+                        model_name: str,
+                        epoch: int,
+                        out_path: str,
+                        params: dict):
+    raise NotImplementedError
+    smri_filename = params['smri_filename']
+    for o, r in zip(orig, recons):
+        o = nl.image.iter_img(o)
+        r = nl.image.iter_img(r)
+        for i, (o_img, r_img) in enumerate(zip(o, r)):
+            nlplt.plot_stat_map(o_img,
+                                bg_img=smri_filename,
+                                axes=axes[row, col],
+                                threshold=3,
+                                colorbar=False)
+
+
 plot_fn = {
     'timeseries': timeseries,
     'plot2d': plot2d,
     'dcm': plot2d_dcm,
+    'fmri_prob_atlas': fmri_prob_atlas,
+    'fmri_stat_map_video': fmri_stat_map_video,
     'video': plot_video,
 }
 

@@ -30,6 +30,11 @@ class VAEExperiment(pl.LightningModule):
         self.params = params
         self.curr_device = None
 
+        plots = self.params['plot']
+        if type(plots) is not list:
+            plots = [plots]
+        self.plots = plots
+
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
 
@@ -76,41 +81,31 @@ class VAEExperiment(pl.LightningModule):
         self.sample_images()
 
     def sample_images(self):
-        # Get sample reconstruction image
-        plot = self.params['plot']
-        plot_params = plot['params']
-        rows = plot_params['rows']
-        cols = plot_params['cols']
-        n = rows * cols
-        test_input = []
-        recons = []
-        # Sample as many batches as necessary to fill the grid.
-        # This ensures we can fill the grid even when batch
-        # sizes are very small.
-        while len(test_input) < n:
-            batch, _ = next(iter(self.sample_dataloader))
-            batch = batch.to(self.curr_device)
-            batch = batch[:min(n-len(test_input), n)]
+        for plot, val_indices in zip(self.plots, self.val_indices):
+            test_input = []
+            recons = []
+            batch = torch.cat([self.sample_dataloader.dataset[i][0].unsqueeze(0)
+                               for i in val_indices], dim=0).to(self.curr_device)
             for x in batch:
                 x = x.unsqueeze(0)
                 test_input.append(x)
                 x = self.model.generate(x, labels=[])
                 recons.append(x)
-        test_input = torch.cat(test_input, dim=0)
-        recons = torch.cat(recons, dim=0)
-        out_path = os.path.join(self.logger.save_dir,
-                                self.logger.name,
-                                f"version_{self.logger.version}",
-                                f"recons_{self.logger.name}_{self.current_epoch}.png")
-        orig = test_input.data.cpu()
-        recons = recons.data.cpu()
-        fn = get_plot_fn(plot['fn'])
-        fn(orig,
-           recons,
-           self.model.name,
-           self.current_epoch,
-           out_path,
-           plot['params'])
+            test_input = torch.cat(test_input, dim=0)
+            recons = torch.cat(recons, dim=0)
+            out_path = os.path.join(self.logger.save_dir,
+                                    self.logger.name,
+                                    f"version_{self.logger.version}",
+                                    f"recons_{self.logger.name}_{self.current_epoch}.png")
+            orig = test_input.data.cpu()
+            recons = recons.data.cpu()
+            fn = get_plot_fn(plot['fn'])
+            fn(orig,
+               recons,
+               self.model.name,
+               self.current_epoch,
+               out_path,
+               plot['params'])
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
@@ -162,4 +157,9 @@ class VAEExperiment(pl.LightningModule):
                                             shuffle=False,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
+        n = len(dataset)
+        self.val_indices = [torch.randint(low=0,
+                                          high=n,
+                                          size=(plot['batch_size'], 1)).squeeze()
+                            for plot in self.plots]
         return self.sample_dataloader
