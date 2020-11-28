@@ -1,6 +1,6 @@
 base:
   - experiments/abstract/vae2d/fid.yaml
-  - experiments/rsna-intracranial/rsna_dataset.yaml
+  - experiments/rsna-intracranial/dataset.yaml
 
 logging_params:
   name: 'RSNA_ResNetVAE2d_BasicFID'
