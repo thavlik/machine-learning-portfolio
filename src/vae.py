@@ -112,7 +112,7 @@ class VAEExperiment(pl.LightningModule):
     ) -> None:
         # warm up lr, linear ramp
         warmup_steps = self.params.get('warmup_steps', 0)
-        if warmup_steps > 0 and self.trainer.global_step < self.warmup_steps:
+        if warmup_steps > 0 and self.trainer.global_step < warmup_steps:
             lr_scale = min(1.0, float(
                 self.trainer.global_step + 1) / float(warmup_steps))
             lr = lr_scale * self.params['optimizer']['lr']
