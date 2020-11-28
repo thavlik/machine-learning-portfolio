@@ -8,10 +8,10 @@ from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.io import write_video
 
 
-def plot1d(recons: Tensor,
-           orig: Tensor,
-           out_path: str,
-           params: dict):
+def timeseries(recons: Tensor,
+               orig: Tensor,
+               out_path: str,
+               params: dict):
     rows = params['rows']
     cols = params['cols']
     fig = make_subplots(rows=rows, cols=cols)
@@ -148,7 +148,7 @@ def plot_video(recons: Tensor,
 
 
 plot_fn = {
-    'plot1d': plot2d,
+    'timeseries': timeseries,
     'plot2d': plot2d,
     'dcm': plot2d_dcm,
     'video': plot_video,

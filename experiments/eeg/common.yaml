@@ -1,0 +1,9 @@
+exp_params:
+  data:
+    name: eeg
+    loader:
+      num_workers: 0
+      drop_last: true
+    training: {}
+  plot:
+    fn: timeseries
