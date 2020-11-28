@@ -1,4 +1,4 @@
-entrypoint: vae2d
+experiment: vae2d
 
 model_params:
   name: 'ResNetVAE2d'
