@@ -6,10 +6,10 @@ This repository was designed to showcase well-designed project structure. Config
 
 ### Unsupervised
 These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets.
-- [1D Variational Autoencoder](experiments/abstract/vae1d/README.md)
-- [2D Variational Autoencoder](experiments/abstract/vae2d/README.md)
-- [3D Variational Autoencoder](experiments/abstract/vae3d/README.md)
-- [4D Variational Autoencoder](experiments/abstract/vae4d/README.md)
+- [1D Variational Autoencoder](experiments/abstract/vae1d/README.md), used for time series
+- [2D Variational Autoencoder](experiments/abstract/vae2d/README.md), used for imagery
+- [3D Variational Autoencoder](experiments/abstract/vae3d/README.md), used for 3D imaging and video
+- [4D Variational Autoencoder](experiments/abstract/vae4d/README.md), used for fMRI
 
 ### Supervised
 These experiments make use of ground truth provided with the data. Ground truth for medical imagery typically constitutes that of an attending physician.
