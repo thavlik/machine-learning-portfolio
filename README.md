@@ -5,20 +5,24 @@ This is a repository of my personal machine learning projects.
 This repository was designed to showcase well-designed project structure. Configurations are defined in yaml files, which can be composed via the `base` directive to conveniently form derivative experiments with minimal boilerplate.
 
 ### Unsupervised
-These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets.
+These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Unsupervised pretraining confers an exponential boost in data efficiency on relevant supervised tasks [2][3], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
 - [1D Variational Autoencoder](experiments/abstract/vae1d/README.md), used for time series
 - [2D Variational Autoencoder](experiments/abstract/vae2d/README.md), used for imagery
-- [3D Variational Autoencoder](experiments/abstract/vae3d/README.md), used for 3D imaging and video
+- [3D Variational Autoencoder](experiments/abstract/vae3d/README.md), used for video and 3D imaging
 - [4D Variational Autoencoder](experiments/abstract/vae4d/README.md), used for fMRI
 
 ### Supervised
-These experiments make use of ground truth provided with the data. Ground truth for medical imagery typically constitutes that of an attending physician.
+These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes that of an attending physician.
 - [RSNA Intracranial Hemorrhage Prediction](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection)
 - [CQ500](http://headctstudy.qure.ai/dataset)
 - [TReNDS fMRI](https://www.kaggle.com/c/trends-assessment-prediction/data)
 - [DeepLesion](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images)
-- [Grasp-and-Lift EEG Detectiton](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
+- [Grasp-and-Lift EEG Detection](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html), for non-medical reference
+  - CelebA
+  - MNIST
+  - Fashion-MNIST
+  - etc...
 
 ## Relevant Literature
 Many of the ideas implemented in this repository were first detailed in the following papers:
