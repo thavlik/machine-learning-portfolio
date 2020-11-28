@@ -46,13 +46,15 @@ def plot2d(orig: Tensor,
            model_name: str,
            epoch: int,
            out_path: str,
-           params: dict,
+           rows: int,
+           cols: int,
+           scaling: float = 1.0,
+           dpi: int = 110,
+           title: str = None,
+           suptitle: dict = {},
            imshow_args: dict = {}):
-    rows = params['rows']
-    cols = params['cols']
-    scaling = params.get('scaling', 1.0)
     fig = plt.figure(figsize=(cols * scaling, rows * scaling),
-                     dpi=params.get('dpi', 110))
+                     dpi=dpi)
     grid = ImageGrid(fig,
                      111,  # similar to subplot(111)
                      nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
@@ -74,11 +76,11 @@ def plot2d(orig: Tensor,
             i += 1
         if done:
             break
-    if 'title' in params:
-        interpolated = plot_title(params['title'],
+    if title != None:
+        interpolated = plot_title(title,
                                   model_name,
                                   epoch)
-        fig.suptitle(interpolated, **params.get('suptitle', {}))
+        fig.suptitle(interpolated, **suptitle)
     fig.tight_layout()
     fig.savefig(out_path + '.png', bbox_inches='tight')
 
