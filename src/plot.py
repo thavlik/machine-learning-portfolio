@@ -204,8 +204,8 @@ def fmri_prob_atlas(orig: Tensor,
                 if i >= n:
                     done = True
                     break
-                save_prob_atlas(orig[i], out_path + f'_{i}_orig.png')
-                save_prob_atlas(recons[i], out_path + f'_{i}_recons.png')
+                save_prob_atlas(orig[i], f'{out_path}_{i}_orig.tmp.png')
+                save_prob_atlas(recons[i], f'{out_path}_{i}_recons.tmp.png')
                 i += 1
             if done:
                 break
@@ -225,8 +225,8 @@ def fmri_prob_atlas(orig: Tensor,
                 if i >= n:
                     done = True
                     break
-                orig.append(load_png(out_path + f'_{i}_orig.png'))
-                recons.append(load_png(out_path + f'_{i}_orig.png'))
+                orig.append(load_png(f'{out_path}_{i}_orig.tmp.png'))
+                recons.append(load_png(f'{out_path}_{i}_recons.tmp.png'))
                 i += 1
             if done:
                 break
@@ -243,8 +243,8 @@ def fmri_prob_atlas(orig: Tensor,
     finally:
         try:
             for i in range(n):
-                os.remove(out_path + f'_{i}_orig.png')
-                os.remove(out_path + f'_{i}_recons.png')
+                os.remove(f'{out_path}_{i}_orig.tmp.png')
+                os.remove(f'{out_path}_{i}_recons.tmp.png')
         except:
             pass
 
@@ -261,6 +261,18 @@ def fmri_stat_map_video(orig: Tensor,
     mask = nl.image.load_img(mask_path)
     num_frames = orig.shape[1]
     n = min(orig.shape[0], rows * cols)
+
+    def plot_frame(x, out_path):
+        x = nl.image.new_img_like(mask,
+                                  x.numpy(),
+                                  affine=mask.affine,
+                                  copy_header=True)
+        nlplt.plot_stat_map(x,
+                            bg_img=bg_img,
+                            threshold=3,
+                            colorbar=False,
+                            output_file=out_path)
+
     for frame in range(num_frames):
         i = 0
         for _ in range(rows):
@@ -269,16 +281,10 @@ def fmri_stat_map_video(orig: Tensor,
                 if i >= n:
                     done = True
                     break
-                x = orig[i, :, :, :, frame]
-                x = nl.image.new_img_like(mask,
-                                          x.numpy(),
-                                          affine=mask.affine,
-                                          copy_header=True)
-                nlplt.plot_stat_map(x,
-                                    bg_img=bg_img,
-                                    threshold=3,
-                                    colorbar=False,
-                                    output_file=f'{out_path}_orig_{i}_{frame}.tmp.png')
+                plot_frame(orig[i, :, :, :, frame],
+                           f'{out_path}_{i}_{frame}_orig.tmp.png')
+                plot_frame(recons[i, :, :, :, frame],
+                           f'{out_path}_{i}_{frame}_recons.tmp.png')
                 i += 1
             if done:
                 break
