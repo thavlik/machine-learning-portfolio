@@ -68,7 +68,7 @@ class ResNetVAE2d(BaseVAE):
         )
         in_features = hidden_dims[-1] * width * height
         if pooling != None:
-            pooling /= 4**len(hidden_dims)
+            in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError('noninteger number of features')
             in_features = int(in_features)
