@@ -305,7 +305,7 @@ if __name__ == '__main__':
         scaling=3.0,
         dpi=330,
         suptitle=dict(y=0.91),
-        title='fMRI Original (top) vs. Reconstruction (bottom)',
+        title='${model}, fMRI Original (top) vs. Reconstruction (bottom), Epoch ${epoch}',
     )
 
     """

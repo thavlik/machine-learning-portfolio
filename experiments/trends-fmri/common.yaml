@@ -15,9 +15,14 @@ exp_params:
   - fn: fmri_prob_atlas
     batch_size: 16
     params:
-      mask_path: E:/trends-fmri/fMRI_mask.nii
-      bg_img: E:/trends-fmri/ch2better.nii
+      bg_img: 'E:/trends-fmri/ch2better.nii'
+      mask_path: 'E:/trends-fmri/fMRI_mask.nii'
       rows: 4
       cols: 4
+      scaling: 3.0
+      dpi: 330
+      suptitle:
+        y: 0.91
+      title: '${model}, fMRI Original (top) vs. Reconstruction (bottom), Epoch ${epoch}'
   - fn: fmri_stat_map_video
     params: {}
