@@ -1,6 +1,8 @@
 exp_params:
   data:
     name: reference
-    params:
+    training:
       name: MNIST
-      params: {}
+      params:
+        root: E:/mnist
+        download: true

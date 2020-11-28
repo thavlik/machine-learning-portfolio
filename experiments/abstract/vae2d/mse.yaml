@@ -3,7 +3,7 @@ experiment: vae2d
 model_params:
   name: 'ResNetVAE2d'
   latent_dim: 256
-  hidden_dims: [64, 64, 128, 128]
+  hidden_dims: [64, 64, 100, 100]
 
 exp_params:
   optimizer:

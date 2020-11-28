@@ -1,6 +1,6 @@
 import torch.utils.data as data
 from torchvision import datasets
-
+from torchvision.transforms import ToTensor
 
 class ReferenceDataset(data.Dataset):
     """ Reference dataset that proxies a torchvision stock dataset
@@ -13,7 +13,8 @@ class ReferenceDataset(data.Dataset):
         self.ds = getattr(datasets, name)(**params)
 
     def __getitem__(self, index):
-        return self.ds[index]
+        x, y = self.ds[index]
+        return ToTensor()(x), y
 
     def __len__(self):
         return len(self.ds)

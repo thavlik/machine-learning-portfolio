@@ -43,15 +43,14 @@ class ResNetVAE2d(BaseVAE):
         for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features,
                                         h_dim))
-            modules.append(nn.MaxPool2d(2))
+            #modules.append(nn.MaxPool2d(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * \
-            height // (2**len(hidden_dims))**2
+        in_features = hidden_dims[-1] * width * height 
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),

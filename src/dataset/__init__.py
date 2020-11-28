@@ -34,10 +34,12 @@ dataset_dims = {
 def get_example_shape(data: dict):
     name = data['name']
     if name == 'reference':
-        return ReferenceDataset(**data['params'])[0].shape
+        ds = ReferenceDataset(**data['training'])
+        x, _ = ds[0]
+        return x.shape
     if name == 'video':
         params = data['training']
-        return (3, params['height'], params['width'])
+        return torch.Size((3, params['height'], params['width']))
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
-    return dataset_dims[name]
+    return torch.Size(dataset_dims[name])
