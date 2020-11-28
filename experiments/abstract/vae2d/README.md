@@ -15,4 +15,5 @@ This experiment can be applied to the following datasets:
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html)
 
 ## Results
-(TODO: insert picture of validation results)
+### MNIST
+![MNIST_VAE_ResNetVAE2D_FID_49.png](results/MNIST_VAE_ResNetVAE2D_FID_49.png)
