@@ -77,19 +77,26 @@ class VAEExperiment(pl.LightningModule):
 
     def sample_images(self):
         # Get sample reconstruction image
-        test_input, _ = next(iter(self.sample_dataloader))
-        test_input = test_input[:8]
-        test_input = test_input.to(self.curr_device)
-        recons = self.model.generate(test_input, labels=[])
+        plot = self.params['plot']
+        rows = plot['rows']
+        cols = plot['cols']
+        n = rows * cols
+        recons = []
+        for _ in range(n):
+            test_input, _ = next(iter(self.sample_dataloader))
+            test_input = test_input.to(self.curr_device)
+            x = self.model.generate(test_input, labels=[])
+            x = x.unsqueeze(0)
+            recons.append(x)
+        recons = torch.cat(recons, dim=0)
         out_path = os.path.join(self.logger.save_dir,
                                 self.logger.name,
                                 f"version_{self.logger.version}",
                                 f"recons_{self.logger.name}_{self.current_epoch}.png")
         orig = test_input.data.cpu()
         recons = recons.data.cpu()
-        fn = get_plot_fn(self.params['plot']['fn'])
-        fn(orig, recons, out_path, self.params['plot']['params'])
-        del test_input, recons
+        fn = get_plot_fn(plot['fn'])
+        fn(orig, recons, out_path, plot['params'])
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
@@ -137,7 +144,7 @@ class VAEExperiment(pl.LightningModule):
             **self.params['data'].get('validation', {}),
         })
         self.sample_dataloader = DataLoader(dataset,
-                                            batch_size=self.params['batch_size'],
+                                            batch_size=1,
                                             shuffle=False,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)

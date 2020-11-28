@@ -1,6 +1,6 @@
 base:
   - experiments/abstract/vae2d/mse.yaml
-  - experiments/rsna-intracranial/data.yaml
+  - experiments/rsna-intracranial/common.yaml
 
 logging_params:
   name: 'RSNA_ResNetVAE2d_BasicMSE'

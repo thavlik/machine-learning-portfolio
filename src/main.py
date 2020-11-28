@@ -52,8 +52,8 @@ parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='experiments/rsna-intracranial/vae_fid.yaml')
-                    #default='experiments/reference/mnist/vae_fid.yaml')
+                    default='experiments/reference/mnist/vae_fid.yaml')
+                    #default='experiments/rsna-intracranial/vae_fid.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',

@@ -17,6 +17,12 @@ def vae1d(config: dict):
 def vae2d(config: dict):
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
+    plot_params = exp_params['plot']['params']
+    if 'thumbnail_size' not in plot_params \
+            and 'thumbnail_width' not in plot_params:
+        # Default to using native dataset size for thumbnails
+        plot_params['thumbnail_width'] = w
+        plot_params['thumbnail_height'] = h
     model = create_model(**config['model_params'],
                          width=w,
                          height=h,
