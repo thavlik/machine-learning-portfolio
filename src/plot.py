@@ -8,8 +8,8 @@ from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.io import write_video
 
 
-def timeseries(recons: Tensor,
-               orig: Tensor,
+def timeseries(orig: Tensor,
+               recons: Tensor,
                out_path: str,
                params: dict):
     rows = params['rows']
@@ -21,8 +21,8 @@ def timeseries(recons: Tensor,
                     height=params['height'])
 
 
-def plot2d(recons: Tensor,
-           orig: Tensor,
+def plot2d(orig: Tensor,
+           recons: Tensor,
            out_path: str,
            params: dict,
            imshow_args: dict = {}):
@@ -51,8 +51,7 @@ def plot2d(recons: Tensor,
             if i >= n:
                 done = True
                 break
-            # Seems to be flipped? recons ends up on right
-            img = torch.cat([recons[i], orig[i]], dim=-1)
+            img = torch.cat([orig[i], recons[i]], dim=-1)
             img = to_pil(img)
             if img.size != (thumbnail_height, thumbnail_width):
                 img = resize(img)
@@ -66,8 +65,8 @@ def plot2d(recons: Tensor,
     fig.savefig(out_path, bbox_inches='tight')
 
 
-def plot2d_dcm(recons: Tensor,
-               orig: Tensor,
+def plot2d_dcm(orig: Tensor,
+               recons: Tensor,
                out_path: str,
                params: dict):
     return plot2d(recons,
@@ -77,8 +76,8 @@ def plot2d_dcm(recons: Tensor,
                   dict(cmap=plt.cm.bone))
 
 
-def plot_video(recons: Tensor,
-               orig: Tensor,
+def plot_video(orig: Tensor,
+               recons: Tensor,
                out_path: str,
                params: dict):
     rows = params['rows']
