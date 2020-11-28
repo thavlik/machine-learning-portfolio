@@ -16,4 +16,4 @@ This experiment can be applied to the following datasets:
 
 ## Results
 ### MNIST
-![MNIST_VAE_ResNetVAE2D_FID_49.png](results/MNIST_VAE_ResNetVAE2D_FID_49.png)
+![MNIST_VAE_ResNetVAE2D_FID_49.png](results/MNIST_VAE_ResNetVAE2d_FID_49.png)
