@@ -52,12 +52,12 @@ parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='../experiments/rsna-intracranial/vae/basic_fid.yaml')
+                    default='experiments/rsna-intracranial/vae/basic_fid.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',
                     help='Save directory for logs and screenshots',
-                    default='../logs')
+                    default='logs')
 
 args = parser.parse_args()
 config = load_config(args.config)

@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/src"
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Python: main.py",
@@ -18,7 +18,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/src"
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Python: compiler.py",
@@ -26,7 +26,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/compiler.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/src"
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Python: compiler.py clean",
@@ -34,7 +34,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/compiler.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/src",
+            "cwd": "${workspaceFolder}",
             "args": ["--clean", "True"]
         }
     ]
