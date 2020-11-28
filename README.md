@@ -19,9 +19,8 @@ These experiments make use of ground truth provided with the data. Ground truth 
 - [DeepLesion](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images)
 - [Grasp-and-Lift EEG Detection](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html), for non-medical reference
-  - CelebA
-  - MNIST
-  - Fashion-MNIST
+  - CelebA (human faces)
+  - MNIST (handwritten digits)
   - etc...
 
 ## Relevant Literature
