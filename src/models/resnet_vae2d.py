@@ -50,7 +50,8 @@ class ResNetVAE2d(BaseVAE):
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * height // (2**len(hidden_dims))**2
+        in_features = hidden_dims[-1] * width * \
+            height // (2**len(hidden_dims))**2
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),
@@ -120,8 +121,9 @@ class ResNetVAE2d(BaseVAE):
         return result
 
     def fid(self, a: Tensor, b: Tensor) -> Tensor:
-        a = self.inception(a)
-        b = self.inception(b)
-        d = torch.sum([torch.mean((x - y) ** 2)
-                       for x, y in zip(a, b)])
-        return d
+        a = self.inception(a.repeat(1, 3, 1, 1))
+        b = self.inception(b.repeat(1, 3, 1, 1))
+        fid_loss = 0.0
+        for x, y in zip(a, b):
+            fid_loss += torch.mean((x - y) ** 2)
+        return fid_loss

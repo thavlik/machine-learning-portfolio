@@ -1,0 +1,15 @@
+exp_params:
+  data:
+    name: rsna-intracranial
+    loader:
+      num_workers: 0
+      drop_last: true
+    training:
+      dcm_path: E:/rsna-intracranial/stage_2_train
+      s3_path: s3://rsna-intracranial/stage_2_train
+      download: false
+    validation:
+      dcm_path: E:/rsna-intracranial/stage_2_test
+      s3_path: s3://rsna-intracranial/stage_2_test
+  plot:
+    fn: dcm

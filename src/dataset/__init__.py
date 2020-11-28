@@ -31,12 +31,12 @@ dataset_dims = {
 }
 
 
-def get_example_shape(dataset: dict):
-    name = dataset['name']
+def get_example_shape(data: dict):
+    name = data['name']
     if name == 'reference':
-        return ReferenceDataset(**dataset['params'])[0].shape
+        return ReferenceDataset(**data['params'])[0].shape
     if name == 'video':
-        params = dataset['training']
+        params = data['training']
         return (3, params['height'], params['width'])
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')

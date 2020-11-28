@@ -12,18 +12,23 @@ from deepmerge import Merger
 
 def load_config(path):
     with open(path, 'r') as f:
-        return yaml.safe_load(f)
+        config = yaml.safe_load(f)
+        if 'base' in config:
+            bases = config['base']
+            if type(bases) is not list:
+                bases = [bases]
+            strategy = Merger([(list, "override"),
+                               (dict, "merge")],
+                              ["use_existing"],
+                              ["use_existing"])
+            for base in bases:
+                base = load_config(base)
+                config = strategy.merge(base, config)
+        return config
 
 
 def experiment_main(config: dict,
                     save_dir: str):
-    if 'base' in config:
-        base = load_config(config['base'])
-        strategy = Merger([(list, "override"),
-                           (dict, "merge")],
-                          ["use_existing"],
-                          ["use_existing"])
-        config = strategy.merge(base, config)
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config).cuda()
@@ -47,7 +52,7 @@ parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='../experiments/vae2d/basic_fid.yaml')
+                    default='../experiments/rsna-intracranial/vae/basic_fid.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',

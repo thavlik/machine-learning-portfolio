@@ -1,0 +1,3 @@
+base:
+  - ../experiments/vae2d/basic_fid.yaml
+  - ../experiments/rsna-intracranial/rsna_dataset.yaml

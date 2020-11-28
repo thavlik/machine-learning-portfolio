@@ -129,8 +129,7 @@ class VAEExperiment(pl.LightningModule):
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
                           shuffle=True,
-                          drop_last=True,
-                          num_workers=self.dataset.get('num_workers', 0))
+                          **self.params['data'].get('loader', {}))
 
     def val_dataloader(self):
         dataset = get_dataset(self.params['data']['name'], {
@@ -140,7 +139,6 @@ class VAEExperiment(pl.LightningModule):
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,
-                                            drop_last=True,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader
