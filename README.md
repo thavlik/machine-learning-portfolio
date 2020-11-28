@@ -16,7 +16,7 @@ These experiments showcase unsupervised modeling tasks on a variety of both medi
 - [4D Variational Autoencoder](experiments/abstract/vae4d/README.md), used for fMRI
 
 ### Supervised
-These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes that of an attending physician.
+These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
 - [RSNA Intracranial Hemorrhage Prediction](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection)
 - [CQ500](http://headctstudy.qure.ai/dataset)
 - [TReNDS fMRI](https://www.kaggle.com/c/trends-assessment-prediction/data)
@@ -41,6 +41,7 @@ Many of the ideas implemented in this repository were first detailed in the foll
 ## TODO
 - Progressive growing decoder
 - Implement beta loss term
+- Second optimizer for adversarial training
 
 ## Contributing
 Please open an issue or pull request if you would like to contribute.
