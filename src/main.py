@@ -7,7 +7,7 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 from models import create_model
 from experiments import create_experiment
-
+from deepmerge import conservative_merger
 
 def load_config(path):
     with open(path, 'r') as f:
@@ -16,6 +16,11 @@ def load_config(path):
 
 def experiment_main(config: dict,
                     save_dir: str):
+    if 'base' in config:
+        base = load_config(config['base'])
+        config = conservative_merger.merge(base, config)
+    if 'entrypoint' not in config:
+        raise ValueError('Config has no entrypoint')
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config).cuda()
@@ -39,7 +44,7 @@ parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='../experiments/vae2d/basic_mse.yaml')
+                    default='../experiments/vae2d/basic_fid.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',
