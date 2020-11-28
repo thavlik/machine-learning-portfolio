@@ -278,10 +278,11 @@ def fmri_stat_map_video(orig: Tensor,
                                     bg_img=bg_img,
                                     threshold=3,
                                     colorbar=False,
-                                    output_file=f'out_{i}.png')
+                                    output_file=f'out_{i}_{frame}.png')
                 i += 1
             if done:
                 break
+    # TODO: arrange images into frames, create video
 
 
 plot_fn = {
