@@ -1,5 +1,5 @@
 # 1D Variational Autoencoders
-Time series can be transformed with convolutional networks just like image data. 
+Just like image data, time series can be transformed by convolutional networks.
 
 ## Flavors
 Several derivatives VAE experiments are available in the separate yaml files.
