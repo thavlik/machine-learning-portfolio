@@ -1,5 +1,5 @@
 # 3D Variational Autoencoders
-TODO: something coherent about 3D VAE
+Adding another dimension to the classic experiment, 3D VAE is capable of handling voxel and video data. 
 
 ## Flavors
 Several derivatives VAE experiments are available in the separate yaml files.
