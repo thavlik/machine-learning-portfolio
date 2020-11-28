@@ -6,10 +6,10 @@ This repository was designed to showcase well-designed project structure. Config
 
 ### Unsupervised
 These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets.
-- [1D Variational Autoencoder](experiments/abstract/vae1d/)
-- [2D Variational Autoencoder](experiments/abstract/vae2d/)
-- [3D Variational Autoencoder](experiments/abstract/vae3d/)
-- [4D Variational Autoencoder](experiments/abstract/vae4d/)
+- [1D Variational Autoencoder](experiments/abstract/vae1d/README.md)
+- [2D Variational Autoencoder](experiments/abstract/vae2d/README.md)
+- [3D Variational Autoencoder](experiments/abstract/vae3d/README.md)
+- [4D Variational Autoencoder](experiments/abstract/vae4d/README.md)
 
 ### Supervised
 These experiments make use of ground truth provided with the data. Ground truth for medical imagery typically constitutes that of an attending physician.
@@ -23,15 +23,17 @@ These experiments make use of ground truth provided with the data. Ground truth 
 ## Relevant Literature
 Many of the ideas implemented in this repository were first detailed in the following papers:
 
-1. [3FabRec: Fast Few-shot Face alignment by Reconstruction](https://arxiv.org/abs/1911.10448)
-2. [DARLA: Improving Zero-Shot Transfer in Reinforcement Learning](https://arxiv.org/abs/1707.08475)
-3. [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196)
-4. [beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework](https://openreview.net/forum?id=Sy2fzU9gl)
-5. [Towards Photographic Image Manipulation with Balanced Growing of Generative Autoencoders](https://arxiv.org/abs/1904.06145)
+1. [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114)
+2. [3FabRec: Fast Few-shot Face alignment by Reconstruction](https://arxiv.org/abs/1911.10448)
+3. [DARLA: Improving Zero-Shot Transfer in Reinforcement Learning](https://arxiv.org/abs/1707.08475)
+4. [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661)
+5. [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196)
+6. [beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework](https://openreview.net/forum?id=Sy2fzU9gl)
+7. [Towards Photographic Image Manipulation with Balanced Growing of Generative Autoencoders](https://arxiv.org/abs/1904.06145)
 
 ## TODO
-- Progressive growing decoder a la [3]
-- Implement beta loss term from [4]
+- Progressive growing decoder
+- Implement beta loss term
 
 ## Contributing
 Please open an issue or pull request if you would like to contribute.
