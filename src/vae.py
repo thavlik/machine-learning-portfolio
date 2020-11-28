@@ -93,10 +93,11 @@ class VAEExperiment(pl.LightningModule):
                 recons.append(x)
             test_input = torch.cat(test_input, dim=0)
             recons = torch.cat(recons, dim=0)
+            # Extensionless output path (let plotting function choose extension)
             out_path = os.path.join(self.logger.save_dir,
                                     self.logger.name,
                                     f"version_{self.logger.version}",
-                                    f"recons_{self.logger.name}_{self.current_epoch}.png")
+                                    f"{self.logger.name}_{plot['fn']}_{self.current_epoch}")
             orig = test_input.data.cpu()
             recons = recons.data.cpu()
             fn = get_plot_fn(plot['fn'])

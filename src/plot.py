@@ -78,7 +78,7 @@ def plot2d(orig: Tensor,
                                   epoch)
         fig.suptitle(interpolated, **params.get('suptitle', {}))
     fig.tight_layout()
-    fig.savefig(out_path, bbox_inches='tight')
+    fig.savefig(out_path + '.png', bbox_inches='tight')
 
 
 def plot2d_dcm(orig: Tensor,
@@ -168,7 +168,7 @@ def plot_video(orig: Tensor,
 
     # Export the tensor as a video
     # TODO: improve video quality
-    write_video(out_path, video_array, fps)
+    write_video(out_path + '.mp4', video_array, fps)
 
 
 def fmri_prob_atlas(orig: Tensor,
