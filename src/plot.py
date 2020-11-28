@@ -51,7 +51,8 @@ def plot2d(recons: Tensor,
             if i >= n:
                 done = True
                 break
-            img = torch.cat([orig[i], recons[i]], dim=-1)
+            # Seems to be flipped? recons ends up on right
+            img = torch.cat([recons[i], orig[i]], dim=-1)
             img = to_pil(img)
             if img.size != (thumbnail_height, thumbnail_width):
                 img = resize(img)
