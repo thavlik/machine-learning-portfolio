@@ -15,5 +15,6 @@ This experiment can be applied to the following datasets:
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html)
 
 ## Results
+Reconstruction is on the left, original is on the right.
 ### MNIST
-![MNIST_VAE_ResNetVAE2D_FID_49.png](results/MNIST_VAE_ResNetVAE2d_FID_49.png)
+![MNIST_VAE_ResNetVAE2d_FID_49.png](results/MNIST_VAE_ResNetVAE2d_FID_49.png)
