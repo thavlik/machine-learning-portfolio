@@ -82,14 +82,20 @@ class VAEExperiment(pl.LightningModule):
         rows = plot_params['rows']
         cols = plot_params['cols']
         n = rows * cols
-        recons = []
         test_input = []
-        for _ in range(n):
-            x, _ = next(iter(self.sample_dataloader))
-            x = x.to(self.curr_device)
-            test_input.append(x)
-            x = self.model.generate(x, labels=[])
-            recons.append(x)
+        recons = []
+        # Sample as many batches as necessary to fill the grid.
+        # This ensures we can fill the grid even when batch
+        # sizes are very small.
+        while len(test_input) < n:
+            batch, _ = next(iter(self.sample_dataloader))
+            batch = batch.to(self.curr_device)
+            batch = batch[:min(n-len(test_input), n)]
+            for x in batch:
+                x = x.unsqueeze(0)
+                test_input.append(x)
+                x = self.model.generate(x, labels=[])
+                recons.append(x)
         test_input = torch.cat(test_input, dim=0)
         recons = torch.cat(recons, dim=0)
         out_path = os.path.join(self.logger.save_dir,
@@ -147,7 +153,7 @@ class VAEExperiment(pl.LightningModule):
             **self.params['data'].get('validation', {}),
         })
         self.sample_dataloader = DataLoader(dataset,
-                                            batch_size=1,
+                                            batch_size=self.params['batch_size'],
                                             shuffle=False,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
