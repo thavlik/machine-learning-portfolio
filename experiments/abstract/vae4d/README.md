@@ -1,5 +1,5 @@
 # 4D Variational Autoencoders
-Functional MRI (fMRI) imagery is notably difficult to handle due to the many ways 4D convolutions can be calculated. Currently, there are no other 4D datasets.
+Handling functional magnetic resonance imaging (fMRI) data is nontrivial due to its extremely high dimensionsality and the obscurity of the 4D convolution. Currently, there are no other 4D datasets.
 
 ## Flavors
 Several derivatives VAE experiments are available in the separate yaml files:
