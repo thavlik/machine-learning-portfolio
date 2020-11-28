@@ -19,12 +19,7 @@ def experiment_main(config: dict,
                     save_dir: str):
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
-    entrypoint = config['entrypoint']
-    if torch.cuda.is_available():
-        device = torch.device('cuda')
-    else:
-        device = torch.device('cpu')
-    experiment = create_experiment(entrypoint, config, dataset).cuda()
+    experiment = create_experiment(config, dataset).cuda()
     tt_logger = TestTubeLogger(
         save_dir=save_dir,
         name=config['logging_params']['name'],
