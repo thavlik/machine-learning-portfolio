@@ -11,6 +11,7 @@ import nilearn as nl
 import nilearn.plotting as nlplt
 from dataset.trends_fmri import load_subject
 from PIL import Image
+import subprocess
 
 
 def plot_title(template: str,
@@ -262,7 +263,6 @@ def fmri_stat_map_video(orig: Tensor,
     mask = nl.image.load_img(mask_path)
     num_frames = orig.shape[1]
     n = min(orig.shape[0], rows * cols)
-
     def plot_frame(x, out_path):
         x = nl.image.new_img_like(mask,
                                   x.numpy(),
@@ -296,7 +296,7 @@ def fmri_stat_map_video(orig: Tensor,
                 o = plot_frame(orig[i, :, :, :, frame],
                                f'{out_path}_{i}_{frame}_orig.tmp.png')
                 r = o
-                #r = plot_frame(recons[i, :, :, :, frame],
+                # r = plot_frame(recons[i, :, :, :, frame],
                 #               f'{out_path}_{i}_{frame}_recons.tmp.png')
                 f = torch.cat([o, r], dim=-2)
                 frame_cols.append(f)
@@ -308,15 +308,23 @@ def fmri_stat_map_video(orig: Tensor,
         frame_rows = torch.cat(frame_rows, dim=-2)
         ToPILImage()(frame_rows).save(f'{out_path}_{frame}.tmp.png')
         frames.append(frame_rows.unsqueeze(0))
-    video_array = torch.cat(frames, dim=0)
-    # [T, C, H, W] -> [T, W, H, C] -> [T, H, W, C]
-    video_array = torch.transpose(video_array, 1, -1)
-    video_array = torch.transpose(video_array, 1, 2)
-    # Monochrome to RGB
-    video_array = video_array.repeat(1, 1, 1, 3)
-    cmd = f"ffmpeg -y -framerate 2 -i {out_path}_%d.tmp.png -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 out.webm"
-    #write_video(out_path + '.mp4', video_array, fps)
-
+    if os.name == 'nt':
+        # Use WSL Debian
+        # TODO: think about getting ffmpeg working natively on windows
+        # If you are running this code and encounter a problem, please
+        # open an issue.
+        cmd = f'ffmpeg -y -framerate {fps} -i $(wslpath {out_path}_%d.tmp.png) -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 $(wslpath {out_path}.webm)'
+        proc = subprocess.run(['debian.exe', 'run', cmd], capture_output=True)
+    else:
+        cmd = f'ffmpeg -y -framerate {fps} -i {out_path}_%d.tmp.png -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {out_path}.webm'
+        proc = subprocess.run(['sh', '-c', cmd], capture_output=True)
+    if proc.returncode != 0:
+        msg = f'expected exit code 0 from ffmpeg, got exit code {proc.returncode}: {proc.stdout.decode("unicode_escape")}'
+        if proc.stderr:
+            msg += ' ' + proc.stderr.decode('unicode_escape')
+        raise ValueError(msg)
+    for i in range(num_frames):
+        os.remove(f'{out_path}_{i}.tmp.png')
 
 plot_fn = {
     'timeseries': timeseries,
