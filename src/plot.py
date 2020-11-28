@@ -257,7 +257,8 @@ def fmri_stat_map_video(orig: Tensor,
                         bg_img: str,
                         mask_path: str,
                         rows: int,
-                        cols: int):
+                        cols: int,
+                        fps: int = 1):
     mask = nl.image.load_img(mask_path)
     num_frames = orig.shape[1]
     n = min(orig.shape[0], rows * cols)
@@ -267,28 +268,54 @@ def fmri_stat_map_video(orig: Tensor,
                                   x.numpy(),
                                   affine=mask.affine,
                                   copy_header=True)
-        nlplt.plot_stat_map(x,
-                            bg_img=bg_img,
-                            threshold=3,
-                            colorbar=False,
-                            output_file=out_path)
+        try:
+            nlplt.plot_stat_map(x,
+                                bg_img=bg_img,
+                                threshold=3,
+                                colorbar=False,
+                                output_file=out_path)
+            img = ToTensor()(Image.open(out_path))
+        finally:
+            try:
+                os.remove(out_path)
+            except:
+                pass
+        return img
 
+    frames = []
     for frame in range(num_frames):
         i = 0
+        frame_rows = []
         for _ in range(rows):
             done = False
+            frame_cols = []
             for _ in range(cols):
                 if i >= n:
                     done = True
                     break
-                plot_frame(orig[i, :, :, :, frame],
-                           f'{out_path}_{i}_{frame}_orig.tmp.png')
-                plot_frame(recons[i, :, :, :, frame],
-                           f'{out_path}_{i}_{frame}_recons.tmp.png')
+                o = plot_frame(orig[i, :, :, :, frame],
+                               f'{out_path}_{i}_{frame}_orig.tmp.png')
+                r = o
+                #r = plot_frame(recons[i, :, :, :, frame],
+                #               f'{out_path}_{i}_{frame}_recons.tmp.png')
+                f = torch.cat([o, r], dim=-2)
+                frame_cols.append(f)
                 i += 1
+            frame_cols = torch.cat(frame_cols, dim=-1)
+            frame_rows.append(frame_cols)
             if done:
                 break
-    # TODO: arrange images into frames, create video
+        frame_rows = torch.cat(frame_rows, dim=-2)
+        ToPILImage()(frame_rows).save(f'{out_path}_{frame}.tmp.png')
+        frames.append(frame_rows.unsqueeze(0))
+    video_array = torch.cat(frames, dim=0)
+    # [T, C, H, W] -> [T, W, H, C] -> [T, H, W, C]
+    video_array = torch.transpose(video_array, 1, -1)
+    video_array = torch.transpose(video_array, 1, 2)
+    # Monochrome to RGB
+    video_array = video_array.repeat(1, 1, 1, 3)
+    cmd = f"ffmpeg -y -framerate 2 -i {out_path}_%d.tmp.png -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 out.webm"
+    #write_video(out_path + '.mp4', video_array, fps)
 
 
 plot_fn = {
@@ -316,7 +343,7 @@ if __name__ == '__main__':
     ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
                            mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
     x = torch.cat([ds[i].unsqueeze(0)
-                   for i in range(16)], dim=0)
+                   for i in range(1)], dim=0)
     fmri_stat_map_video(
         orig=x,
         recons=x,
@@ -325,8 +352,8 @@ if __name__ == '__main__':
         out_path='test',
         bg_img='E:/trends-fmri/ch2better.nii',
         mask_path='E:/trends-fmri/fMRI_mask.nii',
-        rows=4,
-        cols=4,
+        rows=1,
+        cols=1,
     )
     fmri_prob_atlas(
         orig=x,
