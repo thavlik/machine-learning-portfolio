@@ -1,7 +1,9 @@
 # 4D Variational Autoencoders
 Handling functional magnetic resonance imaging (fMRI) data is nontrivial due to its extremely high dimensionsality and the obscurity of the 4D convolution. Currently, there are no other 4D datasets.
 
-![TReNDS example image](images/example.webm)
+<video width="320" height="240" controls>
+  <source src="images/example.webm" type="video/webm">
+</video>
 
 ## Flavors
 Several derivatives VAE experiments are available in the separate yaml files:
