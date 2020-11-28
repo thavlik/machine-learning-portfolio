@@ -46,6 +46,8 @@ experiments = {
 
 
 def create_experiment(config: dict):
+    if 'entrypoint' not in config:
+        raise ValueError('config has no entrypoint')
     entrypoint = config['entrypoint']
     if entrypoint not in experiments:
         raise ValueError(f'unknown entrypoint "{entrypoint}" '

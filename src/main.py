@@ -19,8 +19,6 @@ def experiment_main(config: dict,
     if 'base' in config:
         base = load_config(config['base'])
         config = conservative_merger.merge(base, config)
-    if 'entrypoint' not in config:
-        raise ValueError('Config has no entrypoint')
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config).cuda()
