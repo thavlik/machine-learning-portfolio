@@ -158,6 +158,7 @@ class VAEExperiment(pl.LightningModule):
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
         n = len(dataset)
+        # Persist separate validation indices for each plot
         self.val_indices = [torch.randint(low=0,
                                           high=n,
                                           size=(plot['batch_size'], 1)).squeeze()
