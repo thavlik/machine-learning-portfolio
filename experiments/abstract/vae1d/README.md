@@ -1,5 +1,5 @@
-# 2D Variational Autoencoders
-My favorite unsupervised modeling task. This experiment embeds 2D imagery in a compact latent space by modeling its principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114).
+# 1D Variational Autoencoders
+Time series can be transformed with convolutional networks just like image data. 
 
 ## Flavors
 Several derivatives VAE experiments are available in the separate yaml files.
@@ -9,10 +9,4 @@ Several derivatives VAE experiments are available in the separate yaml files.
 
 ## Compatible Datasets
 This experiment can be applied to the following datasets:
-- cq500
-- deeplesion
-- rsna-intracranial
-- reference
-  - mnist
-  - celeba
-  - etc...
+- [Grasp-and-Lift EEG Detection](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
