@@ -278,7 +278,7 @@ def fmri_stat_map_video(orig: Tensor,
                                     bg_img=bg_img,
                                     threshold=3,
                                     colorbar=False,
-                                    output_file=f'out_{i}_{frame}.png')
+                                    output_file=f'{out_path}_orig_{i}_{frame}.tmp.png')
                 i += 1
             if done:
                 break
