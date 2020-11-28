@@ -14,8 +14,11 @@ exp_params:
   plot:
     fn: 'plot2d'
     params:
+      scaling: 1.0
       rows: 4
       cols: 4
+      suptitle:
+        y: 0.82
 
 trainer_params:
   max_epochs: 10000000

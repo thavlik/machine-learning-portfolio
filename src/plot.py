@@ -10,6 +10,7 @@ from torchvision.io import write_video
 
 def timeseries(orig: Tensor,
                recons: Tensor,
+               epoch: int,
                out_path: str,
                params: dict):
     rows = params['rows']
@@ -23,6 +24,7 @@ def timeseries(orig: Tensor,
 
 def plot2d(orig: Tensor,
            recons: Tensor,
+           epoch: int,
            out_path: str,
            params: dict,
            imshow_args: dict = {}):
@@ -61,16 +63,19 @@ def plot2d(orig: Tensor,
             i += 1
         if done:
             break
+    fig.suptitle(f'Epoch {epoch}', **params.get('suptitle', {}))
     fig.tight_layout()
     fig.savefig(out_path, bbox_inches='tight')
 
 
 def plot2d_dcm(orig: Tensor,
                recons: Tensor,
+               epoch: int,
                out_path: str,
                params: dict):
-    return plot2d(recons,
-                  orig,
+    return plot2d(orig,
+                  recons,
+                  epoch,
                   out_path,
                   params,
                   dict(cmap=plt.cm.bone))
@@ -78,6 +83,7 @@ def plot2d_dcm(orig: Tensor,
 
 def plot_video(orig: Tensor,
                recons: Tensor,
+               epoch: int,
                out_path: str,
                params: dict):
     rows = params['rows']

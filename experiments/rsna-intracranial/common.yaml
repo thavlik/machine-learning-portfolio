@@ -16,3 +16,7 @@ exp_params:
       s3_path: s3://rsna-intracranial/stage_2_test
   plot:
     fn: dcm
+    params:
+      scaling: 2.0
+      suptitle:
+        y: 0.78
