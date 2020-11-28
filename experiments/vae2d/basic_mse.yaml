@@ -34,6 +34,6 @@ trainer_params:
   check_val_every_n_epoch: 1
 
 logging_params:
-  name: "RSNA_ResNetVAE2d_BasicMSE"
+  name: 'RSNA_ResNetVAE2d_BasicMSE'
 
 manual_seed: 1498
