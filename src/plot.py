@@ -141,7 +141,8 @@ def plot_video(recons: Tensor,
     video_array = video_array.repeat(1, 1, 1, 3)
 
     # Export the tensor as a video
-    write_video(out_path, video_array, fps, options=dict())
+    # TODO: improve video quality
+    write_video(out_path, video_array, fps)
 
 
 plot_fn = {
@@ -179,11 +180,12 @@ if __name__ == '__main__':
         video = torch.cat(frames, dim=0).unsqueeze(0)
         batch.append(video)
     batch = torch.cat(batch, dim=0)
-    plot_video(batch, batch, 'out.mp4', {
-        'rows': rows,
-        'cols': cols,
-        'fps': fps,
-    })
+    plot_video(batch, batch, 'out.mp4', dict(
+        rows=rows,
+        cols=cols,
+        fps=fps,
+        thumbnail_size=512,
+    ))
 
     #plot2d_dcm(batch,
     #           batch,
