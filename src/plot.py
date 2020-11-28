@@ -248,22 +248,40 @@ def fmri_prob_atlas(orig: Tensor,
         except:
             pass
 
+
 def fmri_stat_map_video(orig: Tensor,
                         recons: Tensor,
                         model_name: str,
                         epoch: int,
                         out_path: str,
-                        smri_filename: str):
-    raise NotImplementedError
-    for o, r in zip(orig, recons):
-        o = nl.image.iter_img(o)
-        r = nl.image.iter_img(r)
-        for i, (o_img, r_img) in enumerate(zip(o, r)):
-            nlplt.plot_stat_map(o_img,
-                                bg_img=smri_filename,
-                                axes=axes[row, col],
-                                threshold=3,
-                                colorbar=False)
+                        bg_img: str,
+                        mask_path: str,
+                        rows: int,
+                        cols: int):
+    mask = nl.image.load_img(mask_path)
+    num_frames = orig.shape[1]
+    n = min(orig.shape[0], rows * cols)
+    for frame in range(num_frames):
+        i = 0
+        for _ in range(rows):
+            done = False
+            for _ in range(cols):
+                if i >= n:
+                    done = True
+                    break
+                x = orig[i, :, :, :, frame]
+                x = nl.image.new_img_like(mask,
+                                          x.numpy(),
+                                          affine=mask.affine,
+                                          copy_header=True)
+                nlplt.plot_stat_map(x,
+                                    bg_img=bg_img,
+                                    threshold=3,
+                                    colorbar=False,
+                                    output_file=f'out_{i}.png')
+                i += 1
+            if done:
+                break
 
 
 plot_fn = {
@@ -292,6 +310,17 @@ if __name__ == '__main__':
                            mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
     x = torch.cat([ds[i].unsqueeze(0)
                    for i in range(16)], dim=0)
+    fmri_stat_map_video(
+        orig=x,
+        recons=x,
+        model_name='test',
+        epoch=0,
+        out_path='test',
+        bg_img='E:/trends-fmri/ch2better.nii',
+        mask_path='E:/trends-fmri/fMRI_mask.nii',
+        rows=4,
+        cols=4,
+    )
     fmri_prob_atlas(
         orig=x,
         recons=x,
