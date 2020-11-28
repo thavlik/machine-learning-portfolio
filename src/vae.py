@@ -101,12 +101,12 @@ class VAEExperiment(pl.LightningModule):
             orig = test_input.data.cpu()
             recons = recons.data.cpu()
             fn = get_plot_fn(plot['fn'])
-            fn(orig,
-               recons,
-               self.model.name,
-               self.current_epoch,
-               out_path,
-               plot['params'])
+            fn(orig=orig,
+               recons=recons,
+               model_name=self.model.name,
+               epoch=self.current_epoch,
+               out_path=out_path,
+               **plot['params'])
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),

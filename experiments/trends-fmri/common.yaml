@@ -13,10 +13,11 @@ exp_params:
       path: E:/trends-fmri/test
   plot:
   - fn: fmri_prob_atlas
+    batch_size: 16
     params:
-      title: "${model}, RSNA Intracranial Hemorrhage CT Slices (Epoch ${epoch})"
-      scaling: 2.0
-      suptitle:
-        y: 0.78
+      mask_path: E:/trends-fmri/fMRI_mask.nii
+      bg_img: E:/trends-fmri/ch2better.nii
+      rows: 4
+      cols: 4
   - fn: fmri_stat_map_video
     params: {}

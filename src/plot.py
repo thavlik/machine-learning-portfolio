@@ -9,6 +9,7 @@ from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.io import write_video
 import nilearn as nl
 import nilearn.plotting as nlplt
+from dataset.trends_fmri import load_subject
 
 
 def plot_title(template: str,
@@ -29,14 +30,15 @@ def timeseries(orig: Tensor,
                model_name: str,
                epoch: int,
                out_path: str,
-               params: dict):
-    rows = params['rows']
-    cols = params['cols']
+               rows: int,
+               cols: int,
+               width: int,
+               height: int):
     fig = make_subplots(rows=rows, cols=cols)
     raise NotImplementedError
     fig.write_image(out_path,
-                    width=params['width'],
-                    height=params['height'])
+                    width=width,
+                    height=height)
 
 
 def plot2d(orig: Tensor,
@@ -81,19 +83,10 @@ def plot2d(orig: Tensor,
     fig.savefig(out_path + '.png', bbox_inches='tight')
 
 
-def plot2d_dcm(orig: Tensor,
-               recons: Tensor,
-               model_name: str,
-               epoch: int,
-               out_path: str,
-               params: dict):
-    return plot2d(orig,
-                  recons,
-                  model_name,
-                  epoch,
-                  out_path,
-                  params,
-                  dict(cmap=plt.cm.bone))
+def plot2d_dcm(*args, **kwargs):
+    return plot2d(*args,
+                  **kwargs,
+                  imshow_args=dict(cmap=plt.cm.bone))
 
 
 def plot_video(orig: Tensor,
@@ -101,17 +94,11 @@ def plot_video(orig: Tensor,
                model_name: str,
                epoch: int,
                out_path: str,
-               params: dict):
-    rows = params['rows']
-    cols = params['cols']
-    fps = params['fps']
-    if 'thumbnail_size' in params:
-        thumbnail_width = params['thumbnail_size']
-        thumbnail_height = params['thumbnail_size']
-    else:
-        thumbnail_width = params.get('thumbnail_width', 256)
-        thumbnail_height = params.get('thumbnail_height', 256)
-
+               rows: int,
+               cols: int,
+               fps: int,
+               thumbnail_width: int = None,
+               thumbnail_height: int = None):
     if orig.shape[-2:] != (thumbnail_height, thumbnail_width):
         # Resize each frame
         to_pil = ToPILImage()
@@ -176,9 +163,35 @@ def fmri_prob_atlas(orig: Tensor,
                     model_name: str,
                     epoch: int,
                     out_path: str,
-                    params: dict):
-    smri_filename = params['smri_filename']
-    raise NotImplementedError
+                    rows: int,
+                    cols: int,
+                    bg_img: str,
+                    mask_path: str,
+                    view_type: str = 'filled_contours',
+                    draw_cross: bool = False,
+                    threshold='auto'):
+    i = 0
+    n = min(rows * cols, orig.shape[0])
+    mask = nl.image.load_img(mask_path)
+    for _ in range(rows):
+        done = False
+        for _ in range(cols):
+            if i >= n:
+                done = True
+                break
+            img = nl.image.new_img_like(mask,
+                                        orig[i].numpy(),
+                                        affine=mask.affine,
+                                        copy_header=True)
+            nlplt.plot_prob_atlas(img,
+                                  bg_img=bg_img,
+                                  view_type=view_type,
+                                  draw_cross=draw_cross,
+                                  threshold=threshold)
+            plt.savefig(out_path + f'_{i}.png')
+            i += 1
+        if done:
+            break
 
 
 def fmri_stat_map_video(orig: Tensor,
@@ -186,9 +199,8 @@ def fmri_stat_map_video(orig: Tensor,
                         model_name: str,
                         epoch: int,
                         out_path: str,
-                        params: dict):
+                        smri_filename: str):
     raise NotImplementedError
-    smri_filename = params['smri_filename']
     for o, r in zip(orig, recons):
         o = nl.image.iter_img(o)
         r = nl.image.iter_img(r)
@@ -218,7 +230,26 @@ def get_plot_fn(name: str):
 
 
 if __name__ == '__main__':
-    from dataset import RSNAIntracranialDataset
+    import os
+    from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
+
+    base_path = 'E:\\trends-fmri'
+    ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
+                           mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
+    x = torch.cat([ds[i].unsqueeze(0)
+                   for i in range(16)], dim=0)
+    fmri_prob_atlas(
+        orig=x,
+        recons=x,
+        model_name='test',
+        epoch=0,
+        out_path='test',
+        bg_img='E:/trends-fmri/ch2better.nii',
+        mask_path='E:/trends-fmri/fMRI_mask.nii',
+        rows=4,
+        cols=4,
+    )
+
     ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
                                  s3_path='s3://rsna-intracranial/stage_2_train',
                                  download=False)

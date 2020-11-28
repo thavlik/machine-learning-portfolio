@@ -3,6 +3,7 @@ import numpy as np
 import nilearn as nl
 import nilearn.plotting as nlplt
 import matplotlib.pyplot as plt
+import nibabel as nib
 from dataset.trends_fmri import load_subject, TReNDSfMRIDataset
 
 base_path = 'E:\\trends-fmri'
@@ -11,31 +12,31 @@ subject_filename = os.path.join(base_path, 'fMRI_test/10228.mat')
 
 ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
                        mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
-mask_niimg = ds.mask
 
-subject_niimg = load_subject(subject_filename, mask_niimg)
+#subject_niimg = load_subject(subject_filename, mask_niimg)
+#before = subject_niimg.get_fdata(dtype=np.float32)
+#img = nib.Nifti1Image(before, affine=np.eye(4))
+#after = img.get_fdata(dtype=np.float32)
 
 #grid_size = int(np.ceil(np.sqrt(subject_niimg.shape[0])))
-#fig, axes = plt.subplots(grid_size, grid_size,
+# fig, axes = plt.subplots(grid_size, grid_size,
 #                         figsize=(grid_size*10, grid_size*10))
 #[axi.set_axis_off() for axi in axes.ravel()]
 #row = -1
-#for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
+# for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
 #    col = i % grid_size
 #    if col == 0:
 #        row += 1
 #    nlplt.plot_stat_map(cur_img, bg_img=smri_filename, title="IC %d" %
 #                        i, axes=axes[row, col], threshold=3, colorbar=False)
-#plt.show()
-
-print("Image shape is %s" % (str(subject_niimg.shape)))
-num_components = subject_niimg.shape[-1]
-print("Detected {num_components} spatial maps".format(
-    num_components=num_components))
-nlplt.plot_prob_atlas(subject_niimg,
+# plt.show()
+img = nl.image.new_img_like(ds.mask,
+                            ds[0].numpy(),
+                            affine=ds.mask.affine,
+                            copy_header=True)
+nlplt.plot_prob_atlas(img,
                       bg_img=smri_filename,
                       view_type='filled_contours',
                       draw_cross=False,
-                      title='All %d spatial maps' % num_components,
                       threshold='auto')
-nlplt.show()
+plt.show()
