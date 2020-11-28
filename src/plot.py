@@ -260,6 +260,7 @@ def fmri_stat_map_video(orig: Tensor,
                         rows: int,
                         cols: int,
                         fps: int = 1):
+    """
     mask = nl.image.load_img(mask_path)
     num_frames = orig.shape[1]
     n = min(orig.shape[0], rows * cols)
@@ -308,23 +309,24 @@ def fmri_stat_map_video(orig: Tensor,
         frame_rows = torch.cat(frame_rows, dim=-2)
         ToPILImage()(frame_rows).save(f'{out_path}_{frame}.tmp.png')
         frames.append(frame_rows.unsqueeze(0))
+    """
     if os.name == 'nt':
         # Use WSL Debian
         # TODO: think about getting ffmpeg working natively on windows
         # If you are running this code and encounter a problem, please
         # open an issue.
-        cmd = f'ffmpeg -y -framerate {fps} -i $(wslpath {out_path}_%d.tmp.png) -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 $(wslpath {out_path}.webm)'
+        cmd = f'ffmpeg -y -framerate {fps} -i $(wslpath {out_path}_%d.tmp.png) -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 $(wslpath {out_path}.gif)'
         proc = subprocess.run(['debian.exe', 'run', cmd], capture_output=True)
     else:
-        cmd = f'ffmpeg -y -framerate {fps} -i {out_path}_%d.tmp.png -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {out_path}.webm'
+        cmd = f'ffmpeg -y -framerate {fps} -i {out_path}_%d.tmp.png -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {out_path}.gif'
         proc = subprocess.run(['sh', '-c', cmd], capture_output=True)
     if proc.returncode != 0:
         msg = f'expected exit code 0 from ffmpeg, got exit code {proc.returncode}: {proc.stdout.decode("unicode_escape")}'
         if proc.stderr:
             msg += ' ' + proc.stderr.decode('unicode_escape')
         raise ValueError(msg)
-    for i in range(num_frames):
-        os.remove(f'{out_path}_{i}.tmp.png')
+    #for i in range(num_frames):
+    #    os.remove(f'{out_path}_{i}.tmp.png')
 
 plot_fn = {
     'timeseries': timeseries,
