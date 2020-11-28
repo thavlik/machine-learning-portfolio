@@ -291,9 +291,8 @@ def fmri_stat_map_video(orig: Tensor,
                     break
                 o = plot_frame(orig[i, :, :, :, frame],
                                f'{out_path}_{i}_{frame}_orig.tmp.png')
-                r = o
-                # r = plot_frame(recons[i, :, :, :, frame],
-                #              f'{out_path}_{i}_{frame}_recons.tmp.png')
+                r = plot_frame(recons[i, :, :, :, frame],
+                             f'{out_path}_{i}_{frame}_recons.tmp.png')
                 f = torch.cat([o, r], dim=-2)
                 frame_cols.append(f)
                 i += 1
