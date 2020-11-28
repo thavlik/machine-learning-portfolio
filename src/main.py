@@ -7,7 +7,8 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 from models import create_model
 from experiments import create_experiment
-from deepmerge import conservative_merger
+from deepmerge import Merger
+
 
 def load_config(path):
     with open(path, 'r') as f:
@@ -18,7 +19,11 @@ def experiment_main(config: dict,
                     save_dir: str):
     if 'base' in config:
         base = load_config(config['base'])
-        config = conservative_merger.merge(base, config)
+        strategy = Merger([(list, "override"),
+                           (dict, "merge")],
+                          ["use_existing"],
+                          ["use_existing"])
+        config = strategy.merge(base, config)
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config).cuda()
