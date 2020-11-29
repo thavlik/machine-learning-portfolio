@@ -16,12 +16,12 @@ class ResNetVAE4d(BaseVAE):
                  name: str,
                  latent_dim: int,
                  hidden_dims: List[int],
+                 width: int,
+                 height: int,
+                 depth: int,
+                 frames: int,
+                 channels: int,
                  dropout: float = 0.4,
-                 width: int = 100,
-                 height: int = 100,
-                 depth: int = 100,
-                 frames: int = 64,
-                 channels: int = 1,
                  pooling: str = None,
                  output_activation: str = 'sigmoid') -> None:
         super(ResNetVAE4d, self).__init__(name=name,
@@ -66,16 +66,7 @@ class ResNetVAE4d(BaseVAE):
             nn.ReLU(),
         )
 
-        # Decoder
-        act_options = {
-            'sigmoid': nn.Sigmoid,
-            'tanh': nn.Tanh,
-            'relu': nn.ReLU,
-        }
-        if output_activation not in act_options:
-            raise ValueError(
-                f'Unknown activation function "{output_activation}"')
-
+        # Decode
         hidden_dims.reverse()
         self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 16)
         modules = []

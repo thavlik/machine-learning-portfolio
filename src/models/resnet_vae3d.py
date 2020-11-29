@@ -16,11 +16,11 @@ class ResNetVAE3d(BaseVAE):
                  name: str,
                  latent_dim: int,
                  hidden_dims: List[int],
+                 width: int,
+                 height: int,
+                 depth: int,
+                 channels: int,
                  dropout: float = 0.4,
-                 width: int = 100,
-                 height: int = 100,
-                 depth: int = 100,
-                 channels: int = 3,
                  enable_fid: bool = False,  # per-frame FID, for video
                  pooling: str = None,
                  output_activation: str = 'sigmoid') -> None:
@@ -66,15 +66,6 @@ class ResNetVAE3d(BaseVAE):
         )
 
         # Decoder
-        act_options = {
-            'sigmoid': nn.Sigmoid,
-            'tanh': nn.Tanh,
-            'relu': nn.ReLU,
-        }
-        if output_activation not in act_options:
-            raise ValueError(
-                f'Unknown activation function "{output_activation}"')
-
         hidden_dims.reverse()
         self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 8)
         modules = []

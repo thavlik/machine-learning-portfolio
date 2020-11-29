@@ -16,8 +16,8 @@ class ResNetVAE1d(BaseVAE):
                  latent_dim: int,
                  hidden_dims: List[int],
                  num_samples: int,
+                 channels: int,
                  dropout: float = 0.4,
-                 channels: int = 1,
                  pooling: str = None,
                  output_activation: str = 'tanh') -> None:
         super(ResNetVAE1d, self).__init__(name=name,
