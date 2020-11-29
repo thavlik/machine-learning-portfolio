@@ -2,5 +2,10 @@ base:
   - experiments/abstract/vae2d/fid.yaml
   - experiments/cq500/common.yaml
 
+exp_params:
+  plot:
+    params:
+      title: "${model}, CQ500, FID loss, Epoch ${epoch}"
+
 logging_params:
   name: "CQ500_VAE_FID"
