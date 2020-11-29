@@ -1,8 +1,11 @@
 import torch
 from torch import nn
 from torch.nn import functional as F
+from .conv4d import Conv4d
 from .base import BaseVAE
-from .resnet4d import BasicBlock4d, TransposeBasicBlock4d
+from .maxpool4d import MaxPool4d
+from .resnet4d import BasicBlock4d
+from .pooling import get_pooling4d
 from torch import nn, Tensor
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
@@ -20,6 +23,7 @@ class ResNetVAE4d(BaseVAE):
                  depth: int = 100,
                  frames: int = 64,
                  channels: int = 1,
+                 pooling: str = None,
                  output_activation: str = 'sigmoid') -> None:
         super(ResNetVAE4d, self).__init__(name=name,
                                           latent_dim=latent_dim)
@@ -30,20 +34,28 @@ class ResNetVAE4d(BaseVAE):
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
 
+        if pooling != None:
+            pool_fn = get_pooling4d(pooling)
+
         # Encoder
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock4d(in_features, h_dim))
-            modules.append(nn.MaxPool4d(2))
+            if pooling != None:
+                modules.append(pool_fn(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * \
-            height * depth * frames // 2**len(hidden_dims)
+        in_features = hidden_dims[-1] * width * height * depth * frames
+        if pooling != None:
+            in_features /= 16**len(hidden_dims)
+            if abs(in_features - ceil(in_features)) > 0:
+                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+            in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),
@@ -70,14 +82,14 @@ class ResNetVAE4d(BaseVAE):
         modules = []
         in_features = hidden_dims[0]
         for h_dim in hidden_dims:
-            modules.append(TransposeBasicBlock4d(in_features, h_dim))
+            modules.append(BasicBlock4d(in_features, h_dim))
             in_features = h_dim
         self.decoder = nn.Sequential(
             *modules,
-            nn.Conv3d(hidden_dims[-1],
-                      width * height * depth * frames * channels // 16,
-                      kernel_size=3,
-                      padding=1),
+            Conv4d(hidden_dims[-1],
+                   width * height * depth * frames * channels // 16,
+                   kernel_size=3,
+                   padding=1),
             act_options[output_activation](),
         )
 

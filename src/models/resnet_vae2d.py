@@ -62,7 +62,7 @@ class ResNetVAE2d(BaseVAE):
         if pooling != None:
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError('noninteger number of features')
+                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),

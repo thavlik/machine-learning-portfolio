@@ -1,26 +1,17 @@
 # Thank you funkey and timothygebhard for this code.
 # Source: https://github.com/timothygebhard/pytorch-conv4d/blob/master/conv4d.py
-# -----------------------------------------------------------------------------
-# IMPORTS
-# -----------------------------------------------------------------------------
-
 from __future__ import division
 from typing import Tuple, Callable
-
 import torch
+from torch import nn
 import numpy as np
 
 
-# -----------------------------------------------------------------------------
-# CLASS DEFINITIONS
-# -----------------------------------------------------------------------------
-
-class Conv4d:
-
+class Conv4d(nn.Module):
     def __init__(self,
                  in_channels: int,
                  out_channels: int,
-                 kernel_size: Tuple[int, int, int, int],
+                 kernel_size: int | Tuple[int, int, int, int],
                  stride: int = 1,
                  padding: int = 0,
                  dilation: int = 1,
@@ -30,6 +21,9 @@ class Conv4d:
                  kernel_initializer: Callable = None):
 
         super(Conv4d, self).__init__()
+
+        if type(kernel_size) == int:
+            kernel_size = [kernel_size] * 4
 
         # ---------------------------------------------------------------------
         # Assertions for constructor arguments
@@ -123,10 +117,6 @@ class Conv4d:
 
         return torch.stack(frame_results, dim=2)
 
-
-# -----------------------------------------------------------------------------
-# MAIN CODE (TO TEST CONV4D)
-# -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
 

@@ -8,6 +8,7 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
+from .pooling import get_pooling3d
 
 
 class ResNetVAE3d(BaseVAE):
@@ -21,6 +22,7 @@ class ResNetVAE3d(BaseVAE):
                  depth: int = 100,
                  channels: int = 3,
                  enable_fid: bool = False,  # per-frame FID, for video
+                 pooling: str = None,
                  output_activation: str = 'sigmoid') -> None:
         super(ResNetVAE3d, self).__init__(name=name,
                                           latent_dim=latent_dim)
@@ -30,20 +32,28 @@ class ResNetVAE3d(BaseVAE):
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
 
+        if pooling != None:
+            pool_fn = get_pooling3d(pooling)
+
         # Encoder
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock3d(in_features, h_dim))
-            modules.append(nn.MaxPool3d(2))
+            if pooling != None:
+                modules.append(pool_fn(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * \
-            height * depth // 2**len(hidden_dims)
+        in_features = hidden_dims[-1] * width * height * depth
+        if pooling != None:
+            in_features /= 8**len(hidden_dims)
+            if abs(in_features - ceil(in_features)) > 0:
+                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+            in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),
