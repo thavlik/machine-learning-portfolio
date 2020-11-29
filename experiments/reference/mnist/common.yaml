@@ -4,9 +4,9 @@ exp_params:
     training:
       name: MNIST
       params:
-        root: E:/mnist
+        root: E:/
         download: true
   batch_size: 64
   plot:
     params:
-      title: "${model}, MNIST (Epoch ${epoch})"
+      title: "${model}, MNIST, Epoch ${epoch}"
