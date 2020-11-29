@@ -1,0 +1,3 @@
+series:
+  - experiments/ffhq/vae/mse.yaml
+  - experiments/ffhq/vae/fid.yaml

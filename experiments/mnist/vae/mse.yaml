@@ -1,6 +1,6 @@
 base:
   - experiments/abstract/vae2d/mse.yaml
-  - experiments/reference/mnist/common.yaml
+  - experiments/mnist/common.yaml
 
 exp_params:
   plot:

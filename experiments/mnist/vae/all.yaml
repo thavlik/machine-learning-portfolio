@@ -1,0 +1,3 @@
+series:
+  - experiments/mnist/vae/mse.yaml
+  - experiments/mnist/vae/fid.yaml

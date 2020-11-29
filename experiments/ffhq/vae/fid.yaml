@@ -1,0 +1,11 @@
+base:
+  - experiments/abstract/vae2d/fid.yaml
+  - experiments/ffhq/common.yaml
+
+exp_params:
+  plot:
+    params:
+      title: "${model}, FFHQ, FID loss, Epoch ${epoch}"
+
+logging_params:
+  name: "FFHQ_VAE_FID"

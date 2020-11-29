@@ -1,0 +1,11 @@
+base:
+  - experiments/abstract/vae2d/mse.yaml
+  - experiments/ffhq/common.yaml
+  
+exp_params:
+  plot:
+    params:
+      title: "${model}, FFHQ, MSE loss, Epoch ${epoch}"
+
+logging_params:
+  name: "FFHQ_VAE_MSE"

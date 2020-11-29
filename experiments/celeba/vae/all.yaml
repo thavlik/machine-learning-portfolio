@@ -1,0 +1,3 @@
+series:
+  - experiments/celeba/vae/mse.yaml
+  - experiments/celeba/vae/fid.yaml

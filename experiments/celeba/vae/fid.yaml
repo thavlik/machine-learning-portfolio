@@ -1,6 +1,6 @@
 base:
   - experiments/abstract/vae2d/fid.yaml
-  - experiments/reference/celeba/common.yaml
+  - experiments/celeba/common.yaml
 
 exp_params:
   plot:
