@@ -18,6 +18,6 @@ trainer_params:
   check_val_every_n_epoch: 200
 
 logging_params:
-  name: "VAE3d_BasicMSE"
+  name: "MSE"
 
 manual_seed: 1498

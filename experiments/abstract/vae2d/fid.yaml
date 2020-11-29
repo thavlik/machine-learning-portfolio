@@ -3,5 +3,5 @@ base: experiments/abstract/vae2d/mse.yaml
 exp_params:
   fid_weight: 1.0
 
-
-
+logging_params:
+  name: "FID"

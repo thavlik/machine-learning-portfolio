@@ -3,7 +3,7 @@ entrypoint: vae4d
 model_params:
   arch: 'ResNetVAE4d'
   name: 'ResNetVAE4d'
-  latent_dim: 512
+  latent_dim: 64
   hidden_dims: [32, 64, 32]
 
 exp_params:
@@ -18,6 +18,6 @@ trainer_params:
   check_val_every_n_epoch: 200
 
 logging_params:
-  name: "VAE4d_BasicMSE"
+  name: "MSE"
 
 manual_seed: 1498
