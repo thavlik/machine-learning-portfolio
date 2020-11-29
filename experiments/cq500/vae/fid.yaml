@@ -3,4 +3,4 @@ base:
   - experiments/cq500/common.yaml
 
 logging_params:
-  name: "CQ500_VAE_MSE"
+  name: "CQ500_VAE_FID"
