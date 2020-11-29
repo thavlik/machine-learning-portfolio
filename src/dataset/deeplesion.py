@@ -27,5 +27,5 @@ class DeepLesionDataset(data.Dataset):
 
 if __name__ == '__main__':
     ds = DeepLesionDataset('E:/deeplesion/')
-    print(ds[0].shape)
-    print(ds[1].shape)
+    print(ds[0][0].shape)
+    print(ds[1][0].shape)

@@ -1,5 +1,6 @@
 from .cq500 import *
 from .deeplesion import *
+from .dicom_util import *
 from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
