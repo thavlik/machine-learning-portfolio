@@ -1,10 +1,16 @@
 exp_params:
   data:
     name: reference
-    params:
+    training:
       name: CelebA
       params:
-        dir: E:/
+        root: E:/
+
+        # https://github.com/pytorch/vision/pull/2321
+        # This is still encountered, so manual download is necessary.
+        # Get data from here:
+        # https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8
+        download: false
   warmup_steps: 512
   batch_size: 64
   
