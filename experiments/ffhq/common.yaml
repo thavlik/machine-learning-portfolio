@@ -10,6 +10,11 @@ exp_params:
         root: E:/thumbnails128x128
   warmup_steps: 512
   batch_size: 32
+  plot:
+    params:
+      scaling: 2.0
+      suptitle:
+        y: 0.78
   
 trainer_params:
   max_epochs: 10

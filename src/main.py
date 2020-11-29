@@ -22,11 +22,12 @@ def load_config(path):
                 bases = [bases]
             strategy = Merger([(list, "override"),
                                (dict, "merge")],
-                              ["use_existing"],
-                              ["use_existing"])
+                              ["override"],
+                              ["override"])
+            merged = {}
             for base in bases:
-                base = load_config(base)
-                config = strategy.merge(base, config)
+                merged = strategy.merge(merged, load_config(base))
+            config = strategy.merge(merged, config)
         return config
 
 
