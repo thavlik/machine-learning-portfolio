@@ -2,14 +2,13 @@ model_params:
   pooling: max
 
 exp_params:
+  batch_size: 32
   data:
     name: reference
     training:
       name: ImageFolder
       params:
         root: E:/thumbnails128x128
-  warmup_steps: 512
-  batch_size: 32
   plot:
     params:
       scaling: 2.0

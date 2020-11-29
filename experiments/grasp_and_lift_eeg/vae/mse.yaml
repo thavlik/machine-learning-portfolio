@@ -5,7 +5,8 @@ base:
 exp_params:
   plot:
     params:
-      title: "${model}, GraspAndLiftEEG, MSE loss, Epoch ${epoch}"
+      layout_params:
+        title: "${model}, GraspAndLiftEEG, MSE loss, Epoch ${epoch}"
 
 logging_params:
   name: 'GraspLiftEEG_VAE_MSE'

@@ -10,7 +10,7 @@ exp_params:
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
-  batch_size: 8
+  batch_size: 32
   warmup_steps: 512
   plot:
     fn: 'plot2d'

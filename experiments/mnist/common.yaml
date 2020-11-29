@@ -6,7 +6,6 @@ exp_params:
       params:
         root: E:/
         download: true
-  warmup_steps: 512
   batch_size: 64
   
 trainer_params:

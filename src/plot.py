@@ -35,10 +35,17 @@ def eeg(orig: Tensor,
         out_path: str,
         width: int,
         height: int,
-        line_opacity: float = 0.7):
+        line_opacity: float = 0.7,
+        layout_params: dict = {}):
     batch_size, num_channels, num_samples = orig.shape
     cols = batch_size
     fig = make_subplots(rows=num_channels, cols=cols)
+    if layout_params != None:
+        if 'title' in layout_params:
+            layout_params['title'] = plot_title(template=layout_params['title'],
+                                                model=model_name,
+                                                epoch=epoch)
+        fig.update_layout(**layout_params)
     i = 0
     n = min(cols, batch_size)
     x = np.arange(num_samples) / num_samples

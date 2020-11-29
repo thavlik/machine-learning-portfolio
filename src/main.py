@@ -45,7 +45,7 @@ def experiment_main(config: dict,
                                debug=False,
                                create_git_tag=False)
     if dry_run:
-        config['trainer_params']['max_steps'] = 1
+        config['trainer_params']['max_steps'] = 5
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,
                      num_sanity_val_steps=5,
@@ -98,7 +98,7 @@ parser.add_argument('--save-dir',
 parser.add_argument('--dry-run',
                     dest="dry_run",
                     metavar='DRY_RUN',
-                    help='dry run mode (stop after one epoch)',
+                    help='dry run mode (stop after a couple steps)',
                     default=False)
 args = parser.parse_args()
 
