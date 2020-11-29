@@ -1,4 +1,4 @@
-base:
+include:
   - experiments/abstract/vae1d/mse.yaml
   - experiments/grasp_and_lift_eeg/common.yaml
 

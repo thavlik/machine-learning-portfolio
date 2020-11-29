@@ -1,4 +1,4 @@
-base:
+include:
   - experiments/abstract/vae4d/mse.yaml
   - experiments/trends-fmri/common.yaml
 

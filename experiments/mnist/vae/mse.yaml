@@ -1,4 +1,4 @@
-base:
+include:
   - experiments/abstract/vae2d/mse.yaml
   - experiments/mnist/common.yaml
 

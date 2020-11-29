@@ -1,8 +1,6 @@
 include: experiments/mnist/common.yaml
 
-entrypoint: classification_sandwich2d
-
-base_experiment: experiments/mnist/vae/mse.yaml
+entrypoint: classification2d
 
 model_params:
   arch: 'ResNetClassifier2d'
@@ -16,6 +14,7 @@ exp_params:
     weight_decay: 0.00001
   batch_size: 32
   warmup_steps: 512
+  unfreeze_epoch: -1 # TODO
   plot:
     fn: 'plot2d'
     batch_size: 16
