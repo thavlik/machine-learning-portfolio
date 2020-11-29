@@ -8,7 +8,7 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
-
+from .pooling import get_pooling1d
 
 class ResNetVAE1d(BaseVAE):
     def __init__(self,
@@ -18,18 +18,24 @@ class ResNetVAE1d(BaseVAE):
                  num_samples: int,
                  dropout: float = 0.4,
                  channels: int = 1,
-                 output_activation: str = 'sigmoid') -> None:
+                 pooling: str = None,
+                 output_activation: str = 'tanh') -> None:
         super(ResNetVAE1d, self).__init__(name=name,
                                           latent_dim=latent_dim)
         self.num_samples = num_samples
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
 
+        if pooling != None:
+            pool_fn = get_pooling1d(pooling)
+
         # Encoder
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock1d(in_features, h_dim))
+            if pooling != None:
+                modules.append(pool_fn(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
@@ -37,6 +43,11 @@ class ResNetVAE1d(BaseVAE):
             nn.Dropout(p=dropout),
         )
         in_features = hidden_dims[-1] * num_samples
+        if pooling != None:
+            in_features /= 2**len(hidden_dims)
+            if abs(in_features - ceil(in_features)) > 0:
+                raise ValueError('noninteger number of features')
+            in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),

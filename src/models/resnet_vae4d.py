@@ -93,10 +93,7 @@ class ResNetVAE4d(BaseVAE):
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[0], 2, 2, 2, 2)
         x = self.decoder(x)
-        x = x.view(x.shape[0],
-                   self.channels,
-                   self.frames,
-                   self.depth,
-                   self.height,
-                   self.width)
+        x = x.view(x.shape[0], self.channels,
+                   self.frames, self.depth,
+                   self.height, self.width)
         return x

@@ -1,3 +1,6 @@
+model_params:
+  output_activation: relu
+
 exp_params:
   data:
     name: grasp-and-lift-eeg

@@ -20,7 +20,7 @@ class ResNetVAE3d(BaseVAE):
                  height: int = 100,
                  depth: int = 100,
                  channels: int = 3,
-                 enable_fid: bool = False,
+                 enable_fid: bool = False,  # per-frame FID, for video
                  output_activation: str = 'sigmoid') -> None:
         super(ResNetVAE3d, self).__init__(name=name,
                                           latent_dim=latent_dim)

@@ -3,7 +3,7 @@ entrypoint: vae2d
 model_params:
   arch: 'ResNetVAE2d'
   name: 'ResNetVAE2d'
-  latent_dim: 256
+  latent_dim: 32
   hidden_dims: [64, 128, 128, 64]
 
 exp_params:

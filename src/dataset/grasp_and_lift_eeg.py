@@ -6,6 +6,8 @@ import glob
 
 GRASPLIFT_EEG_HEADER = 'id,Fp1,Fp2,F7,F3,Fz,F4,F8,FC5,FC1,FC2,FC6,T7,C3,Cz,C4,T8,TP9,CP5,CP1,CP2,CP6,TP10,P7,P3,Pz,P4,P8,PO9,O1,Oz,O2,PO10\n'
 
+NUM_CHANNELS = 32
+
 
 class GraspAndLiftEEGDataset(data.Dataset):
     def __init__(self,
@@ -44,10 +46,13 @@ class GraspAndLiftEEGDataset(data.Dataset):
             self.X = X
             self.total_examples = total_examples
 
-    def compile_bin(self, csv_files: list):
+    def compile_bin(self,
+                    csv_files: list,
+                    normalize: bool = False):
         examples = []
         total_examples = 0
-        for file in csv_files:
+        high = None
+        for i, file in enumerate(csv_files):
             samples = []
             with open(file, 'r') as f:
                 hdr = f.readline()
@@ -60,13 +65,23 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     samples.append(channels)
             samples = torch.cat(samples, dim=1)
             total_examples += samples.shape[1] - self.num_samples + 1
-            out_path = file + '.bin'
-            torch.save(samples, out_path)
-            print(f'Wrote {out_path}')
             examples.append(samples)
+            if normalize:
+                h = samples.max()
+                if high == None or h > high:
+                    high = h
+            else:
+                torch.save(samples, file + '.bin')
+            print(f'Processed {i+1}/{len(csv_files)} {file}')
+        if normalize:
+            for i, file in enumerate(csv_files):
+                examples[i] /= 0.5 * high
+                examples[i] -= 1.0
+                out_path = file + '.bin'
+                torch.save(samples, out_path)
         return examples, total_examples
 
-    def get_converted(self, index):
+    def __getitem__(self, index):
         ofs = 0
         for samples in self.X:
             num_examples = samples.shape[1] - self.num_samples + 1
@@ -77,37 +92,6 @@ class GraspAndLiftEEGDataset(data.Dataset):
             return (samples[:, i:i+self.num_samples], [])
         raise ValueError(f'unable to seek {index}')
 
-    def get_raw(self, index):
-        file, index = self.file_for_index(index)
-        samples = []
-        with open(file, 'r') as f:
-            [f.readline() for _ in range(index+1)]
-            for line in f:
-                if len(samples) >= self.num_samples:
-                    break
-                channels = line.strip().split(',')[1:]
-                channels = [float(x) for x in channels]
-                channels = torch.Tensor(channels).unsqueeze(1)
-                samples.append(channels)
-        samples = torch.cat(samples, dim=1)
-        return (samples, [])
-
-    def file_for_index(self, index):
-        ofs = 0
-        for file, num_examples in self.files:
-            if index >= ofs + num_examples:
-                ofs += num_examples
-                continue
-            i = index - ofs
-            return (file, i)
-        raise ValueError(f'unable to seek {index}')
-
-    def __getitem__(self, index):
-        item = self.get_converted(index)
-        if item[0].shape != (32, self.num_samples):
-            raise ValueError(f'wrong size, got {item[0].shape}')
-        return item
-
     def __len__(self):
         return self.total_examples
 
@@ -117,5 +101,5 @@ if __name__ == '__main__':
     ds = GraspAndLiftEEGDataset('E:/grasp-and-lift-eeg-detection/test',
                                 num_samples=num_samples)
     for i, (x, _) in enumerate(ds):
-        assert x.shape == (32, num_samples)
+        assert x.shape == (NUM_CHANNELS, num_samples)
     print(ds[0][0].shape)

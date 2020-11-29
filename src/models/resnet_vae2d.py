@@ -8,19 +8,7 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
-
-pool_fn = {
-    'max': nn.MaxPool2d,
-    'min': nn.MaxPool2d,
-    'avg': nn.AvgPool2d,
-}
-
-
-def get_pool_fn(name: str) -> nn.Module:
-    if name not in pool_fn:
-        raise ValueError(f'Unknown pool function "{name}", '
-                         f'valid options are {pool_fn}')
-    return pool_fn[name]
+from .pooling import get_pooling2d
 
 
 class ResNetVAE2d(BaseVAE):
@@ -53,10 +41,12 @@ class ResNetVAE2d(BaseVAE):
                          for i in fid_blocks]
             self.inception = InceptionV3(block_idx)
 
+        if pooling != None:
+            pool_fn = get_pooling2d(pooling)
+
+        # Encoder
         modules = []
         in_features = channels
-        if pooling != None:
-            pool_fn = get_pool_fn(pooling)
         for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features,
                                         h_dim))
