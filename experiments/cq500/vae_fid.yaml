@@ -1,0 +1,3 @@
+base:
+  - experiments/abstract/vae2d/fid.yaml
+  - experiments/cq500/common.yaml
