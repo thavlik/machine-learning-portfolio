@@ -42,7 +42,7 @@ def classification_sandwich2d(config: dict, run_args: dict):
     encoder = base_experiment.model.get_encoder()
     encoder.requires_grad = False
     sandwich_layers = base_experiment.model.get_sandwich_layers()
-    for layer in sandwich_layers:
+    for layer, _ in sandwich_layers:
         layer.requires_grad = False
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
