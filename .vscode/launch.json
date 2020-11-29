@@ -105,6 +105,20 @@
             ]
         },
         {
+            "name": "Python: train MNIST Sandwich",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/classification/sandwich_fid.yaml",
+                "--dry-run",
+                "True"
+            ]
+        },
+        {
             "name": "Python: train RSNA VAE",
             "type": "python",
             "request": "launch",

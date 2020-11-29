@@ -1,0 +1,3 @@
+series:
+  - experiments/mnist/classification/sandwich_mse.yaml
+  - experiments/mnist/classification/sandwich_fid.yaml

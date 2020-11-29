@@ -62,7 +62,7 @@ parser.add_argument('--dry-run',
 args = parser.parse_args()
 
 if args.dry_run:
-    print('Executing dry run - training will stop after one step.')
+    print('Executing dry run - training will stop after a couple steps.')
 
 config = load_config(args.config)
 cudnn.deterministic = True

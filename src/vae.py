@@ -152,6 +152,7 @@ class VAEExperiment(pl.LightningModule):
         ds_params = strategy.merge(
             self.params['data'].get('training', {}),
             self.params['data'].get('validation', {}))
+        dataset = get_dataset(self.params['data']['name'], ds_params)
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,

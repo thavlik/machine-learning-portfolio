@@ -9,6 +9,7 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
 from .util import get_pooling2d, get_activation
+from .encoder_wrapper import EncoderWrapper
 
 
 class ResNetVAE2d(BaseVAE):
@@ -53,11 +54,6 @@ class ResNetVAE2d(BaseVAE):
             if pooling != None:
                 modules.append(pool_fn(2))
             in_features = h_dim
-        self.encoder = nn.Sequential(
-            *modules,
-            nn.Flatten(),
-            nn.Dropout(p=dropout),
-        )
         in_features = hidden_dims[-1] * width * height
         if pooling != None:
             in_features /= 4**len(hidden_dims)
@@ -65,24 +61,35 @@ class ResNetVAE2d(BaseVAE):
                 raise ValueError(
                     'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
-        self.mu = nn.Sequential(
-            nn.Linear(in_features, latent_dim),
-            nn.BatchNorm1d(latent_dim),
-            nn.ReLU(),
-        )
-        self.var = nn.Sequential(
-            nn.Linear(in_features, latent_dim),
-            nn.BatchNorm1d(latent_dim),
-            nn.ReLU(),
+        self.encoder = EncoderWrapper(
+            latent_dim=latent_dim,
+            layers=nn.Sequential(
+                *modules,
+                nn.Flatten(),
+                nn.Dropout(p=dropout),
+            ),
+            mu=nn.Sequential(
+                nn.Linear(in_features, latent_dim),
+                nn.BatchNorm1d(latent_dim),
+                nn.ReLU(),
+            ),
+            var=nn.Sequential(
+                nn.Linear(in_features, latent_dim),
+                nn.BatchNorm1d(latent_dim),
+                nn.ReLU(),
+            ),
         )
 
         # Decoder
         hidden_dims.reverse()
         self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 4)
         modules = []
+        sandwich_layers = []
         in_features = hidden_dims[0]
         for h_dim in hidden_dims:
-            modules.append(TransposeBasicBlock2d(in_features, h_dim))
+            layer = TransposeBasicBlock2d(in_features, h_dim)
+            modules.append(layer)
+            sandwich_layers.append((layer, h_dim))
             in_features = h_dim
         self.decoder = nn.Sequential(
             *modules,
@@ -92,14 +99,18 @@ class ResNetVAE2d(BaseVAE):
                       padding=1),
             get_activation(output_activation),
         )
+        self.sandwich_layers = sandwich_layers
+
+    def get_sandwich_layers(self) -> List[nn.Module]:
+        return self.sandwich_layers
+
+    def get_encoder(self) -> List[nn.Module]:
+        return self.encoder
 
     def encode(self, input: Tensor) -> List[Tensor]:
         if input.shape[-3:] != (self.channels, self.height, self.width):
             raise ValueError('wrong input shape')
-        x = self.encoder(input)
-        mu = self.mu(x)
-        var = self.var(x)
-        return [mu, var]
+        return self.encoder(input)
 
     def decode(self, z: Tensor) -> Tensor:
         x = self.decoder_input(z)

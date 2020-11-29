@@ -6,6 +6,7 @@ from dataset import ReferenceDataset, get_example_shape
 from pytorch_lightning.loggers import TestTubeLogger
 import numpy as np
 from pytorch_lightning import Trainer
+from load_config import load_config
 
 
 def classification2d(config: dict, run_args: dict):
@@ -20,7 +21,8 @@ def classification2d(config: dict, run_args: dict):
 
 
 def classification_sandwich2d(config: dict, run_args: dict):
-    base_experiment = experiment_main(config['base_experiment'], **run_args)
+    base_experiment = experiment_main(load_config(config['base_experiment']), **run_args)
+    encoder = base_experiment.model.get_encoder()
     sandwich_layers = base_experiment.model.get_sandwich_layers()
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
@@ -28,6 +30,7 @@ def classification_sandwich2d(config: dict, run_args: dict):
                          width=w,
                          height=h,
                          channels=c,
+                         encoder=encoder,
                          sandwich_layers=sandwich_layers)
     return ClassificationExperiment(model,
                                     params=exp_params)

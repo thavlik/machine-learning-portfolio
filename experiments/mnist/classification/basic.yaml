@@ -1,38 +1,8 @@
-include: experiments/mnist/common.yaml
+include:
+  - experiments/mnist/common.yaml
+  - experiments/mnist/classification/common.yaml
 
-entrypoint: classification_sandwich2d
-
-base_experiment: experiments/mnist/vae/mse.yaml
-
-model_params:
-  arch: 'ResNetClassifier2d'
-  name: 'ResNetClassifier2d'
-  hidden_dims: [64, 128, 128, 64]
-  num_classes: 10
-
-exp_params:
-  optimizer:
-    lr: 0.0002
-    weight_decay: 0.00001
-  batch_size: 32
-  warmup_steps: 512
-  plot:
-    fn: 'plot2d'
-    batch_size: 16
-    params:
-      title: "${model}, MNIST Basic Classification, Epoch ${epoch}"
-      scaling: 1.0
-      rows: 4
-      cols: 4
-      suptitle:
-        y: 0.82
-
-trainer_params:
-  max_epochs: 100
-  log_every_n_steps: 200
-  check_val_every_n_epoch: 20
-
-manual_seed: 1498
+entrypoint: classification2d
 
 logging_params:
   name: "MNIST_BasicClassification"

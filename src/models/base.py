@@ -5,6 +5,19 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 
 
+def reparameterize(mu: Tensor, logvar: Tensor) -> Tensor:
+    """
+    Reparameterization trick to sample from N(mu, var) from
+    N(0,1).
+    :param mu: (Tensor) Mean of the latent Gaussian [B x D]
+    :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
+    :return: (Tensor) [B x D]
+    """
+    std = torch.exp(0.5 * logvar)
+    eps = torch.randn_like(std)
+    return eps * std + mu
+
+
 class BaseVAE(nn.Module):
     def __init__(self,
                  name: str,
@@ -21,9 +34,17 @@ class BaseVAE(nn.Module):
     def decode(self, input: Tensor) -> Any:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_sandwich_layers(self) -> List[nn.Module]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_encoder(self) -> List[nn.Module]:
+        raise NotImplementedError
+
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         mu, log_var = self.encode(input)
-        z = self.reparameterize(mu, log_var)
+        z = reparameterize(mu, log_var)
         return [self.decode(z), input, mu, log_var]
 
     def sample(self,
@@ -72,15 +93,3 @@ class BaseVAE(nn.Module):
             result['loss'] += kld_weight * kld_loss
 
         return result
-
-    def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:
-        """
-        Reparameterization trick to sample from N(mu, var) from
-        N(0,1).
-        :param mu: (Tensor) Mean of the latent Gaussian [B x D]
-        :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
-        :return: (Tensor) [B x D]
-        """
-        std = torch.exp(0.5 * logvar)
-        eps = torch.randn_like(std)
-        return eps * std + mu

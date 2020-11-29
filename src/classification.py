@@ -32,10 +32,13 @@ class ClassificationExperiment(pl.LightningModule):
         self.params = params
         self.curr_device = None
 
-        plots = self.params['plot']
-        if type(plots) is not list:
-            plots = [plots]
-        self.plots = plots
+        if 'plot' in self.params:
+            plots = self.params['plot']
+            if type(plots) is not list:
+                plots = [plots]
+            self.plots = plots
+        else:
+            self.plots = []
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)

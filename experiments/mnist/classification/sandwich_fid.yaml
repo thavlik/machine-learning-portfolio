@@ -1,0 +1,15 @@
+include:
+  - experiments/mnist/common.yaml
+  - experiments/mnist/classification/common.yaml
+
+model_params:
+  arch: 'ResNetSandwich2d'
+  name: 'ResNetSandwich2d'
+
+entrypoint: classification_sandwich2d
+
+base_experiment: experiments/mnist/vae/fid.yaml
+
+logging_params:
+  name: "MNIST_Sandwich_FID"
+

@@ -9,7 +9,8 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
 from .util import get_pooling2d, get_activation
-
+from .encoder_wrapper import EncoderWrapper
+from .base import reparameterize
 
 class ResNetSandwich2d(Classifier):
     def __init__(self,
@@ -19,6 +20,7 @@ class ResNetSandwich2d(Classifier):
                  height: int,
                  channels: int,
                  num_classes: int,
+                 encoder: EncoderWrapper,
                  sandwich_layers: List[nn.Module],
                  dropout: float = 0.4,
                  pooling: str = None) -> None:
@@ -28,40 +30,35 @@ class ResNetSandwich2d(Classifier):
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
         self.sandwich_layers = sandwich_layers
+        self.encoder = encoder
         self.set_sandwich_frozen(True)
-        if pooling != None:
-            pool_fn = get_pooling2d(pooling)
+
+        self.decoder = nn.Linear(encoder.latent_dim, hidden_dims[0] * 4)
         modules = []
-        in_features = channels
-        for h_dim in hidden_dims:
-            modules.append(BasicBlock2d(in_features,
-                                        h_dim))
-            if pooling != None:
-                modules.append(pool_fn(2))
+        for h_dim, (layer, features) in zip(hidden_dims, sandwich_layers):
+            modules.append(layer)
+            in_features = features
+            modules.append(BasicBlock2d(in_features, h_dim))
             in_features = h_dim
-        self.layers = nn.Sequential(
-            *modules,
-            nn.Flatten(),
-            nn.Dropout(p=dropout),
-        )
-        in_features = hidden_dims[-1] * width * height
-        if pooling != None:
-            in_features /= 4**len(hidden_dims)
-            if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError(
-                    'noninteger number of features - perhaps there is too much pooling?')
-            in_features = int(in_features)
-        self.output = nn.Sequential(
-            nn.Linear(in_features, num_classes),
+        self.hidden_layers = nn.Sequential(*modules)
+        self.output_layer = nn.Sequential(
+            nn.Dropout(dropout),
+            nn.Linear(in_features * 4, num_classes),
             nn.BatchNorm1d(num_classes),
             nn.Sigmoid(),
         )
-    
+
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
-        y = self.layers(input)
-        y = self.output(y)
+        mu, log_var = self.encoder(input)
+        z = reparameterize(mu, log_var)
+        y = self.decoder(z)
+        y = y.view(y.shape[0], self.hidden_dims[-1], 2, 2)
+        y = self.hidden_layers(y)
+        y = y.reshape(y.shape[0], -1)
+        y = self.output_layer(y)
         return y
 
     def set_sandwich_frozen(self, frozen: bool):
-        for layer in self.sandwich_layers:
+        self.encoder.requires_grad = frozen
+        for layer, _ in self.sandwich_layers:
             layer.requires_grad = frozen
