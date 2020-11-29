@@ -18,7 +18,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}"
+            "cwd": "${workspaceFolder}",
+            "args": ["--dry-run", "True"]
         },
         {
             "name": "Python: train CelebA VAE",
