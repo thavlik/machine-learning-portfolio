@@ -3,9 +3,8 @@ from torch import nn
 from torch.nn import functional as F
 from .conv4d import Conv4d
 from .base import BaseVAE
-from .maxpool4d import MaxPool4d
+from .util import get_pooling4d, get_activation
 from .resnet4d import BasicBlock4d
-from .pooling import get_pooling4d
 from torch import nn, Tensor
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
@@ -90,7 +89,7 @@ class ResNetVAE4d(BaseVAE):
                    width * height * depth * frames * channels // 16,
                    kernel_size=3,
                    padding=1),
-            act_options[output_activation](),
+            get_activation(output_activation),
         )
 
     def encode(self, input: Tensor) -> List[Tensor]:

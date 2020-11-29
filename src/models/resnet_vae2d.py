@@ -8,7 +8,7 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
-from .pooling import get_pooling2d
+from .util import get_pooling2d, get_activation
 
 
 class ResNetVAE2d(BaseVAE):
@@ -76,15 +76,6 @@ class ResNetVAE2d(BaseVAE):
         )
 
         # Decoder
-        act_options = {
-            'sigmoid': nn.Sigmoid,
-            'tanh': nn.Tanh,
-            'relu': nn.ReLU,
-        }
-        if output_activation not in act_options:
-            raise ValueError(
-                f'Unknown activation function "{output_activation}"')
-
         hidden_dims.reverse()
         self.decoder_input = nn.Linear(latent_dim, hidden_dims[0] * 4)
         modules = []
@@ -98,7 +89,7 @@ class ResNetVAE2d(BaseVAE):
                       width * height * channels // 4,
                       kernel_size=3,
                       padding=1),
-            act_options[output_activation](),
+            get_activation(output_activation),
         )
 
     def encode(self, input: Tensor) -> List[Tensor]:

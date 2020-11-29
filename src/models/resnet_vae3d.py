@@ -8,7 +8,7 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
-from .pooling import get_pooling3d
+from .util import get_pooling3d, get_activation
 
 
 class ResNetVAE3d(BaseVAE):
@@ -88,7 +88,7 @@ class ResNetVAE3d(BaseVAE):
                       width * height * depth * channels // 8,
                       kernel_size=3,
                       padding=1),
-            act_options[output_activation](),
+            get_activation(output_activation),
         )
 
     def encode(self, input: Tensor) -> List[Tensor]:

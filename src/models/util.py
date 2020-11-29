@@ -50,3 +50,17 @@ def get_pooling4d(name: str) -> nn.Module:
         raise ValueError(f'Unknown 4D pooling function "{name}", '
                          f'valid options are {pool4d}')
     return pool4d[name]
+
+
+act_options = {
+    'sigmoid': nn.Sigmoid,
+    'tanh': nn.Tanh,
+    'relu': nn.ReLU,
+}
+
+
+def get_activation(name: str) -> nn.Module:
+    if name not in act_options:
+        raise ValueError(
+            f'Unknown activation function "{name}"')
+    return act_options[name]()
