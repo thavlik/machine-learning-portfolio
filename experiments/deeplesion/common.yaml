@@ -1,6 +1,6 @@
 model_params:
   pooling: max
-  hidden_dims: [64, 128, 256, 128, 64]
+  hidden_dims: [64, 128, 128, 128, 64]
   
 exp_params:
   batch_size: 8
@@ -17,7 +17,11 @@ exp_params:
   plot:
     fn: dcm
     params:
-      title: "${model}, DeepLesion, Epoch ${epoch}"
       scaling: 2.0
       suptitle:
         y: 0.78
+
+trainer_params:
+  max_epochs: 5
+  log_every_n_steps: 20
+  check_val_every_n_epoch: 1
