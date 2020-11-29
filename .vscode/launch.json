@@ -45,7 +45,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/eeg/vae/mse.yaml"]
+            "args": ["--config", "experiments/grasp_and_lift_eeg/vae/mse.yaml"]
         },
         {
             "name": "Python: train MNIST",

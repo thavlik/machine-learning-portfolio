@@ -8,7 +8,7 @@ def vae1d(config: dict):
     exp_params = config['exp_params']
     c, l = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
-                         length=l,
+                         num_samples=l,
                          channels=c)
     return VAEExperiment(model,
                          params=exp_params)
@@ -38,7 +38,7 @@ def vae3d(config: dict):
                          params=exp_params)
 
 
-experiments = {
+entrypoints = {
     'vae1d': vae1d,
     'vae2d': vae2d,
     'vae3d': vae3d,
@@ -46,10 +46,10 @@ experiments = {
 
 
 def create_experiment(config: dict):
-    if 'experiment' not in config:
-        raise ValueError('config has no experiment')
-    experiment = config['experiment']
-    if experiment not in experiments:
-        raise ValueError(f'unknown experiment "{experiment}" '
-                         f'valid options are {experiments}')
-    return experiments[experiment](config)
+    if 'entrypoint' not in config:
+        raise ValueError('config has no entrypoint')
+    entrypoint = config['entrypoint']
+    if entrypoint not in entrypoints:
+        raise ValueError(f'unknown entrypoint "{entrypoint}" '
+                         f'valid options are {entrypoints}')
+    return entrypoints[entrypoint](config)

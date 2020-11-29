@@ -1,9 +1,13 @@
 exp_params:
   data:
-    name: eeg
+    name: grasp-and-lift-eeg
     loader:
       num_workers: 0
       drop_last: true
-    training: {}
+    training:
+      dir: E:/grasp-and-lift-eeg-detection/train
+      num_samples: 4096
+    validation:
+      dir: E:/grasp-and-lift-eeg-detection/test
   plot:
     fn: timeseries

@@ -16,12 +16,12 @@ class ResNetVAE1d(BaseVAE):
                  latent_dim: int,
                  hidden_dims: List[int],
                  dropout: float = 0.4,
-                 length: int = 128,
+                 num_samples: int = 128,
                  channels: int = 1,
                  output_activation: str = 'sigmoid') -> None:
         super(ResNetVAE1d, self).__init__(name=name,
                                           latent_dim=latent_dim)
-        self.length = length
+        self.num_samples = num_samples
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
 
@@ -37,7 +37,7 @@ class ResNetVAE1d(BaseVAE):
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * length // 2**len(hidden_dims)
+        in_features = hidden_dims[-1] * num_samples // 2**len(hidden_dims)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),
@@ -69,14 +69,14 @@ class ResNetVAE1d(BaseVAE):
         self.decoder = nn.Sequential(
             *modules,
             nn.Conv1d(hidden_dims[-1],
-                      length * channels,
+                      num_samples * channels,
                       kernel_size=3,
                       padding=1),
             act_options[output_activation](),
         )
 
     def encode(self, input: Tensor) -> List[Tensor]:
-        if input.shape[-2:] != (self.channels, self.length):
+        if input.shape[-2:] != (self.channels, self.num_samples):
             raise ValueError('wrong input shape')
         x = self.encoder(input)
         mu = self.mu(x)
@@ -87,5 +87,5 @@ class ResNetVAE1d(BaseVAE):
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[-1], -1)
         x = self.decoder(x)
-        x = x.view(x.shape[0], self.channels, self.length)
+        x = x.view(x.shape[0], self.channels, self.num_samples)
         return x

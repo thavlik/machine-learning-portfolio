@@ -1,4 +1,4 @@
-experiment: vae2d
+entrypoint: vae2d
 
 model_params:
   arch: 'ResNetVAE2d'

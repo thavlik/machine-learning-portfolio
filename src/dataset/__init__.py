@@ -1,25 +1,25 @@
 from .cq500 import *
 from .deeplesion import *
+from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
 from .trends_fmri import *
 from .video import *
 
+datasets = {
+    'cq500': CQ500Dataset,
+    'deeplesion': DeepLesionDataset,
+    'reference': ReferenceDataset,
+    'rsna-intracranial': RSNAIntracranialDataset,
+    'trends-fmri': TReNDSfMRIDataset,
+    'grasp-and-lift-eeg': GraspAndLiftEEGDataset,
+}
+
+
 def get_dataset(name: str, params: dict):
-    if name == 'cq500':
-        return CQ500Dataset(**params)
-    elif name == 'deeplesion':
-        return DeepLesionDataset(**params)
-    elif name == 'reference':
-        return ReferenceDataset(**params)
-    elif name == 'rsna-intracranial':
-        return RSNAIntracranialDataset(**params)
-    elif name == 'trends-fmri':
-        return TReNDSfMRIDataset(**params)
-    elif name == 'video':
-        return VideoDataset(**params)
-    else:
-        raise ValueError(f"unknown dataset loader '{name}'")
+    if name not in datasets:
+        raise ValueError(f"unknown dataset '{name}'")
+    return datasets[name](**params)
 
 
 dataset_dims = {
@@ -40,6 +40,8 @@ def get_example_shape(data: dict):
     if name == 'video':
         params = data['training']
         return torch.Size((3, params['height'], params['width']))
+    if name == 'grasp-and-lift-eeg':
+        return (32, data['training']['num_samples'])
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return torch.Size(dataset_dims[name])

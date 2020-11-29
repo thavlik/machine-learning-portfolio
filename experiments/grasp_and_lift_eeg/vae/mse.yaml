@@ -1,7 +1,6 @@
 base:
   - experiments/abstract/vae1d/mse.yaml
-  - experiments/eeg/common.yaml
+  - experiments/grasp_and_lift_eeg/common.yaml
 
 logging_params:
-  name: 'EEG_VAE_MSE'
-
+  name: 'GraspLiftEEG_VAE_MSE'
