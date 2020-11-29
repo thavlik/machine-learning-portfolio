@@ -2,5 +2,10 @@ base:
   - experiments/abstract/vae2d/mse.yaml
   - experiments/reference/celeba/common.yaml
   
+exp_params:
+  plot:
+    params:
+      title: "${model}, CelebA, MSE loss, Epoch ${epoch}"
+
 logging_params:
   name: "CelebA_VAE_MSE"

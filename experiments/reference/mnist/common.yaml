@@ -8,11 +8,8 @@ exp_params:
         download: true
   warmup_steps: 512
   batch_size: 640
-  plot:
-    params:
-      title: "${model}, MNIST, Epoch ${epoch}"
   
 trainer_params:
   max_epochs: 100
-  log_every_n_steps: 200
-  check_val_every_n_epoch: 20
+  log_every_n_steps: 100
+  check_val_every_n_epoch: 10

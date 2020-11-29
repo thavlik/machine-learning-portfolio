@@ -3,4 +3,12 @@ exp_params:
     name: reference
     params:
       name: CelebA
-      params: {}
+      params:
+        dir: E:/
+  warmup_steps: 512
+  batch_size: 64
+  
+trainer_params:
+  max_epochs: 100
+  log_every_n_steps: 100
+  check_val_every_n_epoch: 10

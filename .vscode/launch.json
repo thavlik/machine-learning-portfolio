@@ -21,58 +21,88 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Python: train CQ500",
+            "name": "Python: train CelebA VAE",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/cq500/vae/fid.yaml"]
+            "args": [
+                "--config",
+                "experiments/reference/celeba/vae/fid.yaml"
+            ]
         },
         {
-            "name": "Python: train DeepLesion",
+            "name": "Python: train CQ500 VAE",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/deeplesion/vae/fid.yaml"]
+            "args": [
+                "--config",
+                "experiments/cq500/vae/fid.yaml"
+            ]
         },
         {
-            "name": "Python: train EEG",
+            "name": "Python: train DeepLesion VAE",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/grasp_and_lift_eeg/vae/mse.yaml"]
+            "args": [
+                "--config",
+                "experiments/deeplesion/vae/fid.yaml"
+            ]
         },
         {
-            "name": "Python: train MNIST",
+            "name": "Python: train EEG VAE",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/reference/mnist/vae/fid.yaml"]
+            "args": [
+                "--config",
+                "experiments/grasp_and_lift_eeg/vae/mse.yaml"
+            ]
         },
         {
-            "name": "Python: train RSNA",
+            "name": "Python: train MNIST VAE",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/rsna-intracranial/vae/fid.yaml"]
+            "args": [
+                "--config",
+                "experiments/reference/mnist/vae/fid.yaml"
+            ]
         },
         {
-            "name": "Python: train TReNDS fMRI",
+            "name": "Python: train RSNA VAE",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/trends-fmri/vae/mse.yaml"]
+            "args": [
+                "--config",
+                "experiments/rsna-intracranial/vae/fid.yaml"
+            ]
+        },
+        {
+            "name": "Python: train TReNDS fMRI VAE",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/trends-fmri/vae/mse.yaml"
+            ]
         },
         {
             "name": "Python: compiler.py",
@@ -89,7 +119,10 @@
             "program": "${workspaceFolder}/src/compiler.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--clean", "True"]
+            "args": [
+                "--clean",
+                "True"
+            ]
         }
     ]
 }
