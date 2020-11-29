@@ -1,0 +1,21 @@
+model_params:
+  pooling: max
+  
+exp_params:
+  data:
+    name: deeplesion
+    loader:
+      num_workers: 0
+      drop_last: true
+    training:
+      dir: E:/deeplesion
+    validation:
+      #FIXME it will look like it's crazy effective this way lol
+      dir: E:/deeplesion
+  plot:
+    fn: dcm
+    params:
+      title: "${model}, DeepLesion (Epoch ${epoch})"
+      scaling: 2.0
+      suptitle:
+        y: 0.78

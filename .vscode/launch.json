@@ -27,7 +27,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/cq500/vae_fid.yaml"]
+            "args": ["--config", "experiments/cq500/vae/fid.yaml"]
         },
         {
             "name": "Python: train DeepLesion",
@@ -36,7 +36,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/deeplesion/vae_fid.yaml"]
+            "args": ["--config", "experiments/deeplesion/vae/fid.yaml"]
         },
         {
             "name": "Python: train EEG",
@@ -45,7 +45,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/eeg/mse_fid.yaml"]
+            "args": ["--config", "experiments/eeg/vae/mse.yaml"]
         },
         {
             "name": "Python: train MNIST",
@@ -54,7 +54,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/reference/mnist/vae_fid.yaml"]
+            "args": ["--config", "experiments/reference/mnist/vae/fid.yaml"]
         },
         {
             "name": "Python: train RSNA",
@@ -63,7 +63,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/rsna-intracranial/vae_fid.yaml"]
+            "args": ["--config", "experiments/rsna-intracranial/vae/fid.yaml"]
         },
         {
             "name": "Python: train TReNDS fMRI",
@@ -72,7 +72,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--config", "experiments/trends-fmri/vae_mse.yaml"]
+            "args": ["--config", "experiments/trends-fmri/vae/mse.yaml"]
         },
         {
             "name": "Python: compiler.py",
