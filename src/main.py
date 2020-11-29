@@ -73,10 +73,9 @@ def run_series(series: list,
                dry_run: bool):
     if type(series) != list:
         series = [series]
-    exp_no = 0
     for item in series:
         if type(item) is list:
-            exp_no += run_series(item, save_dir, exp_no, total_experiments, dry_run)
+            exp_no = run_series(item, save_dir, exp_no, total_experiments, dry_run)
         else:
             experiment_main(item, save_dir, exp_no, total_experiments, dry_run)
             gc.collect()
