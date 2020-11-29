@@ -10,4 +10,8 @@ exp_params:
     validation:
       dir: E:/grasp-and-lift-eeg-detection/test
   plot:
-    fn: timeseries
+    fn: eeg
+    batch_size: 4
+    params:
+      width: 6000
+      height: 4000

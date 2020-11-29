@@ -15,8 +15,8 @@ class ResNetVAE1d(BaseVAE):
                  name: str,
                  latent_dim: int,
                  hidden_dims: List[int],
+                 num_samples: int,
                  dropout: float = 0.4,
-                 num_samples: int = 128,
                  channels: int = 1,
                  output_activation: str = 'sigmoid') -> None:
         super(ResNetVAE1d, self).__init__(name=name,
@@ -30,14 +30,13 @@ class ResNetVAE1d(BaseVAE):
         in_features = channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock1d(in_features, h_dim))
-            modules.append(nn.MaxPool1d((2, 1)))
             in_features = h_dim
         self.encoder = nn.Sequential(
             *modules,
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * num_samples // 2**len(hidden_dims)
+        in_features = hidden_dims[-1] * num_samples
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
             nn.BatchNorm1d(latent_dim),

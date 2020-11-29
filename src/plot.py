@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from torch import Tensor
 from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 from plotly.graph_objects import Figure
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
@@ -27,18 +28,50 @@ def plot_title(template: str,
     return interpolated
 
 
-def timeseries(orig: Tensor,
-               recons: Tensor,
-               model_name: str,
-               epoch: int,
-               out_path: str,
-               rows: int,
-               cols: int,
-               width: int,
-               height: int):
-    fig = make_subplots(rows=rows, cols=cols)
-    raise NotImplementedError
-    fig.write_image(out_path,
+def eeg(orig: Tensor,
+        recons: Tensor,
+        model_name: str,
+        epoch: int,
+        out_path: str,
+        width: int,
+        height: int,
+        line_opacity: float = 0.7):
+    batch_size, num_channels, num_samples = orig.shape
+    cols = batch_size
+    fig = make_subplots(rows=num_channels, cols=cols)
+    i = 0
+    n = min(cols, batch_size)
+    x = np.arange(num_samples) / num_samples
+    for col in range(cols):
+        if i >= n:
+            break
+        for channel in range(num_channels):
+            yo = orig[i, channel, :]
+            yr = recons[i, channel, :]
+            fig.add_trace(go.Scatter(
+                x=x,
+                y=yo,
+                mode='lines',
+                name=f'Original (Ch. {channel})',
+                opacity=line_opacity,
+                line=dict(
+                    color='red',
+                    width=2,
+                ),
+            ), row=channel+1, col=col+1)
+            fig.add_trace(go.Scatter(
+                x=x,
+                y=yr,
+                mode='lines',
+                name=f'Recons (Ch. {channel})',
+                opacity=line_opacity,
+                line=dict(
+                    color='blue',
+                    width=2,
+                ),
+            ), row=channel+1, col=col+1)
+        i += 1
+    fig.write_image(out_path + '.png',
                     width=width,
                     height=height)
 
@@ -292,7 +325,7 @@ def fmri_stat_map_video(orig: Tensor,
                 o = plot_frame(orig[i, :, :, :, frame],
                                f'{out_path}_{i}_{frame}_orig.tmp.png')
                 r = plot_frame(recons[i, :, :, :, frame],
-                             f'{out_path}_{i}_{frame}_recons.tmp.png')
+                               f'{out_path}_{i}_{frame}_recons.tmp.png')
                 f = torch.cat([o, r], dim=-2)
                 frame_cols.append(f)
                 i += 1
@@ -333,7 +366,7 @@ def fmri_stat_map_video(orig: Tensor,
 
 
 plot_fn = {
-    'timeseries': timeseries,
+    'eeg': eeg,
     'plot2d': plot2d,
     'dcm': plot2d_dcm,
     'fmri_prob_atlas': fmri_prob_atlas,
