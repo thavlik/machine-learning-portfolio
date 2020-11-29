@@ -21,13 +21,58 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Python: main.py MNIST",
+            "name": "Python: train CQ500",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--config", "experiments/cq500/vae_fid.yaml"]
+        },
+        {
+            "name": "Python: train DeepLesion",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--config", "experiments/deeplesion/vae_fid.yaml"]
+        },
+        {
+            "name": "Python: train EEG",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--config", "experiments/eeg/mse_fid.yaml"]
+        },
+        {
+            "name": "Python: train MNIST",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "args": ["--config", "experiments/reference/mnist/vae_fid.yaml"]
+        },
+        {
+            "name": "Python: train RSNA",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--config", "experiments/rsna-intracranial/vae_fid.yaml"]
+        },
+        {
+            "name": "Python: train TReNDS fMRI",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--config", "experiments/trends-fmri/vae_mse.yaml"]
         },
         {
             "name": "Python: compiler.py",
