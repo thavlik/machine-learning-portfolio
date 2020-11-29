@@ -1,0 +1,3 @@
+series:
+  - experiments/rsna-intracranial/vae/mse.yaml
+  - experiments/rsna-intracranial/vae/fid.yaml

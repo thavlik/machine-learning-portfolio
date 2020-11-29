@@ -1,0 +1,3 @@
+series:
+  - experiments/deeplesion/vae/mse.yaml
+  - experiments/deeplesion/vae/fid.yaml

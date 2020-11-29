@@ -2,3 +2,6 @@ series:
   - experiments/ffhq/all.yaml
   - experiments/mnist/all.yaml
   - experiments/grasp_and_lift_eeg/all.yaml
+  - experiments/cq500/all.yaml
+  - experiments/deeplesion/all.yaml
+  - experiments/rsna-intracranial/all.yaml
