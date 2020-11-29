@@ -29,7 +29,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/reference/celeba/vae/fid.yaml"
+                "experiments/celeba/vae/fid.yaml"
             ]
         },
         {
@@ -89,7 +89,19 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/reference/mnist/vae/fid.yaml"
+                "experiments/mnist/vae/fid.yaml"
+            ]
+        },
+        {
+            "name": "Python: train MNIST Basic Classification",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/classification/basic.yaml"
             ]
         },
         {

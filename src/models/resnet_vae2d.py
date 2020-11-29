@@ -21,8 +21,8 @@ class ResNetVAE2d(BaseVAE):
                  channels: int,
                  dropout: float = 0.4,
                  output_activation: str = 'sigmoid',
-                 enable_fid: bool = False,
                  pooling: str = None,
+                 enable_fid: bool = False,
                  fid_blocks: List[int] = [2048]) -> None:
         super(ResNetVAE2d, self).__init__(name=name,
                                           latent_dim=latent_dim)

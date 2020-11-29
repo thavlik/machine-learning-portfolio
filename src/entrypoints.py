@@ -1,7 +1,19 @@
 import torch
 from models import create_model
 from vae import VAEExperiment
+from classification import ClassificationExperiment
 from dataset import ReferenceDataset, get_example_shape
+
+
+def classification2d(config: dict):
+    exp_params = config['exp_params']
+    c, h, w = get_example_shape(exp_params['data'])
+    model = create_model(**config['model_params'],
+                         width=w,
+                         height=h,
+                         channels=c)
+    return ClassificationExperiment(model,
+                                    params=exp_params)
 
 
 def vae1d(config: dict):
@@ -39,6 +51,7 @@ def vae3d(config: dict):
 
 
 entrypoints = {
+    'classification2d': classification2d, 
     'vae1d': vae1d,
     'vae2d': vae2d,
     'vae3d': vae3d,

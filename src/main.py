@@ -7,9 +7,8 @@ import torch
 import torch.backends.cudnn as cudnn
 import numpy as np
 from models import create_model
-from experiments import create_experiment
-from deepmerge import Merger
-
+from entrypoints import create_experiment
+from merge_strategy import strategy
 
 def load_config(path):
     with open(path, 'r') as f:
@@ -21,10 +20,6 @@ def load_config(path):
             bases = config['base']
             if type(bases) is not list:
                 bases = [bases]
-            strategy = Merger([(list, "override"),
-                               (dict, "merge")],
-                              ["override"],
-                              ["override"])
             merged = {}
             for base in bases:
                 merged = strategy.merge(merged, load_config(base))

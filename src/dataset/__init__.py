@@ -46,3 +46,4 @@ def get_example_shape(data: dict):
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return torch.Size(dataset_dims[name])
+

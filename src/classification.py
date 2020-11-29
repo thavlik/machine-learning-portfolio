@@ -6,6 +6,7 @@ from torch import optim, Tensor
 from torchvision import transforms
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
+from torch import nn
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
 from dataset import get_dataset
@@ -16,17 +17,18 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional
 from plot import get_plot_fn
-from models.base import BaseVAE
+from models.classifier import Classifier
 from merge_strategy import strategy
 
-class VAEExperiment(pl.LightningModule):
+
+class ClassificationExperiment(pl.LightningModule):
 
     def __init__(self,
-                 vae_model: BaseVAE,
+                 model: Classifier,
                  params: dict) -> None:
-        super(VAEExperiment, self).__init__()
+        super(ClassificationExperiment, self).__init__()
 
-        self.model = vae_model
+        self.model = model
         self.params = params
         self.curr_device = None
 
@@ -42,43 +44,23 @@ class VAEExperiment(pl.LightningModule):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-
-        results = self.forward(real_img, labels=labels)
-        kld_weight = self.params.get('kld_weight', 0.0) * \
-            self.params['batch_size']/self.num_train_imgs
-        kwargs = dict(optimizer_idx=optimizer_idx,
-                      batch_idx=batch_idx,
-                      kld_weight=kld_weight)
-        if 'fid_weight' in self.params:
-            kwargs['fid_weight'] = self.params['fid_weight']
-        train_loss = self.model.loss_function(*results, **kwargs)
-
+        y = self.forward(real_img).cpu()
+        train_loss = self.model.loss_function(y, labels.cpu())
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
-
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-
-        results = self.forward(real_img, labels=labels)
-        kld_weight = self.params.get('kld_weight', 0.0) * \
-            self.params['batch_size']/self.num_val_imgs
-        kwargs = dict(optimizer_idx=optimizer_idx,
-                      batch_idx=batch_idx,
-                      kld_weight=kld_weight)
-        if 'fid_weight' in self.params:
-            kwargs['fid_weight'] = self.params['fid_weight']
-        val_loss = self.model.loss_function(*results, **kwargs)
-
+        y = self.forward(real_img).cpu()
+        val_loss = self.model.loss_function(y, labels.cpu())
         return val_loss
 
     def validation_epoch_end(self, outputs: dict):
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
         self.log('avg_val_loss', avg_loss)
-        self.sample_images()
 
     def sample_images(self):
         for plot, val_indices in zip(self.plots, self.val_indices):
@@ -152,6 +134,8 @@ class VAEExperiment(pl.LightningModule):
         ds_params = strategy.merge(
             self.params['data'].get('training', {}),
             self.params['data'].get('validation', {}))
+        dataset = get_dataset(self.params['data']['name'], ds_params)
+        
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,

@@ -6,6 +6,10 @@ exp_params:
       params:
         root: E:/
         download: true
+        train: true
+    validation:
+      params:
+        train: false
   batch_size: 64
   
 trainer_params:
