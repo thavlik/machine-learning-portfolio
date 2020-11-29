@@ -1,6 +1,7 @@
 from .cq500 import *
 from .deeplesion import *
 from .dicom_util import *
+from .ffhq import *
 from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
@@ -10,6 +11,7 @@ from .video import *
 datasets = {
     'cq500': CQ500Dataset,
     'deeplesion': DeepLesionDataset,
+    'ffhq': FFHQDataset,
     'reference': ReferenceDataset,
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,
@@ -27,6 +29,7 @@ dataset_dims = {
     'eeg': (1, 8192),  # channels, length
     'cq500': (1, 512, 512),  # channels, height, width
     'deeplesion': (1, 512, 512),
+    'ffhq': (3, 128, 128), # 128x128 thumbnails
     'rsna-intracranial': (1, 512, 512),
     'trends-fmri': (53, 63, 52, 53),
 }

@@ -12,7 +12,7 @@ class ReferenceDataset(data.Dataset):
                  params: dict):
         super(ReferenceDataset, self).__init__()
         self.ds = getattr(datasets, name)(**params,
-                                          transform=ToTensor())
+                                        transform=ToTensor())
 
     def __getitem__(self, index):
         return self.ds[index]
