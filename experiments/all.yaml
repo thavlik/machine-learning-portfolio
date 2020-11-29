@@ -1,4 +1,3 @@
 series:
-  - experiments/celeba/all.yaml
   - experiments/ffhq/all.yaml
   - experiments/mnist/all.yaml

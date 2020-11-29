@@ -31,26 +31,49 @@ def load_config(path):
 
 
 def experiment_main(config: dict,
-                    save_dir: str):
-    series = config
+                    save_dir: str,
+                    exp_no: int,
+                    total_experiments: int):
+    torch.manual_seed(config['manual_seed'])
+    np.random.seed(config['manual_seed'])
+    experiment = create_experiment(config).cuda()
+    tt_logger = TestTubeLogger(save_dir=save_dir,
+                               name=config['logging_params']['name'],
+                               debug=False,
+                               create_git_tag=False)
+    runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
+                     min_epochs=1,
+                     num_sanity_val_steps=5,
+                     logger=tt_logger,
+                     **config['trainer_params'])
+    print(f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {exp_no+1}/{total_experiments}) =======")
+    print(config)
+    runner.fit(experiment)
+
+
+def count_experiments(series: list) -> int:
+    n = 0
+    for item in series:
+        if type(item) is list:
+            n += count_experiments(item)
+        else:
+            n += 1
+    return n
+
+
+def run_series(series: list,
+               save_dir: str,
+               total_experiments: int):
     if type(series) != list:
         series = [series]
-    for i, config in enumerate(series):
-        torch.manual_seed(config['manual_seed'])
-        np.random.seed(config['manual_seed'])
-        experiment = create_experiment(config).cuda()
-        tt_logger = TestTubeLogger(save_dir=save_dir,
-                                   name=config['logging_params']['name'],
-                                   debug=False,
-                                   create_git_tag=False)
-        runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
-                         min_epochs=1,
-                         num_sanity_val_steps=5,
-                         logger=tt_logger,
-                         **config['trainer_params'])
-        print(
-            f"======= Training {config['model_params']['name']} (Experiment {i+1}/{len(series)}) =======")
-        runner.fit(experiment)
+    exp_no = 0
+    for item in series:
+        if type(item) is list:
+            exp_no += run_series(item, save_dir, total_experiments)
+        else:
+            experiment_main(item, save_dir, exp_no, total_experiments)
+            exp_no += 1
+    return exp_no
 
 
 parser = argparse.ArgumentParser(
@@ -59,17 +82,17 @@ parser.add_argument('--config',  '-c',
                     dest="config",
                     metavar='FILE',
                     help='path to the experiment config file',
-                    default='experiments/rsna-intracranial/vae_fid.yaml')
-# default='experiments/reference/mnist/vae_fid.yaml')
+                    default='experiments/reference/mnist/vae_fid.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',
                     help='Save directory for logs and screenshots',
                     default='logs')
-
 args = parser.parse_args()
 config = load_config(args.config)
 cudnn.deterministic = True
 cudnn.benchmark = False
-experiment_main(config,
-                save_dir=args.save_dir)
+total_experiments = count_experiments(config)
+run_series(config,
+           save_dir=args.save_dir,
+           total_experiments=total_experiments)

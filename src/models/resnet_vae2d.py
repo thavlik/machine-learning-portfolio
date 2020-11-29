@@ -62,7 +62,8 @@ class ResNetVAE2d(BaseVAE):
         if pooling != None:
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+                raise ValueError(
+                    'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
@@ -124,9 +125,12 @@ class ResNetVAE2d(BaseVAE):
         return result
 
     def fid(self, a: Tensor, b: Tensor) -> Tensor:
-        a = self.inception(a.repeat(1, 3, 1, 1))
-        b = self.inception(b.repeat(1, 3, 1, 1))
-        fid_loss = 0.0
-        for x, y in zip(a, b):
-            fid_loss += torch.mean((x - y) ** 2)
+        if a.shape[1] == 1:
+            # Convert monochrome to RGB
+            a = a.repeat(1, 3, 1, 1)
+            b = b.repeat(1, 3, 1, 1)
+        a = self.inception(a)
+        b = self.inception(b)
+        fid_loss = sum(torch.mean((x - y) ** 2)
+                       for x, y in zip(a, b))
         return fid_loss

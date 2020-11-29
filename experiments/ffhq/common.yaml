@@ -1,14 +1,17 @@
+model_params:
+  pooling: max
+
 exp_params:
   data:
     name: reference
     training:
-      name: FFHQ
+      name: ImageFolder
       params:
-        root: E:/
+        root: E:/thumbnails128x128
   warmup_steps: 512
-  batch_size: 64
+  batch_size: 32
   
 trainer_params:
-  max_epochs: 100
-  log_every_n_steps: 100
-  check_val_every_n_epoch: 10
+  max_epochs: 10
+  log_every_n_steps: 20
+  check_val_every_n_epoch: 1

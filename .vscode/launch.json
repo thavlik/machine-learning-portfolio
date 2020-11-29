@@ -69,6 +69,18 @@
             ]
         },
         {
+            "name": "Python: train FFHQ VAE",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/ffhq/vae/fid.yaml"
+            ]
+        },
+        {
             "name": "Python: train MNIST VAE",
             "type": "python",
             "request": "launch",
