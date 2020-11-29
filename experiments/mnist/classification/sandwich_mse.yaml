@@ -11,5 +11,5 @@ entrypoint: classification_sandwich2d
 base_experiment: experiments/mnist/vae/mse.yaml
 
 logging_params:
-  name: "MNIST_Sandwich_MSE"
+  name: "MNIST_SandwichMSE"
 

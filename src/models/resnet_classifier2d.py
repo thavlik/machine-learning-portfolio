@@ -53,7 +53,7 @@ class ResNetClassifier2d(Classifier):
             nn.BatchNorm1d(num_classes),
             nn.Sigmoid(),
         )
-    
+
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         y = self.layers(input)
         y = self.output(y)

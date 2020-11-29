@@ -93,7 +93,7 @@
             ]
         },
         {
-            "name": "Python: train MNIST Basic Classification",
+            "name": "Python: train MNIST BasicClassification",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -105,7 +105,21 @@
             ]
         },
         {
-            "name": "Python: train MNIST Sandwich",
+            "name": "Python: train MNIST EmbedFID",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/classification/embed_fid.yaml",
+                "--dry-run",
+                "True"
+            ]
+        },
+        {
+            "name": "Python: train MNIST SandwichFID",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",

@@ -20,10 +20,30 @@ def classification2d(config: dict, run_args: dict):
                                     params=exp_params)
 
 
-def classification_sandwich2d(config: dict, run_args: dict):
-    base_experiment = experiment_main(load_config(config['base_experiment']), **run_args)
+def classification_embed2d(config: dict, run_args: dict):
+    base_experiment = experiment_main(
+        load_config(config['base_experiment']), **run_args)
     encoder = base_experiment.model.get_encoder()
+    encoder.requires_grad = False
+    exp_params = config['exp_params']
+    c, h, w = get_example_shape(exp_params['data'])
+    model = create_model(**config['model_params'],
+                         width=w,
+                         height=h,
+                         channels=c,
+                         encoder=encoder)
+    return ClassificationExperiment(model,
+                                    params=exp_params)
+
+
+def classification_sandwich2d(config: dict, run_args: dict):
+    base_experiment = experiment_main(
+        load_config(config['base_experiment']), **run_args)
+    encoder = base_experiment.model.get_encoder()
+    encoder.requires_grad = False
     sandwich_layers = base_experiment.model.get_sandwich_layers()
+    for layer in sandwich_layers:
+        layer.requires_grad = False
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
@@ -72,6 +92,7 @@ def vae3d(config: dict, run_args: dict):
 
 entrypoints = {
     'classification2d': classification2d,
+    'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,
     'vae1d': vae1d,
     'vae2d': vae2d,

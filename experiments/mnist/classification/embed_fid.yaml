@@ -3,13 +3,13 @@ include:
   - experiments/mnist/classification/common.yaml
 
 model_params:
-  arch: 'ResNetSandwich2d'
-  name: 'ResNetSandwich2d'
+  arch: 'ResNetEmbed2d'
+  name: 'ResNetEmbed2d'
 
-entrypoint: classification_sandwich2d
+entrypoint: classification_embed2d
 
 base_experiment: experiments/mnist/vae/fid.yaml
 
 logging_params:
-  name: "MNIST_SandwichFID"
+  name: "MNIST_EmbedFID"
 

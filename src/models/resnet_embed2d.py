@@ -12,7 +12,7 @@ from .util import get_pooling2d, get_activation
 from .encoder_wrapper import EncoderWrapper
 from .base import reparameterize
 
-class ResNetSandwich2d(Classifier):
+class ResNetEmbed2d(Classifier):
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],
@@ -21,22 +21,19 @@ class ResNetSandwich2d(Classifier):
                  channels: int,
                  num_classes: int,
                  encoder: EncoderWrapper,
-                 sandwich_layers: List[nn.Module],
                  dropout: float = 0.4,
                  pooling: str = None) -> None:
-        super(ResNetSandwich2d, self).__init__(name=name)
+        super(ResNetEmbed2d, self).__init__(name=name)
         self.width = width
         self.height = height
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
-        self.sandwich_layers = sandwich_layers
         self.encoder = encoder
 
         self.decoder = nn.Linear(encoder.latent_dim, hidden_dims[0] * 4)
         modules = []
-        for h_dim, (layer, features) in zip(hidden_dims, sandwich_layers):
-            modules.append(layer)
-            in_features = features
+        in_features = hidden_dims[0]
+        for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features, h_dim))
             in_features = h_dim
         self.hidden_layers = nn.Sequential(*modules)
@@ -57,7 +54,3 @@ class ResNetSandwich2d(Classifier):
         y = self.output_layer(y)
         return y
 
-    def set_sandwich_frozen(self, frozen: bool):
-        self.encoder.requires_grad = frozen
-        for layer, _ in self.sandwich_layers:
-            layer.requires_grad = frozen
