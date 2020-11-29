@@ -7,7 +7,7 @@ exp_params:
         root: E:/
         download: true
   warmup_steps: 512
-  batch_size: 640
+  batch_size: 64
   
 trainer_params:
   max_epochs: 100

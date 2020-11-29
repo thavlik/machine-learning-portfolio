@@ -34,7 +34,8 @@ def load_config(path):
 def experiment_main(config: dict,
                     save_dir: str,
                     exp_no: int,
-                    total_experiments: int):
+                    total_experiments: int,
+                    dry_run: bool):
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config).cuda()
@@ -42,6 +43,8 @@ def experiment_main(config: dict,
                                name=config['logging_params']['name'],
                                debug=False,
                                create_git_tag=False)
+    if dry_run:
+        config['trainer_params']['max_steps'] = 1
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,
                      num_sanity_val_steps=5,
@@ -64,15 +67,17 @@ def count_experiments(series: list) -> int:
 
 def run_series(series: list,
                save_dir: str,
-               total_experiments: int):
+               exp_no: int,
+               total_experiments: int,
+               dry_run: bool):
     if type(series) != list:
         series = [series]
     exp_no = 0
     for item in series:
         if type(item) is list:
-            exp_no += run_series(item, save_dir, total_experiments)
+            exp_no += run_series(item, save_dir, exp_no, total_experiments, dry_run)
         else:
-            experiment_main(item, save_dir, exp_no, total_experiments)
+            experiment_main(item, save_dir, exp_no, total_experiments, dry_run)
             exp_no += 1
     return exp_no
 
@@ -87,13 +92,24 @@ parser.add_argument('--config',  '-c',
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',
-                    help='Save directory for logs and screenshots',
+                    help='save directory for logs and screenshots',
                     default='logs')
+parser.add_argument('--dry-run',
+                    dest="dry_run",
+                    metavar='DRY_RUN',
+                    help='dry run mode (stop after one epoch)',
+                    default=False)
 args = parser.parse_args()
+
+if args.dry_run:
+    print('Executing dry run - training will stop after one step.')
+
 config = load_config(args.config)
 cudnn.deterministic = True
 cudnn.benchmark = False
 total_experiments = count_experiments(config)
 run_series(config,
            save_dir=args.save_dir,
-           total_experiments=total_experiments)
+           exp_no=0,
+           total_experiments=total_experiments,
+           dry_run=args.dry_run)
