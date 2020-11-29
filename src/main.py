@@ -13,6 +13,9 @@ from deepmerge import Merger
 def load_config(path):
     with open(path, 'r') as f:
         config = yaml.safe_load(f)
+        if 'run' in config:
+            return [load_config(item)
+                    for item in config['run']]
         if 'base' in config:
             bases = config['base']
             if type(bases) is not list:
@@ -29,21 +32,24 @@ def load_config(path):
 
 def experiment_main(config: dict,
                     save_dir: str):
-    torch.manual_seed(config['manual_seed'])
-    np.random.seed(config['manual_seed'])
-    experiment = create_experiment(config).cuda()
-    tt_logger = TestTubeLogger(save_dir=save_dir,
-                               name=config['logging_params']['name'],
-                               debug=False,
-                               create_git_tag=False)
-    runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
-                     min_epochs=1,
-                     num_sanity_val_steps=5,
-                     logger=tt_logger,
-                     **config['trainer_params'])
-    print(f"======= Training {config['model_params']['name']} =======")
-    runner.fit(experiment)
-    return experiment
+    configs = config
+    if type(configs) != list:
+        configs = [configs]
+    for i, config in enumerate(configs):
+        torch.manual_seed(config['manual_seed'])
+        np.random.seed(config['manual_seed'])
+        experiment = create_experiment(config).cuda()
+        tt_logger = TestTubeLogger(save_dir=save_dir,
+                                name=config['logging_params']['name'],
+                                debug=False,
+                                create_git_tag=False)
+        runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
+                        min_epochs=1,
+                        num_sanity_val_steps=5,
+                        logger=tt_logger,
+                        **config['trainer_params'])
+        print(f"======= Training {config['model_params']['name']} (Experiment {i+1}/{len(configs)}) =======")
+        runner.fit(experiment)
 
 
 parser = argparse.ArgumentParser(
@@ -53,7 +59,7 @@ parser.add_argument('--config',  '-c',
                     metavar='FILE',
                     help='path to the experiment config file',
                     default='experiments/rsna-intracranial/vae_fid.yaml')
-                    #default='experiments/reference/mnist/vae_fid.yaml')
+# default='experiments/reference/mnist/vae_fid.yaml')
 parser.add_argument('--save-dir',
                     dest="save_dir",
                     metavar='SAVE_DIR',

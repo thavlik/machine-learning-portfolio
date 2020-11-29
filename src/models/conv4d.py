@@ -1,7 +1,7 @@
 # Thank you funkey and timothygebhard for this code.
 # Source: https://github.com/timothygebhard/pytorch-conv4d/blob/master/conv4d.py
 from __future__ import division
-from typing import Tuple, Callable
+from typing import Tuple, Callable, Union
 import torch
 from torch import nn
 import numpy as np
@@ -11,7 +11,7 @@ class Conv4d(nn.Module):
     def __init__(self,
                  in_channels: int,
                  out_channels: int,
-                 kernel_size: int | Tuple[int, int, int, int],
+                 kernel_size: Union[int, Tuple[int, int, int, int]],
                  stride: int = 1,
                  padding: int = 0,
                  dilation: int = 1,
