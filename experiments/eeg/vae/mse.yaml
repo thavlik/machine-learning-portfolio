@@ -3,5 +3,5 @@ base:
   - experiments/eeg/common.yaml
 
 logging_params:
-  name: 'EEG_ResNetVAE1d_BasicMSE'
+  name: 'EEG_VAE_MSE'
 

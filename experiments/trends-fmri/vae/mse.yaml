@@ -1,3 +1,6 @@
 base:
   - experiments/abstract/vae4d/mse.yaml
   - experiments/trends-fmri/common.yaml
+
+logging_params:
+  name: "TReNDS_VAE_FID"

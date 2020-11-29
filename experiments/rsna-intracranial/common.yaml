@@ -17,7 +17,7 @@ exp_params:
   plot:
     fn: dcm
     params:
-      title: "${model}, RSNA Intracranial Hemorrhage CT Slices (Epoch ${epoch})"
+      title: "${model}, RSNA Intracranial Hemorrhage CT Slices, Epoch ${epoch}"
       scaling: 2.0
       suptitle:
         y: 0.78

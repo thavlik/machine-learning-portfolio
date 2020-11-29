@@ -15,7 +15,7 @@ exp_params:
   plot:
     fn: dcm
     params:
-      title: "${model}, DeepLesion (Epoch ${epoch})"
+      title: "${model}, DeepLesion, Epoch ${epoch}"
       scaling: 2.0
       suptitle:
         y: 0.78

@@ -15,7 +15,7 @@ exp_params:
   plot:
     fn: dcm
     params:
-      title: "${model}, CQ500 Intracranial Hemorrhage CT Slices (Epoch ${epoch})"
+      title: "${model}, CQ500 Intracranial Hemorrhage CT Slices, Epoch ${epoch}"
       scaling: 2.0
       suptitle:
         y: 0.78

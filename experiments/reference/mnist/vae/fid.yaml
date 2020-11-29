@@ -2,3 +2,5 @@ base:
   - experiments/abstract/vae2d/fid.yaml
   - experiments/reference/mnist/common.yaml
 
+logging_params:
+  name: "MNIST_VAE_FID"

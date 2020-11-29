@@ -13,7 +13,7 @@ def raw_dicom_pixels(ds):
     x = torch.Tensor(x)
     #x = x.clamp(0.0, 1.0)
     # TODO: fix normalization
-    x = x.view(512, 512)
+    x = x.view(1, 512, 512)
     return x
 
 

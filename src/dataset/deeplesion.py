@@ -17,7 +17,7 @@ class DeepLesionDataset(data.Dataset):
 
     def __getitem__(self, index):
         img = read_hu(self.files[index])
-        return torch.Tensor(img)
+        return (torch.Tensor(img), [])
 
     def __len__(self):
         return len(self.files)

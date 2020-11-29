@@ -17,7 +17,7 @@ class CQ500Dataset(data.Dataset):
     def __getitem__(self, index):
         ds = pydicom.dcmread(self.files[index], stop_before_pixels=False)
         data = raw_dicom_pixels(ds)
-        return data
+        return (data, [])
 
     def __len__(self):
         return len(self.files)

@@ -1,3 +1,6 @@
 base:
   - experiments/abstract/vae2d/mse.yaml
   - experiments/reference/celeba/common.yaml
+  
+logging_params:
+  name: "CelebA_VAE_MSE"

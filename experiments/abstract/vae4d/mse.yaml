@@ -17,7 +17,4 @@ trainer_params:
   log_every_n_steps: 200
   check_val_every_n_epoch: 200
 
-logging_params:
-  name: "MSE"
-
 manual_seed: 1498
