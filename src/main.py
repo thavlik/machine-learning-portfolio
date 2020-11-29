@@ -13,9 +13,9 @@ from deepmerge import Merger
 def load_config(path):
     with open(path, 'r') as f:
         config = yaml.safe_load(f)
-        if 'run' in config:
+        if 'series' in config:
             return [load_config(item)
-                    for item in config['run']]
+                    for item in config['series']]
         if 'base' in config:
             bases = config['base']
             if type(bases) is not list:
@@ -32,23 +32,24 @@ def load_config(path):
 
 def experiment_main(config: dict,
                     save_dir: str):
-    configs = config
-    if type(configs) != list:
-        configs = [configs]
-    for i, config in enumerate(configs):
+    series = config
+    if type(series) != list:
+        series = [series]
+    for i, config in enumerate(series):
         torch.manual_seed(config['manual_seed'])
         np.random.seed(config['manual_seed'])
         experiment = create_experiment(config).cuda()
         tt_logger = TestTubeLogger(save_dir=save_dir,
-                                name=config['logging_params']['name'],
-                                debug=False,
-                                create_git_tag=False)
+                                   name=config['logging_params']['name'],
+                                   debug=False,
+                                   create_git_tag=False)
         runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
-                        min_epochs=1,
-                        num_sanity_val_steps=5,
-                        logger=tt_logger,
-                        **config['trainer_params'])
-        print(f"======= Training {config['model_params']['name']} (Experiment {i+1}/{len(configs)}) =======")
+                         min_epochs=1,
+                         num_sanity_val_steps=5,
+                         logger=tt_logger,
+                         **config['trainer_params'])
+        print(
+            f"======= Training {config['model_params']['name']} (Experiment {i+1}/{len(series)}) =======")
         runner.fit(experiment)
 
 
