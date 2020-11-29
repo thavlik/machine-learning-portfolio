@@ -1,5 +1,6 @@
 import yaml
 import argparse
+import gc
 from pytorch_lightning.loggers import TestTubeLogger
 from pytorch_lightning import Trainer
 import torch
@@ -78,6 +79,7 @@ def run_series(series: list,
             exp_no += run_series(item, save_dir, exp_no, total_experiments, dry_run)
         else:
             experiment_main(item, save_dir, exp_no, total_experiments, dry_run)
+            gc.collect()
             exp_no += 1
     return exp_no
 
