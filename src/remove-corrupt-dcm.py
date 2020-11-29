@@ -28,6 +28,8 @@ files = [os.path.join(dp, f)
          for f in fn
          if f.endswith('.dcm')]
 
+print(f'Processing {len(files)} files...')
+
 num_removed = 0
 for i, file in enumerate(files):
     try:
