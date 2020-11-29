@@ -40,8 +40,8 @@ for i, file in enumerate(files):
         os.remove(path)
         num_removed += 1
         print(f'Removed corrupted {path}: {sys.exc_info()}')
-    if i % args.log_interval:
-        print(f'Processed {i+1}/{args.log_interval}')
+    if i > 0 and i % args.log_interval == 0:
+        print(f'Processed {i}/{len(files)}')
 
 elapsed = time.time() - start
 print(f'Removed {num_removed} corrupt examples in {elapsed} seconds')
