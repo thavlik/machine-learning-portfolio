@@ -6,7 +6,7 @@ from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
 from torch import nn, Tensor
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
+from math import ceil
 from .inception import InceptionV3
 from .util import get_pooling2d, get_activation
 from .encoder_wrapper import EncoderWrapper
@@ -56,6 +56,12 @@ class ResNetVAE2d(BaseVAE):
             if pooling != None:
                 modules.append(pool_fn(2))
             in_features = h_dim
+        layers = nn.Sequential(
+            *modules,
+            nn.Flatten(),
+            nn.Dropout(p=dropout),
+        )
+
         in_features = hidden_dims[-1] * width * height
         if pooling != None:
             in_features /= 4**len(hidden_dims)
@@ -65,11 +71,7 @@ class ResNetVAE2d(BaseVAE):
             in_features = int(in_features)
         self.encoder = EncoderWrapper(
             latent_dim=latent_dim,
-            layers=nn.Sequential(
-                *modules,
-                nn.Flatten(),
-                nn.Dropout(p=dropout),
-            ),
+            layers=layers,
             mu=nn.Sequential(
                 nn.Linear(in_features, latent_dim),
                 nn.BatchNorm1d(latent_dim),

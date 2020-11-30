@@ -8,7 +8,10 @@ from pytorch_lightning.loggers import TestTubeLogger
 import numpy as np
 from pytorch_lightning import Trainer
 from load_config import load_config
-
+from ray import tune
+from ray.tune.logger import TBXLogger
+from ray.rllib.models import ModelCatalog
+from env import get_env
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
@@ -105,10 +108,23 @@ def vae4d(config: dict, run_args: dict) -> VAEExperiment:
                          params=exp_params)
 
 
+def rl2d(config: dict, run_args: dict) -> VAEExperiment:
+    env = get_env(config['env'])
+    run_config = config['run_params']['config']
+    run_config = {**run_config,
+                  'framework': 'torch',
+                  'env': env}
+    tune.run(config['algorithm'],
+             loggers=[TBXLogger],
+             config=run_config,
+             **config['run_params'])
+
+
 entrypoints = {
     'classification2d': classification2d,
     'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,
+    'rl2d': rl2d,
     'vae1d': vae1d,
     'vae2d': vae2d,
     'vae3d': vae3d,

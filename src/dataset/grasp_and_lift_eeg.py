@@ -12,7 +12,7 @@ NUM_CHANNELS = 32
 class GraspAndLiftEEGDataset(data.Dataset):
     def __init__(self,
                  dir: str,
-                 num_samples: int):
+                 num_samples: int = None):
         super(GraspAndLiftEEGDataset, self).__init__()
         self.num_samples = num_samples
         csv_suffix = '_data.csv'
@@ -35,7 +35,13 @@ class GraspAndLiftEEGDataset(data.Dataset):
             should_compile = True
 
         if should_compile:
-            self.X, self.total_examples = self.compile_bin(csv_files)
+            self.X = self.compile_bin(csv_files)
+            if num_samples != None:
+                # Divide each example up into windows
+                total_examples = 0
+                for x in self.X:
+                    total_examples += x.shape[1] - num_samples + 1
+                self.total_examples = total_examples
         else:
             X = []
             total_examples = 0
@@ -50,7 +56,6 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     csv_files: list,
                     normalize: bool = False):
         examples = []
-        total_examples = 0
         high = None
         for i, file in enumerate(csv_files):
             samples = []
@@ -64,7 +69,6 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     channels = torch.Tensor(channels).unsqueeze(1)
                     samples.append(channels)
             samples = torch.cat(samples, dim=1)
-            total_examples += samples.shape[1] - self.num_samples + 1
             examples.append(samples)
             if normalize:
                 h = samples.max()
@@ -79,9 +83,13 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 examples[i] -= 1.0
                 out_path = file + '.bin'
                 torch.save(samples, out_path)
-        return examples, total_examples
+        return examples
 
     def __getitem__(self, index):
+        if self.num_samples == None:
+            # Return the entire example (e.g. reinforcement learning)
+            return (self.X[index], [])
+        # Find the example and offset for the index
         ofs = 0
         for samples in self.X:
             num_examples = samples.shape[1] - self.num_samples + 1
@@ -93,6 +101,10 @@ class GraspAndLiftEEGDataset(data.Dataset):
         raise ValueError(f'unable to seek {index}')
 
     def __len__(self):
+        if self.num_samples == None:
+            # No windowing - each example is full length
+            return len(self.X)
+        # Use precalculated dataset length
         return self.total_examples
 
 
