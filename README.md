@@ -39,7 +39,6 @@ Many of the ideas implemented in this repository were first detailed in the foll
 7. [Towards Photographic Image Manipulation with Balanced Growing of Generative Autoencoders](https://arxiv.org/abs/1904.06145)
 
 ## TODO
-- Progressive growing decoder
 - Implement beta loss term
 - Second optimizer for adversarial training
 

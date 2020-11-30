@@ -12,6 +12,7 @@ from .util import get_pooling2d, get_activation
 from .encoder_wrapper import EncoderWrapper
 from .upscale2d import Upscale2d
 
+
 class ResNetVAE2d(BaseVAE):
     def __init__(self,
                  name: str,
@@ -24,7 +25,8 @@ class ResNetVAE2d(BaseVAE):
                  output_activation: str = 'sigmoid',
                  pooling: str = None,
                  enable_fid: bool = False,
-                 fid_blocks: List[int] = [2048]) -> None:
+                 fid_blocks: List[int] = [2048],
+                 progressive_growing: int = 0) -> None:
         super(ResNetVAE2d, self).__init__(name=name,
                                           latent_dim=latent_dim)
         self.width = width
@@ -91,15 +93,32 @@ class ResNetVAE2d(BaseVAE):
             modules.append(layer)
             sandwich_layers.append((layer, h_dim))
             in_features = h_dim
-        self.decoder = nn.Sequential(
-            *modules,
-            nn.Conv2d(hidden_dims[-1],
-                      width * height * channels // 4,
-                      kernel_size=3,
-                      padding=1),
-            get_activation(output_activation),
-        )
         self.sandwich_layers = sandwich_layers
+        self.decoder = nn.Sequential(*modules)
+        self.progressive_growing = progressive_growing
+        if progressive_growing != 0:
+            if width != height:
+                raise ValueError(
+                    f'Progressive growing is only supported for square images')
+            res = width // 2**(progressive_growing-1)
+            output_layers = []
+            for i in range(progressive_growing):
+                out_features = res * res * channels
+                layer = nn.Conv2d(in_features,
+                                  out_features,
+                                  kernel_size=3,
+                                  padding=1)
+                output_layers.append(layer)
+                in_features = out_features
+                res *= 2
+            self.decoder_output = nn.ModuleList(output_layers)
+        else:
+            self.decoder_output = nn.Sequential(
+                nn.Conv2d(in_features,
+                          width * height * channels // 4,
+                          kernel_size=3,
+                          padding=1))
+        self.decoder_activation = get_activation(output_activation)
 
     def get_sandwich_layers(self) -> List[nn.Module]:
         return self.sandwich_layers
@@ -112,20 +131,68 @@ class ResNetVAE2d(BaseVAE):
             raise ValueError('wrong input shape')
         return self.encoder(input)
 
-    def decode(self, z: Tensor) -> Tensor:
+    def decode(self,
+               z: Tensor,
+               lod: int = 0,
+               alpha: float = 1.0,
+               **kwargs) -> Tensor:
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[-1], 2, 2)
         x = self.decoder(x)
-        x = x.view(x.shape[0], self.channels, self.height, self.width)
+        if self.progressive_growing != 0:
+            if lod == 0:
+                # Full output resolution, no layer mixing
+                for layer in self.decoder_output:
+                    x = layer(x)
+                x = F.max_pool2d(x, 2)
+                x = x.view(x.shape[0], self.channels,
+                           self.height, self.width)
+            else:
+                # Stop at the appropriate output resolution
+                # 3 - 0 = 3     28x28
+                # 3 - 1 = 2     14x14
+                # 3 - 2 = 1     7x7
+                layer_i = len(self.decoder_output) - lod
+                width = self.width // 2**lod
+                height = self.height // 2**lod
+                for i in range(layer_i):
+                    if i == layer_i-1:
+                        # Lower output layer
+                        x = self.decoder_output[i+0](x)
+                        a = F.max_pool2d(x, 2)
+                        a = a.view(a.shape[0], self.channels,
+                                   height, width)
+                        a = Upscale2d()(a)
+
+                        # Upper output layer
+                        b = self.decoder_output[i+1](x)
+                        b = F.max_pool2d(b, 2)
+                        b = b.view(b.shape[0], self.channels,
+                                   height*2, width*2)
+
+                        # Compute interpolated output
+                        x = a * (1.0 - alpha) + b * alpha
+                    else:
+                        x = self.decoder_output[i](x)
+
+        else:
+            x = self.decoder_output(x)
+            x = x.view(x.shape[0], self.channels, self.height, self.width)
+        x = self.decoder_activation(x)
         return x
 
     def loss_function(self,
+                      recons: Tensor,
+                      orig: Tensor,
                       *args,
                       **kwargs) -> dict:
-        result = super(ResNetVAE2d, self).loss_function(*args, **kwargs)
+        if 'lod' in kwargs:
+            n = kwargs['lod']-1
+            for _ in range(n):
+                orig = F.max_pool2d(orig, 2)
 
-        recons = args[0]
-        orig = args[1]
+        result = super(ResNetVAE2d, self).loss_function(
+            recons, orig, *args, **kwargs)
 
         fid_weight = kwargs.get('fid_weight', 0.0)
         if fid_weight != 0.0:

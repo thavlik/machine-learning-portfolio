@@ -19,6 +19,7 @@ from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
 
+
 class VAEExperiment(pl.LightningModule):
 
     def __init__(self,
@@ -38,37 +39,49 @@ class VAEExperiment(pl.LightningModule):
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
 
+    def get_lod(self):
+        schedule = self.params['progressive_growing']
+        for i, step in enumerate(schedule):
+            if self.trainer.global_step >= step:
+                lod = len(schedule) - i - 1
+                next_step = schedule[i+1]
+                alpha = (self.trainer.global_step - step) / (next_step - step)
+                return lod, alpha
+        return (0, 0.0)
+
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-
-        results = self.forward(real_img, labels=labels)
-        kld_weight = self.params.get('kld_weight', 0.0) * \
-            self.params['batch_size']/self.num_train_imgs
+        kwargs = dict()
+        if 'progressive_growing' in self.params:
+            kwargs['lod'], kwargs['alpha'] = self.get_lod()
+        results = self.forward(real_img, labels=labels, **kwargs)
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
-                      kld_weight=kld_weight)
+                      kld_weight=self.params.get('kld_weight', 0.0) *
+                      self.params['batch_size']/self.num_train_imgs
+                      ** kwargs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         train_loss = self.model.loss_function(*results, **kwargs)
-
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
-
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-
-        results = self.forward(real_img, labels=labels)
-        kld_weight = self.params.get('kld_weight', 0.0) * \
-            self.params['batch_size']/self.num_val_imgs
+        kwargs = dict()
+        if 'progressive_growing' in self.params:
+            kwargs['lod'], kwargs['alpha'] = self.get_lod()
+        results = self.forward(real_img, labels=labels, **kwargs)
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
-                      kld_weight=kld_weight)
+                      kld_weight=self.params.get('kld_weight', 0.0) *
+                      self.params['batch_size']/self.num_val_imgs
+                      ** kwargs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         val_loss = self.model.loss_function(*results, **kwargs)

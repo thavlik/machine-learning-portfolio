@@ -1,6 +1,5 @@
 exp_params:
   progressive_growing:
-    0: 7
-    1024: 14
-    2048: 28
-
+    - 0 # 7x7
+    - 256 # 14x14
+    - 1024 # 28x18

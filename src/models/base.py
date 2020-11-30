@@ -31,7 +31,7 @@ class BaseVAE(nn.Module):
         raise NotImplementedError
 
     @abstractmethod
-    def decode(self, input: Tensor) -> Any:
+    def decode(self, input: Tensor, **kwargs) -> Any:
         raise NotImplementedError
 
     @abstractmethod
@@ -45,7 +45,7 @@ class BaseVAE(nn.Module):
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         mu, log_var = self.encode(input)
         z = reparameterize(mu, log_var)
-        return [self.decode(z), input, mu, log_var]
+        return [self.decode(z, **kwargs), input, mu, log_var]
 
     def sample(self,
                num_samples: int,
