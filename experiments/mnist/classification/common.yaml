@@ -1,4 +1,4 @@
-include: experiments/mnist/common.yaml
+include: experiments/mnist/include/common.yaml
 
 entrypoint: classification2d
 
