@@ -9,6 +9,7 @@ from models.base import BaseVAE
 from utils import data_loader
 from dataset import get_dataset
 
+
 class BasicPrediction(pl.LightningModule):
 
     def __init__(self,
@@ -62,7 +63,11 @@ class BasicPrediction(pl.LightningModule):
 
     def validation_end(self, outputs):
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
-        tensorboard_logs = {'avg_val_loss': avg_loss}
+        avg_acc = torch.stack([x['accuracy'] for x in outputs]).mean()
+        tensorboard_logs = {
+            'avg_val_loss': avg_loss,
+            'avg_val_acc': avg_acc,
+        }
         self.sample_images()
         return {'val_loss': avg_loss, 'log': tensorboard_logs}
 
