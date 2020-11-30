@@ -7,7 +7,7 @@ from models import create_model
 from entry import experiment_main
 from load_config import load_config
 from typing import List, Union
-
+import numpy as np
 
 def count_experiments(series: Union[dict, List[dict]]) -> int:
     if type(series) != list:
@@ -88,5 +88,5 @@ for i in range(num_samples):
     delta = time.time() - start
     deltas.append(deltas)
     print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')
-print(f'Each sample took {sum(deltas)/len(deltas)} seconds on average')
+print(f'Each sample took {np.mean(deltas)} seconds on average')
 print(f"============== Completed ==============")
