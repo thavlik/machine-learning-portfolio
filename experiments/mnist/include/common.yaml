@@ -1,3 +1,6 @@
+model_params:
+  hidden_dims: [128, 256, 256, 128]
+
 exp_params:
   data:
     name: reference
@@ -11,6 +14,7 @@ exp_params:
       params:
         train: false
   batch_size: 64
+  warmup_steps: 256
   
 trainer_params:
   max_epochs: 100

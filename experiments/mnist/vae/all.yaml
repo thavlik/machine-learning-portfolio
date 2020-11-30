@@ -1,5 +1,0 @@
-series:
-  - experiments/mnist/vae/mse.yaml
-  - experiments/mnist/vae/fid.yaml
-  - experiments/mnist/vae/pg_mse.yaml
-  - experiments/mnist/vae/pg_fid.yaml

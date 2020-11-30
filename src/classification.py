@@ -58,12 +58,13 @@ class ClassificationExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        val_loss = self.model.loss_function(y, labels.cpu())
+        val_loss = self.model.loss_function(y, labels.cpu())        
         return val_loss
 
     def validation_epoch_end(self, outputs: dict):
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
         self.log('avg_val_loss', avg_loss)
+
 
     def sample_images(self):
         for plot, val_indices in zip(self.plots, self.val_indices):

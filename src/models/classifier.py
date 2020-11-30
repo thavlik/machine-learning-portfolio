@@ -21,5 +21,6 @@ class Classifier(nn.Module):
         prediction = args[0]
         target = args[1]
         loss = F.nll_loss(prediction, target)
-        return dict(loss=loss)
-
+        train_acc = torch.sum(target == prediction.argmax(1)) / target.shape[0]
+        return dict(loss=loss,
+                    accuracy=train_acc)

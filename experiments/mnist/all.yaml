@@ -1,3 +1,0 @@
-series:
-  - experiments/mnist/classification/all.yaml
-  - experiments/mnist/vae/all.yaml
