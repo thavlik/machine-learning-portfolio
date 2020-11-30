@@ -2,13 +2,13 @@ include:
   - experiments/mnist/include/common.yaml
   - experiments/mnist/include/classification_common.yaml
 
-model_params:
-  arch: 'ResNetEmbed2d'
-  name: 'ResNetEmbed2d'
-
 entrypoint: classification_embed2d
 
 base_experiment: experiments/mnist/vae/mse.yaml
+
+model_params:
+  arch: 'ResNetEmbed2d'
+  name: 'ResNetEmbed2d'
 
 logging_params:
   name: "MNIST_EmbedMSE"

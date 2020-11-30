@@ -5,4 +5,4 @@ include:
 entrypoint: classification2d
 
 logging_params:
-  name: "MNIST_BasicClassification"
+  name: "MNIST_Basic"
