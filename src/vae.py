@@ -85,7 +85,6 @@ class VAEExperiment(pl.LightningModule):
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         val_loss = self.model.loss_function(*results, **kwargs)
-
         return val_loss
 
     def validation_epoch_end(self, outputs: dict):
