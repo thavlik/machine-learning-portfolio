@@ -10,7 +10,7 @@ from math import sqrt, ceil
 from .inception import InceptionV3
 from .util import get_pooling2d, get_activation
 from .encoder_wrapper import EncoderWrapper
-
+from .upscale2d import Upscale2d
 
 class ResNetVAE2d(BaseVAE):
     def __init__(self,
