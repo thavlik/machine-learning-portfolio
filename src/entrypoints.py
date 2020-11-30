@@ -74,7 +74,7 @@ def vae2d(config: dict, run_args: dict):
                          height=h,
                          channels=c,
                          enable_fid='fid_weight' in exp_params,
-                         progressive_growing=len(exp_params['progressive_growing']) if 'progressive_growing' in exp_params else None)
+                         progressive_growing=len(exp_params['progressive_growing']) if 'progressive_growing' in exp_params else 0)
     return VAEExperiment(model,
                          params=exp_params)
 

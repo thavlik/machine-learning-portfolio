@@ -19,6 +19,7 @@ from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
 
+
 class VAEExperiment(pl.LightningModule):
 
     def __init__(self,
@@ -59,8 +60,8 @@ class VAEExperiment(pl.LightningModule):
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
                       kld_weight=self.params.get('kld_weight', 0.0) *
-                      self.params['batch_size']/self.num_train_imgs
-                      ** kwargs)
+                      self.params['batch_size']/self.num_train_imgs,
+                      **kwargs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         train_loss = self.model.loss_function(*results, **kwargs)
@@ -79,8 +80,8 @@ class VAEExperiment(pl.LightningModule):
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
                       kld_weight=self.params.get('kld_weight', 0.0) *
-                      self.params['batch_size']/self.num_val_imgs
-                      ** kwargs)
+                      self.params['batch_size']/self.num_val_imgs,
+                      **kwargs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         val_loss = self.model.loss_function(*results, **kwargs)
