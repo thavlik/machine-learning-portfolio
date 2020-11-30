@@ -73,3 +73,4 @@ run_series(config,
            exp_no=0,
            total_experiments=total_experiments,
            dry_run=args.dry_run)
+print(f"============== Completed ==============")
