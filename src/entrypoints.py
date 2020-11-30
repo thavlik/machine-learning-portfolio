@@ -114,20 +114,20 @@ def experiment_main(config: dict,
                     save_dir: str,
                     exp_no: int,
                     total_experiments: int,
-                    dry_run: bool):
+                    smoke_test: bool):
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config, run_args=dict(
         save_dir=save_dir,
         exp_no=exp_no,
         total_experiments=total_experiments,
-        dry_run=dry_run,
+        smoke_test=smoke_test,
     )).cuda()
     tt_logger = TestTubeLogger(save_dir=save_dir,
                                name=config['logging_params']['name'],
                                debug=False,
                                create_git_tag=False)
-    if dry_run:
+    if smoke_test:
         config['trainer_params']['max_steps'] = 5
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,

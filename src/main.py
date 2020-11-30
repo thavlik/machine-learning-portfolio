@@ -21,7 +21,7 @@ def run_series(series: list,
                save_dir: str,
                exp_no: int,
                total_experiments: int,
-               dry_run: bool):
+               smoke_test: bool):
     if type(series) != list:
         series = [series]
     for item in series:
@@ -30,13 +30,13 @@ def run_series(series: list,
                                 save_dir=save_dir,
                                 exp_no=exp_no,
                                 total_experiments=total_experiments,
-                                dry_run=dry_run)
+                                smoke_test=smoke_test)
         else:
             experiment_main(item,
                             save_dir=save_dir,
                             exp_no=exp_no,
                             total_experiments=total_experiments,
-                            dry_run=dry_run)
+                            smoke_test=smoke_test)
             gc.collect()
             exp_no += 1
     return exp_no
@@ -54,15 +54,15 @@ parser.add_argument('--save-dir',
                     metavar='SAVE_DIR',
                     help='save directory for logs and screenshots',
                     default='logs')
-parser.add_argument('--dry-run',
-                    dest="dry_run",
+parser.add_argument('--smoke-test',
+                    dest="smoke_test",
                     metavar='DRY_RUN',
-                    help='dry run mode (stop after a couple steps)',
+                    help='smoke test mode (stop after a couple steps)',
                     default=False)
 args = parser.parse_args()
 
-if args.dry_run:
-    print('Executing dry run - training will stop after a couple steps.')
+if args.smoke_test:
+    print('Executing smoke test - training will stop after a couple steps.')
 
 config = load_config(args.config)
 cudnn.deterministic = True
@@ -72,5 +72,5 @@ run_series(config,
            save_dir=args.save_dir,
            exp_no=0,
            total_experiments=total_experiments,
-           dry_run=args.dry_run)
+           smoke_test=args.smoke_test)
 print(f"============== Completed ==============")

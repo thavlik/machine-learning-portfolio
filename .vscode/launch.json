@@ -19,7 +19,7 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--dry-run", "True"]
+            "args": ["--smoke-test", "True"]
         },
         {
             "name": "Python: train CelebA VAE",
@@ -115,7 +115,7 @@
             "args": [
                 "--config",
                 "experiments/mnist/classification/embed_fid.yaml",
-                "--dry-run",
+                "--smoke-test",
                 "True"
             ]
         },
@@ -129,7 +129,7 @@
             "args": [
                 "--config",
                 "experiments/mnist/classification/sandwich_fid.yaml",
-                "--dry-run",
+                "--smoke-test",
                 "True"
             ]
         },
