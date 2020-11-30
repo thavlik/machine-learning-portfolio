@@ -126,17 +126,15 @@ class VAEExperiment(pl.LightningModule):
         scheds = []
         return optims, scheds
 
-    def optimizer_step(
-        self,
-        epoch: int,
-        batch_idx: int,
-        optimizer: Optimizer,
-        optimizer_idx: int,
-        optimizer_closure: Optional[Callable],
-        on_tpu: bool,
-        using_native_amp: bool,
-        using_lbfgs: bool,
-    ) -> None:
+    def optimizer_step(self,
+                       epoch: int,
+                       batch_idx: int,
+                       optimizer: Optimizer,
+                       optimizer_idx: int,
+                       optimizer_closure: Optional[Callable],
+                       on_tpu: bool,
+                       using_native_amp: bool,
+                       using_lbfgs: bool) -> None:
         # warm up lr, linear ramp
         warmup_steps = self.params.get('warmup_steps', 0)
         if warmup_steps > 0 and self.trainer.global_step < warmup_steps:
