@@ -82,7 +82,7 @@
             ]
         },
         {
-            "name": "Python: train MNIST VAE",
+            "name": "Python: train MNIST VAE FID",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -91,6 +91,42 @@
             "args": [
                 "--config",
                 "experiments/mnist/vae/fid.yaml"
+            ]
+        },
+        {
+            "name": "Python: train MNIST VAE MSE",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/vae/mse.yaml"
+            ]
+        },
+        {
+            "name": "Python: train MNIST VAE PG FID",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/vae/pg_fid.yaml"
+            ]
+        },
+        {
+            "name": "Python: train MNIST VAE PG MSE",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/vae/pg_mse.yaml"
             ]
         },
         {
