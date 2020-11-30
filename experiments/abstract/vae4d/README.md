@@ -1,5 +1,5 @@
 # 4D Variational Autoencoders
-Handling functional magnetic resonance imaging (fMRI) data is nontrivial due to its extremely high dimensionsality and the obscurity of the 4D convolution. Currently, there are no other 4D datasets.
+Functional magnetic resonance imaging (fMRI) data is nontrivial to handle due to its very high dimensionsality. Additionally, there are only few ways to interpret model performance. It is customary to visualize 4D data as animated 3D data.
 
 ![fMRI example](images/example.gif)
 
@@ -11,6 +11,3 @@ Several derivatives VAE experiments are available in the separate yaml files:
 ## Compatible Datasets
 This experiment can be applied to the following datasets:
 - [TReNDS Neuroimaging](https://www.kaggle.com/c/trends-assessment-prediction/)
-
-## Results
-(TODO: insert picture of validation results)
