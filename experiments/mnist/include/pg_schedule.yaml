@@ -1,0 +1,7 @@
+exp_params:
+  progressive_growing:
+    0: 4
+    1024: 8
+    2048: 16
+    4096: 28
+

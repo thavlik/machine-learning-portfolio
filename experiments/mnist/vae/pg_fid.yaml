@@ -1,16 +1,6 @@
 include:
-  - experiments/abstract/vae2d/fid.yaml
-  - experiments/mnist/common.yaml
-
-exp_params:
-  plot:
-    params:
-      title: "${model}, MNIST, Progressive Growing, FID loss, Epoch ${epoch}"
-  progressive_growing:
-    0: 4
-    1024: 8
-    2048: 16
-    4096: 28
+  - experiments/mnist/vae/fid.yaml
+  - experiments/mnist/include/pg_schedule.yaml
 
 logging_params:
-  name: "MNIST_VAE_ProgressiveGrowingFID"
+  name: "MNIST_VAE_PG_FID"
