@@ -1,5 +1,5 @@
 model_params:
-  hidden_dims: [32, 64, 32]
+  hidden_dims: [64, 128, 64]
 
 exp_params:
   data:

@@ -1,9 +1,10 @@
 import argparse
 import gc
+import time
 import torch
 import torch.backends.cudnn as cudnn
 from models import create_model
-from entrypoints import experiment_main
+from entry import experiment_main
 from load_config import load_config
 
 
@@ -24,15 +25,15 @@ def run_series(series: list,
                smoke_test: bool):
     if type(series) != list:
         series = [series]
-    for item in series:
-        if type(item) is list:
-            exp_no = run_series(item,
+    for config in series:
+        if type(config) is list:
+            exp_no = run_series(config,
                                 save_dir=save_dir,
                                 exp_no=exp_no,
                                 total_experiments=total_experiments,
                                 smoke_test=smoke_test)
         else:
-            experiment_main(item,
+            experiment_main(config,
                             save_dir=save_dir,
                             exp_no=exp_no,
                             total_experiments=total_experiments,
@@ -68,9 +69,18 @@ config = load_config(args.config)
 cudnn.deterministic = True
 cudnn.benchmark = False
 total_experiments = count_experiments(config)
-run_series(config,
-           save_dir=args.save_dir,
-           exp_no=0,
-           total_experiments=total_experiments,
-           smoke_test=args.smoke_test)
+num_samples = config.get('num_samples', 1)
+deltas = []
+for i in range(num_samples):
+    print(f'Running sample {i+1}/{num_samples}')
+    start = time.time()
+    run_series(config,
+               save_dir=args.save_dir,
+               exp_no=0,
+               total_experiments=total_experiments,
+               smoke_test=args.smoke_test)
+    delta = time.time() - start
+    deltas.append(deltas)
+    print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')
+print(f'Each sample took {sum(deltas)/len(deltas)} seconds on average')
 print(f"============== Completed ==============")
