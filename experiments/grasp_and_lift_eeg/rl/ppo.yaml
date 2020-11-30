@@ -13,7 +13,7 @@ run_params:
       name: TimeSeriesDetector
       low: -1.0
       high: 1.0
-      observation_length: 1024
+      observation_length: 8192
       channels: 32
       num_event_classes: 6
       data:

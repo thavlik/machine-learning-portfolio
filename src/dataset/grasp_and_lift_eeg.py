@@ -49,11 +49,11 @@ class GraspAndLiftEEGDataset(data.Dataset):
             for file in csv_files:
                 is_data = file.endswith('_data.csv')
                 series = file[:-len('_data.csv') if is_data else -len('_events.csv')]
-                if 'series' not in examples:
-                    examples[series] = [None, None]
                 samples = torch.load(file + '.bin')
-                examples[series][0 if is_data else 1] = samples
-                if num_samples != None:
+                item = examples.get(series, [None, None])
+                item[0 if is_data else 1] = samples
+                examples[series] = item
+                if is_data and num_samples != None:
                     self.total_examples += samples.shape[1] - num_samples + 1
             self.X = []
             self.Y = []
@@ -90,9 +90,9 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     samples.append(channels)
             samples = torch.cat(samples, dim=1)
             series = file[:-len('_data.csv') if is_data else -len('_events.csv')]
-            if 'series' not in examples:
-                examples[series] = [None, None]
-            examples[series][0 if is_data else 1] = samples
+            item = examples.get(series, [None, None])
+            item[0 if is_data else 1] = samples
+            examples[series] = item
             if normalize:
                 h = samples.max()
                 if high == None or h > high:

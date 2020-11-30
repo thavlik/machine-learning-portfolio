@@ -1,7 +1,9 @@
 model_params:
   output_activation: relu
+  hidden_dims: [128, 256, 128]
 
 exp_params:
+  batch_size: 64
   data:
     name: grasp-and-lift-eeg
     loader:
@@ -9,7 +11,7 @@ exp_params:
       drop_last: true
     training:
       dir: E:/grasp-and-lift-eeg-detection/train
-      num_samples: 4096
+      num_samples: 8192
     validation:
       dir: E:/grasp-and-lift-eeg-detection/test
   plot:
