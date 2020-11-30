@@ -1,6 +1,6 @@
 include:
-  - experiments/abstract/vae2d/mse.yaml
-  - experiments/deeplesion/common.yaml
+  - experiments/include/vae2d/mse.yaml
+  - experiments/deeplesion/include/common.yaml
 
 exp_params:
   plot:

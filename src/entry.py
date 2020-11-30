@@ -3,13 +3,14 @@ from models import create_model
 from vae import VAEExperiment
 from classification import ClassificationExperiment
 from dataset import ReferenceDataset, get_example_shape
+import pytorch_lightning as pl
 from pytorch_lightning.loggers import TestTubeLogger
 import numpy as np
 from pytorch_lightning import Trainer
 from load_config import load_config
 
 
-def classification2d(config: dict, run_args: dict):
+def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
@@ -20,7 +21,7 @@ def classification2d(config: dict, run_args: dict):
                                     params=exp_params)
 
 
-def classification_embed2d(config: dict, run_args: dict):
+def classification_embed2d(config: dict, run_args: dict) -> ClassificationExperiment:
     base_experiment = experiment_main(
         load_config(config['base_experiment']), **run_args)
     encoder = base_experiment.model.get_encoder()
@@ -36,7 +37,7 @@ def classification_embed2d(config: dict, run_args: dict):
                                     params=exp_params)
 
 
-def classification_sandwich2d(config: dict, run_args: dict):
+def classification_sandwich2d(config: dict, run_args: dict) -> ClassificationExperiment:
     base_experiment = experiment_main(
         load_config(config['base_experiment']), **run_args)
     encoder = base_experiment.model.get_encoder()
@@ -56,7 +57,7 @@ def classification_sandwich2d(config: dict, run_args: dict):
                                     params=exp_params)
 
 
-def vae1d(config: dict, run_args: dict):
+def vae1d(config: dict, run_args: dict) -> VAEExperiment:
     exp_params = config['exp_params']
     c, l = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
@@ -66,7 +67,7 @@ def vae1d(config: dict, run_args: dict):
                          params=exp_params)
 
 
-def vae2d(config: dict, run_args: dict):
+def vae2d(config: dict, run_args: dict) -> VAEExperiment:
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
@@ -79,7 +80,7 @@ def vae2d(config: dict, run_args: dict):
                          params=exp_params)
 
 
-def vae3d(config: dict, run_args: dict):
+def vae3d(config: dict, run_args: dict) -> VAEExperiment:
     exp_params = config['exp_params']
     c, d, h, w = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
@@ -101,7 +102,7 @@ entrypoints = {
 }
 
 
-def create_experiment(config: dict, run_args: dict):
+def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
     if 'entrypoint' not in config:
         raise ValueError('config has no entrypoint')
     entrypoint = config['entrypoint']
@@ -115,7 +116,7 @@ def experiment_main(config: dict,
                     save_dir: str,
                     exp_no: int,
                     total_experiments: int,
-                    smoke_test: bool):
+                    smoke_test: bool) -> pl.LightningModule:
     torch.manual_seed(config['manual_seed'])
     np.random.seed(config['manual_seed'])
     experiment = create_experiment(config, run_args=dict(

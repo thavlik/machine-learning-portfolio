@@ -1,3 +1,0 @@
-series:
-  - experiments/cq500/vae/mse.yaml
-  - experiments/cq500/vae/fid.yaml

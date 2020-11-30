@@ -13,13 +13,30 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Python: main.py",
+            "name": "Python: smoke test",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--smoke-test", "True"]
+            "args": [
+                "--config",
+                "experiments/",
+                "--smoke-test",
+                "True"
+            ]
+        },
+        {
+            "name": "Python: train all",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/"
+            ]
         },
         {
             "name": "Python: train CelebA VAE",

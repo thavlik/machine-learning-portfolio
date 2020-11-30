@@ -8,8 +8,22 @@ def load_config(path: str):
         # If a directory is passed, it's the same as having
         # a yaml with a 'series' list of all the files in
         # the directory.
-        return [load_config(os.path.join(path, f))
-                for f in os.listdir(path)]
+        configs = []
+        for f in os.listdir(path):
+            if os.path.basename(f) == 'include':
+                # Include folders do not contain experiments
+                # that can be executed by themselves.
+                continue
+            fp = os.path.join(path, f)
+            if not os.path.isdir(fp) and not f.endswith('.yaml'):
+                # Ignore non-yaml files like README.md
+                continue
+            fc = load_config(fp)
+            if type(fc) == list and len(fc) == 0:
+                # Exclude empty directories
+                continue
+            configs.append(fc)
+        return configs
     with open(path, 'r') as f:
         config = yaml.safe_load(f)
         if 'series' in config:

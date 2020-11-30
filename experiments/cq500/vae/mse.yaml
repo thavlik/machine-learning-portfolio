@@ -1,6 +1,6 @@
 include:
-  - experiments/abstract/vae2d/mse.yaml
-  - experiments/cq500/common.yaml
+  - experiments/include/vae2d/mse.yaml
+  - experiments/cq500/include/common.yaml
 
 exp_params:
   plot:

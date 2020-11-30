@@ -10,10 +10,10 @@ This repository was designed to showcase well-designed project structure. Config
 
 ### Unsupervised
 These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Unsupervised pretraining confers an exponential boost in data efficiency on relevant supervised tasks [2][3], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
-- [1D Variational Autoencoder](experiments/abstract/vae1d/README.md), used for time series
-- [2D Variational Autoencoder](experiments/abstract/vae2d/README.md), used for 2D imagery
-- [3D Variational Autoencoder](experiments/abstract/vae3d/README.md), used for video and 3D imagery
-- [4D Variational Autoencoder](experiments/abstract/vae4d/README.md), used for fMRI
+- [1D Variational Autoencoder](experiments/include/vae1d/README.md), used for time series
+- [2D Variational Autoencoder](experiments/include/vae2d/README.md), used for 2D imagery
+- [3D Variational Autoencoder](experiments/include/vae3d/README.md), used for video and 3D imagery
+- [4D Variational Autoencoder](experiments/include/vae4d/README.md), used for fMRI
 
 ### Supervised
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.

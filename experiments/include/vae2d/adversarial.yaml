@@ -1,0 +1,4 @@
+include: experiments/include/vae2d/mse.yaml
+
+exp_params:
+  adversarial_weight: 1.0

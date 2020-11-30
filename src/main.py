@@ -28,13 +28,9 @@ def run_series(series: Union[dict, List[dict]],
         series = [series]
     for config in series:
         if type(config) is list:
-            exp_no = run_series(config,
-                                exp_no=exp_no,
-                                **kwargs)
+            exp_no = run_series(config, exp_no=exp_no, **kwargs)
         else:
-            experiment_main(config,
-                            exp_no=exp_no,
-                            **kwargs)
+            experiment_main(config, exp_no=exp_no, **kwargs)
             gc.collect()
             exp_no += 1
     return exp_no
@@ -52,6 +48,11 @@ parser.add_argument('--save-dir',
                     metavar='SAVE_DIR',
                     help='save directory for logs and screenshots',
                     default='logs')
+parser.add_argument('--num-samples',
+                    dest="num_samples",
+                    metavar='NUM_SAMPLES',
+                    help='number of times to repeat the experiment (default to experiment config num_samples)',
+                    default=None)
 parser.add_argument('--smoke-test',
                     dest="smoke_test",
                     metavar='DRY_RUN',
@@ -66,7 +67,14 @@ config = load_config(args.config)
 cudnn.deterministic = True
 cudnn.benchmark = False
 total_experiments = count_experiments(config)
-num_samples = config.get('num_samples', 1)
+
+num_samples = args.num_samples
+if num_samples == None:
+    if type(config) == dict:
+        num_samples = config.get('num_samples', 1)
+    else:
+        num_samples = 1
+
 deltas = []
 for i in range(num_samples):
     print(f'Running sample {i+1}/{num_samples}')
