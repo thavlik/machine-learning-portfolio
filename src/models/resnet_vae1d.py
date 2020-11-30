@@ -83,7 +83,7 @@ class ResNetVAE1d(BaseVAE):
         var = self.var(x)
         return [mu, var]
 
-    def decode(self, z: Tensor) -> Tensor:
+    def decode(self, z: Tensor, **kwargs) -> Tensor:
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[-1], -1)
         x = self.decoder(x)

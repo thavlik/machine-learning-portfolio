@@ -92,6 +92,19 @@ def vae3d(config: dict, run_args: dict) -> VAEExperiment:
                          params=exp_params)
 
 
+def vae4d(config: dict, run_args: dict) -> VAEExperiment:
+    exp_params = config['exp_params']
+    c, f, d, h, w = get_example_shape(exp_params['data'])
+    model = create_model(**config['model_params'],
+                         width=w,
+                         height=h,
+                         depth=d,
+                         channels=c,
+                         frames=f,)
+    return VAEExperiment(model,
+                         params=exp_params)
+
+
 entrypoints = {
     'classification2d': classification2d,
     'classification_embed2d': classification_embed2d,
@@ -99,6 +112,7 @@ entrypoints = {
     'vae1d': vae1d,
     'vae2d': vae2d,
     'vae3d': vae3d,
+    'vae4d': vae4d,
 }
 
 
