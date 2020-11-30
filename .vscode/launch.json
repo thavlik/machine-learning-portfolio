@@ -23,7 +23,9 @@
                 "--config",
                 "experiments/",
                 "--smoke-test",
-                "True"
+                "True",
+                "--num-samples",
+                "8"
             ]
         },
         {

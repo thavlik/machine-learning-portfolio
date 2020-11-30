@@ -51,6 +51,7 @@ parser.add_argument('--save-dir',
 parser.add_argument('--num-samples',
                     dest="num_samples",
                     metavar='NUM_SAMPLES',
+                    type=int,
                     help='number of times to repeat the experiment (default to experiment config num_samples)',
                     default=None)
 parser.add_argument('--smoke-test',
