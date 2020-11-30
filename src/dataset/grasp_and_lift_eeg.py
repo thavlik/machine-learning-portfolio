@@ -140,9 +140,14 @@ class GraspAndLiftEEGDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    num_samples = 4096
+    num_samples = None
     ds = GraspAndLiftEEGDataset('E:/grasp-and-lift-eeg-detection/test',
                                 num_samples=num_samples)
+    mins = []
+    maxs = []
     for i, (x, _) in enumerate(ds):
-        assert x.shape == (NUM_CHANNELS, num_samples)
+        mins.append(x.min())
+        maxs.append(x.max())
+    mins = np.min(mins)
+    maxs = np.max(maxs)
     print(ds[0][0].shape)

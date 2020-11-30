@@ -11,8 +11,8 @@ run_params:
   config:
     env_config:
       name: TimeSeriesDetector
-      low: -1.0
-      high: 1.0
+      low: -10000
+      high: 10000
       observation_length: 8192
       channels: 32
       num_event_classes: 6

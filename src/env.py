@@ -23,6 +23,8 @@ class TimeSeriesDetector(Env):
 
     def step(self, action: int):
         reward = 0.0
+        y = self.y[:, self.current_step:self.current_step +
+                   self.observation_length]
         self.current_step += 1
         if action != 0:
             self.current_step += self.action_stride
@@ -41,11 +43,8 @@ class TimeSeriesDetector(Env):
         return self.get_observation()
 
     def get_observation(self):
-        x = self.x[:, self.current_step:self.current_step +
-                   self.observation_length]
-        y = self.y[:, self.current_step:self.current_step +
-                   self.observation_length]
-        return x, y
+        return self.x[:, self.current_step:self.current_step +
+                      self.observation_length]
 
     def get_info_dict(self) -> dict:
         return dict(current_step=self.current_step)
