@@ -14,11 +14,10 @@ from plotly.subplots import make_subplots
 from plotly.graph_objects import Figure
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
 from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
-
 
 class VAEExperiment(pl.LightningModule):
 
@@ -39,7 +38,7 @@ class VAEExperiment(pl.LightningModule):
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
 
-    def get_lod(self):
+    def get_lod(self) -> Tuple[int, float]:
         schedule = self.params['progressive_growing']
         for i, step in enumerate(schedule):
             if self.trainer.global_step >= step:
