@@ -18,26 +18,14 @@ def count_experiments(series: list) -> int:
     return n
 
 
-def run_series(series: list,
-               save_dir: str,
-               exp_no: int,
-               total_experiments: int,
-               smoke_test: bool):
+def run_series(series: list, **kwargs):
     if type(series) != list:
         series = [series]
     for config in series:
         if type(config) is list:
-            exp_no = run_series(config,
-                                save_dir=save_dir,
-                                exp_no=exp_no,
-                                total_experiments=total_experiments,
-                                smoke_test=smoke_test)
+            exp_no = run_series(config, **kwargs)
         else:
-            experiment_main(config,
-                            save_dir=save_dir,
-                            exp_no=exp_no,
-                            total_experiments=total_experiments,
-                            smoke_test=smoke_test)
+            experiment_main(config, **kwargs)
             gc.collect()
             exp_no += 1
     return exp_no
