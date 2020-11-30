@@ -6,9 +6,12 @@ import torch.backends.cudnn as cudnn
 from models import create_model
 from entry import experiment_main
 from load_config import load_config
+from typing import List, Union
 
 
-def count_experiments(series: list) -> int:
+def count_experiments(series: Union[dict, List[dict]]) -> int:
+    if type(series) != list:
+        series = [series]
     n = 0
     for item in series:
         if type(item) is list:
@@ -18,14 +21,20 @@ def count_experiments(series: list) -> int:
     return n
 
 
-def run_series(series: list, **kwargs):
+def run_series(series: Union[dict, List[dict]],
+               exp_no: int,
+               **kwargs) -> int:
     if type(series) != list:
         series = [series]
     for config in series:
         if type(config) is list:
-            exp_no = run_series(config, **kwargs)
+            exp_no = run_series(config,
+                                exp_no=exp_no,
+                                **kwargs)
         else:
-            experiment_main(config, **kwargs)
+            experiment_main(config,
+                            exp_no=exp_no,
+                            **kwargs)
             gc.collect()
             exp_no += 1
     return exp_no

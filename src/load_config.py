@@ -3,7 +3,7 @@ import yaml
 from merge_strategy import strategy
 
 
-def load_config(path):
+def load_config(path: str):
     if os.path.isdir(path):
         # If a directory is passed, it's the same as having
         # a yaml with a 'series' list of all the files in
