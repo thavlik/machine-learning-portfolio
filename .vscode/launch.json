@@ -130,7 +130,7 @@
             ]
         },
         {
-            "name": "Python: train MNIST BasicClassification",
+            "name": "Python: train MNIST Classification",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -138,7 +138,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/mnist/classification/basic.yaml"
+                "experiments/mnist/classification"
             ]
         },
         {
