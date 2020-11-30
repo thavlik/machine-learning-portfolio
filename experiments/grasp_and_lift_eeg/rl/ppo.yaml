@@ -1,7 +1,6 @@
 entrypoint: rl2d
 
-env:
-  name: GraspLiftEEG
+algorithm: PPO
 
 run_params:
   local_dir: "ray_results/"
@@ -11,14 +10,16 @@ run_params:
 
   config:
     env_config:
+      name: TimeSeriesDetector
+      low: -1.0
+      high: 1.0
       observation_length: 1024
       channels: 32
+      num_event_classes: 6
       data:
         name: grasp-and-lift-eeg
-        training:
+        params:
           dir: E:/grasp-and-lift-eeg-detection/train
-        validation:
-          dir: E:/grasp-and-lift-eeg-detection/test
     num_gpus: 1.0
     num_gpus_per_worker: 0
     num_workers: 0 # TODO: fix https://github.com/ray-project/ray/issues/7583
@@ -28,7 +29,7 @@ run_params:
       custom_model_config:
         num_samples: 128
         channels: 32
-        hidden_dim: [256, 512, 1024, 512, 256]
+        hidden_dims: [256, 512, 1024, 512, 256]
     lr: 0.00001
 
 manual_seed: 1498

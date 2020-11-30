@@ -1,14 +1,15 @@
 import numpy as np
 from gym import Env, spaces
 from dataset import get_dataset
+from merge_strategy import strategy
 
 
 class TimeSeriesDetector(Env):
     def __init__(self, config: dict):
         super(TimeSeriesDetector, self).__init__()
         self.observation_length = config['observation_length']
-        self.num_channels = config['num_channels']
-        self.notify_stride = config.get('notify_stride', 0)
+        self.num_channels = config['channels']
+        self.action_stride = config.get('action_stride', 0)
         num_actions = config['num_event_classes']+1  # abstain
         self.action_space = spaces.Discrete(num_actions)
         self.observation_space = spaces.Box(
@@ -24,7 +25,7 @@ class TimeSeriesDetector(Env):
         reward = 0.0
         self.current_step += 1
         if action != 0:
-            self.current_step += self.notify_stride
+            self.current_step += self.action_stride
         obs = self.get_observation()
         done = self.current_step >= self.x.shape[1] - self.observation_length
         info = self.get_info_dict()

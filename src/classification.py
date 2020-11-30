@@ -137,7 +137,7 @@ class ClassificationExperiment(pl.LightningModule):
 
     def val_dataloader(self):
         ds_params = strategy.merge(
-            self.params['data'].get('training', {}),
+            self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
         dataset = get_dataset(self.params['data']['name'], ds_params)
 

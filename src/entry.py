@@ -109,14 +109,14 @@ def vae4d(config: dict, run_args: dict) -> VAEExperiment:
 
 
 def rl2d(config: dict, run_args: dict) -> VAEExperiment:
-    env = get_env(config['env'])
     run_config = config['run_params']['config']
+    env = get_env(run_config['env_config']['name'])
     run_config = {**run_config,
                   'framework': 'torch',
                   'env': env}
+    config['run_params']['config'] = run_config
     tune.run(config['algorithm'],
              loggers=[TBXLogger],
-             config=run_config,
              **config['run_params'])
 
 

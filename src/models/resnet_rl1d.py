@@ -42,13 +42,13 @@ class ResNetRL1d(TorchModelV2, nn.Module):
                 raise ValueError(
                     'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
-        self.output = nn.Linear(
-            nn.Linear(in_features, action_space.num_actions),
+        self.output = nn.Sequential(
+            nn.Linear(in_features, action_space.n),
             nn.Sigmoid(),
         )
-        self.value_out = nn.Linear(
+        self.value_out = nn.Sequential(
             nn.Linear(in_features, 1),
-            nn.Sigmoid(),
+            nn.ReLU(),
         )
 
     def forward(self, input_dict, state, seq_lens):

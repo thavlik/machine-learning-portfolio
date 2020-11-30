@@ -4,7 +4,9 @@ import torch
 import torch.utils.data as data
 import glob
 
-GRASPLIFT_EEG_HEADER = 'id,Fp1,Fp2,F7,F3,Fz,F4,F8,FC5,FC1,FC2,FC6,T7,C3,Cz,C4,T8,TP9,CP5,CP1,CP2,CP6,TP10,P7,P3,Pz,P4,P8,PO9,O1,Oz,O2,PO10\n'
+GRASPLIFT_DATA_HEADER = 'id,Fp1,Fp2,F7,F3,Fz,F4,F8,FC5,FC1,FC2,FC6,T7,C3,Cz,C4,T8,TP9,CP5,CP1,CP2,CP6,TP10,P7,P3,Pz,P4,P8,PO9,O1,Oz,O2,PO10\n'
+
+GRASPLIFT_EVENTS_HEADER = 'id,HandStart,FirstDigitTouch,BothStartLoadPhase,LiftOff,Replace,BothReleased\n'
 
 NUM_CHANNELS = 32
 
@@ -15,8 +17,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
                  num_samples: int = None):
         super(GraspAndLiftEEGDataset, self).__init__()
         self.num_samples = num_samples
-        csv_suffix = '_data.csv'
-        bin_suffix = '_data.csv.bin'
+        csv_suffix = '.csv'
+        bin_suffix = '.csv.bin'
         csv_files = [os.path.join(dp, f)
                      for dp, dn, fn in os.walk(os.path.expanduser(dir))
                      for f in fn
@@ -35,69 +37,98 @@ class GraspAndLiftEEGDataset(data.Dataset):
             should_compile = True
 
         if should_compile:
-            self.X = self.compile_bin(csv_files)
+            self.X, self.Y = self.compile_bin(csv_files)
             if num_samples != None:
                 # Divide each example up into windows
-                total_examples = 0
+                self.total_examples = 0
                 for x in self.X:
-                    total_examples += x.shape[1] - num_samples + 1
-                self.total_examples = total_examples
+                    self.total_examples += x.shape[1] - num_samples + 1
         else:
-            X = []
-            total_examples = 0
+            examples = {}
+            self.total_examples = 0
             for file in csv_files:
+                is_data = file.endswith('_data.csv')
+                series = file[:-len('_data.csv') if is_data else -len('_events.csv')]
+                if 'series' not in examples:
+                    examples[series] = [None, None]
                 samples = torch.load(file + '.bin')
-                X.append(samples)
-                total_examples += samples.shape[1] - num_samples + 1
-            self.X = X
-            self.total_examples = total_examples
+                examples[series][0 if is_data else 1] = samples
+                if num_samples != None:
+                    self.total_examples += samples.shape[1] - num_samples + 1
+            self.X = []
+            self.Y = []
+            for series in sorted(examples):
+                x, y = examples[series]
+                self.X.append(x)
+                if y != None:
+                    self.Y.append(y)
+            if len(self.Y) == 0:
+                self.Y = None
 
     def compile_bin(self,
                     csv_files: list,
                     normalize: bool = False):
-        examples = []
+        examples = {}
         high = None
         for i, file in enumerate(csv_files):
+            is_data = file.endswith('_data.csv')
             samples = []
             with open(file, 'r') as f:
                 hdr = f.readline()
-                if hdr != GRASPLIFT_EEG_HEADER:
+                expected_hdr = GRASPLIFT_DATA_HEADER if is_data else GRASPLIFT_EVENTS_HEADER 
+                if hdr != expected_hdr:
                     raise ValueError('bad header')
                 for line in f:
                     channels = line.strip().split(',')[1:]
-                    channels = [float(x) for x in channels]
+                    if is_data:
+                        # Data is converted to float eventually anyway
+                        channels = [float(x) for x in channels]
+                    else:
+                        # Labels are integer format
+                        channels = [int(x) for x in channels]
                     channels = torch.Tensor(channels).unsqueeze(1)
                     samples.append(channels)
             samples = torch.cat(samples, dim=1)
-            examples.append(samples)
+            series = file[:-len('_data.csv') if is_data else -len('_events.csv')]
+            if 'series' not in examples:
+                examples[series] = [None, None]
+            examples[series][0 if is_data else 1] = samples
             if normalize:
                 h = samples.max()
                 if high == None or h > high:
                     high = h
             else:
+                # Go ahead and save
                 torch.save(samples, file + '.bin')
             print(f'Processed {i+1}/{len(csv_files)} {file}')
-        if normalize:
-            for i, file in enumerate(csv_files):
-                examples[i] /= 0.5 * high
-                examples[i] -= 1.0
-                out_path = file + '.bin'
-                torch.save(samples, out_path)
-        return examples
+        X = []
+        Y = []
+        for series in sorted(examples):
+            x, y = examples[series]
+            x /= 0.5 * high
+            x -= 1.0
+            torch.save(samples, series + '_data.csv.bin')
+            X.append(x)
+            if y != None:
+                torch.save(samples, series + '_events.csv.bin')
+                Y.append(y)
+        return X, Y if len(Y) > 0 else None
 
     def __getitem__(self, index):
         if self.num_samples == None:
             # Return the entire example (e.g. reinforcement learning)
-            return (self.X[index], [])
+            return (self.X[index], self.Y[index] if self.Y != None else [])
         # Find the example and offset for the index
         ofs = 0
-        for samples in self.X:
-            num_examples = samples.shape[1] - self.num_samples + 1
+        for i, x in enumerate(self.X):
+            num_examples = x.shape[1] - self.num_samples + 1
             if index >= ofs + num_examples:
                 ofs += num_examples
                 continue
-            i = index - ofs
-            return (samples[:, i:i+self.num_samples], [])
+            j = index - ofs
+            x = x[:, j:j+self.num_samples]
+            y = self.Y[i][:, j:j+self.num_samples] if self.Y != None else []
+            return x, y
         raise ValueError(f'unable to seek {index}')
 
     def __len__(self):
