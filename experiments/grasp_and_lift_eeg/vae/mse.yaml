@@ -1,6 +1,6 @@
 include:
   - experiments/abstract/vae1d/mse.yaml
-  - experiments/grasp_and_lift_eeg/common.yaml
+  - experiments/grasp_and_lift_eeg/include/common.yaml
 
 exp_params:
   plot:

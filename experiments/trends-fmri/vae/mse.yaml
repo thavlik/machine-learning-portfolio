@@ -1,6 +1,6 @@
 include:
   - experiments/abstract/vae4d/mse.yaml
-  - experiments/trends-fmri/common.yaml
+  - experiments/trends-fmri/include/common.yaml
 
 logging_params:
-  name: "TReNDS_VAE_FID"
+  name: "TReNDS_VAE_MSE"

@@ -1,6 +1,6 @@
 include:
   - experiments/abstract/vae2d/mse.yaml
-  - experiments/rsna-intracranial/common.yaml
+  - experiments/rsna-intracranial/include/common.yaml
 
 exp_params:
   plot:

@@ -1,6 +1,6 @@
 include:
   - experiments/abstract/vae2d/fid.yaml
-  - experiments/ffhq/common.yaml
+  - experiments/ffhq/include/common.yaml
 
 exp_params:
   plot:

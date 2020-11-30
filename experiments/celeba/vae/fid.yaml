@@ -1,6 +1,6 @@
 include:
   - experiments/abstract/vae2d/fid.yaml
-  - experiments/celeba/common.yaml
+  - experiments/celeba/include/common.yaml
 
 exp_params:
   plot:
