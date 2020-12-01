@@ -1,4 +1,4 @@
-include: experiments/mnist/include/common.yaml
+include: experiments/mnist/include/common_vae.yaml
 
 entrypoint: classification2d
 
@@ -13,7 +13,7 @@ exp_params:
     weight_decay: 0.00001
 
 trainer_params:
-  max_epochs: 50
+  max_epochs: 10
   log_every_n_steps: 20
   check_val_every_n_epoch: 1
 

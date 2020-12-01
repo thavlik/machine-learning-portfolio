@@ -14,6 +14,7 @@ from ray.tune.logger import TBXLogger
 from ray.rllib.models import ModelCatalog
 from env import get_env
 from plot import plot_comparison
+import pandas as pd
 
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
@@ -141,10 +142,14 @@ def comparison(config: dict, run_args: dict) -> None:
                 except:
                     inds.append(None)
             cols = []
-            for line in f:
+            for i, line in enumerate(f):
                 line = line.strip().split(',')
                 for ind in inds:
-                    cols.append(line[ind] if ind != None else None)
+                    col = line[ind]
+                    if col == '':
+                        continue
+                    cols.append(float(col)
+                                if ind != None else None)
             results[experiment.logger.name] = cols
     for i, metric in enumerate(metrics):
         items = []
@@ -152,10 +157,13 @@ def comparison(config: dict, run_args: dict) -> None:
             if cols[i] == None:
                 # Metric not available for this experiment
                 continue
-            items.append((name, cols))
-        plot_comparison(items,
+            items.append([name, [i for i in len(cols)], cols])
+        df = pd.DataFrame(items, columns=['name', 'step', metric])
+        plot_comparison(df,
                         metric_name=metric,
-                        save_dir=run_args['save_dir'])
+                        out_path=os.path.join(run_args['save_dir'],
+                                              config['name'],
+                                              f'comparison_{metric}.png'))
 
 
 entrypoints = {
@@ -194,7 +202,10 @@ def experiment_main(config: dict,
         exp_no=exp_no,
         total_experiments=total_experiments,
         smoke_test=smoke_test,
-    )).cuda()
+    ))
+    if experiment == None:
+        return
+    experiment = experiment.cuda()
     tt_logger = TestTubeLogger(save_dir=save_dir,
                                name=config['logging_params']['name'],
                                debug=False,

@@ -18,6 +18,5 @@ plot:
   # a separate output image.
   metrics:
   - loss
-  - accuracy
 
 

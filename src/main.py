@@ -86,7 +86,7 @@ for i in range(num_samples):
                total_experiments=total_experiments,
                smoke_test=args.smoke_test)
     delta = time.time() - start
-    deltas.append(deltas)
+    deltas.append(delta)
     print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')
 print(f'Each sample took {np.mean(deltas)} seconds on average')
 print(f"============== Completed ==============")

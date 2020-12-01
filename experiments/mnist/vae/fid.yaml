@@ -1,6 +1,6 @@
 include:
   - experiments/include/vae2d/fid.yaml
-  - experiments/mnist/include/common.yaml
+  - experiments/mnist/include/common_vae.yaml
 
 exp_params:
   plot:

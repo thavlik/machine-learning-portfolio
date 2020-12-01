@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 from torch import Tensor
@@ -14,6 +15,7 @@ from dataset.trends_fmri import load_subject
 from PIL import Image
 import subprocess
 from typing import List, Tuple
+import plotly.express as px
 
 
 def plot_title(template: str,
@@ -373,10 +375,17 @@ def fmri_stat_map_video(orig: Tensor,
         os.remove(f'{out_path}_{i}.tmp.png')
 
 
-def plot_comparison(items: List[Tuple[str, List[float]]],
+def plot_comparison(df,
                     metric_name: str,
-                    save_dir: str):
-    raise NotImplementedError
+                    out_path: str):
+    fig = px.line(df,
+                  x='step',
+                  y=metric_name,
+                  title=metric_name)
+    dir = os.path.dirname(out_path)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    fig.write_image(out_path)
 
 
 plot_fn = {
