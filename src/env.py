@@ -1,4 +1,5 @@
 import numpy as np
+from torch.nn import functional as F
 from gym import Env, spaces
 from dataset import get_dataset
 from merge_strategy import strategy
@@ -15,7 +16,7 @@ class TimeSeriesDetector(Env):
         self.observation_space = spaces.Box(
             low=config['low'],
             high=config['high'],
-            shape=(self.observation_length, self.num_channels),
+            shape=(self.num_channels, self.observation_length),
             dtype=np.float32,
         )
         # Load the data
@@ -25,6 +26,8 @@ class TimeSeriesDetector(Env):
         reward = 0.0
         y = self.y[:, self.current_step:self.current_step +
                    self.observation_length]
+        #loss = F.nll_loss(prediction, target)
+            
         self.current_step += 1
         if action != 0:
             self.current_step += self.action_stride
@@ -44,7 +47,7 @@ class TimeSeriesDetector(Env):
 
     def get_observation(self):
         return self.x[:, self.current_step:self.current_step +
-                      self.observation_length]
+                      self.observation_length].numpy()
 
     def get_info_dict(self) -> dict:
         return dict(current_step=self.current_step)

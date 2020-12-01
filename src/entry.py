@@ -119,11 +119,14 @@ def rl2d(config: dict, run_args: dict) -> VAEExperiment:
              loggers=[TBXLogger],
              **config['run_params'])
 
+def comparison(config: dict, run_args: dict) -> None:
+    raise NotImplementedError
 
 entrypoints = {
     'classification2d': classification2d,
     'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,
+    'comparison': comparison,
     'rl2d': rl2d,
     'vae1d': vae1d,
     'vae2d': vae2d,
@@ -147,8 +150,9 @@ def experiment_main(config: dict,
                     exp_no: int,
                     total_experiments: int,
                     smoke_test: bool) -> pl.LightningModule:
-    torch.manual_seed(config['manual_seed'])
-    np.random.seed(config['manual_seed'])
+    manual_seed = config.get('manual_seed', 100)
+    torch.manual_seed(manual_seed)
+    np.random.seed(manual_seed)
     experiment = create_experiment(config, run_args=dict(
         save_dir=save_dir,
         exp_no=exp_no,

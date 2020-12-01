@@ -113,6 +113,18 @@
             ]
         },
         {
+            "name": "Python: train MNIST Comparison",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/mnist/classification/comparison.yaml"
+            ]
+        },
+        {
             "name": "Python: train MNIST VAE FID",
             "type": "python",
             "request": "launch",

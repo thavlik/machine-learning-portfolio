@@ -33,14 +33,14 @@ class ResNetRL1d(TorchModelV2, nn.Module):
             in_features = h_dim
         self.layers = nn.Sequential(
             *modules,
-            nn.Flatten(),
             nn.Dropout(p=dropout),   
+            nn.Flatten(),
         )
+        in_features = hidden_dims[-1] * num_samples
         if pooling != None:
             in_features /= 2**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError(
-                    'noninteger number of features - perhaps there is too much pooling?')
+                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
         self.output = nn.Sequential(
             nn.Linear(in_features, action_space.n),
@@ -52,7 +52,7 @@ class ResNetRL1d(TorchModelV2, nn.Module):
         )
 
     def forward(self, input_dict, state, seq_lens):
-        obs = input_dict['obs'].to(self.device)
+        obs = input_dict['obs'] #.to(self.layers.device)
         x = self.layers(obs)
         model_out = self.output(x)
         self._value_out = self.value_out(x)

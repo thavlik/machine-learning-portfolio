@@ -7,12 +7,16 @@ run_params:
   
   checkpoint_at_end: true
   checkpoint_freq: 5000
-
+  
   config:
+    # https://docs.ray.io/en/master/rllib-training.html#common-parameters
+    rollout_fragment_length: 128
+    sgd_minibatch_size: 128
+    train_batch_size: 128
     env_config:
       name: TimeSeriesDetector
-      low: -10000
-      high: 10000
+      low: -20000.0
+      high: 20000.0
       observation_length: 8192
       channels: 32
       num_event_classes: 6
@@ -27,9 +31,10 @@ run_params:
     model:
       custom_model: ResNetRL1d
       custom_model_config:
-        num_samples: 128
+        num_samples: 8192
         channels: 32
-        hidden_dims: [256, 512, 1024, 512, 256]
+        hidden_dims: [128, 256, 256, 128]
+        pooling: max
     lr: 0.00001
 
 manual_seed: 1498

@@ -26,12 +26,12 @@ def load_config(path: str):
         return configs
     with open(path, 'r') as f:
         config = yaml.safe_load(f)
-        if 'series' in config:
-            # This is similar to passing in a directory,
-            # but allows for fine-grain control over which
-            # experiments are ran.
-            return [load_config(item)
-                    for item in config['series']]
+        #if 'series' in config:
+        #    # This is similar to passing in a directory,
+        #    # but allows for fine-grain control over which
+        #    # experiments are ran.
+        #    return [load_config(item)
+        #            for item in config['series']]
         if 'include' in config:
             # Recursively deep merge all the includes
             includes = config['include']
