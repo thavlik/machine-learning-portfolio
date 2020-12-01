@@ -1,3 +1,4 @@
+import os
 import torch
 from models import create_model
 from vae import VAEExperiment
@@ -12,6 +13,8 @@ from ray import tune
 from ray.tune.logger import TBXLogger
 from ray.rllib.models import ModelCatalog
 from env import get_env
+from plot import plot_comparison
+
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
@@ -119,8 +122,41 @@ def rl2d(config: dict, run_args: dict) -> VAEExperiment:
              loggers=[TBXLogger],
              **config['run_params'])
 
+
 def comparison(config: dict, run_args: dict) -> None:
-    raise NotImplementedError
+    metrics = config['plot']['metrics']
+    results = {}
+    for path in config['series']:
+        experiment = experiment_main(load_config(path), **run_args)
+        path = os.path.join(experiment.logger.save_dir,
+                            experiment.logger.name,
+                            'version_' + str(experiment.logger.version),
+                            'metrics.csv')
+        with open(path, 'r') as f:
+            f_hdr = f.readline().strip().split(',')
+            inds = []
+            for metric in metrics:
+                try:
+                    inds.append(f_hdr.index(metric))
+                except:
+                    inds.append(None)
+            cols = []
+            for line in f:
+                line = line.strip().split(',')
+                for ind in inds:
+                    cols.append(line[ind] if ind != None else None)
+            results[experiment.logger.name] = cols
+    for i, metric in enumerate(metrics):
+        items = []
+        for name, cols in results.items():
+            if cols[i] == None:
+                # Metric not available for this experiment
+                continue
+            items.append((name, cols))
+        plot_comparison(items,
+                        metric_name=metric,
+                        save_dir=run_args['save_dir'])
+
 
 entrypoints = {
     'classification2d': classification2d,
@@ -175,3 +211,11 @@ def experiment_main(config: dict,
     print(config)
     runner.fit(experiment)
     return experiment
+
+
+def flatten(S):
+    if S == []:
+        return S
+    if isinstance(S[0], list):
+        return flatten(S[0]) + flatten(S[1:])
+    return S[:1] + flatten(S[1:])

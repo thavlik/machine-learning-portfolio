@@ -1,12 +1,14 @@
 entrypoint: comparison
 
+name: MNIST_Comparison
+
 # A list of experiments to compare
 series:
   - experiments/mnist/classification/basic.yaml
   - experiments/mnist/classification/embed_mse.yaml
-  - experiments/mnist/classification/embed_fid.yaml
-  - experiments/mnist/classification/sandwich_mse.yaml
-  - experiments/mnist/classification/sandwich_fid.yaml
+  #- experiments/mnist/classification/embed_fid.yaml
+  #- experiments/mnist/classification/sandwich_mse.yaml
+  #- experiments/mnist/classification/sandwich_fid.yaml
 
 # Run each experiment N times and average the results
 num_samples: 1
@@ -17,4 +19,5 @@ plot:
   metrics:
   - loss
   - accuracy
-  - avg_val_acc
+
+

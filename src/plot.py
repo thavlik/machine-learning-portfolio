@@ -13,6 +13,7 @@ import nilearn.plotting as nlplt
 from dataset.trends_fmri import load_subject
 from PIL import Image
 import subprocess
+from typing import List, Tuple
 
 
 def plot_title(template: str,
@@ -370,6 +371,12 @@ def fmri_stat_map_video(orig: Tensor,
         raise ValueError('unknown format')
     for i in range(num_frames):
         os.remove(f'{out_path}_{i}.tmp.png')
+
+
+def plot_comparison(items: List[Tuple[str, List[float]]],
+                    metric_name: str,
+                    save_dir: str):
+    raise NotImplementedError
 
 
 plot_fn = {

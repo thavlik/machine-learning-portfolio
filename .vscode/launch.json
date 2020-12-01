@@ -121,7 +121,9 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/mnist/classification/comparison.yaml"
+                "experiments/mnist/classification/comparison.yaml",
+                "--smoke-test",
+                "True"
             ]
         },
         {
