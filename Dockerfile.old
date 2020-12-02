@@ -12,8 +12,8 @@ RUN apt-get update \
     && pip uninstall dataclasses typing -y  \ 
     && apt-get remove cmake gcc -y \
     && apt-get clean
-COPY docker_entrypoint.sh .
-RUN chmod +x ./docker_entrypoint.sh
 COPY experiments experiments
 COPY src src
+COPY docker_entrypoint.sh .
+RUN chmod +x ./docker_entrypoint.sh
 CMD ["./docker_entrypoint.sh"]
