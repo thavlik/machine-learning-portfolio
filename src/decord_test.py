@@ -9,7 +9,7 @@ path = 'E:/doom/_9zaLSmRgGc.mp4'
 vl = VideoLoader([
     path,
     'E:/doom/_BHunyDleDQ.mp4',
-], ctx=[cpu(0)], shape=(10, 320, 240, 3), interval=0, skip=5, shuffle=2)
+], ctx=[cpu(0)], shape=(10, 320, 240, 3), interval=0, skip=5, shuffle=1)
 ex = vl.next()
 vr = VideoReader(path, ctx=cpu(0))
 # a file like object works as well, for in-memory decoding
