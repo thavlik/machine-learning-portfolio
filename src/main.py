@@ -20,8 +20,8 @@ def count_experiments(series: Union[dict, List[dict]]) -> int:
             n += count_experiments(item)
         elif 'series' in item:
             # Composite experiment with explicit series
-            n += 1 + [count_experiments(load_config(path))
-                      for path in item['series']]
+            n += 1 + sum(count_experiments(load_config(path))
+                         for path in item['series'])
         else:
             # Single experiment
             n += 1
