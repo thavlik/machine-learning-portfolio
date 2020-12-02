@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:1.7.0-cuda11.0-cudnn8-runtime
+FROM rayproject/ray-ml:latest-gpu
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt

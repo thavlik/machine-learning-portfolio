@@ -1,0 +1,19 @@
+FROM pytorch/pytorch:1.7.0-cuda11.0-cudnn8-runtime
+WORKDIR /app
+COPY requirements.txt .
+RUN apt-get update \
+    && apt-get install -y gcc \
+        cmake \
+        libgtk2.0-dev \
+        zlib1g-dev \
+        libgl1-mesa-dev \
+    && pip --no-cache-dir install -r requirements.txt \ 
+    # Remove dataclasses & typing because they are included in Py3.7
+    && pip uninstall dataclasses typing -y  \ 
+    && apt-get remove cmake gcc -y \
+    && apt-get clean
+COPY docker_entrypoint.sh .
+RUN chmod +x ./docker_entrypoint.sh
+COPY experiments experiments
+COPY src src
+CMD ["./docker_entrypoint.sh"]
