@@ -9,4 +9,7 @@ nilearn
 pylibjpeg
 pylibjpeg-libjpeg
 matplotlib
-envsubst
+ray[tune]
+gym
+dm-tree
+opencv-python

@@ -5,7 +5,7 @@ from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
 from .trends_fmri import *
-from .video import *
+#from .video import *
 
 datasets = {
     'cq500': CQ500Dataset,
