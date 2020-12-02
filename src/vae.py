@@ -18,6 +18,8 @@ from typing import Callable, Optional, Tuple
 from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
+from decord import VideoLoader
+from decord import cpu, gpu
 
 
 class VAEExperiment(pl.LightningModule):
@@ -150,23 +152,41 @@ class VAEExperiment(pl.LightningModule):
         optimizer.zero_grad()
 
     def train_dataloader(self):
-        dataset = get_dataset(self.params['data']['name'],
-                              self.params['data'].get('training', {}))
+        ds_params = self.params['data'].get('training', {})
+        dl_params = self.params['data'].get('loader', {})
+        if self.params['data']['name'] == 'video':
+            return VideoLoader([os.path.join()
+                                for f in os.listdir(ds_params['dir'])],
+                               ctx=[cpu(0)],
+                               shape=tuple(dl_params['shape']),
+                               interval=dl_params['interval'],
+                               skip=dl_params['skip'],
+                               shuffle=dl_params['shuffle'])
+        dataset = get_dataset(self.params['data']['name'], ds_params)
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
                           shuffle=True,
-                          **self.params['data'].get('loader', {}))
+                          **dl_params)
 
     def val_dataloader(self):
         ds_params = strategy.merge(
             self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
+        dl_params = self.params['data'].get('loader', {})
+        if self.params['data']['name'] == 'video':
+            return VideoLoader([os.path.join()
+                                for f in os.listdir(ds_params['dir'])],
+                               ctx=[cpu(0)],
+                               shape=tuple(dl_params['shape']),
+                               interval=dl_params['interval'],
+                               skip=dl_params['skip'],
+                               shuffle=dl_params['shuffle'])
         dataset = get_dataset(self.params['data']['name'], ds_params)
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,
-                                            **self.params['data'].get('loader', {}))
+                                            **dl_params)
         self.num_val_imgs = len(self.sample_dataloader)
         n = len(dataset)
         # Persist separate validation indices for each plot

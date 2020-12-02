@@ -22,7 +22,6 @@ def get_dataset(name: str, params: dict):
         raise ValueError(f"unknown dataset '{name}'")
     return datasets[name](**params)
 
-
 dataset_dims = {
     'eeg': (1, 8192),  # channels, length
     'cq500': (1, 512, 512),  # channels, height, width

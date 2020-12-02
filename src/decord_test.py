@@ -1,14 +1,13 @@
 import decord
 from decord import VideoReader, VideoLoader
 from decord import cpu, gpu
-
 decord.bridge.set_bridge('torch')
 
 path = 'E:/doom/_9zaLSmRgGc.mp4'
 
 vl = VideoLoader([
     path,
-    'E:/doom/_BHunyDleDQ.mp4',
+    #'E:/doom/_BHunyDleDQ.mp4',
 ], ctx=[cpu(0)], shape=(10, 320, 240, 3), interval=0, skip=5, shuffle=1)
 ex = vl.next()
 vr = VideoReader(path, ctx=cpu(0))

@@ -8,7 +8,7 @@ from entry import experiment_main
 from load_config import load_config
 from typing import List, Union
 import numpy as np
-
+import decord
 
 def count_experiments(series: Union[dict, List[dict]]) -> int:
     if type(series) != list:
@@ -73,9 +73,11 @@ args = parser.parse_args()
 if args.smoke_test:
     print('Executing smoke test - training will stop after a couple steps.')
 
-config = load_config(args.config)
 cudnn.deterministic = True
 cudnn.benchmark = False
+decord.bridge.set_bridge('torch')
+
+config = load_config(args.config)
 total_experiments = count_experiments(config)
 
 num_samples = args.num_samples
