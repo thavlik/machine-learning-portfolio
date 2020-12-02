@@ -10,13 +10,11 @@ exp_params:
     name: video
     training:
       dir: E:/doom
-    validation:
-      dir: E:/doom
-    loader:
-      num_frames: 1
       width: 320
       height: 240
       limit: 3
+    validation:
+      dir: E:/doom
   batch_size: 32
   warmup_steps: 256
 

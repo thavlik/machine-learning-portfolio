@@ -99,7 +99,7 @@ class VAEExperiment(pl.LightningModule):
         for plot, val_indices in zip(self.plots, self.val_indices):
             test_input = []
             recons = []
-            batch = torch.cat([self.sample_dataloader.dataset[i][0].unsqueeze(0)
+            batch = torch.cat([self.sample_dataloader.dataset[int(i)][0].unsqueeze(0)
                                for i in val_indices], dim=0).to(self.curr_device)
             for x in batch:
                 x = x.unsqueeze(0)
@@ -155,7 +155,7 @@ class VAEExperiment(pl.LightningModule):
     def train_dataloader(self):
         ds_params = self.params['data'].get('training', {})
         dl_params = self.params['data'].get('loader', {})
-        if self.params['data']['name'] == 'video':
+        if self.params['data']['name'] == 'batch-video':
             vl = BatchVideoDataLoader(**ds_params,
                                       batch_size=self.params['batch_size'],
                                       **dl_params)
@@ -173,7 +173,7 @@ class VAEExperiment(pl.LightningModule):
             self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
         dl_params = self.params['data'].get('loader', {})
-        if self.params['data']['name'] == 'video':
+        if self.params['data']['name'] == 'batch-video':
             vl = BatchVideoDataLoader(**ds_params,
                                       batch_size=self.params['batch_size'],
                                       **dl_params)

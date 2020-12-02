@@ -40,8 +40,8 @@ def get_example_shape(data: dict):
         x, _ = ds[0]
         return x.shape
     if name == 'video':
-        l = data['loader']
-        return torch.Size((3, l['height'], l['width']))
+        train = data['training']
+        return torch.Size((3, train['height'], train['width']))
     if name == 'batch-video':
         l = data['loader']
         return torch.Size((l['num_frames'], 3, l['height'], l['width']))

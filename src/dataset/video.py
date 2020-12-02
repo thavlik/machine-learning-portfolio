@@ -17,12 +17,8 @@ decord.bridge.set_bridge('torch')
 class VideoDataset(data.Dataset):
     def __init__(self,
                  dir: str,
-                 num_frames: int,
                  width: int,
                  height: int,
-                 interval: int = 0,
-                 skip: int = 0,
-                 shuffle: int = 1,
                  limit: int = None):
         super(VideoDataset, self).__init__()
         videos = []
@@ -62,17 +58,20 @@ class VideoDataset(data.Dataset):
 
 if __name__ == '__main__':
     import time
+    batch_size = 16
     num_frames = 1
     width = 320
     height = 240
-    start = time.time()
     ds = VideoDataset(dir='E:/doom',
-                      num_frames=num_frames,
                       width=width,
                       height=height,
                       limit=10)
-    for x, y in ds:
-        pass
+    indices = torch.randint(low=0,
+                            high=len(ds),
+                            size=(batch_size, 1)).squeeze()
+    start = time.time()
+    batch = [ds[int(i)] for i in indices]
     delta = time.time() - start
-    print(f'Loaded in {delta} seconds')
+    print(
+        f'Loaded {batch_size} examples in {delta} seconds ({delta/batch_size}) seconds avg)')
     print('ok')
