@@ -1,0 +1,6 @@
+include:
+  - experiments/include/vae2d/mse.yaml
+  - experiments/doom/include/common_vae.yaml
+
+logging_params:
+  name: "Doom_VAE_MSE"

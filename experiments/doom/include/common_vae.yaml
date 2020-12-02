@@ -3,20 +3,21 @@ include:
 
 model_params:
   hidden_dims: [64, 128, 64]
+  pooling: max
 
 exp_params:
   data:
-    name: reference
+    name: video
     training:
-      name: MNIST
-      params:
-        root: E:/
-        download: true
-        train: true
+      dir: E:/doom
     validation:
-      params:
-        train: false
-  batch_size: 64
+      dir: E:/doom
+    loader:
+      num_frames: 1
+      width: 320
+      height: 240
+      limit: 3
+  batch_size: 32
   warmup_steps: 256
 
 trainer_params:

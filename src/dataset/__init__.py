@@ -5,7 +5,7 @@ from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
 from .trends_fmri import *
-#from .video import *
+from .batch_video import *
 
 datasets = {
     'cq500': CQ500Dataset,
@@ -38,8 +38,8 @@ def get_example_shape(data: dict):
         x, _ = ds[0]
         return x.shape
     if name == 'video':
-        params = data['training']
-        return torch.Size((3, params['height'], params['width']))
+        l = data['loader']
+        return torch.Size((3, l['height'], l['width']))
     if name == 'grasp-and-lift-eeg':
         return (32, data['training']['num_samples'])
     if name not in dataset_dims:

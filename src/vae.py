@@ -1,5 +1,6 @@
 import os
 import math
+import time
 import torch
 import numpy as np
 from torch import optim, Tensor
@@ -8,7 +9,7 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
-from dataset import get_dataset
+from dataset import get_dataset, BatchVideoDataLoader
 from abc import abstractmethod
 from plotly.subplots import make_subplots
 from plotly.graph_objects import Figure
@@ -18,8 +19,6 @@ from typing import Callable, Optional, Tuple
 from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
-from decord import VideoLoader
-from decord import cpu, gpu
 
 
 class VAEExperiment(pl.LightningModule):
@@ -95,6 +94,8 @@ class VAEExperiment(pl.LightningModule):
         self.sample_images()
 
     def sample_images(self):
+        if self.val_indices == None:
+            return
         for plot, val_indices in zip(self.plots, self.val_indices):
             test_input = []
             recons = []
@@ -155,13 +156,11 @@ class VAEExperiment(pl.LightningModule):
         ds_params = self.params['data'].get('training', {})
         dl_params = self.params['data'].get('loader', {})
         if self.params['data']['name'] == 'video':
-            return VideoLoader([os.path.join()
-                                for f in os.listdir(ds_params['dir'])],
-                               ctx=[cpu(0)],
-                               shape=tuple(dl_params['shape']),
-                               interval=dl_params['interval'],
-                               skip=dl_params['skip'],
-                               shuffle=dl_params['shuffle'])
+            vl = BatchVideoDataLoader(**ds_params,
+                                      batch_size=self.params['batch_size'],
+                                      **dl_params)
+            self.num_train_imgs = len(vl)
+            return vl
         dataset = get_dataset(self.params['data']['name'], ds_params)
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
@@ -175,13 +174,12 @@ class VAEExperiment(pl.LightningModule):
             self.params['data'].get('validation', {}))
         dl_params = self.params['data'].get('loader', {})
         if self.params['data']['name'] == 'video':
-            return VideoLoader([os.path.join()
-                                for f in os.listdir(ds_params['dir'])],
-                               ctx=[cpu(0)],
-                               shape=tuple(dl_params['shape']),
-                               interval=dl_params['interval'],
-                               skip=dl_params['skip'],
-                               shuffle=dl_params['shuffle'])
+            vl = BatchVideoDataLoader(**ds_params,
+                                      batch_size=self.params['batch_size'],
+                                      **dl_params)
+            self.num_val_imgs = len(vl)
+            self.val_indices = None
+            return vl
         dataset = get_dataset(self.params['data']['name'], ds_params)
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],

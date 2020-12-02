@@ -13,6 +13,20 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Python: doom smoke test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/doom/vae/mse.yaml",
+                "--smoke-test",
+                "True"
+            ]
+        },
+        {
             "name": "Python: smoke test",
             "type": "python",
             "request": "launch",

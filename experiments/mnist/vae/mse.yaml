@@ -1,5 +1,4 @@
 include:
-  - experiments/include/vae2d/mse.yaml
   - experiments/mnist/include/common_vae.yaml
 
 exp_params:
