@@ -152,14 +152,7 @@ def comparison(config: dict, run_args: dict) -> None:
                                 if ind != None else None)
             results[experiment.logger.name] = cols
     for i, metric in enumerate(metrics):
-        items = []
-        for name, cols in results.items():
-            if cols[i] == None:
-                # Metric not available for this experiment
-                continue
-            items.append([name, [i for i in len(cols)], cols])
-        df = pd.DataFrame(items, columns=['name', 'step', metric])
-        plot_comparison(df,
+        plot_comparison(results,
                         metric_name=metric,
                         out_path=os.path.join(run_args['save_dir'],
                                               config['name'],

@@ -9,15 +9,24 @@ from load_config import load_config
 from typing import List, Union
 import numpy as np
 
+
 def count_experiments(series: Union[dict, List[dict]]) -> int:
     if type(series) != list:
         series = [series]
     n = 0
     for item in series:
         if type(item) is list:
+            # Implicit series
             n += count_experiments(item)
+        elif 'series' in item:
+            # Composite experiment with explicit series
+            n += 1 + [count_experiments(load_config(path))
+                      for path in item['series']]
         else:
+            # Single experiment
             n += 1
+            if 'base_experiment' in item:
+                n += count_experiments(load_config(item['base_experiment']))
     return n
 
 

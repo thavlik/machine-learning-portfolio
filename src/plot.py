@@ -15,7 +15,6 @@ from dataset.trends_fmri import load_subject
 from PIL import Image
 import subprocess
 from typing import List, Tuple
-import plotly.express as px
 
 
 def plot_title(template: str,
@@ -375,13 +374,23 @@ def fmri_stat_map_video(orig: Tensor,
         os.remove(f'{out_path}_{i}.tmp.png')
 
 
-def plot_comparison(df,
+def plot_comparison(result_dict: dict,
                     metric_name: str,
                     out_path: str):
-    fig = px.line(df,
-                  x='step',
-                  y=metric_name,
-                  title=metric_name)
+    fig = go.Figure()
+    for name, y in result_dict.items():
+        x = np.arange(len(y))
+        fig.add_trace(go.Scatter(x=x, y=y,
+                                 mode='lines',
+                                 name=name))
+    fig.update_layout(
+        title='Comparison',
+        xaxis_title="Epoch",
+        yaxis_title=metric_name.title(),
+        font=dict(
+            size=18,
+        ),
+    )
     dir = os.path.dirname(out_path)
     if not os.path.exists(dir):
         os.makedirs(dir)
