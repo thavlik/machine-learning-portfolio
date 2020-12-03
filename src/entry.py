@@ -158,17 +158,19 @@ def comparison(config: dict, run_args: dict) -> None:
                             continue
                         metric_data.append((step, float(col)))
                 if metric in results:
-                    results[metric].append((experiment.logger.name, metric_data))
+                    results[metric].append(
+                        (experiment.logger.name, metric_data))
                 else:
                     results[metric] = [(experiment.logger.name, metric_data)]
-    version_no = len([f
-                      for f in os.listdir(os.path.join(run_args['save_dir'],
-                                                       config['name']))
-                      if f.startswith('version_')])
-    out_dir = os.path.join(run_args['save_dir'],
-                           config['name'],
-                           f'version_{version_no}')
-    os.makedirs(out_dir)
+    dir = os.path.join(run_args['save_dir'], config['name'])
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+        version_no = 0
+    else:
+        version_no = len([f for f in os.listdir(dir)
+                          if f.startswith('version_')])
+    out_dir = os.path.join(dir, f'version_{version_no}')
+    os.mkdir(out_dir)
     torch.save(results, os.path.join(out_dir, 'metrics.pt'))
     for metric, data in results.items():
         exps = {}
