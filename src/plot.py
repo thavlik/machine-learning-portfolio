@@ -382,8 +382,9 @@ def plot_comparison(result_dict: dict,
                     out_path: str,
                     line_width: float = 1.0):
     fig = go.Figure()
-    for name, y in result_dict.items():
-        x = np.arange(len(y))
+    for name, data in result_dict.items():
+        x = data[:, 0]
+        y = data[:, 1]
         fig.add_trace(go.Scatter(x=x, y=y,
                                  mode='lines',
                                  name=name,

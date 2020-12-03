@@ -138,25 +138,29 @@ def comparison(config: dict, run_args: dict) -> None:
                                 'metrics.csv')
             with open(path, 'r') as f:
                 f_hdr = f.readline().strip().split(',')
-                inds = []
+                metric_col = []
                 for metric in metrics:
                     try:
-                        inds.append(f_hdr.index(metric))
+                        metric_col.append(f_hdr.index(metric))
                     except:
-                        inds.append(None)
-                    cols = []
-                    for line in f:
-                        line = line.strip().split(',')
-                        for ind in inds:
-                            col = line[ind]
-                            if col == '':
-                                continue
-                            cols.append(float(col)
-                                        if ind != None else None)
-                    if metric in results:
-                        results[metric].append((experiment.logger.name, cols))
-                    else:
-                        results[metric] = [(experiment.logger.name, cols)]
+                        # This metric is not available in this experiment
+                        metric_col.append(None)
+                metric_data = []
+                for step, line in enumerate(f):
+                    line = line.strip().split(',')
+                    for idx in metric_col:
+                        if idx == None:
+                            # Metric not available
+                            continue
+                        col = line[idx]
+                        if col == '':
+                            # Metric was not logged on this step
+                            continue
+                        metric_data.append((step, float(col)))
+                if metric in results:
+                    results[metric].append((experiment.logger.name, metric_data))
+                else:
+                    results[metric] = [(experiment.logger.name, metric_data)]
     version_no = len([f
                       for f in os.listdir(os.path.join(run_args['save_dir'],
                                                        config['name']))
