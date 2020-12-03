@@ -125,37 +125,63 @@ def rl2d(config: dict, run_args: dict) -> VAEExperiment:
 
 
 def comparison(config: dict, run_args: dict) -> None:
-    metrics = config['plot']['metrics']
+    plot = config['plot']
+    metrics = plot['metrics']
     results = {}
-    for path in config['series']:
-        experiment = experiment_main(load_config(path), **run_args)
-        path = os.path.join(experiment.logger.save_dir,
-                            experiment.logger.name,
-                            'version_' + str(experiment.logger.version),
-                            'metrics.csv')
-        with open(path, 'r') as f:
-            f_hdr = f.readline().strip().split(',')
-            inds = []
-            for metric in metrics:
-                try:
-                    inds.append(f_hdr.index(metric))
-                except:
-                    inds.append(None)
-            cols = []
-            for i, line in enumerate(f):
-                line = line.strip().split(',')
-                for ind in inds:
-                    col = line[ind]
-                    if col == '':
-                        continue
-                    cols.append(float(col)
-                                if ind != None else None)
-            results[experiment.logger.name] = cols
-    for i, metric in enumerate(metrics):
-        plot_comparison(results,
+    num_samples = config.get('num_samples', 1)
+    for _ in range(num_samples):
+        for path in config['series']:
+            experiment = experiment_main(load_config(path), **run_args)
+            path = os.path.join(experiment.logger.save_dir,
+                                experiment.logger.name,
+                                'version_' + str(experiment.logger.version),
+                                'metrics.csv')
+            with open(path, 'r') as f:
+                f_hdr = f.readline().strip().split(',')
+                inds = []
+                for metric in metrics:
+                    try:
+                        inds.append(f_hdr.index(metric))
+                    except:
+                        inds.append(None)
+                    cols = []
+                    for line in f:
+                        line = line.strip().split(',')
+                        for ind in inds:
+                            col = line[ind]
+                            if col == '':
+                                continue
+                            cols.append(float(col)
+                                        if ind != None else None)
+                    if metric in results:
+                        results[metric].append((experiment.logger.name, cols))
+                    else:
+                        results[metric] = [(experiment.logger.name, cols)]
+    version_no = len([f
+                      for f in os.listdir(os.path.join(run_args['save_dir'],
+                                                       config['name']))
+                      if f.startswith('version_')])
+    out_dir = os.path.join(run_args['save_dir'],
+                           config['name'],
+                           f'version_{version_no}')
+    os.makedirs(out_dir)
+    torch.save(results, os.path.join(out_dir, 'metrics.pt'))
+    for metric, data in results.items():
+        exps = {}
+        for name, data in data:
+            if name in exps:
+                exps[name].append(data)
+            else:
+                exps[name] = [data]
+        means = {}
+        for name, data in exps.items():
+            means[name] = np.mean(data, axis=0)
+        plot_comparison(means,
                         metric_name=metric,
-                        out_path=os.path.join(run_args['save_dir'],
-                                              config['name'],
+                        num_samples=num_samples,
+                        width=plot['width'],
+                        height=plot['height'],
+                        out_path=os.path.join(out_dir,
                                               f'comparison_{metric}.png'))
 
 

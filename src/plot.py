@@ -376,15 +376,22 @@ def fmri_stat_map_video(orig: Tensor,
 
 def plot_comparison(result_dict: dict,
                     metric_name: str,
-                    out_path: str):
+                    num_samples: int,
+                    width: int,
+                    height: int,
+                    out_path: str,
+                    line_width: float = 1.0):
     fig = go.Figure()
     for name, y in result_dict.items():
         x = np.arange(len(y))
         fig.add_trace(go.Scatter(x=x, y=y,
                                  mode='lines',
-                                 name=name))
+                                 name=name,
+                                 line=dict(width=line_width)))
     fig.update_layout(
-        title='Comparison',
+        title=f'Comparison ({num_samples} samples)',
+        width=width,
+        height=height,
         xaxis_title="Epoch",
         yaxis_title=metric_name.title(),
         font=dict(

@@ -80,12 +80,7 @@ decord.bridge.set_bridge('torch')
 config = load_config(args.config)
 total_experiments = count_experiments(config)
 
-num_samples = args.num_samples
-if num_samples == None:
-    if type(config) == dict:
-        num_samples = config.get('num_samples', 1)
-    else:
-        num_samples = 1
+num_samples = args.num_samples or 1#or (config.get('num_samples', 1) if type(config) is dict else 1)
 
 deltas = []
 for i in range(num_samples):
