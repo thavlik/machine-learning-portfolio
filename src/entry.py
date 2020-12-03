@@ -107,7 +107,7 @@ def vae4d(config: dict, run_args: dict) -> VAEExperiment:
                          height=h,
                          depth=d,
                          channels=c,
-                         frames=f,)
+                         frames=f)
     return VAEExperiment(model,
                          params=exp_params)
 
