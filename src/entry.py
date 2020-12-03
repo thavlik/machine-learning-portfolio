@@ -163,12 +163,12 @@ def comparison(config: dict, run_args: dict) -> None:
                 else:
                     results[metric] = [(experiment.logger.name, metric_data)]
     dir = os.path.join(run_args['save_dir'], config['name'])
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-        version_no = 0
-    else:
+    if os.path.exists(dir):
         version_no = len([f for f in os.listdir(dir)
                           if f.startswith('version_')])
+    else:
+        os.makedirs(dir)
+        version_no = 0
     out_dir = os.path.join(dir, f'version_{version_no}')
     os.mkdir(out_dir)
     torch.save(results, os.path.join(out_dir, 'metrics.pt'))
