@@ -11,7 +11,7 @@ series:
   - experiments/mnist/classification/sandwich_fid.yaml
 
 # Run each experiment N times and average the results
-num_samples: 2
+num_samples: 8
 
 plot:
   # A list of columns from metrics.csv, each one getting
