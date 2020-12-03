@@ -41,6 +41,7 @@ Many of the ideas implemented in this repository were first detailed in the foll
 ## TODO
 - Implement beta loss term
 - Second optimizer for adversarial training
+- Publish doom dataset
 
 ## Contributing
 Please open an issue or pull request if you would like to contribute.
