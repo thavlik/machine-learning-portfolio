@@ -1,4 +1,4 @@
-include: experiments/mnist/include/common_vae.yaml
+include: experiments/mnist/include/dataset.yaml
 
 entrypoint: classification2d
 
@@ -6,6 +6,7 @@ model_params:
   arch: 'ResNetClassifier2d'
   name: 'ResNetClassifier2d'
   num_classes: 10
+  hidden_dims: [64, 128, 64]
 
 exp_params:
   optimizer:

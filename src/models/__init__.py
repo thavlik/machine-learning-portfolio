@@ -30,4 +30,9 @@ def create_model(arch: str, **kwargs):
     if arch not in models:
         raise ValueError(f'unknown model architecture "{arch}" '
                          f'valid options are {models}')
-    return models[arch](**kwargs)
+    try:
+        model = models[arch](**kwargs)
+    except:
+        print(f'failed to create model "{arch}"')
+        raise
+    return model

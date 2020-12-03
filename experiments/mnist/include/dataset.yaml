@@ -1,0 +1,14 @@
+exp_params:
+  data:
+    name: reference
+    training:
+      name: MNIST
+      params:
+        root: E:/
+        download: true
+        train: true
+    validation:
+      params:
+        train: false
+  batch_size: 64
+  warmup_steps: 256

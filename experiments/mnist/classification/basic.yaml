@@ -1,5 +1,4 @@
 include:
-  - experiments/mnist/include/common_vae.yaml
   - experiments/mnist/include/classification_common.yaml
 
 entrypoint: classification2d

@@ -1,23 +1,9 @@
 include:
   - experiments/include/vae2d/mse.yaml
+  - experiments/mnist/include/dataset.yaml
 
 model_params:
   hidden_dims: [64, 128, 64]
-
-exp_params:
-  data:
-    name: reference
-    training:
-      name: MNIST
-      params:
-        root: E:/
-        download: true
-        train: true
-    validation:
-      params:
-        train: false
-  batch_size: 64
-  warmup_steps: 256
 
 trainer_params:
   max_epochs: 100

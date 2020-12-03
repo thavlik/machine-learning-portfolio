@@ -42,12 +42,15 @@ if not os.path.exists(args.output):
 files = sorted([f for f in os.listdir(args.input)
                 if f.endswith('.mp4')])
 print(f'Processing {len(files)} files')
-pcts = []
+total_in = 0
+total_out = 0
 for i, file in enumerate(files):
     start = time.time()
     input = os.path.join(args.input, file).replace('\\', '/')
     output = os.path.join(args.output, file).replace('\\', '/')
-    in_size = os.path.getsize(input)//1000//1000
+    in_size = os.path.getsize(input)
+    total_in += in_size
+    in_size //= 1000*1000
     print(f'[{i+1}/{len(files)}] Processing {input} ({in_size} MiB)')
     cmd = f"ffmpeg -i $(wslpath {input}) -s {args.width}x{args.height} -y -c:a copy -an -vf select='not(mod(n\\,{denom})), setpts={1.0/denom}*PTS' $(wslpath {output})"
     proc = subprocess.run(
@@ -59,9 +62,10 @@ for i, file in enumerate(files):
             msg += ' ' + proc.stderr.decode('unicode_escape')
         raise ValueError(msg)
     delta = time.time() - start
-    out_size = os.path.getsize(output)//1000//1000
+    out_size = os.path.getsize(output)
+    total_out += out_size
+    out_size //= 1000*1000
     pct = (1.0 - out_size / in_size) * 100
-    pcts.append(pct)
     print(f'[{i+1}/{len(files)}] Wrote {output} in {delta} seconds ({out_size} MiB, {int(pct)}% reduction)')
-avg = sum(pcts) / len(pcts)
-print(f'Success, average reduction of {avg}%')
+reduction = int((1.0 - total_out / total_in) * 100)
+print(f'Success, total reduction of {reduction}%')
