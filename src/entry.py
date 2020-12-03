@@ -187,6 +187,7 @@ def comparison(config: dict, run_args: dict) -> None:
                         height=plot['height'],
                         out_path=os.path.join(out_dir,
                                               f'comparison_{metric}.png'),
+                        scatter_params=plot.get('scatter_params', {}),
                         layout_params=plot.get('layout_params', {}))
 
 

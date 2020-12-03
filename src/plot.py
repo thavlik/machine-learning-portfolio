@@ -381,7 +381,9 @@ def plot_comparison(result_dict: dict,
                     width: int,
                     height: int,
                     out_path: str,
+                    scatter_params: dict = {},
                     layout_params: dict = {}):
+    p = strategy.merge(dict(line=dict(width=1.0)), scatter_params)
     fig = go.Figure()
     for name, data in result_dict.items():
         x = data[:, 0]
@@ -389,7 +391,7 @@ def plot_comparison(result_dict: dict,
         fig.add_trace(go.Scatter(x=x, y=y,
                                  mode='lines',
                                  name=name,
-                                 line=dict(width=line_width)))
+                                 **p))
     params = dict(title=f'{metric_name.title()} Comparison ({num_samples} samples)',
                   width=width,
                   height=height,
