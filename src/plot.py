@@ -15,6 +15,7 @@ from dataset.trends_fmri import load_subject
 from PIL import Image
 import subprocess
 from typing import List, Tuple
+from merge_strategy import strategy
 
 
 def plot_title(template: str,
@@ -380,7 +381,7 @@ def plot_comparison(result_dict: dict,
                     width: int,
                     height: int,
                     out_path: str,
-                    line_width: float = 1.0):
+                    layout_params: dict = {}):
     fig = go.Figure()
     for name, data in result_dict.items():
         x = data[:, 0]
@@ -389,16 +390,16 @@ def plot_comparison(result_dict: dict,
                                  mode='lines',
                                  name=name,
                                  line=dict(width=line_width)))
-    fig.update_layout(
-        title=f'{metric_name.title()} Comparison ({num_samples} samples)',
-        width=width,
-        height=height,
-        xaxis_title="Epoch",
-        yaxis_title=metric_name.title(),
-        font=dict(
-            size=18,
-        ),
-    )
+    params = dict(title=f'{metric_name.title()} Comparison ({num_samples} samples)',
+                  width=width,
+                  height=height,
+                  xaxis_title="Epoch",
+                  yaxis_title=metric_name.title(),
+                  font=dict(
+                      size=18,
+                  ))
+    params = strategy.merge(params, layout_params)
+    fig.update_layout(**params)
     dir = os.path.dirname(out_path)
     if not os.path.exists(dir):
         os.makedirs(dir)

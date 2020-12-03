@@ -186,7 +186,8 @@ def comparison(config: dict, run_args: dict) -> None:
                         width=plot['width'],
                         height=plot['height'],
                         out_path=os.path.join(out_dir,
-                                              f'comparison_{metric}.png'))
+                                              f'comparison_{metric}.png'),
+                        layout_params=plot.get('layout_params', {}))
 
 
 entrypoints = {
