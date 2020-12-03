@@ -390,7 +390,7 @@ def plot_comparison(result_dict: dict,
                                  name=name,
                                  line=dict(width=line_width)))
     fig.update_layout(
-        title=f'MNIST {metric_name.title()} Comparison ({num_samples} samples)',
+        title=f'{metric_name.title()} Comparison ({num_samples} samples)',
         width=width,
         height=height,
         xaxis_title="Epoch",
