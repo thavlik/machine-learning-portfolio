@@ -4,6 +4,6 @@
 __pycache__/
 data/
 README.md
-src/logs/
+logs/
 *.mp4
 *.part
