@@ -1,5 +1,6 @@
 import os
 import math
+import gc
 import time
 import torch
 import numpy as np
@@ -122,6 +123,7 @@ class VAEExperiment(pl.LightningModule):
                epoch=self.current_epoch,
                out_path=out_path,
                **plot['params'])
+            gc.collect()
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),

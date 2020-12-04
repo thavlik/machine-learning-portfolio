@@ -134,6 +134,8 @@ def plot2d(orig: Tensor,
         fig.suptitle(interpolated, **suptitle)
     fig.tight_layout()
     fig.savefig(out_path + '.png', bbox_inches='tight')
+    plt.close(fig)
+    plt.close('all')
 
 
 def plot2d_dcm(*args, **kwargs):
