@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from plotly.graph_objects import Figure
 import matplotlib.pyplot as plt
+from matplotlib import figure
 from mpl_toolkits.axes_grid1 import ImageGrid
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.io import write_video
@@ -99,8 +100,8 @@ def plot2d(orig: Tensor,
            title: str = None,
            suptitle: dict = {},
            imshow_args: dict = {}):
-    fig = plt.figure(figsize=(cols * scaling, rows * scaling),
-                     dpi=dpi)
+    fig = figure.Figure(figsize=(cols * scaling, rows * scaling),
+                        dpi=dpi)
     grid = ImageGrid(fig,
                      111,  # similar to subplot(111)
                      nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
