@@ -5,6 +5,10 @@ include:
 model_params:
   hidden_dims: [64, 64]
 
+  # Only ten classes of digits, with minimal variation
+  # between within each class.
+  latent_dim: 10
+
 trainer_params:
   max_epochs: 100
   log_every_n_steps: 20
