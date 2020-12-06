@@ -20,7 +20,13 @@ class Classifier(nn.Module):
                       **kwargs) -> dict:
         prediction = args[0]
         target = args[1]
-        loss = F.nll_loss(prediction, target)
-        train_acc = torch.sum(target == prediction.argmax(1)).float() / target.shape[0]
-        return dict(loss=loss,
-                    accuracy=train_acc)
+        loss_fn = kwargs.get('loss', 'mse')
+        result = {}
+        if loss_fn == 'nll':
+            result['loss'] = F.nll_loss(prediction, target)
+            result['train_acc'] = torch.sum(target == prediction.argmax(1)).float() / target.shape[0]
+        elif loss_fn == 'mse':
+            result['loss'] = F.mse_loss(prediction, target)
+        else:
+            raise NotImplementedError
+        return result

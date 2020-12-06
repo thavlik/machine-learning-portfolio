@@ -241,6 +241,18 @@
             ]
         },
         {
+            "name": "Python: train RSNA Basic",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/rsna-intracranial/classification/basic.yaml"
+            ]
+        },
+        {
             "name": "Python: train RSNA VAE",
             "type": "python",
             "request": "launch",

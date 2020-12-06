@@ -1,0 +1,8 @@
+include:
+  - experiments/rsna-intracranial/include/classification_common.yaml
+
+entrypoint: classification2d
+
+logging_params:
+  name: "RSNA_Basic"
+

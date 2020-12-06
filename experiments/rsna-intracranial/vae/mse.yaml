@@ -1,11 +1,6 @@
 include:
   - experiments/include/vae2d/mse.yaml
-  - experiments/rsna-intracranial/include/common.yaml
-
-exp_params:
-  plot:
-    params:
-      title: "${model}, RNSA Intracranial Hemorrhage, MSE loss, Epoch ${epoch}"
-      
+  - experiments/rsna-intracranial/include/common_vae.yaml
+    
 logging_params:
   name: "RSNA_VAE_MSE"

@@ -40,6 +40,8 @@ class ClassificationExperiment(pl.LightningModule):
         else:
             self.plots = []
 
+        self.loss_fn = params.get('loss', 'nll')
+
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
 
@@ -48,7 +50,8 @@ class ClassificationExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        train_loss = self.model.loss_function(y, labels.cpu())
+        train_loss = self.model.loss_function(y, labels.cpu(),
+                                              loss=self.loss_fn)
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
         return train_loss
@@ -58,14 +61,19 @@ class ClassificationExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        val_loss = self.model.loss_function(y, labels.cpu())
+        val_loss = self.model.loss_function(y, labels.cpu(),
+                                            loss=self.loss_fn)
         return val_loss
 
-    def validation_epoch_end(self, outputs: dict):
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
-        avg_acc = torch.stack([x['accuracy'] for x in outputs]).mean()
-        self.log('avg_val_loss', avg_loss)
-        self.log('avg_val_acc', avg_acc)
+    def validation_epoch_end(self, outputs: list):
+        avg = {}
+        for output in outputs:
+            for k, v in output.items():
+                items = avg.get(k, [])
+                items.append(v)
+                avg[k] = items
+        for metric, values in avg.items():
+            self.log(metric, torch.Tensor(values).mean())
 
     def sample_images(self):
         for plot, val_indices in zip(self.plots, self.val_indices):
