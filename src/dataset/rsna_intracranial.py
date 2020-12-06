@@ -78,6 +78,7 @@ class RSNAIntracranialDataset(data.Dataset):
                         f'Labels file {labels_csv_path} does not exist')
                 labels_dict = load_labels_csv(labels_csv_path)
                 labels = []
+                # all files should have labels, but some files may be missing
                 #self.files = [f for f in self.files
                 #              if os.path.basename(f)[3:-4] in labels_dict]
                 for f in self.files:
