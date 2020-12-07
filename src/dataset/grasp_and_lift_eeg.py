@@ -48,7 +48,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
             self.total_examples = 0
             for file in csv_files:
                 is_data = file.endswith('_data.csv')
-                series = file[:-len('_data.csv') if is_data else -len('_events.csv')]
+                series = file[:-len('_data.csv')
+                              if is_data else -len('_events.csv')]
                 samples = torch.load(file + '.bin')
                 item = examples.get(series, [None, None])
                 item[0 if is_data else 1] = samples
@@ -56,14 +57,13 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 if is_data and num_samples != None:
                     self.total_examples += samples.shape[1] - num_samples + 1
             self.X = []
-            self.Y = []
+            Y = []
             for series in sorted(examples):
                 x, y = examples[series]
                 self.X.append(x)
                 if y != None:
-                    self.Y.append(y)
-            if len(self.Y) == 0:
-                self.Y = None
+                    Y.append(y)
+            self.Y = Y if len(Y) > 0 else None
 
     def compile_bin(self,
                     csv_files: list,
@@ -75,7 +75,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
             samples = []
             with open(file, 'r') as f:
                 hdr = f.readline()
-                expected_hdr = GRASPLIFT_DATA_HEADER if is_data else GRASPLIFT_EVENTS_HEADER 
+                expected_hdr = GRASPLIFT_DATA_HEADER if is_data else GRASPLIFT_EVENTS_HEADER
                 if hdr != expected_hdr:
                     raise ValueError('bad header')
                 for line in f:
@@ -89,7 +89,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     channels = torch.Tensor(channels).unsqueeze(1)
                     samples.append(channels)
             samples = torch.cat(samples, dim=1)
-            series = file[:-len('_data.csv') if is_data else -len('_events.csv')]
+            series = file[:-len('_data.csv')
+                          if is_data else -len('_events.csv')]
             item = examples.get(series, [None, None])
             item[0 if is_data else 1] = samples
             examples[series] = item
