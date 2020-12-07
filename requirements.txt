@@ -18,4 +18,3 @@ scikit-image
 plotly==4.12.0
 deepmerge
 decord
-zipfile
