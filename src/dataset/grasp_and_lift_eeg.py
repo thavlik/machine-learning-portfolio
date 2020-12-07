@@ -98,6 +98,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
             zip_ref.extractall(root)
         delta = time.time() - start
         print(f'Unzipped in {delta} seconds')
+        os.remove(zip_path)
 
     def compile_bin(self,
                     csv_files: list,
