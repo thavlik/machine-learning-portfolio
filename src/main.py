@@ -74,7 +74,7 @@ if args.smoke_test:
     print('Executing smoke test - training will stop after a couple steps.')
 
 cudnn.deterministic = True
-cudnn.benchmark = False
+cudnn.benchmark = True
 decord.bridge.set_bridge('torch')
 
 config = load_config(args.config)
