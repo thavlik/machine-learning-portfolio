@@ -23,10 +23,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
         super(GraspAndLiftEEGDataset, self).__init__()
         self.num_samples = num_samples
         dir = os.path.join(root, 'train' if train else 'test')
-
         if not os.path.exists(dir):
             self.download(root)
-
         csv_suffix = '.csv'
         bin_suffix = '.csv.bin'
         csv_files = [os.path.join(dp, f)
