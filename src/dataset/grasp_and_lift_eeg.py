@@ -90,9 +90,12 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 f.write(r.content)
             delta = time.time() - start
             print(f'Downloaded in {delta} seconds')
+        print(f'Extracting {zip_path} to {root}')
+        start = time.time()
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(root)
-        
+        delta = time.time() - start
+        print(f'Unzipped in {delta} seconds')
 
     def compile_bin(self,
                     csv_files: list,

@@ -10,10 +10,12 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      dir: E:/grasp-and-lift-eeg-detection/train
+      dir: E:/grasp-and-lift-eeg-detection
+      train: true
       num_samples: 8192
     validation:
-      dir: E:/grasp-and-lift-eeg-detection/test
+      dir: E:/grasp-and-lift-eeg-detection
+      train: false
   plot:
     fn: eeg
     batch_size: 4
