@@ -42,9 +42,9 @@ class GraspAndLiftEEGDataset(data.Dataset):
 
         should_compile = False
 
-        if len(bin_files) != len(csv_files):
+        if len(bin_files) < len(csv_files):
             print(f'Number of .csv.bin files ({len(bin_files)}) '
-                  f'does not match number of .csv ({len(csv_files)}).'
+                  f'is less than the number of .csv ({len(csv_files)}).'
                   ' Compiling binary representation...')
             should_compile = True
 
@@ -58,11 +58,11 @@ class GraspAndLiftEEGDataset(data.Dataset):
         else:
             examples = {}
             self.total_examples = 0
-            for file in csv_files:
-                is_data = file.endswith('_data.csv')
-                series = file[:-len('_data.csv')
-                              if is_data else -len('_events.csv')]
-                samples = torch.load(file + '.bin')
+            for file in bin_files:
+                is_data = file.endswith('_data.csv.bin')
+                series = file[:-len('_data.csv.bin')
+                              if is_data else -len('_events.csv.bin')]
+                samples = torch.load(file)
                 item = examples.get(series, [None, None])
                 item[0 if is_data else 1] = samples
                 examples[series] = item
