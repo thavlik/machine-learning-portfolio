@@ -1,12 +1,6 @@
 include:
   - experiments/include/vae1d/mse.yaml
-  - experiments/grasp_and_lift_eeg/include/common.yaml
-
-exp_params:
-  plot:
-    params:
-      layout_params:
-        title: "${model}, GraspAndLiftEEG, MSE loss, Epoch ${epoch}"
+  - experiments/grasp_and_lift_eeg/include/common_vae.yaml
 
 logging_params:
   name: 'GraspLiftEEG_VAE_MSE'

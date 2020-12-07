@@ -20,6 +20,8 @@ from typing import Callable, Optional, Tuple
 from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
+from ray.util.sgd.torch import is_distributed_trainable
+from torch.nn.parallel import DistributedDataParallel
 
 
 class VAEExperiment(pl.LightningModule):
@@ -28,7 +30,8 @@ class VAEExperiment(pl.LightningModule):
                  vae_model: BaseVAE,
                  params: dict) -> None:
         super(VAEExperiment, self).__init__()
-
+        if is_distributed_trainable():
+            vae_model = DistributedDataParallel(vae_model)
         self.model = vae_model
         self.params = params
         self.curr_device = None

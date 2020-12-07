@@ -193,6 +193,26 @@ def comparison(config: dict, run_args: dict) -> None:
                         layout_params=plot.get('layout_params', {}))
 
 
+def comparison_tune(config: dict, run_args: dict) -> None:
+    import ray
+    from ray.util.sgd.integration.torch import DistributedTrainableCreator
+    ray.init(**config.get('ray_options', {}))
+    distributed_train_cifar = DistributedTrainableCreator(
+        my_trainable,
+        use_gpu=True,
+        num_workers=4,
+        num_workers_per_host=4,
+        num_gpus_per_worker=1,
+        num_cpus_per_worker=1,
+    )
+    tune.run(
+        distributed_train_cifar,
+        resources_per_trial=None,
+        config=config,
+        num_samples=num_samples,
+    )
+
+
 entrypoints = {
     'classification2d': classification2d,
     'classification_embed2d': classification_embed2d,

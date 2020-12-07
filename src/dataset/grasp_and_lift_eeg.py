@@ -10,13 +10,23 @@ GRASPLIFT_EVENTS_HEADER = 'id,HandStart,FirstDigitTouch,BothStartLoadPhase,LiftO
 
 NUM_CHANNELS = 32
 
+ZIP_URL = 'https://grasplifteeg.nyc3.digitaloceanspaces.com/grasp-and-lift-eeg-detection.zip'
+
+ZIP_SIZE_BYTES = 980887394
 
 class GraspAndLiftEEGDataset(data.Dataset):
     def __init__(self,
-                 dir: str,
+                 root: str,
+                 train: bool = True,
+                 download: bool = True,
                  num_samples: int = None):
         super(GraspAndLiftEEGDataset, self).__init__()
         self.num_samples = num_samples
+        dir = os.path.join(root, 'train' if train else 'test')
+
+        if not os.path.exists(dir):
+            self.download(root)
+
         csv_suffix = '.csv'
         bin_suffix = '.csv.bin'
         csv_files = [os.path.join(dp, f)
@@ -64,6 +74,25 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 if y != None:
                     Y.append(y)
             self.Y = Y if len(Y) > 0 else None
+
+    def download(self, root: str):
+        import requests
+        import time
+        import zipfile
+        zip_path = os.path.join(root, 'grasp-and-lift-eeg-detection.zip')
+        if not os.path.exists(zip_path) or os.path.getsize(zip_path) != ZIP_SIZE_BYTES:
+            print(f'Downloading from {ZIP_URL}')
+            start = time.time()
+            r = requests.get(ZIP_URL)
+            if r.status_code != 200:
+                raise ValueError(f'Expected status code 200, got {r.status_code}')
+            with open(zip_path, 'wb') as f:
+                f.write(r.content)
+            delta = time.time() - start
+            print(f'Downloaded in {delta} seconds')
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(root)
+        
 
     def compile_bin(self,
                     csv_files: list,
