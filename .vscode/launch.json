@@ -115,6 +115,18 @@
             ]
         },
         {
+            "name": "Python: train EEG VAE HParams",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/grasp_and_lift_eeg/vae/hparams.yaml"
+            ]
+        },
+        {
             "name": "Python: train FFHQ VAE",
             "type": "python",
             "request": "launch",

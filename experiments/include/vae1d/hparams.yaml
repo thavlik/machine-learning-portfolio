@@ -1,0 +1,13 @@
+entrypoint: vae1d_hparams
+
+exp_params:
+  optimizer:
+    lr:
+      uniform:
+        lower: 0.00001
+        upper: 0.0002
+  batch_size:
+    grid_search:
+      - 8
+      - 16
+      - 32

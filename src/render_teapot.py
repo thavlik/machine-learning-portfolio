@@ -48,7 +48,7 @@ for i in range(n):
     # Initialize a camera.
     # With world coordinates +Y up, +X left and +Z in, the front of the cow is facing the -Z direction. 
     # So we move the camera by 180 in the azimuth direction so it is facing the front of the cow. 
-    R, T = look_at_view_transform(2.7, t * 180, 180) 
+    R, T = look_at_view_transform(2.7, 0, 180 * t) 
     cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
 
     # Create a phong renderer by composing a rasterizer and a shader. The textured phong shader will 

@@ -74,6 +74,57 @@ def vae1d(config: dict, run_args: dict) -> VAEExperiment:
                          params=exp_params)
 
 
+def recurse(config: dict, template: dict):
+    if 'uniform' in config:
+        return tune.uniform(lower=config['uniform']['lower'],
+                            upper=config['uniform']['upper'])
+    if 'grid_search' in config:
+        return tune.grid_search(config['grid_search'])
+    for key in template:
+        if not key in config:
+            continue
+        if type(config[key]) == dict:
+            config[key] = recurse(config[key], template[key])
+    return config
+
+
+def generate_run_config(config: dict):
+    template = {
+        'exp_params': {
+            'warmup_steps': int,
+            'batch_size': int,
+            'optimizer': {
+                'lr': float,
+                'weight_decay': float,
+            },
+        },
+    }
+    return recurse(config, template)
+
+
+def vae1d_hparams(config: dict, run_args: dict) -> VAEExperiment:
+    from ray import tune
+    run_config = generate_run_config(config)
+    analysis = tune.run(
+        tune.with_parameters(vae1d, run_args=run_args),
+        name='vae1d_hparams',
+        config=run_config,
+        local_dir=run_args.save_dir,
+        num_samples=config['num_samples'],
+    )
+    # Get the best config from hparam search
+    config = analysis.get_best_config('avg_val_loss', mode='min')
+    if config is None:
+        raise ValueError('best config is None')
+    exp_params = config['exp_params']
+    c, l = get_example_shape(exp_params['data'])
+    model = create_model(**config['model_params'],
+                         num_samples=l,
+                         channels=c)
+    return VAEExperiment(model,
+                         params=exp_params)
+
+
 def vae2d(config: dict, run_args: dict) -> VAEExperiment:
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
@@ -223,6 +274,7 @@ entrypoints = {
     'vae2d': vae2d,
     'vae3d': vae3d,
     'vae4d': vae4d,
+    'vae1d_hparams': vae1d_hparams,
 }
 
 

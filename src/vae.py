@@ -15,7 +15,6 @@ from abc import abstractmethod
 from plotly.subplots import make_subplots
 from plotly.graph_objects import Figure
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional, Tuple
 from plot import get_plot_fn
 from models.base import BaseVAE

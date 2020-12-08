@@ -1,0 +1,4 @@
+include:
+  - experiments/grasp_and_lift_eeg/vae/mse.yaml
+  - experiments/include/vae1d/hparams.yaml
+

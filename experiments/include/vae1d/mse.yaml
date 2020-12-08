@@ -4,14 +4,13 @@ model_params:
   arch: 'ResNetVAE1d'
   name: 'ResNetVAE1d'
   latent_dim: 16
-  hidden_dims: [256, 512, 256]
-  pooling: max
+  hidden_dims: [256, 512, 512, 256]
 
 exp_params:
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
-  batch_size: 64
+  batch_size: 32
   warmup_steps: 512
 
 trainer_params:
