@@ -25,13 +25,6 @@ device = torch.device("cpu")
 
 mesh = load_objs_as_meshes(['data/cow.obj'], device=device)
 
-
-# Initialize a camera.
-# With world coordinates +Y up, +X left and +Z in, the front of the cow is facing the -Z direction. 
-# So we move the camera by 180 in the azimuth direction so it is facing the front of the cow. 
-R, T = look_at_view_transform(2.7, 0, 180) 
-cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
-
 # Define the settings for rasterization and shading. Here we set the output image to be of size
 # 512x512. As we are rendering images for visualization purposes only we will set faces_per_pixel=1
 # and blur_radius=0.0. We also set bin_size and max_faces_per_bin to None which ensure that 
@@ -48,23 +41,34 @@ raster_settings = RasterizationSettings(
 # -z direction. 
 lights = PointLights(device=device, location=[[0.0, 0.0, -3.0]])
 
-# Create a phong renderer by composing a rasterizer and a shader. The textured phong shader will 
-# interpolate the texture uv coordinates for each vertex, sample from a texture image and 
-# apply the Phong lighting model
-renderer = MeshRenderer(
-    rasterizer=MeshRasterizer(
-        cameras=cameras, 
-        raster_settings=raster_settings
-    ),
-    shader=SoftPhongShader(
-        device=device, 
-        cameras=cameras,
-        lights=lights
+n = 3
+
+for i in range(n):
+    t = i / n
+    # Initialize a camera.
+    # With world coordinates +Y up, +X left and +Z in, the front of the cow is facing the -Z direction. 
+    # So we move the camera by 180 in the azimuth direction so it is facing the front of the cow. 
+    R, T = look_at_view_transform(2.7, t * 180, 180) 
+    cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
+
+    # Create a phong renderer by composing a rasterizer and a shader. The textured phong shader will 
+    # interpolate the texture uv coordinates for each vertex, sample from a texture image and 
+    # apply the Phong lighting model
+    renderer = MeshRenderer(
+        rasterizer=MeshRasterizer(
+            cameras=cameras, 
+            raster_settings=raster_settings
+        ),
+        shader=SoftPhongShader(
+            device=device, 
+            cameras=cameras,
+            lights=lights
+        )
     )
-)
-images = renderer(mesh)
-plt.figure(figsize=(10, 10))
-plt.imshow(images[0, ..., :3].cpu().numpy())
-plt.grid("off")
-plt.axis("off")
-plt.show()
+    images = renderer(mesh)
+    plt.figure(figsize=(10, 10))
+    plt.imshow(images[0, ..., :3].cpu().numpy())
+    plt.grid("off")
+    plt.axis("off")
+    plt.show()
+    plt.close('all')
