@@ -159,13 +159,14 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     # Restore original trainer_params, which were overridden
     # so the hparam search is shorter than a full experiment.
     best_config['trainer_params'] = config['trainer_params']
-    exp_params = best_config['exp_params']
-    c, l = get_example_shape(exp_params['data'])
-    model = create_model(**best_config['model_params'],
-                         num_samples=l,
-                         channels=c)
-    return VAEExperiment(model,
-                         params=exp_params)
+    experiment_main(best_config, run_args)
+    #exp_params = best_config['exp_params']
+    #c, l = get_example_shape(exp_params['data'])
+    #model = create_model(**best_config['model_params'],
+    #                     num_samples=l,
+    #                     channels=c)
+    #return VAEExperiment(model,
+    #                     params=exp_params)
 
 
 def vae2d(config: dict, run_args: dict) -> VAEExperiment:
