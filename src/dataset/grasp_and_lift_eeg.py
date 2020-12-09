@@ -141,8 +141,9 @@ class GraspAndLiftEEGDataset(data.Dataset):
         Y = []
         for series in sorted(examples):
             x, y = examples[series]
-            x /= 0.5 * high
-            x -= 1.0
+            if normalize:
+                x /= 0.5 * high
+                x -= 1.0
             torch.save(samples, series + '_data.csv.bin')
             X.append(x)
             if y != None:
