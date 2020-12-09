@@ -1,3 +1,5 @@
+include: experiments/rsna-intracranial/include/dataset.yaml
+
 model_params:
   pooling: max
   hidden_dims: [64, 128, 128, 128, 64]
