@@ -15,6 +15,7 @@ from ray.rllib.models import ModelCatalog
 from env import get_env
 from plot import plot_comparison
 import pandas as pd
+from merge_strategy import strategy
 
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
@@ -30,7 +31,7 @@ def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
 
 def classification_embed2d(config: dict, run_args: dict) -> ClassificationExperiment:
     base_experiment = experiment_main(
-        load_config(config['base_experiment']), **run_args)
+        load_config(config['base_experiment']), run_args)
     encoder = base_experiment.model.get_encoder()
     encoder.requires_grad = False
     exp_params = config['exp_params']
@@ -46,7 +47,7 @@ def classification_embed2d(config: dict, run_args: dict) -> ClassificationExperi
 
 def classification_sandwich2d(config: dict, run_args: dict) -> ClassificationExperiment:
     base_experiment = experiment_main(
-        load_config(config['base_experiment']), **run_args)
+        load_config(config['base_experiment']), run_args)
     encoder = base_experiment.model.get_encoder()
     encoder.requires_grad = False
     sandwich_layers = base_experiment.model.get_sandwich_layers()
@@ -71,13 +72,16 @@ def vae1d(config: dict, run_args: dict) -> VAEExperiment:
                          num_samples=l,
                          channels=c)
     return VAEExperiment(model,
-                         params=exp_params)
+                         params=exp_params,
+                         enable_tune=run_args.get('enable_tune', False))
 
 
 def recurse(config: dict, template: dict):
     if 'uniform' in config:
         return tune.uniform(lower=config['uniform']['lower'],
                             upper=config['uniform']['upper'])
+    if 'choice' in config:
+        return tune.choice(config['choice'])
     if 'grid_search' in config:
         return tune.grid_search(config['grid_search'])
     for key in template:
@@ -99,26 +103,65 @@ def generate_run_config(config: dict):
             },
         },
     }
-    return recurse(config, template)
+    return recurse(config.copy(), template)
 
 
-def vae1d_hparams(config: dict, run_args: dict) -> VAEExperiment:
+def get_best_config(analysis,
+                    metric: str = 'loss',
+                    scope: str = 'last-5-avg') -> dict:
+    """ Retrieves the best config from a tune hyperparameter
+    search by averaging the metrics of all matching samples.
+    This is more sophisticated than analysis.get_best_config,
+    which only considers individual trials and does not do
+    any averaging.
+    """
+    options = []
+    for trial in analysis.trials:
+        loss = trial.metric_analysis[metric][scope]
+        found = False
+        for config, losses in options:
+            if config == trial.config:
+                losses.append(loss)
+                found = True
+                break
+        if not found:
+            options.append((trial.config, [loss]))
+    i = np.argmin([np.mean(losses)
+                   for _, losses in options])
+    best_config = options[i][0]
+    return best_config
+
+
+def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
+    import ray
     from ray import tune
-    run_config = generate_run_config(config)
+    ray.init(num_cpus=6, num_gpus=1)
+    run_config = load_config(config['experiment'])
+    run_config = generate_run_config(run_config)
+    run_config['trainer_params'] = strategy.merge(run_config['trainer_params'].copy(), {
+        'max_steps': config.get('max_steps', 50),
+        'log_every_n_steps': 1,
+    })
     analysis = tune.run(
-        tune.with_parameters(vae1d, run_args=run_args),
-        name='vae1d_hparams',
+        tune.with_parameters(experiment_main,
+                             run_args=dict(**run_args,
+                                           enable_tune=True)),
+        name=run_config['entrypoint'],
         config=run_config,
-        local_dir=run_args.save_dir,
+        local_dir=run_args['save_dir'],
         num_samples=config['num_samples'],
+        resources_per_trial={
+            'cpu': 2,
+            'gpu': 1,
+        },
     )
-    # Get the best config from hparam search
-    config = analysis.get_best_config('avg_val_loss', mode='min')
-    if config is None:
-        raise ValueError('best config is None')
-    exp_params = config['exp_params']
+    best_config = get_best_config(analysis)
+    # Restore original trainer_params, which were overridden
+    # so the hparam search is shorter than a full experiment.
+    best_config['trainer_params'] = config['trainer_params']
+    exp_params = best_config['exp_params']
     c, l = get_example_shape(exp_params['data'])
-    model = create_model(**config['model_params'],
+    model = create_model(**best_config['model_params'],
                          num_samples=l,
                          channels=c)
     return VAEExperiment(model,
@@ -182,7 +225,7 @@ def comparison(config: dict, run_args: dict) -> None:
     num_samples = config.get('num_samples', 1)
     for _ in range(num_samples):
         for path in config['series']:
-            experiment = experiment_main(load_config(path), **run_args)
+            experiment = experiment_main(load_config(path), run_args)
             path = os.path.join(experiment.logger.save_dir,
                                 experiment.logger.name,
                                 'version_' + str(experiment.logger.version),
@@ -274,7 +317,7 @@ entrypoints = {
     'vae2d': vae2d,
     'vae3d': vae3d,
     'vae4d': vae4d,
-    'vae1d_hparams': vae1d_hparams,
+    'hparam_search': hparam_search,
 }
 
 
@@ -288,28 +331,20 @@ def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
     return entrypoints[entrypoint](config, run_args)
 
 
-def experiment_main(config: dict,
-                    save_dir: str,
-                    exp_no: int,
-                    total_experiments: int,
-                    smoke_test: bool) -> pl.LightningModule:
+def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     manual_seed = config.get('manual_seed', 100)
     torch.manual_seed(manual_seed)
     np.random.seed(manual_seed)
-    experiment = create_experiment(config, run_args=dict(
-        save_dir=save_dir,
-        exp_no=exp_no,
-        total_experiments=total_experiments,
-        smoke_test=smoke_test,
-    ))
+    experiment = create_experiment(config, run_args)
     if experiment == None:
         return
     experiment = experiment.cuda()
-    tt_logger = TestTubeLogger(save_dir=save_dir,
+    tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,
                                create_git_tag=False)
-    if smoke_test:
+    tt_logger.log_hyperparams(config)
+    if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,
@@ -317,7 +352,7 @@ def experiment_main(config: dict,
                      logger=tt_logger,
                      **config['trainer_params'])
     print(
-        f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {exp_no+1}/{total_experiments}) =======")
+        f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")
     print(config)
     runner.fit(experiment)
     return experiment

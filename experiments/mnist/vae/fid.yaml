@@ -2,10 +2,5 @@ include:
   - experiments/include/vae2d/fid.yaml
   - experiments/mnist/include/common_vae.yaml
 
-exp_params:
-  plot:
-    params:
-      title: "${model}, MNIST, FID loss, Epoch ${epoch}"
-
 logging_params:
   name: "MNIST_VAE_FID"

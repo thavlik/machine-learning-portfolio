@@ -1,4 +1,8 @@
-include:
+entrypoint: hparam_search
+
+num_samples: 8
+
+experiment:
   - experiments/grasp_and_lift_eeg/vae/mse.yaml
   - experiments/include/vae1d/hparams.yaml
 

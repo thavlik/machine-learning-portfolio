@@ -1,10 +1,6 @@
 include:
+  - experiments/include/vae2d/mse.yaml
   - experiments/mnist/include/common_vae.yaml
-
-exp_params:
-  plot:
-    params:
-      title: "${model}, MNIST, MSE loss, Epoch ${epoch}"
 
 logging_params:
   name: "MNIST_VAE_MSE"

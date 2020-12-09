@@ -10,14 +10,15 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      root: /data
+      root: E:/grasp-and-lift-eeg-detection
       train: true
       num_samples: 8192
     validation:
-      root: /data
+      root: E:/grasp-and-lift-eeg-detection
       train: false
   plot:
     fn: eeg
+    sample_every_n_steps: 1000
     batch_size: 4
     params:
       width: 6000

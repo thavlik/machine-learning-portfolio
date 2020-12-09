@@ -39,7 +39,7 @@ def run_series(series: Union[dict, List[dict]],
         if type(config) is list:
             exp_no = run_series(config, exp_no=exp_no, **kwargs)
         else:
-            experiment_main(config, exp_no=exp_no, **kwargs)
+            experiment_main(config, dict(**kwargs, exp_no=exp_no))
             gc.collect()
             exp_no += 1
     return exp_no

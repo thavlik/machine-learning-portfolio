@@ -20,17 +20,20 @@ from plot import get_plot_fn
 from models.base import BaseVAE
 from merge_strategy import strategy
 from torch.nn.parallel import DistributedDataParallel
+from ray import tune
 
 
 class VAEExperiment(pl.LightningModule):
 
     def __init__(self,
                  vae_model: BaseVAE,
-                 params: dict) -> None:
+                 params: dict,
+                 enable_tune: bool = False) -> None:
         super(VAEExperiment, self).__init__()
         self.model = vae_model
         self.params = params
         self.curr_device = None
+        self.enable_tune = enable_tune
 
         plots = self.params['plot']
         if type(plots) is not list:
@@ -68,6 +71,13 @@ class VAEExperiment(pl.LightningModule):
         train_loss = self.model.loss_function(*results, **kwargs)
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
+        if self.enable_tune:
+            tune.report(**{key: val.item()
+                           for key, val in train_loss.items()})
+        if self.global_step > 0:
+            for plot, val_indices in zip(self.plots, self.val_indices):
+                if self.global_step % plot['sample_every_n_steps'] == 0:
+                    self.sample_images(plot, val_indices)
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
@@ -91,38 +101,41 @@ class VAEExperiment(pl.LightningModule):
     def validation_epoch_end(self, outputs: dict):
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
         self.log('avg_val_loss', avg_loss)
-        self.sample_images()
+        if self.enable_tune:
+            tune.report(avg_val_loss=avg_loss)
 
-    def sample_images(self):
-        if self.val_indices == None:
-            return
-        for plot, val_indices in zip(self.plots, self.val_indices):
-            test_input = []
-            recons = []
-            batch = torch.cat([self.sample_dataloader.dataset[int(i)][0].unsqueeze(0)
-                               for i in val_indices], dim=0).to(self.curr_device)
-            for x in batch:
-                x = x.unsqueeze(0)
-                test_input.append(x)
-                x = self.model.generate(x, labels=[])
-                recons.append(x)
-            test_input = torch.cat(test_input, dim=0)
-            recons = torch.cat(recons, dim=0)
-            # Extensionless output path (let plotting function choose extension)
-            out_path = os.path.join(self.logger.save_dir,
-                                    self.logger.name,
-                                    f"version_{self.logger.version}",
-                                    f"{self.logger.name}_{plot['fn']}_{self.current_epoch}")
-            orig = test_input.data.cpu()
-            recons = recons.data.cpu()
-            fn = get_plot_fn(plot['fn'])
-            fn(orig=orig,
-               recons=recons,
-               model_name=self.model.name,
-               epoch=self.current_epoch,
-               out_path=out_path,
-               **plot['params'])
-            gc.collect()
+    def sample_images(self, plot: dict, val_indices: Tensor):
+        revert = self.training
+        if revert:
+            self.eval()
+        test_input = []
+        recons = []
+        batch = torch.cat([self.sample_dataloader.dataset[int(i)][0].unsqueeze(0)
+                           for i in val_indices], dim=0).to(self.curr_device)
+        for x in batch:
+            x = x.unsqueeze(0)
+            test_input.append(x)
+            x = self.model.generate(x, labels=[])
+            recons.append(x)
+        test_input = torch.cat(test_input, dim=0)
+        recons = torch.cat(recons, dim=0)
+        # Extensionless output path (let plotting function choose extension)
+        out_path = os.path.join(self.logger.save_dir,
+                                self.logger.name,
+                                f"version_{self.logger.version}",
+                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        orig = test_input.data.cpu()
+        recons = recons.data.cpu()
+        fn = get_plot_fn(plot['fn'])
+        fn(orig=orig,
+           recons=recons,
+           model_name=self.model.name,
+           epoch=self.current_epoch,
+           out_path=out_path,
+           **plot['params'])
+        gc.collect()
+        if revert:
+            self.train()
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
@@ -147,7 +160,6 @@ class VAEExperiment(pl.LightningModule):
             lr = lr_scale * self.params['optimizer']['lr']
             for pg in optimizer.param_groups:
                 pg['lr'] = lr
-            self.log('lr', lr, prog_bar=True)
 
         # update params
         optimizer.step(closure=optimizer_closure)
