@@ -37,6 +37,7 @@ Many of the ideas implemented in this repository were first detailed in the foll
 5. [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196)
 6. [beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework](https://openreview.net/forum?id=Sy2fzU9gl)
 7. [Towards Photographic Image Manipulation with Balanced Growing of Generative Autoencoders](https://arxiv.org/abs/1904.06145)
+8. [Understanding disentangling in β-VAE](https://arxiv.org/pdf/1804.03599.pdf)
 
 ## TODO
 - Implement beta loss term

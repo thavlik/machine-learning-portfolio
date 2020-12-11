@@ -73,23 +73,29 @@ class BaseVAE(nn.Module):
         return self.forward(x)[0]
 
     def loss_function(self,
-                      *args,
-                      **kwargs) -> dict:
-        recons = args[0]
-        input = args[1]
-        mu = args[2]
-        log_var = args[3]
-
+                      recons: Tensor,
+                      input: Tensor,
+                      mu: Tensor,
+                      log_var: Tensor,
+                      objective: str = 'default',
+                      beta: float = 1.0,
+                      capacity: float = 25.0) -> dict:
         recons_loss = F.mse_loss(recons, input)
 
         result = {'loss': recons_loss,
                   'Reconstruction_Loss': recons_loss}
 
-        if 'kld_weight' in kwargs:
-            kld_weight = kwargs['kld_weight']
-            kld_loss = torch.mean(-0.5 * torch.sum(1 +
-                                                   log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
-            result['KLD_Loss'] = kld_loss
-            result['loss'] += kld_weight * kld_loss
+        kld_loss = torch.mean(-0.5 * torch.sum(1 +
+                                               log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
+        result['KLD_Loss'] = kld_loss
+
+        if objective == 'default':
+            result['loss'] += beta * kld_loss
+        elif objective == 'beta':
+            cap = torch.abs(kld_loss - capacity)
+            result['Capacity'] = cap
+            result['loss'] += beta * cap
+        else:
+            raise ValueError(f'unknown objective "{objective}"')
 
         return result
