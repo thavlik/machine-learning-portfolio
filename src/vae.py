@@ -53,19 +53,22 @@ class VAEExperiment(pl.LightningModule):
                 return lod, alpha
         return (0, 0.0)
 
-    def training_step(self, batch, batch_idx, optimizer_idx=0):
+    def training_step(self, *args, **kwargs):
+        train_loss, _ = self.training_step_raw(*args, **kwargs)
+        return train_loss
+
+    def training_step_raw(self,
+                          batch,
+                          batch_idx,
+                          optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        kwargs = dict()
-        if 'progressive_growing' in self.params:
-            kwargs['lod'], kwargs['alpha'] = self.get_lod()
-        results = self.forward(real_img, labels=labels, **kwargs)
+        results = self.forward(real_img, labels=labels)
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
                       kld_weight=self.params.get('kld_weight', 0.0) *
-                      self.params['batch_size']/self.num_train_imgs,
-                      **kwargs)
+                      self.params['batch_size']/self.num_train_imgs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         train_loss = self.model.loss_function(*results, **kwargs)
@@ -78,9 +81,13 @@ class VAEExperiment(pl.LightningModule):
             for plot, val_indices in zip(self.plots, self.val_indices):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_indices)
-        return train_loss
+        return train_loss, results
 
-    def validation_step(self, batch, batch_idx, optimizer_idx=0):
+    def validation_step(self, *args, **kwargs):
+        val_loss, _ = self.validation_step_raw(*args, **kwargs)
+        return val_loss
+        
+    def validation_step_raw(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
@@ -96,7 +103,7 @@ class VAEExperiment(pl.LightningModule):
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         val_loss = self.model.loss_function(*results, **kwargs)
-        return val_loss
+        return val_loss, results
 
     def validation_epoch_end(self, outputs: dict):
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()

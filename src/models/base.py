@@ -45,7 +45,7 @@ class BaseVAE(nn.Module):
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         mu, log_var = self.encode(input)
         z = reparameterize(mu, log_var)
-        return [self.decode(z, **kwargs), input, mu, log_var]
+        return [self.decode(z, **kwargs), input, mu, log_var, z]
 
     def sample(self,
                num_samples: int,
@@ -77,6 +77,7 @@ class BaseVAE(nn.Module):
                       input: Tensor,
                       mu: Tensor,
                       log_var: Tensor,
+                      z: Tensor,
                       objective: str = 'default',
                       beta: float = 1.0,
                       gamma: float = 1.0,

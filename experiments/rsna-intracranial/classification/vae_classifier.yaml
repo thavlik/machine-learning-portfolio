@@ -1,0 +1,12 @@
+include:
+  - experiments/rsna-intracranial/include/vae_common.yaml
+
+entrypoint: vae_classifier2d
+
+model_params:
+  classifier:
+    hidden_dim: [128, 64, 32]
+
+logging_params:
+  name: "RSNA_Basic"
+
