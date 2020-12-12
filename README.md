@@ -41,7 +41,6 @@ Many of the ideas implemented in this repository were first detailed in the foll
 8. [Understanding disentangling in β-VAE](https://arxiv.org/pdf/1804.03599.pdf)
 
 ## TODO
-- Implement beta loss term
 - Second optimizer for adversarial training
 
 ## Contributing

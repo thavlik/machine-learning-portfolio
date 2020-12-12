@@ -95,9 +95,9 @@ class BaseVAE(nn.Module):
         elif objective == 'controlled_capacity':
             # Use controlled capacity increase from
             # https://arxiv.org/pdf/1804.03599.pdf
-            capacity = torch.abs(kld_loss - target_capacity)
-            result['Capacity'] = capacity
-            result['loss'] += beta * capacity
+            capacity_loss = torch.abs(kld_loss - target_capacity)
+            result['Capacity_Loss'] = capacity_loss
+            result['loss'] += beta * capacity_loss
         else:
             raise ValueError(f'unknown objective "{objective}"')
 
