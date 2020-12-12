@@ -23,7 +23,6 @@ class BaseRenderer(nn.Module):
     def loss_function(self,
                       recons: Tensor,
                       orig: Tensor,
-                      *args,
                       beta: float = 1.0,
                       **kwargs) -> dict:
         recons_loss = F.mse_loss(recons, input)

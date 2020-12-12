@@ -21,6 +21,7 @@ from models.classifier import Classifier
 from merge_strategy import strategy
 from models import create_model, BaseRenderer
 
+
 class NeuralGBufferExperiment(pl.LightningModule):
     def __init__(self,
                  model: BaseRenderer,
@@ -29,10 +30,18 @@ class NeuralGBufferExperiment(pl.LightningModule):
         self.model = model
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
-        pass
+        orig, labels = batch
+        recons = self.model(*labels)
+        train_loss = self.model.loss_function(recons, orig)
+        self.logger.experiment.log({key: val.item()
+                                    for key, val in train_loss.items()})
+        return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
-        pass
+        orig, labels = batch
+        recons = self.model(*labels)
+        val_loss = self.model.loss_function(recons, orig)
+        return val_loss
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
