@@ -27,6 +27,18 @@
             ]
         },
         {
+            "name": "Python: neural gbuffer",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/graphics/gbuffer/basic.yaml"
+            ]
+        },
+        {
             "name": "Python: doom smoke test",
             "type": "python",
             "request": "launch",
