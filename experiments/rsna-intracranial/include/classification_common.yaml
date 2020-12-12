@@ -6,12 +6,12 @@ model_params:
   arch: 'ResNetClassifier2d'
   name: 'ResNetClassifier2d'
   num_classes: 6
-  hidden_dims: [32, 32]
+  hidden_dims: [128, 256, 512, 256, 128, 64, 32, 16]
   pooling: max
 
 exp_params:
   loss: mse
-  batch_size: 8
+  batch_size: 4
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
