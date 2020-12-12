@@ -19,89 +19,20 @@ from typing import Callable, Optional
 from plot import get_plot_fn
 from models.classifier import Classifier
 from merge_strategy import strategy
+from models import create_model
 
-
-class ClassificationExperiment(pl.LightningModule):
-
+class NeuralGBufferExperiment(pl.LightningModule):
     def __init__(self,
-                 model: Classifier,
+                 model,
                  params: dict) -> None:
-        super(ClassificationExperiment, self).__init__()
-
+        super().__init__()
         self.model = model
-        self.params = params
-        self.curr_device = None
-
-        if 'plot' in self.params:
-            plots = self.params['plot']
-            if type(plots) is not list:
-                plots = [plots]
-            self.plots = plots
-        else:
-            self.plots = []
-
-        self.loss_fn = params.get('loss', 'nll')
-
-    def forward(self, input: Tensor, **kwargs) -> Tensor:
-        return self.model(input, **kwargs)
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
-        real_img, labels = batch
-        self.curr_device = self.device
-        real_img = real_img.to(self.curr_device)
-        y = self.forward(real_img).cpu()
-        train_loss = self.model.loss_function(y, labels.cpu(),
-                                              loss_fn=self.loss_fn)
-        self.logger.experiment.log({key: val.item()
-                                    for key, val in train_loss.items()})
-        return train_loss
+        pass
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
-        real_img, labels = batch
-        self.curr_device = self.device
-        real_img = real_img.to(self.curr_device)
-        y = self.forward(real_img).cpu()
-        val_loss = self.model.loss_function(y, labels.cpu(),
-                                            loss_fn=self.loss_fn)
-        return val_loss
-
-    def validation_epoch_end(self, outputs: list):
-        avg = {}
-        for output in outputs:
-            for k, v in output.items():
-                items = avg.get(k, [])
-                items.append(v)
-                avg[k] = items
-        for metric, values in avg.items():
-            self.log(metric, torch.Tensor(values).mean())
-
-    def sample_images(self):
-        for plot, val_indices in zip(self.plots, self.val_indices):
-            test_input = []
-            recons = []
-            batch = torch.cat([self.sample_dataloader.dataset[i][0].unsqueeze(0)
-                               for i in val_indices], dim=0).to(self.curr_device)
-            for x in batch:
-                x = x.unsqueeze(0)
-                test_input.append(x)
-                x = self.model.generate(x, labels=[])
-                recons.append(x)
-            test_input = torch.cat(test_input, dim=0)
-            recons = torch.cat(recons, dim=0)
-            # Extensionless output path (let plotting function choose extension)
-            out_path = os.path.join(self.logger.save_dir,
-                                    self.logger.name,
-                                    f"version_{self.logger.version}",
-                                    f"{self.logger.name}_{plot['fn']}_{self.current_epoch}")
-            orig = test_input.data.cpu()
-            recons = recons.data.cpu()
-            fn = get_plot_fn(plot['fn'])
-            fn(orig=orig,
-               recons=recons,
-               model_name=self.model.name,
-               epoch=self.current_epoch,
-               out_path=out_path,
-               **plot['params'])
+        pass
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
@@ -154,9 +85,17 @@ class ClassificationExperiment(pl.LightningModule):
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
         n = len(dataset)
-        # Persist separate validation indices for each plot
         self.val_indices = [torch.randint(low=0,
                                           high=n,
                                           size=(plot['batch_size'], 1)).squeeze()
                             for plot in self.plots]
         return self.sample_dataloader
+
+
+def neural_gbuffer(config: dict, run_args: dict) -> pl.LightningModule:
+    exp_params = config['exp_params']
+    model = create_model(**config['model_params'],
+                         width=512,
+                         height=512,
+                         channels=3)
+    return NeuralGBufferExperiment(model, exp_params)

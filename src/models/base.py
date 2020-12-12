@@ -34,7 +34,6 @@ class BaseVAE(nn.Module):
     def decode(self, input: Tensor, **kwargs) -> Any:
         raise NotImplementedError
 
-    @abstractmethod
     def get_sandwich_layers(self) -> List[nn.Module]:
         raise NotImplementedError
 

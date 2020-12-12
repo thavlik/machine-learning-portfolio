@@ -3,6 +3,7 @@ from .classifier import Classifier
 from .resnet_classifier2d import ResNetClassifier2d
 from .resnet_embed2d import ResNetEmbed2d
 from .resnet_sandwich2d import ResNetSandwich2d
+from .resnet_renderer2d import ResNetRenderer2d
 from .resnet_rl1d import ResNetRL1d
 from .resnet_rl2d import ResNetRL2d
 from .resnet_vae1d import ResNetVAE1d
@@ -18,6 +19,7 @@ models = {
     'ResNetClassifier2d': ResNetClassifier2d,
     'ResNetEmbed2d': ResNetEmbed2d,
     'ResNetSandwich2d': ResNetSandwich2d,
+    'ResNetRenderer2d': ResNetRenderer2d,
     'ResNetRL1d': ResNetRL1d,
     'ResNetRL2d': ResNetRL2d,
     'ResNetVAE1d': ResNetVAE1d,

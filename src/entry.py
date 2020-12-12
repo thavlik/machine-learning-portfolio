@@ -16,7 +16,7 @@ from env import get_env
 from plot import plot_comparison
 import pandas as pd
 from merge_strategy import strategy
-from neural_rendering import neural_gbuffer
+from neural_gbuffer import neural_gbuffer
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
