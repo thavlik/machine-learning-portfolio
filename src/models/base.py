@@ -79,6 +79,7 @@ class BaseVAE(nn.Module):
                       log_var: Tensor,
                       objective: str = 'default',
                       beta: float = 1.0,
+                      gamma: float = 1.0,
                       target_capacity: float = 25.0) -> dict:
         recons_loss = F.mse_loss(recons, input)
 
@@ -97,7 +98,7 @@ class BaseVAE(nn.Module):
             # https://arxiv.org/pdf/1804.03599.pdf
             capacity_loss = torch.abs(kld_loss - target_capacity)
             result['Capacity_Loss'] = capacity_loss
-            result['loss'] += beta * capacity_loss
+            result['loss'] += gamma * capacity_loss
         else:
             raise ValueError(f'unknown objective "{objective}"')
 

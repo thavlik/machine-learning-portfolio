@@ -16,7 +16,7 @@ from env import get_env
 from plot import plot_comparison
 import pandas as pd
 from merge_strategy import strategy
-
+from neural_rendering import neural_gbuffer
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
@@ -319,6 +319,7 @@ entrypoints = {
     'vae3d': vae3d,
     'vae4d': vae4d,
     'hparam_search': hparam_search,
+    'neural_gbuffer': neural_gbuffer,
 }
 
 
