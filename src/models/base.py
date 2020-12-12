@@ -79,7 +79,7 @@ class BaseVAE(nn.Module):
                       log_var: Tensor,
                       objective: str = 'default',
                       beta: float = 1.0,
-                      capacity: float = 25.0) -> dict:
+                      target_capacity: float = 25.0) -> dict:
         recons_loss = F.mse_loss(recons, input)
 
         result = {'loss': recons_loss,
@@ -90,11 +90,14 @@ class BaseVAE(nn.Module):
         result['KLD_Loss'] = kld_loss
 
         if objective == 'default':
+            # O.G. beta loss term applied directly to KLD
             result['loss'] += beta * kld_loss
-        elif objective == 'beta':
-            cap = torch.abs(kld_loss - capacity)
-            result['Capacity'] = cap
-            result['loss'] += beta * cap
+        elif objective == 'controlled_capacity':
+            # Use controlled capacity increase from
+            # https://arxiv.org/pdf/1804.03599.pdf
+            capacity = torch.abs(kld_loss - target_capacity)
+            result['Capacity'] = capacity
+            result['loss'] += beta * capacity
         else:
             raise ValueError(f'unknown objective "{objective}"')
 
