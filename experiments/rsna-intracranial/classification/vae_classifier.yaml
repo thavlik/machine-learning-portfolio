@@ -3,9 +3,8 @@ include:
 
 entrypoint: vae_classifier2d
 
-model_params:
-  classifier:
-    hidden_dim: [128, 64, 32]
+classifier_params:
+  hidden_dim: [128, 64, 32]
 
 logging_params:
   name: "RSNA_Basic"
