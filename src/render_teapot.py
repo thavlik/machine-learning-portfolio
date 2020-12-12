@@ -90,7 +90,9 @@ for i in range(n):
             lights=lights,
         )
     )
-    images = renderer(mesh, R=rot.unsqueeze(0), T=trans.unsqueeze(0))
+    images = renderer(mesh.scale_verts(scale),
+                      R=rot.unsqueeze(0),
+                      T=trans.unsqueeze(0))
     plt.figure(figsize=(10, 10))
     plt.imshow(images[0, ..., :3].cpu().numpy())
     plt.grid("off")
