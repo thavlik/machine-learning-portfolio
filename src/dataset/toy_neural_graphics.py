@@ -27,20 +27,24 @@ class ToyNeuralGraphicsDataset(data.Dataset):
                  znear: float = 1.0,
                  zfar: float = 1000.0,
                  scale_min: float = 0.5,
-                 scale_max: float = 2.0):
+                 scale_max: float = 2.0,
+                 device: str = 'cuda'):
         super(ToyNeuralGraphicsDataset, self).__init__()
+        device = torch.device(device)
+        self.device = device
         self.scale_min = scale_min
         self.scale_max = scale_max
         self.scale_range = scale_max - scale_min
         objs = [os.path.join(dir, f)
                 for f in os.listdir(dir)
                 if f.endswith('.obj')]
-        self.meshes = load_objs_as_meshes(objs)
+        self.meshes = load_objs_as_meshes(objs, device=device)
         R, T = look_at_view_transform(0, 0, 0)
         self.cameras = FoVPerspectiveCameras(R=R,
                                              T=T,
                                              znear=znear,
-                                             zfar=zfar)
+                                             zfar=zfar,
+                                             device=device)
         self.renderer = MeshRenderer(
             rasterizer=MeshRasterizer(
                 cameras=self.cameras,
@@ -48,6 +52,7 @@ class ToyNeuralGraphicsDataset(data.Dataset):
                     **rasterization_settings),
             ),
             shader=HardFlatShader(
+                device=device,
                 cameras=self.cameras,
             )
         )
@@ -62,12 +67,13 @@ class ToyNeuralGraphicsDataset(data.Dataset):
         x = x * 2.0 - 1.0
         y = y * 2.0 - 1.0
         trans = torch.Tensor([x, y, d])
-        trans = self.cameras.unproject_points(trans.unsqueeze(0),
+        trans = self.cameras.unproject_points(trans.unsqueeze(0).to(self.device),
                                               world_coordinates=False,
-                                              scaled_depth_input=True)[0]
+                                              scaled_depth_input=True)[0].cpu()
         return scale, rot, trans
 
     def __getitem__(self, index):
+        index %= len(self.meshes)
         scale, rot, trans = self.get_random_transform()
         transform = Transform3d() \
             .scale(scale) \
@@ -75,16 +81,15 @@ class ToyNeuralGraphicsDataset(data.Dataset):
             .translate(*trans) \
             .get_matrix() \
             .squeeze()
-
         mesh = self.meshes[index].scale_verts(scale)
         pixels = self.renderer(mesh,
-                               R=rot.unsqueeze(0),
-                               T=trans.unsqueeze(0))
-        pixels = pixels[0, ..., :3]
-        return (pixels, [transform])
+                               R=rot.unsqueeze(0).to(self.device),
+                               T=trans.unsqueeze(0).to(self.device))
+        pixels = pixels[0, ..., :3].transpose(0, -1)
+        return (pixels, [transform.to(self.device)])
 
     def __len__(self):
-        return len(self.meshes)
+        return len(self.meshes) * 1024
 
 
 if __name__ == '__main__':

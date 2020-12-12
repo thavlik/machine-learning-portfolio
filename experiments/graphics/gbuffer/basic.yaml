@@ -1,12 +1,20 @@
 entrypoint: neural_gbuffer
 
+model_params:
+  arch: ResNetRenderer2d
+  name: ResNetRenderer2d
+  hidden_dims: [128, 256, 128]
+
 exp_params:
+  optimizer:
+    lr: 0.0002
+    weight_decay: 0.00001
   data:
     name: toy-neural-graphics
     training:
       dir: data/
       rasterization_settings:
-        image_size: 256
+        image_size: 64
         blur_radius: 0.0
         faces_per_pixel: 1
     loader:
@@ -14,3 +22,12 @@ exp_params:
       drop_last: true
   batch_size: 8
   warmup_steps: 256
+
+trainer_params:
+  max_epochs: 5
+  log_every_n_steps: 20
+  check_val_every_n_epoch: 100
+
+logging_params:
+  name: "NeuralGBuffer"
+

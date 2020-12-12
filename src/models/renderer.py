@@ -18,14 +18,14 @@ class BaseRenderer(nn.Module):
         raise NotImplementedError
 
     def forward(self, world_matrix: Tensor, **kwargs) -> List[Tensor]:
-        return self.decode(world_matrix.flatten())
+        return self.decode(torch.flatten(world_matrix, start_dim=1))
 
     def loss_function(self,
                       recons: Tensor,
                       orig: Tensor,
                       beta: float = 1.0,
                       **kwargs) -> dict:
-        recons_loss = F.mse_loss(recons, input)
+        recons_loss = F.mse_loss(recons, orig)
 
         loss = recons_loss
 

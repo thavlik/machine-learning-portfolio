@@ -28,6 +28,8 @@ class NeuralGBufferExperiment(pl.LightningModule):
                  params: dict) -> None:
         super().__init__()
         self.model = model
+        self.params = params
+        self.plots = []
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         orig, labels = batch
@@ -104,7 +106,7 @@ class NeuralGBufferExperiment(pl.LightningModule):
 def neural_gbuffer(config: dict, run_args: dict) -> pl.LightningModule:
     exp_params = config['exp_params']
     model = create_model(**config['model_params'],
-                         width=512,
-                         height=512,
+                         width=64,
+                         height=64,
                          channels=3)
     return NeuralGBufferExperiment(model, exp_params)

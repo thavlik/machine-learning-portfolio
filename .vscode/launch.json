@@ -13,6 +13,20 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Python: neural gbuffer smoke test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/graphics/gbuffer/basic.yaml",
+                "--smoke-test",
+                "True"
+            ]
+        },
+        {
             "name": "Python: doom smoke test",
             "type": "python",
             "request": "launch",
