@@ -22,7 +22,7 @@ from pytorch3d.renderer import (
     TexturesVertex
 )
 
-device = torch.device("cpu")
+device = torch.device("cuda")
 
 mesh = load_objs_as_meshes(['data/cow.obj'], device=device)
 
@@ -60,19 +60,22 @@ for i in range(n):
     smax = 2.0
     srange = smax - smin
     scale = (torch.rand(1).squeeze() * srange + smin).item()
+
+    # Generate a random NDC coordinate https://pytorch3d.org/docs/cameras
     x, y, d = torch.rand(3)
     x = x * 2.0 - 1.0
     y = y * 2.0 - 1.0
-    trans = torch.Tensor([x, y, d])
+    trans = torch.Tensor([x, y, d]).to(device)
     trans = cameras.unproject_points(trans.unsqueeze(0),
                                      world_coordinates=False,
                                      scaled_depth_input=True)[0]
-    rot = random_rotations(1)[0]
-    transform = Transform3d() \
-        .scale(scale) \
-        .compose(Rotate(rot)) \
-        .translate(*trans)
+    rot = random_rotations(1)[0].to(device)
+    #transform = Transform3d() \
+    #    .scale(scale) \
+    #    .compose(Rotate(rot)) \
+    #    .translate(*trans)
 
+    # TODO: transform mesh
     # Create a phong renderer by composing a rasterizer and a shader. The textured phong shader will
     # interpolate the texture uv coordinates for each vertex, sample from a texture image and
     # apply the Phong lighting model
@@ -87,7 +90,7 @@ for i in range(n):
             lights=lights,
         )
     )
-    images = renderer(mesh)
+    images = renderer(mesh, R=rot.unsqueeze(0), T=trans.unsqueeze(0))
     plt.figure(figsize=(10, 10))
     plt.imshow(images[0, ..., :3].cpu().numpy())
     plt.grid("off")
