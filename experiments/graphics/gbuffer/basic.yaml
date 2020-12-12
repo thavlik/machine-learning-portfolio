@@ -1,1 +1,16 @@
 entrypoint: neural_gbuffer
+
+exp_params:
+  data:
+    name: toy-neural-graphics
+    training:
+      dir: data/
+      rasterization_settings:
+        image_size: 256
+        blur_radius: 0.0
+        faces_per_pixel: 1
+    loader:
+      num_workers: 0
+      drop_last: true
+  batch_size: 8
+  warmup_steps: 256

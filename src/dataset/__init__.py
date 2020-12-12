@@ -7,6 +7,7 @@ from .rsna_intracranial import *
 from .trends_fmri import *
 from .video import *
 from .batch_video import *
+from .toy_neural_graphics import *
 
 datasets = {
     'cq500': CQ500Dataset,
@@ -15,6 +16,7 @@ datasets = {
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,
     'grasp-and-lift-eeg': GraspAndLiftEEGDataset,
+    'toy-neural-graphics': ToyNeuralGraphicsDataset,
     'video': VideoDataset,
 }
 

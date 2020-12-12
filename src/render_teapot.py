@@ -71,6 +71,11 @@ for i in range(n):
                                      scaled_depth_input=True)[0]
     rot = random_rotations(1)[0].to(device)
 
+    transform = Transform3d() \
+        .scale(scale) \
+        .compose(Rotate(rot)) \
+        .translate(*trans)
+        
     # TODO: transform mesh
     # Create a phong renderer by composing a rasterizer and a shader. The textured phong shader will
     # interpolate the texture uv coordinates for each vertex, sample from a texture image and

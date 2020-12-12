@@ -1,5 +1,6 @@
 from .base import BaseVAE
 from .classifier import Classifier
+from .renderer import BaseRenderer
 from .resnet_classifier2d import ResNetClassifier2d
 from .resnet_embed2d import ResNetEmbed2d
 from .resnet_sandwich2d import ResNetSandwich2d

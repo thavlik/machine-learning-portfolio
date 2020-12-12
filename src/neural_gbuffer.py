@@ -19,11 +19,11 @@ from typing import Callable, Optional
 from plot import get_plot_fn
 from models.classifier import Classifier
 from merge_strategy import strategy
-from models import create_model
+from models import create_model, BaseRenderer
 
 class NeuralGBufferExperiment(pl.LightningModule):
     def __init__(self,
-                 model,
+                 model: BaseRenderer,
                  params: dict) -> None:
         super().__init__()
         self.model = model
