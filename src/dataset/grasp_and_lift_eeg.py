@@ -24,11 +24,10 @@ class GraspAndLiftEEGDataset(data.Dataset):
             If None, the the dataset yields the full length trials.
 
     Examples:
-        >>> num_samples = 1024
         >>> dataset = GraspAndLiftEEGDataset('/data',
                                              train=True,
                                              download=True,
-                                             num_samples=num_samples)
+                                             num_samples=1024)
         Downloading from https://grasplifteeg.nyc3.digitaloceanspaces.com/grasp-and-lift-eeg-detection.zip
         Downloaded in 283 seconds
         Extracting /data/grasp-and-lift-eeg-detection.zip to /data
