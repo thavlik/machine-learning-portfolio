@@ -20,7 +20,8 @@ class ResNetRenderer2d(BaseRenderer):
                  width: int,
                  height: int,
                  channels: int,
-                 output_activation: str = 'sigmoid') -> None:
+                 output_activation: str = 'sigmoid',
+                 output_layer: str = 'conv') -> None:
         super().__init__(name=name)
         self.width = width
         self.height = height
@@ -35,13 +36,19 @@ class ResNetRenderer2d(BaseRenderer):
             layer = TransposeBasicBlock2d(in_features, h_dim)
             modules.append(layer)
             in_features = h_dim
-        self.decoder = nn.Sequential(
-            *modules,
-            nn.Conv2d(in_features,
-                      width * height * channels // 4,
-                      kernel_size=3,
-                      padding=1),
-        )
+        self.decoder = nn.Sequential(*modules)
+        if output_layer == 'conv':
+            self.output_layer = nn.Conv2d(in_features,
+                                          width * height * channels // 4,
+                                          kernel_size=3,
+                                          padding=1)
+        elif output_layer == 'fc':
+            self.output_layer = nn.Sequential(
+                nn.Flatten(),
+                nn.Linear(in_features * 4, width * height * channels),
+            )
+        else:
+            raise NotImplementedError
         self.activation = get_activation(output_activation)
 
     def decode(self,
@@ -50,6 +57,7 @@ class ResNetRenderer2d(BaseRenderer):
         x = self.decoder_input(world_matrix)
         x = x.view(x.shape[0], self.hidden_dims[-1], 2, 2)
         x = self.decoder(x)
+        x = self.output_layer(x)
         x = x.view(x.shape[0], self.channels, self.height, self.width)
         x = self.activation(x)
         return x

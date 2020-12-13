@@ -3,11 +3,12 @@ entrypoint: neural_gbuffer
 model_params:
   arch: ResNetRenderer2d
   name: ResNetRenderer2d
-  hidden_dims: [256, 512, 1024, 2048, 1024, 512, 256]
+  hidden_dims: [512, 1024, 2048, 1024, 512]
+  output_layer: fc
 
 exp_params:
   optimizer:
-    lr: 0.0002
+    lr: 0.00001
     weight_decay: 0.00001
   data:
     name: toy-neural-graphics

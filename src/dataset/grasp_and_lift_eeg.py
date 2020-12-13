@@ -1,20 +1,74 @@
 import os
-import numpy as np
 import torch
 import torch.utils.data as data
-import glob
 
-GRASPLIFT_DATA_HEADER = 'id,Fp1,Fp2,F7,F3,Fz,F4,F8,FC5,FC1,FC2,FC6,T7,C3,Cz,C4,T8,TP9,CP5,CP1,CP2,CP6,TP10,P7,P3,Pz,P4,P8,PO9,O1,Oz,O2,PO10\n'
-
-GRASPLIFT_EVENTS_HEADER = 'id,HandStart,FirstDigitTouch,BothStartLoadPhase,LiftOff,Replace,BothReleased\n'
-
-NUM_CHANNELS = 32
-
-ZIP_URL = 'https://grasplifteeg.nyc3.digitaloceanspaces.com/grasp-and-lift-eeg-detection.zip'
-
-ZIP_SIZE_BYTES = 980887394
 
 class GraspAndLiftEEGDataset(data.Dataset):
+    """ 32-channel, 500Hz EEG dataset of subjects performing various motor
+    tasks, with per-sample class labels.
+
+    There are 12 subjects in total, 10 series of trials for each subject,
+    and approximately 30 trials within each series. The number of trials
+    varies for each series. The training set contains the first 8 series
+    for each subject. The test set contains the 9th and 10th series.
+
+    Args:
+        root: Path to directory containing train/ and test/ folders
+
+        train: If true, use the train/ directory and load class labels.
+            If false, load the test/ directory (which lacks labels)
+
+        download: If true, download the data if it is not present locally
+
+        num_samples: The number of samples in the returned examples.
+            If None, the the dataset yields the full length trials.
+
+    Examples:
+        >>> num_samples = 1024
+        >>> dataset = GraspAndLiftEEGDataset('/data',
+                                             train=True,
+                                             download=True,
+                                             num_samples=num_samples)
+        Downloading from https://grasplifteeg.nyc3.digitaloceanspaces.com/grasp-and-lift-eeg-detection.zip
+        Downloaded in 283 seconds
+        Extracting /data/grasp-and-lift-eeg-detection.zip to /data
+        Unzipped in 36 seconds
+        >>> len(dataset)
+        17887546
+        >>> data, label = dataset[0]
+        >>> data.shape
+        torch.Size([32, 1024])
+        >>> label.shape
+        torch.Size([6, 1024])
+
+    Labels:
+        1. HandStart
+        2. FirstDigitTouch
+        3. BothStartLoadPhase
+        4. LiftOff
+        5. Replace
+        6. BothReleased
+
+    Reference:
+        Luciw, M., Jarocka, E. & Edin, B. Multi-channel EEG recordings during 3,936
+            grasp and lift trials with varying weight and friction. Sci Data 1, 140047
+            (2014). https://doi.org/10.1038/sdata.2014.47
+
+        https://www.kaggle.com/c/grasp-and-lift-eeg-detection
+
+    License:
+        Original data has been made available under the terms of Attribution 4.0
+        International Creative Commons License (http://creativecommons.org/licenses/by/4.0/).
+    """
+
+    GRASPLIFT_DATA_HEADER = 'id,Fp1,Fp2,F7,F3,Fz,F4,F8,FC5,FC1,FC2,FC6,T7,C3,Cz,C4,T8,TP9,CP5,CP1,CP2,CP6,TP10,P7,P3,Pz,P4,P8,PO9,O1,Oz,O2,PO10\n'
+
+    GRASPLIFT_EVENTS_HEADER = 'id,HandStart,FirstDigitTouch,BothStartLoadPhase,LiftOff,Replace,BothReleased\n'
+
+    ZIP_URL = 'https://grasplifteeg.nyc3.digitaloceanspaces.com/grasp-and-lift-eeg-detection.zip'
+
+    ZIP_SIZE_BYTES = 980887394
+
     def __init__(self,
                  root: str,
                  train: bool = True,
@@ -82,35 +136,33 @@ class GraspAndLiftEEGDataset(data.Dataset):
         import time
         import zipfile
         zip_path = os.path.join(root, 'grasp-and-lift-eeg-detection.zip')
-        if not os.path.exists(zip_path) or os.path.getsize(zip_path) != ZIP_SIZE_BYTES:
-            print(f'Downloading from {ZIP_URL}')
+        if not os.path.exists(zip_path) or os.path.getsize(zip_path) != self.ZIP_SIZE_BYTES:
+            print(f'Downloading from {self.ZIP_URL}')
             start = time.time()
-            r = requests.get(ZIP_URL)
+            r = requests.get(self.ZIP_URL)
             if r.status_code != 200:
-                raise ValueError(f'Expected status code 200, got {r.status_code}')
+                raise ValueError(
+                    f'Expected status code 200, got {r.status_code}')
             with open(zip_path, 'wb') as f:
                 f.write(r.content)
             delta = time.time() - start
-            print(f'Downloaded in {delta} seconds')
+            print(f'Downloaded in {int(delta)} seconds')
         print(f'Extracting {zip_path} to {root}')
         start = time.time()
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(root)
         delta = time.time() - start
-        print(f'Unzipped in {delta} seconds')
+        print(f'Unzipped in {int(delta)} seconds')
         os.remove(zip_path)
 
-    def compile_bin(self,
-                    csv_files: list,
-                    normalize: bool = False):
+    def compile_bin(self, csv_files: list):
         examples = {}
-        high = None
         for i, file in enumerate(csv_files):
             is_data = file.endswith('_data.csv')
             samples = []
             with open(file, 'r') as f:
                 hdr = f.readline()
-                expected_hdr = GRASPLIFT_DATA_HEADER if is_data else GRASPLIFT_EVENTS_HEADER
+                expected_hdr = self.GRASPLIFT_DATA_HEADER if is_data else self.GRASPLIFT_EVENTS_HEADER
                 if hdr != expected_hdr:
                     raise ValueError('bad header')
                 for line in f:
@@ -129,21 +181,11 @@ class GraspAndLiftEEGDataset(data.Dataset):
             item = examples.get(series, [None, None])
             item[0 if is_data else 1] = samples
             examples[series] = item
-            if normalize:
-                h = samples.max()
-                if high == None or h > high:
-                    high = h
-            else:
-                # Go ahead and save
-                torch.save(samples, file + '.bin')
             print(f'Processed {i+1}/{len(csv_files)} {file}')
         X = []
         Y = []
         for series in sorted(examples):
             x, y = examples[series]
-            if normalize:
-                x /= 0.5 * high
-                x -= 1.0
             torch.save(samples, series + '_data.csv.bin')
             X.append(x)
             if y != None:
@@ -174,17 +216,3 @@ class GraspAndLiftEEGDataset(data.Dataset):
             return len(self.X)
         # Use precalculated dataset length
         return self.total_examples
-
-
-if __name__ == '__main__':
-    num_samples = None
-    ds = GraspAndLiftEEGDataset('E:/grasp-and-lift-eeg-detection/test',
-                                num_samples=num_samples)
-    mins = []
-    maxs = []
-    for i, (x, _) in enumerate(ds):
-        mins.append(x.min())
-        maxs.append(x.max())
-    mins = np.min(mins)
-    maxs = np.max(maxs)
-    print(ds[0][0].shape)
