@@ -21,7 +21,8 @@ class ResNetClassifier2d(Classifier):
                  num_classes: int,
                  dropout: float = 0.4,
                  pooling: str = None) -> None:
-        super(ResNetClassifier2d, self).__init__(name=name)
+        super().__init__(name=name,
+                         num_classes=num_classes)
         self.width = width
         self.height = height
         self.channels = channels

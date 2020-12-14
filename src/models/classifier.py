@@ -7,9 +7,11 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 
 class Classifier(nn.Module):
     def __init__(self,
-                 name: str) -> None:
+                 name: str,
+                 num_classes: int) -> None:
         super(Classifier, self).__init__()
         self.name = name
+        self.num_classes = num_classes
 
     @abstractmethod
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:

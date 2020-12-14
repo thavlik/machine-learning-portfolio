@@ -411,9 +411,31 @@ def plot_comparison(result_dict: dict,
     fig.write_image(out_path)
 
 
+def classifier2d(test_input: Tensor,
+                 targets: Tensor,
+                 predictions: Tensor,
+                 class_names: List[str],
+                 baselines: Tensor):
+    # TODO draw a grid of images, each class gets a column.
+    # Next to each image, visually indicate if the model is
+    # correct or not. Baseline accuracy should be colored
+    # red, and 100% accuracy is bright green.
+    columns = []
+    for class_name, examples, preds, baseline in zip(class_names, test_input, predictions, baselines):
+        colors = [[baseline, 'red'],
+                  [(baseline + 1.0) * 0.5, 'orange'],
+                  [1.0, 'green']]
+        for example, pred in zip(examples, preds):
+            #color = pick_color(pred, colors)
+            # TODO: draw a colored vertical bar to the right of the image
+            pass
+    raise NotImplementedError
+
+
 plot_fn = {
     'eeg': eeg,
     'plot2d': plot2d,
+    'classifier2d': classifier2d,
     'dcm': plot2d_dcm,
     'fmri_prob_atlas': fmri_prob_atlas,
     'fmri_stat_map_video': fmri_stat_map_video,

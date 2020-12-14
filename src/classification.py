@@ -1,3 +1,4 @@
+import gc
 import os
 import math
 import torch
@@ -19,16 +20,17 @@ from typing import Callable, Optional
 from plot import get_plot_fn
 from models.classifier import Classifier
 from merge_strategy import strategy
+from typing import List
 
 
 class ClassificationExperiment(pl.LightningModule):
 
     def __init__(self,
-                 model: Classifier,
+                 classifier: Classifier,
                  params: dict) -> None:
         super(ClassificationExperiment, self).__init__()
 
-        self.model = model
+        self.classifier = classifier
         self.params = params
         self.curr_device = None
 
@@ -43,17 +45,62 @@ class ClassificationExperiment(pl.LightningModule):
         self.loss_fn = params.get('loss', 'nll')
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
-        return self.model(input, **kwargs)
+        return self.classifier(input, **kwargs)
+
+    def sample_images(self, plot: dict, val_indices: Tensor):
+        revert = self.training
+        if revert:
+            self.eval()
+
+        test_input = []
+        predictions = []
+
+        for class_indices in val_indices:
+            batch = [self.sample_dataloader.dataset[int(i)][0]
+                     for i in class_indices]
+            class_input = []
+            for x in batch:
+                x = x.unsqueeze(0)
+                class_input.append(x)
+                x = self.classifier(x)
+                predictions.append(x)
+            class_input = torch.cat(class_input, dim=0)
+            test_input.append(class_input.unsqueeze(0))
+
+        test_input = torch.cat(test_input, dim=0).cpu()
+        targets = torch.cat(targets, dim=0).cpu()
+        predictions = torch.cat(predictions, dim=0).cpu()
+
+        # Extensionless output path (let plotting function choose extension)
+        out_path = os.path.join(self.logger.save_dir,
+                                self.logger.name,
+                                f"version_{self.logger.version}",
+                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        fn = get_plot_fn(plot['fn'])
+        fn(test_input=test_input,
+           targets=targets,
+           predictions=predictions,
+           baselines=torch.Tensor([0.0 for _ in range(6)]),
+           out_path=out_path,
+           **plot['params'])
+
+        gc.collect()
+        if revert:
+            self.train()
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        train_loss = self.model.loss_function(y, labels.cpu(),
-                                              loss_fn=self.loss_fn)
+        train_loss = self.classifier.loss_function(y, labels.cpu(),
+                                                   loss_fn=self.loss_fn)
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
+        if self.global_step > 0:
+            for plot, val_indices in zip(self.plots, self.val_indices):
+                if self.global_step % plot['sample_every_n_steps'] == 0:
+                    self.sample_images(plot, val_indices)
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
@@ -61,8 +108,8 @@ class ClassificationExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        val_loss = self.model.loss_function(y, labels.cpu(),
-                                            loss_fn=self.loss_fn)
+        val_loss = self.classifier.loss_function(y, labels.cpu(),
+                                                 loss_fn=self.loss_fn)
         return val_loss
 
     def validation_epoch_end(self, outputs: list):
@@ -75,36 +122,8 @@ class ClassificationExperiment(pl.LightningModule):
         for metric, values in avg.items():
             self.log(metric, torch.Tensor(values).mean())
 
-    def sample_images(self):
-        for plot, val_indices in zip(self.plots, self.val_indices):
-            test_input = []
-            recons = []
-            batch = torch.cat([self.sample_dataloader.dataset[i][0].unsqueeze(0)
-                               for i in val_indices], dim=0).to(self.curr_device)
-            for x in batch:
-                x = x.unsqueeze(0)
-                test_input.append(x)
-                x = self.model.generate(x, labels=[])
-                recons.append(x)
-            test_input = torch.cat(test_input, dim=0)
-            recons = torch.cat(recons, dim=0)
-            # Extensionless output path (let plotting function choose extension)
-            out_path = os.path.join(self.logger.save_dir,
-                                    self.logger.name,
-                                    f"version_{self.logger.version}",
-                                    f"{self.logger.name}_{plot['fn']}_{self.current_epoch}")
-            orig = test_input.data.cpu()
-            recons = recons.data.cpu()
-            fn = get_plot_fn(plot['fn'])
-            fn(orig=orig,
-               recons=recons,
-               model_name=self.model.name,
-               epoch=self.current_epoch,
-               out_path=out_path,
-               **plot['params'])
-
     def configure_optimizers(self):
-        optims = [optim.Adam(self.model.parameters(),
+        optims = [optim.Adam(self.classifier.parameters(),
                              **self.params['optimizer'])]
         scheds = []
         return optims, scheds
@@ -153,10 +172,42 @@ class ClassificationExperiment(pl.LightningModule):
                                             shuffle=False,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
+
         n = len(dataset)
+
+        def get_random_example_with_label(label: Tensor,
+                                          exclude: List[int],
+                                          depth: int = 0,
+                                          max_depth: int = 100) -> int:
+            start_idx = np.random.randint(0, n)
+            for i, (x, y) in enumerate(self.sample_dataloader.dataset[start_idx:]):
+                if y == label:
+                    index = i + start_idx
+                    if index in exclude:
+                        continue
+                    return index
+            if depth >= max_depth:
+                raise ValueError(f'cannot find example with label {label}')
+            return get_random_example_with_label(label,
+                                                 exclude=exclude,
+                                                 depth=depth+1,
+                                                 max_depth=max_depth)
+
+        num_classes = self.classifier.num_classes
         # Persist separate validation indices for each plot
-        self.val_indices = [torch.randint(low=0,
-                                          high=n,
-                                          size=(plot['batch_size'], 1)).squeeze()
-                            for plot in self.plots]
+        val_indices = []
+        for plot in self.plots:
+            examples_per_class = plot['examples_per_class']
+            classes = []
+            for i in range(num_classes):
+                label = Tensor([1 if i == j else 0
+                                for j in range(num_classes)])
+                examples = []
+                for _ in range(examples_per_class):
+                    examples.append(get_random_example_with_label(
+                        label, exclude=examples))
+                classes.append(examples)
+            val_indices.append(classes)
+        self.val_indices = val_indices
+
         return self.sample_dataloader
