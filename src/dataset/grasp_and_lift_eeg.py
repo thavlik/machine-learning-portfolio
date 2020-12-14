@@ -236,17 +236,3 @@ class GraspAndLiftEEGDataset(data.Dataset):
             return len(self.X)
         # Use precalculated dataset length
         return self.total_examples
-
-if __name__ == '__main__':
-    import numpy as np
-    num_samples = 1024
-    ds = GraspAndLiftEEGDataset('E:/grasp-and-lift-eeg-detection',
-                                num_samples=num_samples)
-    mins = []
-    maxs = []
-    for i, (x, _) in enumerate(ds):
-        mins.append(x.min())
-        maxs.append(x.max())
-    mins = np.min(mins)
-    maxs = np.max(maxs)
-    print(ds[0][0].shape)

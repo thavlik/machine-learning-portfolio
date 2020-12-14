@@ -415,7 +415,8 @@ def classifier2d(test_input: Tensor,
                  targets: Tensor,
                  predictions: Tensor,
                  class_names: List[str],
-                 baselines: Tensor):
+                 baselines: Tensor,
+                 out_path: str):
     # TODO draw a grid of images, each class gets a column.
     # Next to each image, visually indicate if the model is
     # correct or not. Baseline accuracy should be colored
