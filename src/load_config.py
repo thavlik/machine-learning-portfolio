@@ -40,5 +40,7 @@ def load_config(path: Union[str, List[str]]) -> Union[dict, List[dict]]:
                 merged = strategy.merge(merged, load_config(include))
             # Merge this config file in last
             config = strategy.merge(merged, config)
+            # Remove include directive now that merge has occured
+            del config['include']
         result = strategy.merge(result, config)
     return result
