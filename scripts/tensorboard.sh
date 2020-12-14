@@ -5,7 +5,7 @@ dir=$(pwd)
 docker run \
     -it \
     -p 6006:6006 \
-    -v $(wslpath -w logs)/NeuralGBuffer:/logs  \
+    -v $(wslpath -w logs)/RSNA_Basic:/logs  \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \

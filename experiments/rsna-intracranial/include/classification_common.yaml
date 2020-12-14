@@ -13,7 +13,7 @@ exp_params:
   loss: mse
   batch_size: 4
   optimizer:
-    lr: 0.00005
+    lr: 0.00001
     weight_decay: 0.00001
 
 trainer_params:
