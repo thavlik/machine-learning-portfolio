@@ -18,7 +18,7 @@ These experiments showcase unsupervised modeling tasks on a variety of both medi
 ### Supervised
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
 - [Neural Rendering](experiments/graphics/README.md)
-- [RSNA Intracranial Hemorrhage Prediction](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection)
+- [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md)
 - [CQ500](http://headctstudy.qure.ai/dataset)
 - [TReNDS fMRI](https://www.kaggle.com/c/trends-assessment-prediction/data)
 - [DeepLesion](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images)
