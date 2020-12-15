@@ -579,6 +579,7 @@ if __name__ == '__main__':
         X.append(x)
         Y.append(y)
 
+    # TODO: add class labels
     classifier2d(X, Y, Y.copy(), [
         "Epidural",
         "Intraparenchymal",
