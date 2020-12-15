@@ -9,10 +9,10 @@ This repository was designed to showcase well-designed project structure. Config
 **Note: script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
 
 ### Unsupervised
-These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Unsupervised pretraining confers an exponential boost in data efficiency on relevant supervised tasks [2][3], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
-- [1D Variational Autoencoder](experiments/include/vae1d/README.md), used for time series
-- [2D Variational Autoencoder](experiments/include/vae2d/README.md), used for 2D imagery
-- [3D Variational Autoencoder](experiments/include/vae3d/README.md), used for video and 3D imagery
+These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Pretraining a network on an unsupervised task confers an exponential boost in data efficiency on relevant supervised tasks [2][3], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
+- [1D Variational Autoencoder](experiments/include/vae1d/README.md), used for EEG and other time series
+- [2D Variational Autoencoder](experiments/include/vae2d/README.md), used for 2D images
+- [3D Variational Autoencoder](experiments/include/vae3d/README.md), used for video and structural MRI
 - [4D Variational Autoencoder](experiments/include/vae4d/README.md), used for fMRI
 
 ### Supervised
