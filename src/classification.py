@@ -95,7 +95,7 @@ class ClassificationExperiment(pl.LightningModule):
         y = self.forward(real_img).cpu()
         train_loss = self.classifier.loss_function(y, labels.cpu(),
                                                    loss_fn=self.loss_fn)
-        self.logger.experiment.log({key: val.item()
+        self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         if self.global_step > 0:
             for plot, val_indices in zip(self.plots, self.val_indices):
@@ -120,7 +120,7 @@ class ClassificationExperiment(pl.LightningModule):
                 items.append(v)
                 avg[k] = items
         for metric, values in avg.items():
-            self.log(metric, torch.Tensor(values).mean())
+            self.log('val/' + metric, torch.Tensor(values).mean())
 
     def configure_optimizers(self):
         optims = [optim.Adam(self.classifier.parameters(),
@@ -185,7 +185,7 @@ class ClassificationExperiment(pl.LightningModule):
                                           depth: int = 0,
                                           max_depth: int = 100) -> int:
             start_idx = np.random.randint(0, n)
-            for i, (x, y) in enumerate(self.sample_dataloader.dataset[start_idx:]):
+            for i, (_, y) in enumerate(self.sample_dataloader.dataset[start_idx:]):
                 if y == label:
                     index = i + start_idx
                     if index in exclude:
