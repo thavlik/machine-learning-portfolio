@@ -420,6 +420,7 @@ def classifier2d(test_input: Tensor,
                  out_path: str,
                  background: List[float] = [1.0, 1.0, 1.0],
                  padding: int = 16):
+    background = torch.Tensor(background)
     # Draw a grid of images, each class gets a column.
     # Next to each image, visually indicate if the model is
     # correct or not. Baseline accuracy should be colored
@@ -429,8 +430,7 @@ def classifier2d(test_input: Tensor,
         for example, pred in zip(examples, preds):
             rel_acc = 0.0
             example = add_indicator_to_image(example, rel_acc, 4)
-            example = pad_image(
-                example, torch.Tensor([1.0, 1.0, 1.0]), padding)
+            example = pad_image(example, background, padding)
 
     raise NotImplementedError
 
@@ -441,7 +441,8 @@ def add_indicator_to_image(img: Tensor,
     hue = np.clip(rel_acc * 0.5, 0.0, 0.5)
     color = hsv_to_rgb([hue, 1.0, 1.0])
     height = img.shape[1]
-    colorbar = torch.Tensor(color).unsqueeze(1).unsqueeze(1).repeat(1, height, thickness)
+    colorbar = torch.Tensor(color).unsqueeze(
+        1).unsqueeze(1).repeat(1, height, thickness)
     img = torch.cat([img, colorbar], dim=2)
     return img
 
