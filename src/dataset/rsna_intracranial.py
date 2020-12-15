@@ -85,7 +85,7 @@ class RSNAIntracranialDataset(data.Dataset):
         self.download = download
         self.delete_after_use = delete_after_use
         dcm_path = os.path.join(
-            'root', 'stage_2_train' if train else 'stage_2_test')
+            root, 'stage_2_train' if train else 'stage_2_test')
         self.dcm_path = dcm_path
         if not self.download:
             if not os.path.exists(dcm_path):

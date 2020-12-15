@@ -18,6 +18,7 @@ import subprocess
 from typing import List, Tuple
 from merge_strategy import strategy
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
+from torchvision.utils import save_image
 
 
 def plot_title(template: str,
@@ -418,32 +419,55 @@ def classifier2d(test_input: Tensor,
                  class_names: List[str],
                  baselines: Tensor,
                  out_path: str,
-                 background: List[float] = [1.0, 1.0, 1.0],
-                 padding: int = 16):
+                 background: List[float] = [0.6, 0.6, 0.6],
+                 indicator_thickness: int = None,
+                 padding: int = None):
     background = torch.Tensor(background)
     # Draw a grid of images, each class gets a column.
     # Next to each image, visually indicate if the model is
     # correct or not. Baseline accuracy should be colored
     # red, and 100% accuracy is bright green.
+    if indicator_thickness is None:
+        indicator_thickness = int(
+            np.clip(test_input[0][0].shape[-1] / 32, 1, 16))
+    if padding is None:
+        padding = int(np.clip(test_input[0][0].shape[-1] / 16, 1, 32))
     columns = []
-    for class_name, examples, preds, baseline in zip(class_names, test_input, predictions, baselines):
-        for example, pred in zip(examples, preds):
-            rel_acc = 0.0
-            example = add_indicator_to_image(example, rel_acc, 4)
-            example = pad_image(example, background, padding)
+    for i, (class_name, examples, preds, targs, baseline) in enumerate(zip(class_names, test_input, predictions, targets, baselines)):
+        column = []
+        for img, pred, targ in zip(examples, preds, targs):
+            class_rel_acc = torch.round(pred[i]).int() == targ[i].int()
+            class_rel_acc = class_rel_acc.float().mean()
+            class_rel_acc = (class_rel_acc - baseline) / (1.0 - baseline)
+            img = add_indicator_to_image(
+                img, class_rel_acc, indicator_thickness, after=False)
 
-    raise NotImplementedError
+            rel_acc = torch.round(pred).int() == targ.int()
+            rel_acc = rel_acc.float().mean()
+            img = add_indicator_to_image(
+                img, rel_acc, indicator_thickness, after=True)
+
+            img = pad_image(img, background, padding)
+            column.append(img)
+        column = torch.cat(column, dim=1)
+        columns.append(column)
+    img = torch.cat(columns, dim=2)
+    if not out_path.endswith('.png'):
+        out_path += '.png'
+    save_image(img, out_path)
 
 
 def add_indicator_to_image(img: Tensor,
                            rel_acc: float,
-                           thickness: int = 4):
-    hue = np.clip(rel_acc * 0.5, 0.0, 0.5)
+                           thickness: int = 4,
+                           after: bool = True):
+    max_hue = 0.42
+    hue = np.clip(rel_acc * max_hue, 0.0, max_hue)
     color = hsv_to_rgb([hue, 1.0, 1.0])
     height = img.shape[1]
     colorbar = torch.Tensor(color).unsqueeze(
         1).unsqueeze(1).repeat(1, height, thickness)
-    img = torch.cat([img, colorbar], dim=2)
+    img = torch.cat([img, colorbar] if after else [colorbar, img], dim=2)
     return img
 
 
@@ -478,9 +502,85 @@ def get_plot_fn(name: str):
     return plot_fn[name]
 
 
+def get_random_example_with_label(ds,
+                                  label: int,
+                                  exclude: List[int],
+                                  depth: int = 0,
+                                  max_depth: int = 100) -> int:
+    n = len(ds)
+    start_idx = np.random.randint(0, n)
+    for i in range(n - start_idx):
+        y = ds[start_idx + i][1]
+        if y[label] == 0.0:
+            continue
+        index = i + start_idx
+        if index in exclude:
+            continue
+        return index
+    if depth >= max_depth:
+        raise ValueError(f'cannot find example with label {label}')
+    return get_random_example_with_label(ds,
+                                         label,
+                                         exclude=exclude,
+                                         depth=depth+1,
+                                         max_depth=max_depth)
+
+
 if __name__ == '__main__':
     import os
+    import pydicom
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
+    from dataset.dicom_util import normalized_dicom_pixels
+
+    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial',
+                                 download=False)
+
+    #path = os.path.join(ds.dcm_path, ds.files[10000])
+    #img = pydicom.dcmread(path, stop_before_pixels=False)
+    #img = normalized_dicom_pixels(img)
+    #img = img.squeeze().numpy()
+    #plt.imshow(img, cmap=plt.cm.bone)
+    #plt.show()
+    #img = plt.cm.bone(plt.Normalize()(img))
+    #plt.imshow(img)
+    #plt.show()
+
+    batch_size = 3
+    num_classes = 6
+    X = []
+    Y = []
+    for i in range(num_classes):
+        class_indices = []
+        for _ in range(batch_size):
+            idx = get_random_example_with_label(ds,
+                                                i,
+                                                exclude=class_indices)
+            l = ds[idx][1]
+            assert l[i] != 0
+            class_indices.append(idx)
+        examples = [ds[j] for j in class_indices]
+        x = [torch.transpose(torch.transpose(torch.Tensor(plt.cm.bone(plt.Normalize()(ex[0].squeeze().numpy()))), 0, -1).squeeze()[:3, ...], 1, 2)
+             for ex in examples]
+        y = [ex[1] for ex in examples]
+        X.append(x)
+        Y.append(y)
+
+    classifier2d(X, Y, Y.copy(), [
+        "Epidural",
+        "Intraparenchymal",
+        "Intraventricular",
+        "Subarachnoid",
+        "Subdural",
+        "Any",
+    ], baselines=[
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+    ], out_path='img.png')
+
     img = torch.Tensor([0.0, 1.0, 0.0]).unsqueeze(
         1).unsqueeze(1).repeat(1, 16, 16)
     img = add_indicator_to_image(img, 0.9)
