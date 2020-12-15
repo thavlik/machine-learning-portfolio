@@ -19,8 +19,8 @@ def raw_dicom_pixels(ds):
 
 def normalized_dicom_pixels(ds):
     signed = ds.PixelRepresentation == 1
-    slope = ds.RescaleSlope
-    intercept = ds.RescaleIntercept
+    slope = float(ds.RescaleSlope)
+    intercept = float(ds.RescaleIntercept)
     x = ds.pixel_array
     if ds.BitsStored == 12 and not signed and int(intercept) > -100:
         # see: https://www.kaggle.com/jhoward/cleaning-the-data-for-rapid-prototyping-fastai
