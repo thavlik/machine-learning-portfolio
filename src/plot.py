@@ -428,15 +428,22 @@ def classifier2d(test_input: Tensor,
     for class_name, examples, preds, baseline in zip(class_names, test_input, predictions, baselines):
         for example, pred in zip(examples, preds):
             rel_acc = 0.0
-            hue = np.clip(rel_acc * 0.5, 0.0, 0.5)
-            color = hsv_to_rgb([hue, 1.0, 1.0])
-            height = example.shape[1]
-            colorbar = torch.Tensor(color).repeat(4, height)
-            example = torch.cat([example, colorbar], dim=2)
+            example = add_indicator_to_image(example, rel_acc, 4)
             example = pad_image(
                 example, torch.Tensor([1.0, 1.0, 1.0]), padding)
 
     raise NotImplementedError
+
+
+def add_indicator_to_image(img: Tensor,
+                           rel_acc: float,
+                           thickness: int = 4):
+    hue = np.clip(rel_acc * 0.5, 0.0, 0.5)
+    color = hsv_to_rgb([hue, 1.0, 1.0])
+    height = img.shape[1]
+    colorbar = torch.Tensor(color).unsqueeze(1).unsqueeze(1).repeat(1, height, thickness)
+    img = torch.cat([img, colorbar], dim=2)
+    return img
 
 
 def pad_image(img, color, num_pixels):
@@ -473,7 +480,9 @@ def get_plot_fn(name: str):
 if __name__ == '__main__':
     import os
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
-    img = torch.Tensor([0.0, 1.0, 0.0]).unsqueeze(1).unsqueeze(1).repeat(1, 16, 16)
+    img = torch.Tensor([0.0, 1.0, 0.0]).unsqueeze(
+        1).unsqueeze(1).repeat(1, 16, 16)
+    img = add_indicator_to_image(img, 0.9)
     img = pad_image(img, [1.0, 0.0, 0.0], 4)
 
     base_path = 'E:\\trends-fmri'
