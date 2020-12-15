@@ -1,13 +1,13 @@
 exp_params:
   data:
     name: rsna-intracranial
+    split: 0.7
     loader:
       num_workers: 0
       drop_last: true
     training:
-      dcm_path: E:/rsna-intracranial/stage_2_train
-      labels_csv_path: 'E:/rsna-intracranial/stage_2_train.csv'
-      download: false
+      root: E:/rsna-intracranial
+      download: true
   batch_size: 64
   warmup_steps: 256
   

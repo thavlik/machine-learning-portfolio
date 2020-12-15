@@ -37,7 +37,7 @@ class Classifier(nn.Module):
             # for multiclass loss
             correct = torch.round(prediction).int() == target
             possible_correct = torch.prod(torch.Tensor(list(target.shape)))
-            accuracy = correct.int().sum() / possible_correct
+            accuracy = correct.float().sum() / possible_correct
             result['accuracy'] = accuracy
         else:
             raise NotImplementedError

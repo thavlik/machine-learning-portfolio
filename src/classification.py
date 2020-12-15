@@ -153,8 +153,11 @@ class ClassificationExperiment(pl.LightningModule):
         optimizer.zero_grad()
 
     def train_dataloader(self):
+        ds_params = self.params['data'].get('training', {})
         dataset = get_dataset(self.params['data']['name'],
-                              self.params['data'].get('training', {}))
+                              ds_params,
+                              split=self.params['data'].get('split', None),
+                              train=True)
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
@@ -165,8 +168,10 @@ class ClassificationExperiment(pl.LightningModule):
         ds_params = strategy.merge(
             self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
-        dataset = get_dataset(self.params['data']['name'], ds_params)
-
+        dataset = get_dataset(self.params['data']['name'],
+                              ds_params,
+                              split=self.params['data'].get('split', None),
+                              train=False)
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,

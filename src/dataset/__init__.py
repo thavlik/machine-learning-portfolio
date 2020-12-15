@@ -9,6 +9,18 @@ from .video import *
 from .batch_video import *
 from .toy_neural_graphics import *
 
+
+def split_dataset(dataset, split):
+    n_train_imgs = np.floor(len(dataset) * split).astype('int')
+    n_val_imgs = len(dataset) - n_train_imgs
+    cur_seed = torch.seed()
+    torch.manual_seed(torch.initial_seed())
+    parts = torch.utils.data.random_split(dataset,
+                                          [n_train_imgs, n_val_imgs])
+    torch.manual_seed(cur_seed)
+    return parts
+
+
 datasets = {
     'cq500': CQ500Dataset,
     'deeplesion': DeepLesionDataset,
@@ -21,10 +33,17 @@ datasets = {
 }
 
 
-def get_dataset(name: str, params: dict):
+def get_dataset(name: str,
+                params: dict,
+                split: float = None,
+                train: bool = True):
     if name not in datasets:
         raise ValueError(f"unknown dataset '{name}'")
-    return datasets[name](**params)
+    ds = datasets[name](**params)
+    if split is not None:
+        ds = split_dataset(ds, split)[1 if train else 0]
+    return ds
+
 
 dataset_dims = {
     'eeg': (1, 8192),  # channels, length
@@ -52,4 +71,3 @@ def get_example_shape(data: dict):
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return torch.Size(dataset_dims[name])
-

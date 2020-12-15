@@ -22,6 +22,9 @@ def get_inventory(bucket, dcm_path, prefix):
 
 
 def load_labels_csv(path: str) -> list:
+    if not os.path.exists(path):
+        raise ValueError(
+            f'Labels file {path} does not exist')
     labels = {}
     label_idx = [
         'epidural',
@@ -55,44 +58,43 @@ def load_labels_csv(path: str) -> list:
     return labels
 
 
+def process_labels(files: list, path: str) -> torch.Tensor:
+    labels_dict = load_labels_csv(path)
+    labels = []
+    for f in files:
+        id = os.path.basename(f)[3:-4]
+        if id not in labels_dict:
+            raise ValueError(f'missing class labels for {f}')
+        labels.append(labels_dict[id])
+    return torch.Tensor(labels)
+
+
 class RSNAIntracranialDataset(data.Dataset):
     def __init__(self,
-                 dcm_path: str,
-                 labels_csv_path: str = None,
+                 root: str,
+                 train: bool = True,
                  download: bool = True,
-                 s3_path: str = None,
+                 s3_path: str = 's3://rsna-intracranial',
                  s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
                  limit: int = None,
-                 generate_inventory: bool = True):
+                 generate_inventory: bool = True,
+                 delete_after_use: bool = False):
         super(RSNAIntracranialDataset, self).__init__()
-        self.dcm_path = dcm_path
+        self.root = root
+        self.train = train
         self.download = download
+        self.delete_after_use = delete_after_use
+        dcm_path = os.path.join(
+            'root', 'stage_2_train' if train else 'stage_2_test')
+        self.dcm_path = dcm_path
         if not self.download:
             if not os.path.exists(dcm_path):
                 raise ValueError(f'Directory {dcm_path} does not exist')
             self.files = [f for f in os.listdir(dcm_path)
                           if f.endswith('.dcm')]
-            if labels_csv_path != None:
-                if not os.path.exists(labels_csv_path):
-                    raise ValueError(
-                        f'Labels file {labels_csv_path} does not exist')
-                labels_dict = load_labels_csv(labels_csv_path)
-                labels = []
-                # all files should have labels, but some files may be missing
-                #self.files = [f for f in self.files
-                #              if os.path.basename(f)[3:-4] in labels_dict]
-                for f in self.files:
-                    id = os.path.basename(f)[3:-4]
-                    if id not in labels_dict:
-                        raise ValueError(f'missing class labels for {f}')
-                    labels.append(labels_dict[id])
-                self.labels = torch.Tensor(labels)
-            else:
-                self.labels = None
+            self.labels = process_labels(
+                self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
         else:
-            if labels_csv_path != None:
-                raise NotImplementedError
-
             if s3_path == None:
                 raise ValueError(
                     "You must provide s3_path when download == True")
@@ -127,6 +129,16 @@ class RSNAIntracranialDataset(data.Dataset):
                     with open(path, 'w') as f:
                         for line in self.files:
                             f.write(f'{line}\n')
+            if train:
+                labels_csv_path = os.path.join(root, 'stage_2_train.csv')
+                if not os.path.exists(labels_csv_path):
+                    with open(labels_csv_path, 'w') as f:
+                        obj = self.bucket.Object('stage_2_train.csv')
+                        obj.download_fileobj(f)
+                self.labels = process_labels(
+                    self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
+            else:
+                self.labels = None
 
     def __getitem__(self, index):
         file = self.files[index]
@@ -138,14 +150,16 @@ class RSNAIntracranialDataset(data.Dataset):
             return (x, y)
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
-        dir = os.path.dirname(path)
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        dirname = os.path.dirname(path)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
         with open(path, 'wb') as f:
             obj = self.bucket.Object(self.prefix + file)
             obj.download_fileobj(f)
         ds = pydicom.dcmread(path, stop_before_pixels=False)
         data = normalized_dicom_pixels(ds)
+        if self.delete_after_use:
+            os.remove(path)
         return (data, [])
 
     def __len__(self):
