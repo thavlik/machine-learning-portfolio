@@ -10,7 +10,10 @@ model_params:
   pooling: max
 
 exp_params:
-  loss: mse
+  loss_params:
+    objective: mse
+    #baseline: 0.5
+
   batch_size: 4
   optimizer:
     lr: 0.00001

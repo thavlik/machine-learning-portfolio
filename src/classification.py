@@ -42,8 +42,6 @@ class ClassificationExperiment(pl.LightningModule):
         else:
             self.plots = []
 
-        self.loss_fn = params.get('loss', 'nll')
-
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.classifier(input, **kwargs)
 
@@ -94,7 +92,7 @@ class ClassificationExperiment(pl.LightningModule):
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
         train_loss = self.classifier.loss_function(y, labels.cpu(),
-                                                   loss_fn=self.loss_fn)
+                                                   **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         if self.global_step > 0:
@@ -109,7 +107,7 @@ class ClassificationExperiment(pl.LightningModule):
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
         val_loss = self.classifier.loss_function(y, labels.cpu(),
-                                                 loss_fn=self.loss_fn)
+                                                 **self.params.get('loss_params', {}))
         return val_loss
 
     def validation_epoch_end(self, outputs: list):

@@ -20,14 +20,14 @@ class Classifier(nn.Module):
     def loss_function(self,
                       prediction: Tensor,
                       target: Tensor,
-                      loss_fn: str = 'mse',
+                      objective: str = 'mse',
                       baseline_accuracy: float = None) -> dict:
         result = {}
-        if loss_fn == 'nll':
+        if objective == 'nll':
             result['loss'] = F.nll_loss(prediction, target)
             result['accuracy'] = torch.sum(
                 target == prediction.argmax(1)).float() / target.shape[0]
-        elif loss_fn == 'mse':
+        elif objective == 'mse':
             result['loss'] = F.mse_loss(prediction, target)
             # Calculate overall average accuracy. Every class
             # prediction for every example in the batch is an
@@ -40,7 +40,7 @@ class Classifier(nn.Module):
             accuracy = correct.float().sum() / possible_correct
             result['accuracy'] = accuracy
         else:
-            raise NotImplementedError
+            raise ValueError(f'Objective "{objective}" not implemented')
 
         any_acc = torch.sum(torch.round(prediction), dim=1).clamp(0, 1).int() == torch.sum(target, dim=1).clamp(0, 1).int()
         any_acc = any_acc.float().mean()
