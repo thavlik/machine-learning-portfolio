@@ -5,6 +5,7 @@ from vae import VAEExperiment
 from classification import ClassificationExperiment
 from dataset import ReferenceDataset, get_example_shape
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TestTubeLogger
 import numpy as np
 from pytorch_lightning import Trainer
@@ -348,10 +349,17 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     tt_logger.log_hyperparams(config)
     if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5
+    checkpoint_callback = ModelCheckpoint(
+        save_top_k=1,
+        verbose=True,
+        monitor='loss',
+        mode='min'
+    )
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      min_epochs=1,
                      num_sanity_val_steps=5,
                      logger=tt_logger,
+                     checkpoint_callback=checkpoint_callback,
                      **config['trainer_params'])
     print(
         f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")

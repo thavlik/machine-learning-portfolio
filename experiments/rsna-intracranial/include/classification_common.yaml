@@ -30,6 +30,13 @@ exp_params:
         - Subarachnoid
         - Subdural
         - Any
+      baselines:
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
+        - 0.0
 
 trainer_params:
   max_epochs: 8

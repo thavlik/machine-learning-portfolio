@@ -17,6 +17,7 @@ from PIL import Image
 import subprocess
 from typing import List, Tuple
 from merge_strategy import strategy
+from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 
 
 def plot_title(template: str,
@@ -416,21 +417,39 @@ def classifier2d(test_input: Tensor,
                  predictions: Tensor,
                  class_names: List[str],
                  baselines: Tensor,
-                 out_path: str):
-    # TODO draw a grid of images, each class gets a column.
+                 out_path: str,
+                 background: List[float] = [1.0, 1.0, 1.0],
+                 padding: int = 16):
+    # Draw a grid of images, each class gets a column.
     # Next to each image, visually indicate if the model is
     # correct or not. Baseline accuracy should be colored
     # red, and 100% accuracy is bright green.
     columns = []
     for class_name, examples, preds, baseline in zip(class_names, test_input, predictions, baselines):
-        colors = [[baseline, 'red'],
-                  [(baseline + 1.0) * 0.5, 'orange'],
-                  [1.0, 'green']]
         for example, pred in zip(examples, preds):
-            #color = pick_color(pred, colors)
-            # TODO: draw a colored vertical bar to the right of the image
-            pass
+            rel_acc = 0.0
+            hue = np.clip(rel_acc * 0.5, 0.0, 0.5)
+            color = hsv_to_rgb([hue, 1.0, 1.0])
+            height = example.shape[1]
+            colorbar = torch.Tensor(color).repeat(4, height)
+            example = torch.cat([example, colorbar], dim=2)
+            example = pad_image(
+                example, torch.Tensor([1.0, 1.0, 1.0]), padding)
+
     raise NotImplementedError
+
+
+def pad_image(img, color, num_pixels):
+    color = torch.Tensor(color).unsqueeze(1).unsqueeze(1)
+    height = img.shape[1]
+    vbar = color.repeat(1, height, num_pixels)
+    img = torch.cat([img, vbar], dim=2)
+    img = torch.cat([vbar, img], dim=2)
+    width = img.shape[2]
+    hbar = color.repeat(1, num_pixels, width)
+    img = torch.cat([img, hbar], dim=1)
+    img = torch.cat([hbar, img], dim=1)
+    return img
 
 
 plot_fn = {
@@ -454,6 +473,8 @@ def get_plot_fn(name: str):
 if __name__ == '__main__':
     import os
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
+    img = torch.Tensor([0.0, 1.0, 0.0]).unsqueeze(1).unsqueeze(1).repeat(1, 16, 16)
+    img = pad_image(img, [1.0, 0.0, 0.0], 4)
 
     base_path = 'E:\\trends-fmri'
     ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
