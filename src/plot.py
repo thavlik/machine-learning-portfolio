@@ -510,9 +510,9 @@ def get_random_example_with_label(ds,
     n = len(ds)
     start_idx = np.random.randint(0, n)
     for i in range(n - start_idx):
-        y = ds[start_idx + i][1]
+        index = i + start_idx
+        y = ds[index][1]
         if bool(y[label]):
-            index = i + start_idx
             if index in exclude:
                 continue
             return index
