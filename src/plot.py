@@ -528,6 +528,8 @@ def get_random_example_with_label(ds,
 if __name__ == '__main__':
     import os
     import pydicom
+    from skimage import exposure
+    from skimage.transform import resize
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
     from dataset.dicom_util import normalized_dicom_pixels
 
@@ -539,10 +541,10 @@ if __name__ == '__main__':
     #img = normalized_dicom_pixels(img)
     #img = img.squeeze().numpy()
     #plt.imshow(img, cmap=plt.cm.bone)
-    #plt.show()
+    # plt.show()
     #img = plt.cm.bone(plt.Normalize()(img))
-    #plt.imshow(img)
-    #plt.show()
+    # plt.imshow(img)
+    # plt.show()
 
     batch_size = 3
     num_classes = 6
@@ -558,8 +560,21 @@ if __name__ == '__main__':
             assert l[i] != 0
             class_indices.append(idx)
         examples = [ds[j] for j in class_indices]
-        x = [torch.transpose(torch.transpose(torch.Tensor(plt.cm.bone(plt.Normalize()(ex[0].squeeze().numpy()))), 0, -1).squeeze()[:3, ...], 1, 2)
-             for ex in examples]
+
+        def process(x):
+            x = x.squeeze().numpy()
+            x = exposure.equalize_hist(x)
+            x = plt.Normalize()(x)
+            x = plt.cm.bone(x)
+            x = resize(x, (256, 256, 4))
+            x = torch.Tensor(x)
+            x = torch.transpose(x, 0, -1)
+            x = x.squeeze()
+            x = x[:3, ...]
+            x = torch.transpose(x, 1, 2)
+            return x
+
+        x = [process(ex[0]) for ex in examples]
         y = [ex[1] for ex in examples]
         X.append(x)
         Y.append(y)
