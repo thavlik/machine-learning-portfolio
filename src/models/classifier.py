@@ -25,20 +25,8 @@ class Classifier(nn.Module):
         result = {}
         if objective == 'nll':
             result['loss'] = F.nll_loss(prediction, target)
-            result['accuracy'] = torch.sum(
-                target == prediction.argmax(1)).float() / target.shape[0]
         elif objective == 'mse':
             result['loss'] = F.mse_loss(prediction, target)
-            # Calculate overall average accuracy. Every class
-            # prediction for every example in the batch is an
-            # opportunity for the network to, on average,
-            # guess correctly.
-            # TODO: figure out a better way to measure accuracy
-            # for multiclass loss
-            correct = torch.round(prediction).int() == target
-            possible_correct = torch.prod(torch.Tensor(list(target.shape)))
-            accuracy = correct.float().sum() / possible_correct
-            result['accuracy'] = accuracy
         else:
             raise ValueError(f'Objective "{objective}" not implemented')
 
