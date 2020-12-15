@@ -20,7 +20,8 @@ class Classifier(nn.Module):
     def loss_function(self,
                       prediction: Tensor,
                       target: Tensor,
-                      loss_fn: str = 'mse') -> dict:
+                      loss_fn: str = 'mse',
+                      baseline_accuracy: float = None) -> dict:
         result = {}
         if loss_fn == 'nll':
             result['loss'] = F.nll_loss(prediction, target)
@@ -28,7 +29,6 @@ class Classifier(nn.Module):
                 target == prediction.argmax(1)).float() / target.shape[0]
         elif loss_fn == 'mse':
             result['loss'] = F.mse_loss(prediction, target)
-
             # Calculate overall average accuracy. Every class
             # prediction for every example in the batch is an
             # opportunity for the network to, on average,
@@ -41,4 +41,26 @@ class Classifier(nn.Module):
             result['accuracy'] = accuracy
         else:
             raise NotImplementedError
+
+        any_acc = torch.sum(torch.round(prediction), dim=1).clamp(0, 1).int() == torch.sum(target, dim=1).clamp(0, 1).int()
+        any_acc = any_acc.float().mean()
+        result['accuracy/any'] = any_acc
+
+        avg_acc = torch.round(prediction).int() == target
+        avg_acc = avg_acc.float().mean()
+        result['accuracy/avg'] = avg_acc
+
+        if baseline_accuracy is not None:
+            result['rel_acc/avg'] = (avg_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+            result['rel_acc/any'] = (any_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+
+        num_classes = target.shape[1]
+
+        for i in range(num_classes):
+            acc = torch.round(prediction[:, i]).int() == target[:, i]
+            acc = acc.float().mean()
+            result[f'accuracy/class_{i}'] = acc
+            if baseline_accuracy is not None:
+                result[f'rel_acc/class_{i}'] = (acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+        
         return result
