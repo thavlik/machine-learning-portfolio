@@ -12,5 +12,6 @@ Target image is on the left, model output is on the right.
 
 Unsurprisingly, use of MSE without a progressive growing strategy yields only blurry messes.
 
-TODO: implement progressive growing
-TODO: implement FID loss
+## TODO
+- implement progressive growing
+- implement FID loss
