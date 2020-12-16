@@ -10,7 +10,7 @@ In this first experiment, the model is given a 4x4 transformation matrix as inpu
 
 Target image is on the left, model output is on the right.
 
-Unsurprisingly, use of MSE without a progressive growing strategy yields only blurry messes.
+Unsurprisingly, use of MSE without a progressive growing strategy yields only blurry messes. Further work is required to simplify image synthesis early in training.
 
 ## TODO
 - implement progressive growing
