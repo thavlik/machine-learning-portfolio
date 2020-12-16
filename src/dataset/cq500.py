@@ -7,10 +7,11 @@ from .dicom_util import raw_dicom_pixels
 
 
 class CQ500Dataset(data.Dataset):
-    def __init__(self, dir: str):
-        super(CQ500Dataset, self).__init__()
+    def __init__(self,
+                 root: str):
+        super().__init__()
         self.files = [os.path.join(dp, f)
-                      for dp, dn, fn in os.walk(os.path.expanduser(dir))
+                      for dp, dn, fn in os.walk(os.path.expanduser(root))
                       for f in fn
                       if f.endswith('.dcm')]
 
