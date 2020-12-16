@@ -458,51 +458,6 @@ def classifier2d(test_input: Tensor,
     save_image(img, out_path)
 
 
-def classifier2d_nolabels(test_input: Tensor,
-                          targets: Tensor,
-                          predictions: Tensor,
-                          class_names: List[str],
-                          baselines: Tensor,
-                          out_path: str,
-                          background: List[float] = [0.6, 0.6, 0.6],
-                          indicator_thickness: int = None,
-                          padding: int = None):
-    background = torch.Tensor(background)
-    # Draw a grid of images, each class gets a column.
-    # Next to each image, visually indicate if the model is
-    # correct or not. Baseline accuracy should be colored
-    # red, and 100% accuracy is bright green.
-    if indicator_thickness is None:
-        indicator_thickness = int(
-            np.clip(test_input[0][0].shape[-1] / 32, 1, 16))
-    if padding is None:
-        padding = int(np.clip(test_input[0][0].shape[-1] / 16, 1, 32))
-    columns = []
-    for i, (class_name, examples, preds, targs, baseline) in enumerate(zip(class_names, test_input, predictions, targets, baselines)):
-        column = []
-        for img, pred, targ in zip(examples, preds, targs):
-            class_rel_acc = pred[i]  # pred[i] is 1.0 when 100% accurate
-            class_rel_acc = class_rel_acc.float().mean()
-            class_rel_acc = (class_rel_acc - baseline) / (1.0 - baseline)
-            img = add_indicator_to_image(
-                img, class_rel_acc, indicator_thickness, after=False)
-
-            rel_acc = torch.round(pred).int() == targ.int()
-            rel_acc = rel_acc.float().mean()
-            img = add_indicator_to_image(
-                img, rel_acc, indicator_thickness, after=True)
-
-            img = pad_image(img, background, padding)
-            column.append(img)
-        column = torch.cat(column, dim=1)
-        column = add_label(column, class_name)
-        columns.append(column)
-    img = torch.cat(columns, dim=2)
-    if not out_path.endswith('.png'):
-        out_path += '.png'
-    save_image(img, out_path)
-
-
 def add_indicator_to_image(img: Tensor,
                            rel_acc: float,
                            thickness: int = 4,
@@ -532,6 +487,7 @@ def pad_image(img, color, num_pixels):
 
 def add_label(img, label: str):
     return img
+
 
 plot_fn = {
     'eeg': eeg,
@@ -613,7 +569,7 @@ if __name__ == '__main__':
         ["Subdural", torch.Tensor([0, 0, 0, 0, 1, 0]), False, 0.5],
         ["Any", torch.Tensor([0, 0, 0, 0, 0, 1]), False, 0.5],
     ]
-    
+
     batch_size = 3
     num_classes = 6
     X = []
@@ -645,8 +601,6 @@ if __name__ == '__main__':
         y = [ex[1] for ex in examples]
         X.append(x)
         Y.append(y)
-
-    
 
     # TODO: add class labels
     classifier2d(X, Y, Y.copy(), classes, out_path='img.png')
