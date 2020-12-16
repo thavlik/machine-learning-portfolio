@@ -164,6 +164,9 @@ class RSNAIntracranialDataset(data.Dataset):
 
     def __len__(self):
         return len(self.files)
+    
+    def get_labels(self, index: int) -> torch.Tensor:
+        return self.labels[index]
 
 
 if __name__ == '__main__':

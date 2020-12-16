@@ -9,7 +9,7 @@ from plotly.subplots import make_subplots
 from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 
-img = np.array(Image.open('out.png'))
+img = np.array(Image.open('img.png'))
 
 fig = plt.figure(figsize=(1, 3), dpi=80)
 ax = fig.add_subplot(111)

@@ -414,10 +414,9 @@ def plot_comparison(result_dict: dict,
 
 
 def classifier2d(test_input: Tensor,
-                 targets: Tensor,
                  predictions: Tensor,
-                 class_names: List[str],
-                 baselines: Tensor,
+                 targets: Tensor,
+                 classes: list,
                  out_path: str,
                  background: List[float] = [0.6, 0.6, 0.6],
                  indicator_thickness: int = None,
@@ -433,15 +432,17 @@ def classifier2d(test_input: Tensor,
     if padding is None:
         padding = int(np.clip(test_input[0][0].shape[-1] / 16, 1, 32))
     columns = []
-    for i, (class_name, examples, preds, targs, baseline) in enumerate(zip(class_names, test_input, predictions, targets, baselines)):
+    for (class_name, label, _, baseline), examples, preds, targs in zip(classes, test_input, predictions, targets):
         column = []
         for img, pred, targ in zip(examples, preds, targs):
-            class_rel_acc = pred[i]  # pred[i] is 1.0 when 100% accurate
+            # Class relative accuracy
+            class_rel_acc = torch.round(pred).int() == label.int()
             class_rel_acc = class_rel_acc.float().mean()
             class_rel_acc = (class_rel_acc - baseline) / (1.0 - baseline)
             img = add_indicator_to_image(
                 img, class_rel_acc, indicator_thickness, after=False)
 
+            # Average relative accuracy across all classes
             rel_acc = torch.round(pred).int() == targ.int()
             rel_acc = rel_acc.float().mean()
             img = add_indicator_to_image(
@@ -494,6 +495,7 @@ def classifier2d_nolabels(test_input: Tensor,
             img = pad_image(img, background, padding)
             column.append(img)
         column = torch.cat(column, dim=1)
+        column = add_label(column, class_name)
         columns.append(column)
     img = torch.cat(columns, dim=2)
     if not out_path.endswith('.png'):
@@ -528,6 +530,9 @@ def pad_image(img, color, num_pixels):
     return img
 
 
+def add_label(img, label: str):
+    return img
+
 plot_fn = {
     'eeg': eeg,
     'plot2d': plot2d,
@@ -547,26 +552,33 @@ def get_plot_fn(name: str):
 
 
 def get_random_example_with_label(ds,
-                                  label: int,
+                                  labels: Tensor,
+                                  all_: bool,
                                   exclude: List[int],
-                                  depth: int = 0,
-                                  max_depth: int = 100) -> int:
+                                  end_idx: int = None) -> int:
+    try:
+        getattr(ds, 'get_labels')
+    except:
+        raise ValueError('Dataset class does not implement get_labels')
+    labels = labels.int()
     n = len(ds)
-    start_idx = np.random.randint(0, n)
+    start_idx = 0 if end_idx is not None else np.random.randint(0, n)
     for i in range(n - start_idx):
         index = i + start_idx
-        y = ds[index][1]
-        if bool(y[label]):
+        y = ds.get_labels(index).int()
+        eq = y == labels
+        eq = eq.all() if all_ else eq.any()
+        if eq:
             if index in exclude:
                 continue
             return index
-    if depth >= max_depth:
-        raise ValueError(f'cannot find example with label {label}')
+    if end_idx is not None:
+        raise ValueError(f'Unable to find example with labels {labels}')
     return get_random_example_with_label(ds,
-                                         label,
+                                         labels,
+                                         all_=all_,
                                          exclude=exclude,
-                                         depth=depth+1,
-                                         max_depth=max_depth)
+                                         end_idx=start_idx)
 
 
 if __name__ == '__main__':
@@ -576,6 +588,8 @@ if __name__ == '__main__':
     from skimage.transform import resize
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
     from dataset.dicom_util import normalized_dicom_pixels
+    from time import time
+    np.random.seed(int(time()))
 
     ds = RSNAIntracranialDataset(root='E:/rsna-intracranial',
                                  download=False)
@@ -590,18 +604,27 @@ if __name__ == '__main__':
     # plt.imshow(img)
     # plt.show()
 
+    classes = [
+        ["Control", torch.Tensor([0, 0, 0, 0, 0, 0]), True, 0.5],
+        ["Epidural", torch.Tensor([1, 0, 0, 0, 0, 0]), False, 0.5],
+        ["Intraparenchymal", torch.Tensor([0, 1, 0, 0, 0, 0]), False, 0.5],
+        ["Intraventricular", torch.Tensor([0, 0, 1, 0, 0, 0]), False, 0.5],
+        ["Subarachnoid", torch.Tensor([0, 0, 0, 1, 0, 0]), False, 0.5],
+        ["Subdural", torch.Tensor([0, 0, 0, 0, 1, 0]), False, 0.5],
+        ["Any", torch.Tensor([0, 0, 0, 0, 0, 1]), False, 0.5],
+    ]
+    
     batch_size = 3
     num_classes = 6
     X = []
     Y = []
-    for i in range(num_classes):
+    for (_, labels, all_, _) in classes:
         class_indices = []
         for _ in range(batch_size):
             idx = get_random_example_with_label(ds,
-                                                i,
+                                                labels,
+                                                all_=all_,
                                                 exclude=class_indices)
-            l = ds[idx][1]
-            assert l[i] != 0
             class_indices.append(idx)
         examples = [ds[j] for j in class_indices]
 
@@ -623,22 +646,10 @@ if __name__ == '__main__':
         X.append(x)
         Y.append(y)
 
+    
+
     # TODO: add class labels
-    classifier2d(X, Y, Y.copy(), [
-        "Epidural",
-        "Intraparenchymal",
-        "Intraventricular",
-        "Subarachnoid",
-        "Subdural",
-        "Any",
-    ], baselines=[
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-    ], out_path='img.png')
+    classifier2d(X, Y, Y.copy(), classes, out_path='img.png')
 
     img = torch.Tensor([0.0, 1.0, 0.0]).unsqueeze(
         1).unsqueeze(1).repeat(1, 16, 16)
