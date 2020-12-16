@@ -2,7 +2,7 @@
 This is a repository of my personal deep learning projects.
 
 ## Experiments
-This repository was designed to showcase well-designed project structure. Configurations are defined in yaml files, which can be composed via the `base` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
+This repository was designed to showcase well-designed project structure. Configurations are defined in yaml files, which can be composed via the `include` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
 
 `python3 src/main.py --config experiments/mnist/vae/fid.yaml`
 
