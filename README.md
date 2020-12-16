@@ -28,6 +28,12 @@ These experiments make use of ground truth provided with the data. Ground truth 
   - MNIST (handwritten digits)
   - etc...
 
+## Datasets
+These are datasets that I have authored/compiled personally.
+
+- [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset)
+- [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset)
+
 ## Relevant Literature
 Many of the ideas implemented in this repository were first detailed in the following papers:
 
