@@ -148,18 +148,6 @@ class DeepLesionDataset(data.Dataset):
         return len(self.files)
 
 
-def flatten(test_list):
-    # define base case to exit recursive method
-    if len(test_list) == 0:
-        return []
-    elif isinstance(test_list, list) and type(test_list[0]) in [int, str]:
-        return [test_list[0]] + flatten(test_list[1:])
-    elif isinstance(test_list, list) and isinstance(test_list[0], list):
-        return test_list[0] + flatten(test_list[1:])
-    else:
-        return flatten(test_list[1:])
-
-
 if __name__ == '__main__':
     os.environ['AWS_PROFILE'] = 'wasabi'
     ds = DeepLesionDataset('E:/deeplesion/')
