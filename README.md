@@ -1,32 +1,25 @@
 # thavlik ML portfolio
 This is a repository of my personal deep learning projects.
 
-## Experiments
 This repository was designed to showcase well-designed project structure. Configurations are defined in yaml files, which can be composed via the `include` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
 
 `python3 src/main.py --config experiments/mnist/vae/fid.yaml`
 
 **Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
 
-### Unsupervised
+## Supervised Experiments
+These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
+
+- [Neural Rendering](experiments/graphics/README.md)
+- [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md)
+
+### Unsupervised Modeling
 These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Pretraining a network on an unsupervised task confers an exponential boost in data efficiency on relevant supervised tasks [[2](https://arxiv.org/abs/1911.10448)] [[3](https://arxiv.org/abs/1707.08475)], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
+
 - [1D Variational Autoencoder](experiments/include/vae1d/README.md), used for EEG and other time series
 - [2D Variational Autoencoder](experiments/include/vae2d/README.md), used for 2D images
 - [3D Variational Autoencoder](experiments/include/vae3d/README.md), used for video and structural MRI
 - [4D Variational Autoencoder](experiments/include/vae4d/README.md), used for fMRI
-
-### Supervised
-These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
-- [Neural Rendering](experiments/graphics/README.md)
-- [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md)
-- [CQ500](http://headctstudy.qure.ai/dataset)
-- [TReNDS fMRI](https://www.kaggle.com/c/trends-assessment-prediction/data)
-- [DeepLesion](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images)
-- [Grasp-and-Lift EEG Detection](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
-- [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html), for non-medical reference
-  - CelebA (human faces)
-  - MNIST (handwritten digits)
-  - etc...
 
 ## Datasets
 These are datasets that I have authored/compiled personally.
