@@ -503,15 +503,19 @@ def pad_image(img, color, num_pixels):
     return img
 
 
-def add_label(img, label: str, size: int):
+def add_label(img: Tensor,
+              label: str,
+              size: int,
+              fill=(0, 0, 0),
+              margin: int = 4):
     img = ToPILImage()(img)
     font_path = os.path.join('fonts', 'arial.ttf')
     font = ImageFont.truetype(font_path, size)
     draw = ImageDraw.Draw(img)
     w, _ = draw.textsize(label, font=font)
-    draw.text(xy=((img.width - w)/2, 0),
+    draw.text(xy=((img.width - w)/2, margin),
               text=label,
-              fill=(0, 0, 0),
+              fill=fill,
               font=font)
     y = ToTensor()(img)
     return y
