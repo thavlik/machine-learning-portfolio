@@ -8,7 +8,8 @@ Several derivatives VAE experiments are available in the separate yaml files.
 
 ## Compatible Datasets
 This experiment can be applied to the following datasets:
-- doom
+- video data
+- any kind of sMRI
 
 ## Results
 (TODO: insert picture of validation results)
