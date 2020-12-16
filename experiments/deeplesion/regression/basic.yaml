@@ -1,6 +1,8 @@
+entrypoint: regression2d
+
 model_params:
-  arch: ResNetRegression2d
-  name: ResNetRegression2d
+  arch: ResNetRegressor2d
+  name: ResNetRegressor2d
   pooling: max
   hidden_dims: [64, 128, 128, 128, 64]
   
@@ -9,11 +11,17 @@ exp_params:
   data:
     name: deeplesion
     split: 0.7
+    flatten_labels: true
     loader:
       num_workers: 0
       drop_last: true
     training:
-      dir: E:/deeplesion
+      root: E:/deeplesion
+      components:
+        - measurement_coordinates
+        - bounding_boxes
+        - lesion_diameters_pixel
+        - normalized_lesion_location
   plot:
     fn: dcm
     params:

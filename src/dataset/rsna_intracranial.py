@@ -95,9 +95,6 @@ class RSNAIntracranialDataset(data.Dataset):
             self.labels = process_labels(
                 self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
         else:
-            if s3_path == None:
-                raise ValueError(
-                    "You must provide s3_path when download == True")
             bucket = s3_path[len('s3://'):]
             try:
                 bucket = bucket[:bucket.index('/')]
@@ -143,7 +140,7 @@ class RSNAIntracranialDataset(data.Dataset):
     def __getitem__(self, index):
         file = self.files[index]
         path = os.path.join(self.dcm_path, file)
-        if os.path.exists(path):
+        if os.path.exists(path) or os.path.getsize(path) == 0:
             x = pydicom.dcmread(path, stop_before_pixels=False)
             x = normalized_dicom_pixels(x)
             y = self.labels[index] if self.labels != None else []

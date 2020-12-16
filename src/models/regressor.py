@@ -6,7 +6,7 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 from .util import reparameterize
 
 
-class Regression(nn.Module):
+class Regressor(nn.Module):
     """ Base class for a model that carries out nonlinear regression.
     """
     def __init__(self,

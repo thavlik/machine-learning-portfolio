@@ -18,21 +18,21 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional
 from plot import get_plot_fn
-from models import Classifier
+from models import Regressor
 from merge_strategy import strategy
 from typing import List
 
 
-class ClassificationExperiment(pl.LightningModule):
-
+class RegressionExperiment(pl.LightningModule):
     def __init__(self,
-                 classifier: Classifier,
+                 regressor: Regressor,
                  params: dict) -> None:
-        super(ClassificationExperiment, self).__init__()
+        super().__init__()
 
-        self.classifier = classifier
+        self.regressor = regressor
         self.params = params
         self.curr_device = None
+        self.flatten_labels = self.params['data'].get('flatten_labels', False)
 
         if 'plot' in self.params:
             plots = self.params['plot']
@@ -43,7 +43,7 @@ class ClassificationExperiment(pl.LightningModule):
             self.plots = []
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
-        return self.classifier(input, **kwargs)
+        return self.regressor(input, **kwargs)
 
     def sample_images(self, plot: dict, val_indices: Tensor):
         revert = self.training
@@ -60,7 +60,7 @@ class ClassificationExperiment(pl.LightningModule):
             for x in batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
-                x = self.classifier(x)
+                x = self.regressor(x)
                 predictions.append(x)
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))
@@ -91,8 +91,10 @@ class ClassificationExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        train_loss = self.classifier.loss_function(y, labels.cpu(),
-                                                   **self.params.get('loss_params', {}))
+        if self.flatten_labels:
+            labels = torch.Tensor(flatten(labels))
+        train_loss = self.regressor.loss_function(y, labels,
+                                                  **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         if self.global_step > 0:
@@ -106,8 +108,10 @@ class ClassificationExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        val_loss = self.classifier.loss_function(y, labels.cpu(),
-                                                 **self.params.get('loss_params', {}))
+        if self.flatten_labels:
+            labels = torch.Tensor(flatten(labels))
+        val_loss = self.regressor.loss_function(y, labels,
+                                                **self.params.get('loss_params', {}))
         return val_loss
 
     def validation_epoch_end(self, outputs: list):
@@ -121,7 +125,7 @@ class ClassificationExperiment(pl.LightningModule):
             self.log('val/' + metric, torch.Tensor(values).mean())
 
     def configure_optimizers(self):
-        optims = [optim.Adam(self.classifier.parameters(),
+        optims = [optim.Adam(self.regressor.parameters(),
                              **self.params['optimizer'])]
         scheds = []
         return optims, scheds
@@ -175,42 +179,16 @@ class ClassificationExperiment(pl.LightningModule):
                                             shuffle=False,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
-
-        n = len(dataset)
-
-        def get_random_example_with_label(label: Tensor,
-                                          exclude: List[int],
-                                          depth: int = 0,
-                                          max_depth: int = 100) -> int:
-            start_idx = np.random.randint(0, n)
-            for i, (_, y) in enumerate(self.sample_dataloader.dataset[start_idx:]):
-                if y == label:
-                    index = i + start_idx
-                    if index in exclude:
-                        continue
-                    return index
-            if depth >= max_depth:
-                raise ValueError(f'cannot find example with label {label}')
-            return get_random_example_with_label(label,
-                                                 exclude=exclude,
-                                                 depth=depth+1,
-                                                 max_depth=max_depth)
-
-        num_classes = self.classifier.num_classes
-        # Persist separate validation indices for each plot
-        val_indices = []
-        for plot in self.plots:
-            examples_per_class = plot['examples_per_class']
-            classes = []
-            for i in range(num_classes):
-                label = Tensor([1 if i == j else 0
-                                for j in range(num_classes)])
-                examples = []
-                for _ in range(examples_per_class):
-                    examples.append(get_random_example_with_label(
-                        label, exclude=examples))
-                classes.append(examples)
-            val_indices.append(classes)
-        self.val_indices = val_indices
-
         return self.sample_dataloader
+
+
+def flatten(test_list):
+    # define base case to exit recursive method
+    if len(test_list) == 0:
+        return []
+    elif isinstance(test_list, list) and type(test_list[0]) in [int, str]:
+        return [test_list[0]] + flatten(test_list[1:])
+    elif isinstance(test_list, list) and isinstance(test_list[0], list):
+        return test_list[0] + flatten(test_list[1:])
+    else:
+        return flatten(test_list[1:])

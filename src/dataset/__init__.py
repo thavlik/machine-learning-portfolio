@@ -71,3 +71,25 @@ def get_example_shape(data: dict):
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return torch.Size(dataset_dims[name])
+
+
+def get_output_features(data: dict) -> int:
+    if data['name'] == 'deeplesion':
+        lengths = {
+            'measurement_coordinates': 8,
+            'bounding_boxes': 4,
+            'lesion_diameters_pixel': 2,
+            'normalized_lesion_location': 3,
+            'coarse_lesion_type': 1,
+            'possibly_noisy': 1,
+            'gender': 1,
+            'slice_range': 2,
+            'spacing_mm_px': 3,
+            'age': 1,
+            'size': 2,
+            'dicom_windows': 2,
+        }
+        return sum([lengths[k]
+                    for k in data['training']['components']])
+    else:
+        raise NotImplementedError

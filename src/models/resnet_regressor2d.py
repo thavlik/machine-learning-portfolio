@@ -8,11 +8,11 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
-from .regression import Regression
+from .regressor import Regressor
 from .util import get_pooling2d, get_activation
 
 
-class ResNetRegression2d(Regression):
+class ResNetRegressor2d(Regressor):
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],

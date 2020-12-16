@@ -3,7 +3,8 @@ import torch
 from models import create_model
 from vae import VAEExperiment
 from classification import ClassificationExperiment
-from dataset import ReferenceDataset, get_example_shape
+from regression import RegressionExperiment
+from dataset import ReferenceDataset, get_example_shape, get_output_features
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TestTubeLogger
@@ -18,6 +19,20 @@ from plot import plot_comparison
 import pandas as pd
 from merge_strategy import strategy
 from neural_gbuffer import neural_gbuffer
+
+
+def regression2d(config: dict, run_args: dict) -> RegressionExperiment:
+    exp_params = config['exp_params']
+    c, h, w = get_example_shape(exp_params['data'])
+    num_output_features = get_output_features(exp_params['data'])
+    model = create_model(**config['model_params'],
+                         width=w,
+                         height=h,
+                         channels=c,
+                         num_output_features=num_output_features)
+    return RegressionExperiment(model,
+                                params=exp_params)
+
 
 def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
@@ -163,10 +178,10 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     experiment_main(best_config, run_args)
     #exp_params = best_config['exp_params']
     #c, l = get_example_shape(exp_params['data'])
-    #model = create_model(**best_config['model_params'],
+    # model = create_model(**best_config['model_params'],
     #                     num_samples=l,
     #                     channels=c)
-    #return VAEExperiment(model,
+    # return VAEExperiment(model,
     #                     params=exp_params)
 
 
@@ -314,6 +329,7 @@ entrypoints = {
     'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,
     'comparison': comparison,
+    'regression2d': regression2d,
     'rl2d': rl2d,
     'vae1d': vae1d,
     'vae2d': vae2d,
