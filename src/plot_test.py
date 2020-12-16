@@ -6,10 +6,16 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 
-img = np.array(Image.open('img.png'))
+img = Image.open('experiments/rsna-intracranial/images/img.png')
+font_path = os.path.join('fonts', 'arial.ttf')
+font = ImageFont.truetype(font_path, 24)
+draw = ImageDraw.Draw(img)
+draw.text((0, 0), "Sample Text", (255, 255, 255), font=font)
+img.show()
+
 
 fig = plt.figure(figsize=(1, 3), dpi=80)
 ax = fig.add_subplot(111)

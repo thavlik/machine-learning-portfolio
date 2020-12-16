@@ -13,7 +13,7 @@ from torchvision.io import write_video
 import nilearn as nl
 import nilearn.plotting as nlplt
 from dataset.trends_fmri import load_subject
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import subprocess
 from typing import List, Tuple
 from merge_strategy import strategy
@@ -418,9 +418,10 @@ def classifier2d(test_input: Tensor,
                  targets: Tensor,
                  classes: list,
                  out_path: str,
-                 background: List[float] = [0.6, 0.6, 0.6],
+                 background: List[float] = [0.7, 0.7, 0.7],
                  indicator_thickness: int = None,
-                 padding: int = None):
+                 padding: int = None,
+                 font_size: int = 28):
     background = torch.Tensor(background)
     # Draw a grid of images, each class gets a column.
     # Next to each image, visually indicate if the model is
@@ -451,6 +452,8 @@ def classifier2d(test_input: Tensor,
             img = pad_image(img, background, padding)
             column.append(img)
         column = torch.cat(column, dim=1)
+        column = padv(column, background, font_size, bottom=False)
+        column = add_label(column, class_name, font_size)
         columns.append(column)
     img = torch.cat(columns, dim=2)
     if not out_path.endswith('.png'):
@@ -472,21 +475,46 @@ def add_indicator_to_image(img: Tensor,
     return img
 
 
-def pad_image(img, color, num_pixels):
+def padv(img, color, num_pixels, top=True, bottom=True):
+    color = torch.Tensor(color).unsqueeze(1).unsqueeze(1)
+    width = img.shape[2]
+    hbar = color.repeat(1, num_pixels, width)
+    if top:
+        img = torch.cat([hbar, img], dim=1)
+    if bottom:
+        img = torch.cat([img, hbar], dim=1)
+    return img
+
+
+def padh(img, color, num_pixels, left=True, right=True):
     color = torch.Tensor(color).unsqueeze(1).unsqueeze(1)
     height = img.shape[1]
     vbar = color.repeat(1, height, num_pixels)
-    img = torch.cat([img, vbar], dim=2)
-    img = torch.cat([vbar, img], dim=2)
-    width = img.shape[2]
-    hbar = color.repeat(1, num_pixels, width)
-    img = torch.cat([img, hbar], dim=1)
-    img = torch.cat([hbar, img], dim=1)
+    if left:
+        img = torch.cat([vbar, img], dim=2)
+    if right:
+        img = torch.cat([img, vbar], dim=2)
     return img
 
 
-def add_label(img, label: str):
+def pad_image(img, color, num_pixels):
+    img = padh(img, color, num_pixels)
+    img = padv(img, color, num_pixels)
     return img
+
+
+def add_label(img, label: str, size: int):
+    img = ToPILImage()(img)
+    font_path = os.path.join('fonts', 'arial.ttf')
+    font = ImageFont.truetype(font_path, size)
+    draw = ImageDraw.Draw(img)
+    w, _ = draw.textsize(label, font=font)
+    draw.text(xy=((img.width - w)/2, 0),
+              text=label,
+              fill=(0, 0, 0),
+              font=font)
+    y = ToTensor()(img)
+    return y
 
 
 plot_fn = {
