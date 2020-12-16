@@ -5,7 +5,7 @@ My favorite unsupervised modeling task. This experiment embeds 2D imagery in a c
 
 ## Flavors
 Several derivatives VAE experiments are available in the separate yaml files.
-- **mse.yaml** is the original experiment with Mean Square Error and [KLD](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) loss
+- **mse.yaml** is the original experiment with [Mean Squared Error](https://en.wikipedia.org/wiki/Mean_squared_error) and [KLD](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) loss
 - **fid.yaml** is identical to mse.yaml, but [FID(original, reconstruction)](https://en.wikipedia.org/wiki/Fr%C3%A9chet_inception_distance) is included in loss
 - **adversarial.yaml** leverages adversarial regularization inspired by [Goodfellow 2014](https://arxiv.org/abs/1406.2661)
 
