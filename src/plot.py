@@ -507,7 +507,7 @@ def add_label(img: Tensor,
               label: str,
               size: int,
               fill=(0, 0, 0),
-              margin: int = 4):
+              margin: int = 8):
     img = ToPILImage()(img)
     font_path = os.path.join('fonts', 'arial.ttf')
     font = ImageFont.truetype(font_path, size)
@@ -602,7 +602,7 @@ if __name__ == '__main__':
         ["Any", torch.Tensor([0, 0, 0, 0, 0, 1]), False, 0.5],
     ]
 
-    batch_size = 3
+    batch_size = 5
     num_classes = 6
     X = []
     Y = []
