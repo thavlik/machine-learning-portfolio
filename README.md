@@ -43,7 +43,7 @@ Many of the ideas implemented in this repository were first detailed in the foll
 8. [Understanding disentangling in β-VAE](https://arxiv.org/pdf/1804.03599.pdf)
 
 ## Contributing
-This repository was intended to be repurposed by others. As part of the open source community, I do not share the perception that minor contributions from others dilutes the claim that this repository is fully representative of my research capabilities. On the contrary, publishing software good enough for others to justify spending their time and effort improving reflects far more positively.
+This repository was intended to be repurposed. As part of the open source community, I do not share the perception that minor contributions from others dilutes the claim that this repository is fully representative of my research capabilities. On the contrary, publishing software good enough for others to justify spending their time and effort improving reflects far more positively.
 
 Please open an issue or pull request if you would like to contribute.
 
