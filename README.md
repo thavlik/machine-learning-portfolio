@@ -48,5 +48,5 @@ This repository was intended to be repurposed. As part of the open source commun
 
 Please open an issue or pull request if you would like to contribute.
 
-# License
+## License
 Everything is released under MIT / Apache 2.0 dual license, which is extremely permissive. Open an issue if somehow neither is sufficient.
