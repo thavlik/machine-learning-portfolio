@@ -6,7 +6,7 @@ This repository was designed to showcase well-designed project structure. Config
 
 `python3 src/main.py --config experiments/mnist/vae/fid.yaml`
 
-**Note: script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
+**Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
 
 ### Unsupervised
 These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Pretraining a network on an unsupervised task confers an exponential boost in data efficiency on relevant supervised tasks [2][3], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
