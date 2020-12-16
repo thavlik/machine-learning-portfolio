@@ -13,6 +13,7 @@ These experiments make use of ground truth provided with the data. Ground truth 
 - [Neural Rendering](experiments/graphics/README.md)
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md)
 
+<!---
 ### Unsupervised Modeling
 These experiments showcase unsupervised modeling tasks on a variety of both medical and non-medical datasets. Variational Autoencoders (VAE) embed higher dimensional data into a compact latent space by modeling the principle components as a multivariate gaussian, a la [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unsupervised modeling tasks are distinguished by their use of plentiful, unlabeled data. Pretraining a network on an unsupervised task confers an exponential boost in data efficiency on relevant supervised tasks [[2](https://arxiv.org/abs/1911.10448)] [[3](https://arxiv.org/abs/1707.08475)], rendering these experiments highly relevant to [few-/one-shot learning](https://en.wikipedia.org/wiki/One-shot_learning).
 
@@ -20,6 +21,7 @@ These experiments showcase unsupervised modeling tasks on a variety of both medi
 - [2D Variational Autoencoder](experiments/include/vae2d/README.md), used for 2D images
 - [3D Variational Autoencoder](experiments/include/vae3d/README.md), used for video and structural MRI
 - [4D Variational Autoencoder](experiments/include/vae4d/README.md), used for fMRI
+-->
 
 ## Datasets
 These are datasets that I have authored/compiled personally.
