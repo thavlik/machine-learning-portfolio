@@ -433,13 +433,12 @@ def classifier2d(test_input: Tensor,
     if padding is None:
         padding = int(np.clip(test_input[0][0].shape[-1] / 16, 1, 32))
     columns = []
-    for (class_name, label, _, baseline), examples, preds, targs in zip(classes, test_input, predictions, targets):
+    for (class_name, label, _), examples, preds, targs in zip(classes, test_input, predictions, targets):
         column = []
         for img, pred, targ in zip(examples, preds, targs):
             # Class relative accuracy
             class_rel_acc = torch.round(pred).int() == label.int()
             class_rel_acc = class_rel_acc.float().mean()
-            class_rel_acc = (class_rel_acc - baseline) / (1.0 - baseline)
             img = add_indicator_to_image(
                 img, class_rel_acc, indicator_thickness, after=False)
 
@@ -507,7 +506,7 @@ def add_label(img: Tensor,
               label: str,
               size: int,
               fill=(0, 0, 0),
-              margin: int = 8):
+              margin: int = 6):
     img = ToPILImage()(img)
     font_path = os.path.join('fonts', 'arial.ttf')
     font = ImageFont.truetype(font_path, size)
@@ -593,20 +592,20 @@ if __name__ == '__main__':
     # plt.show()
 
     classes = [
-        ["Control", torch.Tensor([0, 0, 0, 0, 0, 0]), True, 0.5],
-        ["Epidural", torch.Tensor([1, 0, 0, 0, 0, 0]), False, 0.5],
-        ["Intraparenchymal", torch.Tensor([0, 1, 0, 0, 0, 0]), False, 0.5],
-        ["Intraventricular", torch.Tensor([0, 0, 1, 0, 0, 0]), False, 0.5],
-        ["Subarachnoid", torch.Tensor([0, 0, 0, 1, 0, 0]), False, 0.5],
-        ["Subdural", torch.Tensor([0, 0, 0, 0, 1, 0]), False, 0.5],
-        ["Any", torch.Tensor([0, 0, 0, 0, 0, 1]), False, 0.5],
+        ["Control", torch.Tensor([0, 0, 0, 0, 0, 0]), True],
+        ["Epidural", torch.Tensor([1, 0, 0, 0, 0, 0]), False],
+        ["Intraparenchymal", torch.Tensor([0, 1, 0, 0, 0, 0]), False],
+        ["Intraventricular", torch.Tensor([0, 0, 1, 0, 0, 0]), False],
+        ["Subarachnoid", torch.Tensor([0, 0, 0, 1, 0, 0]), False],
+        ["Subdural", torch.Tensor([0, 0, 0, 0, 1, 0]), False],
+        ["Any", torch.Tensor([0, 0, 0, 0, 0, 1]), False],
     ]
 
     batch_size = 5
     num_classes = 6
     X = []
     Y = []
-    for (_, labels, all_, _) in classes:
+    for (_, labels, all_) in classes:
         class_indices = []
         for _ in range(batch_size):
             idx = get_random_example_with_label(ds,
