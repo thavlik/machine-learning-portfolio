@@ -13,7 +13,7 @@ Several derivatives VAE experiments are available in the separate yaml files.
 This experiment can be applied to the following datasets:
 - [RSNA Intracranial Hemorrhage Prediction](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection)
 - [CQ500](http://headctstudy.qure.ai/dataset)
-- [DeepLesion](https://www.nih.gov/news-events/news-releases/
+- [DeepLesion](https://www.nih.gov/news-events/news-releases/)
 - [torchvision datasets](https://pytorch.org/docs/stable/torchvision/datasets.html)
 
 ## Results
