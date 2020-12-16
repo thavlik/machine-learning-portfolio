@@ -436,7 +436,7 @@ def classifier2d(test_input: Tensor,
     for i, (class_name, examples, preds, targs, baseline) in enumerate(zip(class_names, test_input, predictions, targets, baselines)):
         column = []
         for img, pred, targ in zip(examples, preds, targs):
-            class_rel_acc = torch.round(pred[i]).int() == targ[i].int()
+            class_rel_acc = pred[i] # pred[i] is 1.0 when 100% accurate
             class_rel_acc = class_rel_acc.float().mean()
             class_rel_acc = (class_rel_acc - baseline) / (1.0 - baseline)
             img = add_indicator_to_image(

@@ -1,10 +1,11 @@
-These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset from kaggle.
-
-## Variational Autoencoders (VAE)
-This repository's 2d VAE experiments are trained on 25,000 CT exams comprised of healthy and intracranial hemorrhage subjects.
+These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/).
 
 ## Results
 ![](images/img.png)
+
+Left indicator bar represents per-class accuracy, right indicator bar represents accuracy across all classes.
+
+TODO: show training dynamics
 
 ## TODO
 - Improve visualization
