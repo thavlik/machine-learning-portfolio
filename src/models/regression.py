@@ -3,6 +3,7 @@ from torch import nn, Tensor
 from torch.nn import functional as F
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
+from .util import reparameterize
 
 
 class Regression(nn.Module):
@@ -16,8 +17,13 @@ class Regression(nn.Module):
         self.num_output_features = num_output_features
 
     @abstractmethod
-    def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
+    def predict(self, input: Tensor) -> List[Tensor]:
         raise NotImplementedError
+
+    def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
+        mu, log_var = self.predict(input)
+        pred = reparameterize(mu, log_var)
+        return pred
 
     def loss_function(self,
                       prediction: Tensor,

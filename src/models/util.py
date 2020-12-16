@@ -1,4 +1,5 @@
-from torch import nn
+import torch
+from torch import nn, Tensor
 from .maxpool4d import MaxPool4d
 
 pool1d = {
@@ -64,3 +65,16 @@ def get_activation(name: str) -> nn.Module:
         raise ValueError(
             f'Unknown activation function "{name}"')
     return act_options[name]()
+
+
+def reparameterize(mu: Tensor, logvar: Tensor) -> Tensor:
+    """
+    Reparameterization trick to sample from N(mu, var) from
+    N(0,1).
+    :param mu: (Tensor) Mean of the latent Gaussian [B x D]
+    :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
+    :return: (Tensor) [B x D]
+    """
+    std = torch.exp(0.5 * logvar)
+    eps = torch.randn_like(std)
+    return eps * std + mu

@@ -11,6 +11,7 @@ from .inception import InceptionV3
 from .regression import Regression
 from .util import get_pooling2d, get_activation
 
+
 class ResNetRegression2d(Regression):
     def __init__(self,
                  name: str,
@@ -50,14 +51,18 @@ class ResNetRegression2d(Regression):
                 raise ValueError(
                     'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
-        self.output = nn.Sequential(
+        self.mu = nn.Sequential(
+            nn.Linear(in_features, num_output_features),
+            nn.BatchNorm1d(num_output_features),
+        )
+        self.log_var = nn.Sequential(
             nn.Linear(in_features, num_output_features),
             nn.BatchNorm1d(num_output_features),
         )
         self.activation = get_activation(output_activation)
 
-    def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
+    def predict(self, input: Tensor) -> List[Tensor]:
         y = self.layers(input)
-        y = self.output(y)
-        y = self.activation(y)
-        return y
+        mu = self.activation(self.mu(y))
+        log_var = self.activation(self.log_var(y))
+        return [mu, log_var]

@@ -1,4 +1,6 @@
 model_params:
+  arch: ResNetRegression2d
+  name: ResNetRegression2d
   pooling: max
   hidden_dims: [64, 128, 128, 128, 64]
   
@@ -6,13 +8,11 @@ exp_params:
   batch_size: 8
   data:
     name: deeplesion
+    split: 0.7
     loader:
       num_workers: 0
       drop_last: true
     training:
-      dir: E:/deeplesion
-    validation:
-      #FIXME it will look like it's crazy effective this way lol
       dir: E:/deeplesion
   plot:
     fn: dcm
