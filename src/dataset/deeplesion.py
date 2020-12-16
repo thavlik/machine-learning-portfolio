@@ -49,7 +49,7 @@ def load_labels_csv(path: str, components: List[str]) -> dict:
             parts = parts[1:]
             slice_range = [int(s.strip()) for s in parts[0].split(',')]
             parts = parts[1:]
-            spacing_mm_px_ = [float(s.strip()) for s in parts[0].split(',')]
+            spacing_mm_px = [float(s.strip()) for s in parts[0].split(',')]
             parts = parts[1:]
             width, height = [int(s.strip()) for s in parts[0].split(',')]
             parts = parts[1:]
@@ -66,7 +66,7 @@ def load_labels_csv(path: str, components: List[str]) -> dict:
                 'possibly_noisy': possibly_noisy,
                 'gender': 1 if gender == 'F' else 0,
                 'slice_range': slice_range,
-                'spacing_mm_px_': spacing_mm_px_,
+                'spacing_mm_px': spacing_mm_px,
                 'age': age,
                 'size': [width, height],
                 'dicom_windows': dicom_windows,
@@ -91,7 +91,7 @@ class DeepLesionDataset(data.Dataset):
                      'possibly_noisy',
                      'gender',
                      'slice_range',
-                     'spacing_mm_px_',
+                     'spacing_mm_px',
                      'age',
                      'size',
                      'dicom_windows',
