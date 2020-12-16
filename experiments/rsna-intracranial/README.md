@@ -9,9 +9,3 @@ Columns include examples with at least the designated class label, and may have 
 
 TODO: show training dynamics
 
-## TODO
-- Improve visualization
-  - Add class labels to each column
-  - Offer explanation of color indicators
-  - Improve contrast
-- use s3cmd to make rsna-intracranial bucket public
