@@ -1,12 +1,6 @@
 # thavlik ML portfolio
 This is a repository of my personal deep learning projects.
 
-This repository was designed to showcase well-designed project structure. Configurations are defined in yaml files, which can be composed via the `include` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
-
-`python3 src/main.py --config experiments/mnist/vae/fid.yaml`
-
-**Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
-
 ## Supervised Experiments
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
 
@@ -29,6 +23,13 @@ These are datasets that I have authored/compiled personally.
 
 - [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset)
 - [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset)
+
+## Running Code
+Configurations are defined in yaml files, which can be composed via the `include` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
+
+`python3 src/main.py --config experiments/mnist/vae/fid.yaml`
+
+**Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
 
 ## Relevant Literature
 Many of the ideas implemented in this repository were first detailed in the following papers:
