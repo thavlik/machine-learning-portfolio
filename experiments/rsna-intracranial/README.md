@@ -1,7 +1,7 @@
 These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/).
 
 ## Results
-![](images/img.png)
+![](images/img0.png)
 
 Left indicator bar represents per-class accuracy, right indicator bar represents accuracy across all classes.
 
