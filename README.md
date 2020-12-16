@@ -4,9 +4,9 @@ This is a repository of my personal deep learning projects.
 ## Supervised Experiments
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
 
-- [Neural Rendering](experiments/graphics/README.md)
-- [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md)
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md)
+- [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md)
+- [Neural Rendering](experiments/graphics/README.md)
 
 <!---
 ### Unsupervised Modeling
