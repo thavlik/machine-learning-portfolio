@@ -74,8 +74,10 @@ def process_labels(files: list, path: str) -> torch.Tensor:
         labels.append(labels_dict[id])
     return torch.Tensor(labels)
 
+
 def notexist(path):
     return not os.path.exists(path) or os.path.getsize(path) == 0
+
 
 class RSNAIntracranialDataset(data.Dataset):
     def __init__(self,
@@ -88,6 +90,8 @@ class RSNAIntracranialDataset(data.Dataset):
         super(RSNAIntracranialDataset, self).__init__()
         self.root = root
         self.train = train
+        self.s3_bucket = s3_bucket
+        self.s3_endpoint_url = s3_endpoint_url
         self.download = download
         self.delete_after_use = delete_after_use
         self.prefix = 'stage_2_train/' if train else 'stage_2_test/'
@@ -97,13 +101,13 @@ class RSNAIntracranialDataset(data.Dataset):
             s3 = boto3.resource('s3',
                                 endpoint_url=s3_endpoint_url,
                                 config=Config(signature_version=UNSIGNED))
-            self.bucket = s3.Bucket(s3_bucket)
-            self.files = get_inventory(self.bucket, root, self.prefix)
+            bucket = s3.Bucket(s3_bucket)
+            self.files = get_inventory(bucket, root, self.prefix)
             if train:
                 labels_csv_path = os.path.join(root, 'stage_2_train.csv')
                 if notexist(labels_csv_path):
                     with open(labels_csv_path, 'wb') as f:
-                        obj = self.bucket.Object('stage_2_train.csv')
+                        obj = bucket.Object('stage_2_train.csv')
                         obj.download_fileobj(f)
                 self.labels = process_labels(
                     self.files, labels_csv_path) if train else None
@@ -128,11 +132,15 @@ class RSNAIntracranialDataset(data.Dataset):
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
         print(f'Downloading {file}')
+        s3 = boto3.resource('s3',
+                            endpoint_url=self.s3_endpoint_url,
+                            config=Config(signature_version=UNSIGNED))
+        bucket = s3.Bucket(self.s3_bucket)
         dirname = os.path.dirname(path)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         with open(path, 'wb') as f:
-            obj = self.bucket.Object(self.prefix + file)
+            obj = bucket.Object(self.prefix + file)
             obj.download_fileobj(f)
         ds = pydicom.dcmread(path, stop_before_pixels=False)
         data = normalized_dicom_pixels(ds)

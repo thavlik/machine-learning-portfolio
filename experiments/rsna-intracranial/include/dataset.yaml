@@ -3,7 +3,7 @@ exp_params:
     name: rsna-intracranial
     split: 0.7
     loader:
-      num_workers: 0
+      num_workers: 4
       drop_last: true
     training:
       root: /data
