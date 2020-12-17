@@ -36,14 +36,7 @@ class ResNetVAE2d(BaseVAE):
 
         self.enable_fid = enable_fid
         if enable_fid:
-            for block in fid_blocks:
-                if block not in InceptionV3.BLOCK_INDEX_BY_DIM:
-                    raise ValueError(f'Invalid fid_block {block}, '
-                                     f'valid options are {InceptionV3.BLOCK_INDEX_BY_DIM}')
-            block_idx = [InceptionV3.BLOCK_INDEX_BY_DIM[i]
-                         for i in fid_blocks]
-            self.inception = InceptionV3(block_idx,
-                                         use_fid_inception=True)
+            self.inception = InceptionV3(fid_blocks, use_fid_inception=True)
 
         if pooling != None:
             pool_fn = get_pooling2d(pooling)
