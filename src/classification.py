@@ -46,6 +46,8 @@ class ClassificationExperiment(pl.LightningModule):
         return self.classifier(input, **kwargs)
 
     def sample_images(self, plot: dict, val_indices: Tensor):
+        return
+        
         revert = self.training
         if revert:
             self.eval()
