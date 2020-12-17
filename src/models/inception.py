@@ -166,18 +166,10 @@ class InceptionV3(nn.Module):
 def _inception_v3(*args, **kwargs):
     """Wraps `torchvision.models.inception_v3`
 
-    Skips default weight inititialization if supported by torchvision version.
+    Skips default weight inititialization
     See https://github.com/mseitzer/pytorch-fid/issues/28.
     """
-   # try:
-   #     version = tuple(map(int, torchvision.__version__.split('.')[:2]))
-   # except ValueError:
-   #     # Just a caution against weird version strings
-   #     version = (0,)
-#
-   # if version >= (0, 6):
     kwargs['init_weights'] = False
-
     return torchvision.models.inception_v3(*args, **kwargs)
 
 
