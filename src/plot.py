@@ -20,6 +20,7 @@ from merge_strategy import strategy
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from torchvision.utils import save_image
 from torch.utils.data import Subset
+import nonechucks as nc
 
 def plot_title(template: str,
                model: str,
