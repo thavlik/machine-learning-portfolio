@@ -538,24 +538,23 @@ def get_plot_fn(name: str):
                          f'valid options are {plot_fn}')
     return plot_fn[name]
 
+def get_labels(ds, index):
+    if type(ds) == Subset:
+        return ds.dataset.get_labels(ds.indices[index])
+    else:
+        return ds.get_labels(index)
 
 def get_random_example_with_label(ds,
                                   labels: Tensor,
                                   all_: bool,
                                   exclude: List[int],
                                   end_idx: int = None) -> int:
-    def get_labels(index):
-        if type(ds) == Subset:
-            return ds.dataset.get_labels(ds.indices[index])
-        else:
-            return ds.get_labels(index)
-        
     labels = labels.int()
     n = len(ds)
     start_idx = 0 if end_idx is not None else np.random.randint(0, n)
     for i in range(n - start_idx):
         index = i + start_idx
-        y = get_labels(index).int()
+        y = get_labels(ds, index).int()
         eq = y == labels
         eq = eq.all() if all_ else eq.any()
         if eq:
