@@ -19,3 +19,4 @@ plotly==4.12.0
 deepmerge
 decord
 requests
+pytorch3d
