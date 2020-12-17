@@ -544,10 +544,6 @@ def get_random_example_with_label(ds,
                                   all_: bool,
                                   exclude: List[int],
                                   end_idx: int = None) -> int:
-    try:
-        getattr(ds, 'get_labels')
-    except:
-        raise ValueError('Dataset class does not implement get_labels')
     labels = labels.int()
     n = len(ds)
     start_idx = 0 if end_idx is not None else np.random.randint(0, n)
