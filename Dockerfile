@@ -25,16 +25,9 @@ RUN apt-get update \
         vtop
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-#RUN pip install 'git+https://github.com/facebookresearch/fvcore'
-#ENV FORCE_CUDA="1"
-#ARG TORCH_CUDA_ARCH_LIST="Kepler;Kepler+Tesla;Maxwell;Maxwell+Tegra;Pascal;Volta;Turing"
-#ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
-#RUN git clone https://github.com/facebookresearch/detectron2 detectron2_repo \
-#    && pip install -e detectron2_repo \
-#    && rm -rf detectron2_repo
-
+RUN pip install -r requirements.txt \
+    && conda install cudatoolkit=10.2 \
+    && pip install 'git+https://github.com/facebookresearch/pytorch3d.git'
 COPY experiments experiments
 COPY src src
 COPY docker_entrypoint.sh .

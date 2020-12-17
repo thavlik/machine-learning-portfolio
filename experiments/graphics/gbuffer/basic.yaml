@@ -23,7 +23,7 @@ exp_params:
     loader:
       num_workers: 0
       drop_last: true
-  batch_size: 48
+  batch_size: 32
   warmup_steps: 256
   plot:
     fn: 'plot2d'
