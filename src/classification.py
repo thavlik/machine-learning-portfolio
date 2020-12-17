@@ -3,7 +3,6 @@ import os
 import math
 import torch
 import numpy as np
-import nonechucks as nc
 from torch import optim, Tensor
 from torchvision import transforms
 from torch.optim.optimizer import Optimizer
@@ -61,7 +60,7 @@ class ClassificationExperiment(pl.LightningModule):
             for x in batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
-                x = self.classifier(x)
+                x = self.classifier(x.to(self.curr_device))
                 predictions.append(x)
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))

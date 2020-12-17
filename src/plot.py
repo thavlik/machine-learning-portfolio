@@ -22,6 +22,7 @@ from torchvision.utils import save_image
 from torch.utils.data import Subset
 import nonechucks as nc
 
+
 def plot_title(template: str,
                model: str,
                epoch: int):
@@ -539,11 +540,13 @@ def get_plot_fn(name: str):
                          f'valid options are {plot_fn}')
     return plot_fn[name]
 
+
 def get_labels(ds, index):
-    if type(ds) in [Subset, nc.SafeDataset]:
-        return get_labels(ds.dataset, index)
-    else:
+    try:
         return ds.get_labels(index)
+    except:
+        return get_labels(ds.dataset, index)
+
 
 def get_random_example_with_label(ds,
                                   labels: Tensor,
