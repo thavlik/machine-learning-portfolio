@@ -18,6 +18,8 @@ exp_params:
     weight_decay: 0.00001
   plot:
     fn: classifier2d
+    sample_every_n_steps: 10
+    examples_per_class: 6
     classes:
     - name: Control
       labels: [0, 0, 0, 0, 0, 0]
@@ -47,8 +49,6 @@ exp_params:
       labels: [0, 0, 0, 0, 0, 1]
       all: false
       baseline: 0.2
-    sample_every_n_steps: 1000
-    examples_per_class: 6
     params: {}
 
 trainer_params:
