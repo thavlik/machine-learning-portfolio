@@ -74,68 +74,38 @@ class RSNAIntracranialDataset(data.Dataset):
                  root: str,
                  train: bool = True,
                  download: bool = True,
-                 s3_path: str = 's3://rsna-intracranial',
+                 s3_bucket: str = 'rsna-intracranial',
                  s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
-                 limit: int = None,
-                 generate_inventory: bool = True,
                  delete_after_use: bool = False):
         super(RSNAIntracranialDataset, self).__init__()
         self.root = root
         self.train = train
         self.download = download
         self.delete_after_use = delete_after_use
-        dcm_path = os.path.join(
-            root, 'stage_2_train' if train else 'stage_2_test')
+        self.prefix = 'stage_2_train/' if train else 'stage_2_test/'
+        dcm_path = os.path.join(root, self.prefix)
         self.dcm_path = dcm_path
-        if not self.download:
+        if self.download:
+            s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
+            self.bucket = s3.Bucket(s3_bucket)
+            self.files = get_inventory(self.bucket, dcm_path, self.prefix)
+            if train:
+                labels_csv_path = os.path.join(root, 'stage_2_train.csv')
+                if not os.path.exists(labels_csv_path):
+                    with open(labels_csv_path, 'wb') as f:
+                        obj = self.bucket.Object('stage_2_train.csv')
+                        obj.download_fileobj(f)
+                self.labels = process_labels(
+                    self.files, labels_csv_path) if train else None
+            else:
+                self.labels = None
+        else:
             if not os.path.exists(dcm_path):
                 raise ValueError(f'Directory {dcm_path} does not exist')
             self.files = [f for f in os.listdir(dcm_path)
                           if f.endswith('.dcm')]
             self.labels = process_labels(
                 self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
-        else:
-            bucket = s3_path[len('s3://'):]
-            try:
-                bucket = bucket[:bucket.index('/')]
-            except:
-                pass
-            prefix = s3_path[s3_path.index(bucket)+len(bucket):]
-            if prefix.startswith('/'):
-                prefix = prefix[1:]
-            if not prefix.endswith('/'):
-                prefix += '/'
-            self.prefix = prefix
-            s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
-            self.bucket = s3.Bucket(bucket)
-            try:
-                # Check if inventory file exists
-                self.files = get_inventory(self.bucket, dcm_path, prefix)
-                if limit != None:
-                    self.files = self.files[:limit]
-            except:
-                self.files = []
-                prefix_len = len(prefix)
-                for o in self.bucket.objects.filter(Prefix=prefix):
-                    if limit != None and len(self.files) >= limit:
-                        break
-                    if o.key.endswith('.dcm'):
-                        self.files.append(o.key[prefix_len:])
-                if generate_inventory:
-                    path = os.path.join(dcm_path, 'inventory.txt')
-                    with open(path, 'w') as f:
-                        for line in self.files:
-                            f.write(f'{line}\n')
-            if train:
-                labels_csv_path = os.path.join(root, 'stage_2_train.csv')
-                if not os.path.exists(labels_csv_path):
-                    with open(labels_csv_path, 'w') as f:
-                        obj = self.bucket.Object('stage_2_train.csv')
-                        obj.download_fileobj(f)
-                self.labels = process_labels(
-                    self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
-            else:
-                self.labels = None
 
     def __getitem__(self, index):
         file = self.files[index]
@@ -161,17 +131,14 @@ class RSNAIntracranialDataset(data.Dataset):
 
     def __len__(self):
         return len(self.files)
-    
+
     def get_labels(self, index: int) -> torch.Tensor:
         return self.labels[index]
 
 
 if __name__ == '__main__':
     import matplotlib.pylab as plt
-    #ds = RSNAIntracranialDataset('E:/rsna-intracranial/stage_2_test')
-    # s3_path='s3://rsna-intracranial/stage_2_train',
-    ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
-                                 labels_csv_path='E:/rsna-intracranial/stage_2_train.csv',
+    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial',
                                  download=False)
     fig = plt.figure(figsize=(15, 10))
     columns = 5
