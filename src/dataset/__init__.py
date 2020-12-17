@@ -13,11 +13,11 @@ from .toy_neural_graphics import *
 def split_dataset(dataset, split):
     n_train_imgs = np.floor(len(dataset) * split).astype('int')
     n_val_imgs = len(dataset) - n_train_imgs
-    cur_seed = torch.seed()
+    cur_state = torch.get_rng_state()
     torch.manual_seed(torch.initial_seed())
     parts = torch.utils.data.random_split(dataset,
                                           [n_train_imgs, n_val_imgs])
-    torch.manual_seed(cur_seed)
+    torch.set_rng_state(cur_state)
     return parts
 
 
