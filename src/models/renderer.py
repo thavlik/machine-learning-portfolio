@@ -3,15 +3,24 @@ from torch import nn, Tensor
 from torch.nn import functional as F
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
-
+from .inception import InceptionV3
 
 class BaseRenderer(nn.Module):
     def __init__(self,
                  name: str,
-                 enable_fid: bool) -> None:
+                 enable_fid: bool,
+                 fid_blocks: List[int] = [2048]) -> None:
         super(BaseRenderer, self).__init__()
         self.name = name
         self.enable_fid = enable_fid
+        if enable_fid:
+            for block in fid_blocks:
+                if block not in InceptionV3.BLOCK_INDEX_BY_DIM:
+                    raise ValueError(f'Invalid fid_block {block}, '
+                                     f'valid options are {InceptionV3.BLOCK_INDEX_BY_DIM}')
+            block_idx = [InceptionV3.BLOCK_INDEX_BY_DIM[i]
+                         for i in fid_blocks]
+            self.inception = InceptionV3(block_idx)
 
     @abstractmethod
     def decode(self,
