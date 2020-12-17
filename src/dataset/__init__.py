@@ -1,5 +1,5 @@
 from .cq500 import *
-from .deeplesion import DeepLesion, COMPONENT_LENGTHS as DLCOMPLEN
+from .deeplesion import DeepLesionDataset, COMPONENT_LENGTHS as DLCOMPLEN
 from .dicom_util import *
 from .grasp_and_lift_eeg import *
 from .reference import *
@@ -23,7 +23,7 @@ def split_dataset(dataset, split):
 
 datasets = {
     'cq500': CQ500Dataset,
-    'deeplesion': deeplesion.DeepLesionDataset,
+    'deeplesion': DeepLesionDataset,
     'reference': ReferenceDataset,
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,
