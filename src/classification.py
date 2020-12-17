@@ -99,6 +99,7 @@ class ClassificationExperiment(pl.LightningModule):
                                     for key, val in train_loss.items()})
         for plot, val_indices in zip(self.plots, self.val_indices):
             if self.global_step % plot['sample_every_n_steps'] == 0:
+                gc.collect()
                 self.sample_images(plot, val_indices)
         return train_loss
 
