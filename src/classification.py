@@ -60,15 +60,15 @@ class ClassificationExperiment(pl.LightningModule):
             for x, y in batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
-                x = self.classifier(x.to(self.curr_device))
+                x = self.classifier(x.to(self.curr_device)).cpu()
                 predictions.append(x)
                 targets.append(y.unsqueeze(0))
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))
 
-        test_input = torch.cat(test_input, dim=0).cpu()
-        targets = torch.cat(targets, dim=0).cpu()
-        predictions = torch.cat(predictions, dim=0).cpu()
+        test_input = torch.cat(test_input, dim=0)
+        targets = torch.cat(targets, dim=0)
+        predictions = torch.cat(predictions, dim=0)
 
         # Extensionless output path (let plotting function choose extension)
         out_path = os.path.join(self.logger.save_dir,
