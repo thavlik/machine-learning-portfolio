@@ -6,7 +6,7 @@ model_params:
   arch: 'ResNetClassifier2d'
   name: 'ResNetClassifier2d'
   num_classes: 6
-  hidden_dims: [128, 256, 512, 256, 128, 64, 32, 16, 8]
+  hidden_dims: [64, 128, 256, 256, 128, 64, 32, 16]
   pooling: max
 
 exp_params:
