@@ -40,8 +40,9 @@ def load_labels_csv(path: str) -> list:
         'any',
     ]
     with open(path, 'r') as f:
-        if f.readline() != 'ID,Label\n':
-            raise ValueError('bad header')
+        hdr = f.readline()
+        if hdr != 'ID,Label\n':
+            raise ValueError(f'bad header (got "{hdr}")')
         cur_id = None
         cur_labels = None
         for i, line in enumerate(f):
