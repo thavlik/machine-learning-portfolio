@@ -127,6 +127,7 @@ class RSNAIntracranialDataset(data.Dataset):
             return (x, y)
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
+        print(f'Downloading {file}')
         dirname = os.path.dirname(path)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
