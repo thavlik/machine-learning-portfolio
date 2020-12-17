@@ -186,8 +186,7 @@ class ResNetVAE2d(BaseVAE):
     def loss_function(self,
                       recons: Tensor,
                       orig: Tensor,
-                      *args,
-                      **kwargs) -> dict:
+                      fid_weight: float = 1.0) -> dict:
         if 'lod' in kwargs:
             n = kwargs['lod']-1
             for _ in range(n):
@@ -196,9 +195,8 @@ class ResNetVAE2d(BaseVAE):
         result = super(ResNetVAE2d, self).loss_function(
             recons, orig, *args, **kwargs)
 
-        fid_weight = kwargs.get('fid_weight', 0.0)
-        if fid_weight != 0.0:
-            fid_loss = self.fid(orig, recons)
+        if self.enable_fid:
+            fid_loss = self.fid(orig, recons).sum()
             result['FID_Loss'] = fid_loss
             result['loss'] += fid_loss * fid_weight
 
@@ -211,6 +209,7 @@ class ResNetVAE2d(BaseVAE):
             b = b.repeat(1, 3, 1, 1)
         a = self.inception(a)
         b = self.inception(b)
-        fid_loss = sum(torch.mean((x - y) ** 2)
-                       for x, y in zip(a, b))
-        return fid_loss
+        fid = [torch.mean((x - y) ** 2)
+               for x, y in zip(a, b)]
+        fid = torch.Tensor(fid)
+        return fid

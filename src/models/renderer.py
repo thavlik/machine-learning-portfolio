@@ -7,9 +7,11 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 
 class BaseRenderer(nn.Module):
     def __init__(self,
-                 name: str) -> None:
+                 name: str,
+                 enable_fid: bool) -> None:
         super(BaseRenderer, self).__init__()
         self.name = name
+        self.enable_fid = enable_fid
 
     @abstractmethod
     def decode(self,
@@ -23,8 +25,7 @@ class BaseRenderer(nn.Module):
     def loss_function(self,
                       recons: Tensor,
                       orig: Tensor,
-                      beta: float = 1.0,
-                      **kwargs) -> dict:
+                      fid_weight: float = 1.0) -> dict:
         recons_loss = F.mse_loss(recons, orig)
 
         loss = recons_loss
@@ -32,4 +33,17 @@ class BaseRenderer(nn.Module):
         result = {'loss': loss,
                   'Reconstruction_Loss': recons_loss}
 
+        if self.enable_fid:
+            fid_loss = self.fid(orig, recons).sum()
+            result['FID_Loss'] = fid_loss
+            result['loss'] += fid_loss * fid_weight
+
         return result
+
+    def fid(self, a: Tensor, b: Tensor) -> Tensor:
+        a = self.inception(a)
+        b = self.inception(b)
+        fid = [torch.mean((x - y) ** 2)
+               for x, y in zip(a, b)]
+        fid = torch.Tensor(fid)
+        return fid

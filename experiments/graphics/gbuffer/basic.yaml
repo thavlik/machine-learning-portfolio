@@ -7,6 +7,8 @@ model_params:
   output_layer: fc
 
 exp_params:
+  loss_params:
+    fid_weight: 1.0
   optimizer:
     lr: 0.00001
     weight_decay: 0.00001
