@@ -52,16 +52,17 @@ class ClassificationExperiment(pl.LightningModule):
 
         test_input = []
         predictions = []
-
+        targets = []
         for class_indices in val_indices:
-            batch = [self.sample_dataloader.dataset[int(i)][0]
+            batch = [self.sample_dataloader.dataset[int(i)]
                      for i in class_indices]
             class_input = []
-            for x in batch:
+            for x, y in batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
                 x = self.classifier(x.to(self.curr_device))
                 predictions.append(x)
+                targets.append(y.unsqueeze(0))
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))
 
