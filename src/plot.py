@@ -539,8 +539,8 @@ def get_plot_fn(name: str):
     return plot_fn[name]
 
 def get_labels(ds, index):
-    if type(ds) == Subset:
-        return ds.dataset.get_labels(ds.indices[index])
+    if type(ds) in [Subset, nc.SafeDataset]:
+        return get_labels(ds.dataset, index)
     else:
         return ds.get_labels(index)
 

@@ -8,6 +8,7 @@ from .trends_fmri import *
 from .video import *
 from .batch_video import *
 from .toy_neural_graphics import *
+import nonechucks as nc
 
 def split_dataset(dataset, split):
     n_train_imgs = np.floor(len(dataset) * split).astype('int')
@@ -41,6 +42,7 @@ def get_dataset(name: str,
     ds = datasets[name](**params)
     if split is not None:
         ds = split_dataset(ds, split)[1 if train else 0]
+    ds = nc.SafeDataset(ds)
     return ds
 
 
