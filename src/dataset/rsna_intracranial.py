@@ -99,8 +99,7 @@ class RSNAIntracranialDataset(data.Dataset):
         self.dcm_path = dcm_path
         if self.download:
             s3 = boto3.resource('s3',
-                                endpoint_url=s3_endpoint_url,
-                                config=Config(signature_version=UNSIGNED))
+                                endpoint_url=s3_endpoint_url)
             bucket = s3.Bucket(s3_bucket)
             self.files = get_inventory(bucket, root, self.prefix)
             if train:
@@ -133,8 +132,7 @@ class RSNAIntracranialDataset(data.Dataset):
             raise ValueError(f'File {path} does not exist')
         print(f'Downloading {file}')
         s3 = boto3.resource('s3',
-                            endpoint_url=self.s3_endpoint_url,
-                            config=Config(signature_version=UNSIGNED))
+                            endpoint_url=self.s3_endpoint_url)
         bucket = s3.Bucket(self.s3_bucket)
         dirname = os.path.dirname(path)
         if not os.path.exists(dirname):
