@@ -8,9 +8,9 @@ import boto3
 import tempfile
 
 
-def get_inventory(bucket, dcm_path, prefix):
+def get_inventory(bucket, root, prefix):
     filename = 'inventory.txt'
-    path = os.path.join(dcm_path, filename)
+    path = os.path.join(root, prefix, filename)
     if os.path.exists(path):
         with open(path, 'r') as f:
             return [line.strip() for line in f]
@@ -88,7 +88,7 @@ class RSNAIntracranialDataset(data.Dataset):
         if self.download:
             s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
             self.bucket = s3.Bucket(s3_bucket)
-            self.files = get_inventory(self.bucket, dcm_path, self.prefix)
+            self.files = get_inventory(self.bucket, root, self.prefix)
             if train:
                 labels_csv_path = os.path.join(root, 'stage_2_train.csv')
                 if not os.path.exists(labels_csv_path):
