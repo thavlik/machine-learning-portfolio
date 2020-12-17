@@ -32,7 +32,6 @@ class RegressionExperiment(pl.LightningModule):
         self.regressor = regressor
         self.params = params
         self.curr_device = None
-        self.flatten_labels = self.params['data'].get('flatten_labels', False)
 
         if 'plot' in self.params:
             plots = self.params['plot']
@@ -91,8 +90,6 @@ class RegressionExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        if self.flatten_labels:
-            labels = torch.Tensor(flatten(labels))
         train_loss = self.regressor.loss_function(y, labels,
                                                   **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
@@ -108,8 +105,6 @@ class RegressionExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        if self.flatten_labels:
-            labels = torch.Tensor(flatten(labels))
         val_loss = self.regressor.loss_function(y, labels,
                                                 **self.params.get('loss_params', {}))
         return val_loss
@@ -181,14 +176,3 @@ class RegressionExperiment(pl.LightningModule):
         self.num_val_imgs = len(self.sample_dataloader)
         return self.sample_dataloader
 
-
-def flatten(test_list):
-    # define base case to exit recursive method
-    if len(test_list) == 0:
-        return []
-    elif isinstance(test_list, list) and type(test_list[0]) in [int, str]:
-        return [test_list[0]] + flatten(test_list[1:])
-    elif isinstance(test_list, list) and isinstance(test_list[0], list):
-        return test_list[0] + flatten(test_list[1:])
-    else:
-        return flatten(test_list[1:])

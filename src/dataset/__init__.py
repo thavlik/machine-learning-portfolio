@@ -1,5 +1,5 @@
 from .cq500 import *
-from .deeplesion import *
+import deeplesion
 from .dicom_util import *
 from .grasp_and_lift_eeg import *
 from .reference import *
@@ -23,7 +23,7 @@ def split_dataset(dataset, split):
 
 datasets = {
     'cq500': CQ500Dataset,
-    'deeplesion': DeepLesionDataset,
+    'deeplesion': deeplesion.DeepLesionDataset,
     'reference': ReferenceDataset,
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,
@@ -75,21 +75,7 @@ def get_example_shape(data: dict):
 
 def get_output_features(data: dict) -> int:
     if data['name'] == 'deeplesion':
-        lengths = {
-            'measurement_coordinates': 8,
-            'bounding_boxes': 4,
-            'lesion_diameters_pixel': 2,
-            'normalized_lesion_location': 3,
-            'coarse_lesion_type': 1,
-            'possibly_noisy': 1,
-            'gender': 1,
-            'slice_range': 2,
-            'spacing_mm_px': 3,
-            'age': 1,
-            'size': 2,
-            'dicom_windows': 2,
-        }
-        return sum([lengths[k]
+        return sum([deeplesion.COMPONENT_LENGTHS[k]
                     for k in data['training']['components']])
     else:
         raise NotImplementedError

@@ -16,8 +16,37 @@ def read_hu(x):
 
 HEADER = "File_name,Patient_index,Study_index,Series_ID,Key_slice_index,Measurement_coordinates,Bounding_boxes,Lesion_diameters_Pixel_,Normalized_lesion_location,Coarse_lesion_type,Possibly_noisy,Slice_range,Spacing_mm_px_,Image_size,DICOM_windows,Patient_gender,Patient_age,Train_Val_Test\n"
 
+COMPONENT_LENGTHS = {
+    'measurement_coordinates': 8,
+    'bounding_boxes': 4,
+    'lesion_diameters_pixel': 2,
+    'normalized_lesion_location': 3,
+    'coarse_lesion_type': 1,
+    'possibly_noisy': 1,
+    'gender': 1,
+    'slice_range': 2,
+    'spacing_mm_px': 3,
+    'age': 1,
+    'size': 2,
+    'dicom_windows': 2,
+}
 
-def load_labels_csv(path: str, components: List[str]) -> dict:
+
+def flatten(test_list):
+    # define base case to exit recursive method
+    if len(test_list) == 0:
+        return []
+    elif isinstance(test_list, list) and type(test_list[0]) in [int, str]:
+        return [test_list[0]] + flatten(test_list[1:])
+    elif isinstance(test_list, list) and isinstance(test_list[0], list):
+        return test_list[0] + flatten(test_list[1:])
+    else:
+        return flatten(test_list[1:])
+
+
+def load_labels_csv(path: str,
+                    components: List[str],
+                    flatten_components: bool) -> dict:
     labels = {}
     with open(path, 'r') as f:
         hdr = f.readline()
@@ -71,7 +100,10 @@ def load_labels_csv(path: str, components: List[str]) -> dict:
                 'size': [width, height],
                 'dicom_windows': dicom_windows,
             }
-            labels[filename] = [values[k] for k in components]
+            components = [values[k] for k in components]
+            if flatten_components:
+                components = torch.Tensor(flatten(components))
+            labels[filename] = components
     return labels
 
 
@@ -82,6 +114,7 @@ class DeepLesionDataset(data.Dataset):
                  s3_bucket: str = 'deeplesion',
                  s3_endpoint_url: str = 'https://s3.us-central-1.wasabisys.com',
                  delete_after_use: bool = False,
+                 flatten_labels: bool = True,
                  components: List[str] = [
                      'measurement_coordinates',
                      'bounding_boxes',
@@ -124,7 +157,8 @@ class DeepLesionDataset(data.Dataset):
                 for f in os.listdir(df):
                     files.append((d, f))
             self.files = files
-        self.labels = load_labels_csv(labels_csv_path, components)
+        self.labels = load_labels_csv(
+            labels_csv_path, components, flatten_labels)
 
     def __getitem__(self, index):
         d, f = self.files[index]
