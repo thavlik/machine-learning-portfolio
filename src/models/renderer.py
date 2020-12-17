@@ -48,7 +48,7 @@ class BaseRenderer(nn.Module):
     def fid(self, a: Tensor, b: Tensor) -> Tensor:
         a = self.inception(a)
         b = self.inception(b)
-        fid = [torch.mean((x - y) ** 2)
+        fid = [torch.mean((x - y) ** 2).unsqueeze(0)
                for x, y in zip(a, b)]
-        fid = torch.Tensor(fid)
+        fid = torch.cat(fid, dim=0)
         return fid
