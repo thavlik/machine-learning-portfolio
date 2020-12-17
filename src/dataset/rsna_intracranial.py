@@ -14,7 +14,7 @@ def get_inventory(bucket, root, prefix):
     if os.path.exists(path):
         with open(path, 'r') as f:
             return [line.strip() for line in f]
-    with open(path, 'w') as f:
+    with open(path, 'wb') as f:
         obj = bucket.Object(prefix + filename)
         obj.download_fileobj(f)
     with open(path, 'r') as f:
