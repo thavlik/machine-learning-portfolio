@@ -176,7 +176,7 @@ def _inception_v3(*args, **kwargs):
    #     version = (0,)
 #
    # if version >= (0, 6):
-   #     kwargs['init_weights'] = False
+    kwargs['init_weights'] = False
 
     return torchvision.models.inception_v3(*args, **kwargs)
 
