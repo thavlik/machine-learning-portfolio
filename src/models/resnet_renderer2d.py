@@ -20,9 +20,11 @@ class ResNetRenderer2d(BaseRenderer):
                  width: int,
                  height: int,
                  channels: int,
+                 enable_fid: bool = True,
                  output_activation: str = 'sigmoid',
                  output_layer: str = 'conv') -> None:
-        super().__init__(name=name)
+        super().__init__(name=name,
+                         enable_fid=enable_fid)
         self.width = width
         self.height = height
         self.channels = channels

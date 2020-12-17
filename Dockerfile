@@ -26,6 +26,15 @@ RUN apt-get update \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
+#RUN pip install 'git+https://github.com/facebookresearch/fvcore'
+#ENV FORCE_CUDA="1"
+#ARG TORCH_CUDA_ARCH_LIST="Kepler;Kepler+Tesla;Maxwell;Maxwell+Tegra;Pascal;Volta;Turing"
+#ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
+#RUN git clone https://github.com/facebookresearch/detectron2 detectron2_repo \
+#    && pip install -e detectron2_repo \
+#    && rm -rf detectron2_repo
+
 COPY experiments experiments
 COPY src src
 COPY docker_entrypoint.sh .
