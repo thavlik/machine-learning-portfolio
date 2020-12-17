@@ -123,10 +123,10 @@ class RSNAIntracranialDataset(data.Dataset):
     def __getitem__(self, index):
         file = self.files[index]
         path = os.path.join(self.dcm_path, file)
+        y = self.labels[index] if self.labels != None else []
         if os.path.exists(path) and os.path.getsize(path) > 0:
             x = pydicom.dcmread(path, stop_before_pixels=False)
             x = normalized_dicom_pixels(x)
-            y = self.labels[index] if self.labels != None else []
             return (x, y)
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
@@ -144,7 +144,7 @@ class RSNAIntracranialDataset(data.Dataset):
         data = normalized_dicom_pixels(ds)
         if self.delete_after_use:
             os.remove(path)
-        return (data, [])
+        return (data, y)
 
     def __len__(self):
         return len(self.files)
