@@ -187,7 +187,7 @@ class ClassificationExperiment(pl.LightningModule):
                 class_indices = []
                 for _ in range(examples_per_class):
                     idx = get_random_example_with_label(dataset,
-                                                        obj['labels'],
+                                                        torch.Tensor(obj['labels']),
                                                         all_=obj['all'],
                                                         exclude=class_indices)
                     class_indices.append(idx)
