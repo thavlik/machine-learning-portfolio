@@ -6,7 +6,7 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      root: E:/rsna-intracranial
+      root: /data
       download: true
   batch_size: 64
   warmup_steps: 256
