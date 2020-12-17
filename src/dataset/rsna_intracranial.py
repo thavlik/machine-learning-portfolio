@@ -13,7 +13,7 @@ from botocore.config import Config
 def get_inventory(bucket, root, prefix):
     filename = 'inventory.txt'
     path = os.path.join(root, prefix, filename)
-    if os.path.exists(path):
+    if os.path.exists(path) and os.path.getsize(path) > 0:
         with open(path, 'r') as f:
             return [line.strip() for line in f]
     parent = os.path.dirname(path)
@@ -74,6 +74,8 @@ def process_labels(files: list, path: str) -> torch.Tensor:
         labels.append(labels_dict[id])
     return torch.Tensor(labels)
 
+def notexist(path):
+    return not os.path.exists(path) or os.path.getsize(path) == 0
 
 class RSNAIntracranialDataset(data.Dataset):
     def __init__(self,
@@ -99,7 +101,7 @@ class RSNAIntracranialDataset(data.Dataset):
             self.files = get_inventory(self.bucket, root, self.prefix)
             if train:
                 labels_csv_path = os.path.join(root, 'stage_2_train.csv')
-                if not os.path.exists(labels_csv_path):
+                if notexist(labels_csv_path):
                     with open(labels_csv_path, 'wb') as f:
                         obj = self.bucket.Object('stage_2_train.csv')
                         obj.download_fileobj(f)

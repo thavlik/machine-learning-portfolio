@@ -21,7 +21,7 @@ from plot import get_plot_fn
 from models import Classifier
 from merge_strategy import strategy
 from typing import List
-
+from plot import get_random_example_with_label
 
 class ClassificationExperiment(pl.LightningModule):
 
@@ -78,7 +78,7 @@ class ClassificationExperiment(pl.LightningModule):
         fn(test_input=test_input,
            targets=targets,
            predictions=predictions,
-           baselines=torch.Tensor([0.0 for _ in range(6)]),
+           classes=self.params['classes'],
            out_path=out_path,
            **plot['params'])
 
@@ -176,41 +176,23 @@ class ClassificationExperiment(pl.LightningModule):
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
 
-        n = len(dataset)
-
-        def get_random_example_with_label(label: Tensor,
-                                          exclude: List[int],
-                                          depth: int = 0,
-                                          max_depth: int = 100) -> int:
-            start_idx = np.random.randint(0, n)
-            for i, (_, y) in enumerate(self.sample_dataloader.dataset[start_idx:]):
-                if y == label:
-                    index = i + start_idx
-                    if index in exclude:
-                        continue
-                    return index
-            if depth >= max_depth:
-                raise ValueError(f'cannot find example with label {label}')
-            return get_random_example_with_label(label,
-                                                 exclude=exclude,
-                                                 depth=depth+1,
-                                                 max_depth=max_depth)
-
-        num_classes = self.classifier.num_classes
+        classes = self.params['classes']
+        
         # Persist separate validation indices for each plot
         val_indices = []
         for plot in self.plots:
             examples_per_class = plot['examples_per_class']
-            classes = []
-            for i in range(num_classes):
-                label = Tensor([1 if i == j else 0
-                                for j in range(num_classes)])
-                examples = []
+            indices = []
+            for obj in classes:
+                class_indices = []
                 for _ in range(examples_per_class):
-                    examples.append(get_random_example_with_label(
-                        label, exclude=examples))
-                classes.append(examples)
-            val_indices.append(classes)
+                    idx = get_random_example_with_label(dataset,
+                                                        obj['labels'],
+                                                        all_=obj['all'],
+                                                        exclude=class_indices)
+                    class_indices.append(idx)
+                indices.append(class_indices)
+            val_indices.append(indices)
         self.val_indices = val_indices
 
         return self.sample_dataloader

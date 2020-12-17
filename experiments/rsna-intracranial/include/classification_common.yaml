@@ -12,31 +12,45 @@ model_params:
 exp_params:
   loss_params:
     objective: mse
-    #baseline: 0.5
-
+    baseline: 0.5
   batch_size: 4
   optimizer:
     lr: 0.00001
     weight_decay: 0.00001
   plot:
     fn: classifier2d
+    classes:
+    - name: Control
+      labels: [0, 0, 0, 0, 0, 0]
+      all: true
+      baseline: 0.2
+    - name: Epidural
+      labels: [1, 0, 0, 0, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Intraparenchymal
+      labels: [0, 1, 0, 0, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Intraventricular
+      labels: [0, 0, 1, 0, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Subarachnoid
+      labels: [0, 0, 0, 1, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Subdural
+      labels: [0, 0, 0, 0, 1, 0]
+      all: false
+      baseline: 0.2
+    - name: Any
+      labels: [0, 0, 0, 0, 0, 1]
+      all: false
+      baseline: 0.2
     sample_every_n_steps: 1000
     examples_per_class: 6
-    params:
-      class_names:
-        - Epidural
-        - Intraparenchymal
-        - Intraventricular
-        - Subarachnoid
-        - Subdural
-        - Any
-      baselines:
-        - 0.0
-        - 0.0
-        - 0.0
-        - 0.0
-        - 0.0
-        - 0.0
+    params: {}
 
 trainer_params:
   max_epochs: 8
