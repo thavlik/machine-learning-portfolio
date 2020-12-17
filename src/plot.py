@@ -425,6 +425,8 @@ def classifier2d(test_input: Tensor,
                  padding: int = None,
                  font_size: int = 28):
     background = torch.Tensor(background)
+    if test_input.shape[1] == 1:
+        test_input = test_input.repeat(1, 3, 1, 1)
     # Draw a grid of images, each class gets a column.
     # Next to each image, visually indicate if the model is
     # correct or not. Baseline accuracy should be colored
