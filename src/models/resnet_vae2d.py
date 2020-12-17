@@ -25,7 +25,7 @@ class ResNetVAE2d(BaseVAE):
                  output_activation: str = 'sigmoid',
                  pooling: str = None,
                  enable_fid: bool = False,
-                 fid_blocks: List[int] = [2048],
+                 fid_blocks: List[int] = [3],
                  progressive_growing: int = 0) -> None:
         super(ResNetVAE2d, self).__init__(name=name,
                                           latent_dim=latent_dim)

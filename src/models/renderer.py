@@ -9,7 +9,7 @@ class BaseRenderer(nn.Module):
     def __init__(self,
                  name: str,
                  enable_fid: bool,
-                 fid_blocks: List[int] = [2048]) -> None:
+                 fid_blocks: List[int] = [3]) -> None:
         super(BaseRenderer, self).__init__()
         self.name = name
         self.enable_fid = enable_fid
