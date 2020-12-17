@@ -156,5 +156,6 @@ def neural_gbuffer(config: dict, run_args: dict) -> pl.LightningModule:
     model = create_model(**config['model_params'],
                          width=image_size,
                          height=image_size,
-                         channels=3)
+                         channels=3,
+                         enable_fid=True)
     return NeuralGBufferExperiment(model, exp_params)
