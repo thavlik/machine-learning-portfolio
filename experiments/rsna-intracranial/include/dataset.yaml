@@ -3,11 +3,12 @@ exp_params:
     name: rsna-intracranial
     split: 0.7
     loader:
-      num_workers: 0
+      num_workers: 8
       drop_last: true
     training:
       root: /data
       download: true
+      delete_after_use: true
   batch_size: 64
   warmup_steps: 256
   
