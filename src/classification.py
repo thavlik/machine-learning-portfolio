@@ -60,7 +60,7 @@ class ClassificationExperiment(pl.LightningModule):
             for x, y in batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
-                x = self.classifier(x.to(self.curr_device)).cpu()
+                x = self.classifier(x.to(self.curr_device)).detach()
                 predictions.append(x)
                 targets.append(y.unsqueeze(0))
             class_input = torch.cat(class_input, dim=0)
