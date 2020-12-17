@@ -12,7 +12,7 @@ model_params:
 exp_params:
   loss_params:
     objective: mse
-  batch_size: 4
+  batch_size: 2
   optimizer:
     lr: 0.00001
     weight_decay: 0.00001
