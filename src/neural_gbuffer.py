@@ -40,7 +40,9 @@ class NeuralGBufferExperiment(pl.LightningModule):
         self.curr_device = self.device
         orig, labels = batch
         recons = self.model(*labels)
-        train_loss = self.model.loss_function(recons, orig)
+        train_loss = self.model.loss_function(recons,
+                                              orig,
+                                              **self.params.get('loss_params', {}))
         self.logger.experiment.log({key: val.item()
                                     for key, val in train_loss.items()})
         if self.global_step > 0:
@@ -52,7 +54,9 @@ class NeuralGBufferExperiment(pl.LightningModule):
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         orig, labels = batch
         recons = self.model(*labels)
-        val_loss = self.model.loss_function(recons, orig)
+        val_loss = self.model.loss_function(recons,
+                                            orig,
+                                            **self.params.get('loss_params', {}))
         return val_loss
 
     def configure_optimizers(self):
