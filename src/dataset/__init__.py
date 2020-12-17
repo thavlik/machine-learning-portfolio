@@ -9,7 +9,6 @@ from .video import *
 from .batch_video import *
 from .toy_neural_graphics import *
 
-
 def split_dataset(dataset, split):
     n_train_imgs = np.floor(len(dataset) * split).astype('int')
     n_val_imgs = len(dataset) - n_train_imgs

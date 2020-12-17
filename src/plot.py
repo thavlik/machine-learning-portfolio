@@ -19,7 +19,7 @@ from typing import List, Tuple
 from merge_strategy import strategy
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from torchvision.utils import save_image
-
+from torch.utils.data import Subset
 
 def plot_title(template: str,
                model: str,
@@ -544,12 +544,18 @@ def get_random_example_with_label(ds,
                                   all_: bool,
                                   exclude: List[int],
                                   end_idx: int = None) -> int:
+    def get_labels(index):
+        if type(ds) == Subset:
+            return ds.dataset.get_labels(ds.indices[index])
+        else:
+            return ds.get_labels(index)
+        
     labels = labels.int()
     n = len(ds)
     start_idx = 0 if end_idx is not None else np.random.randint(0, n)
     for i in range(n - start_idx):
         index = i + start_idx
-        y = ds.get_labels(index).int()
+        y = get_labels(index).int()
         eq = y == labels
         eq = eq.all() if all_ else eq.any()
         if eq:
