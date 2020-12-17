@@ -93,6 +93,7 @@ class ClassificationExperiment(pl.LightningModule):
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
         del real_img
+        torch.cuda.empty_cache()
         train_loss = self.classifier.loss_function(y, labels.cpu(),
                                                    **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
