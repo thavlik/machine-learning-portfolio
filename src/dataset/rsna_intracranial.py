@@ -117,7 +117,7 @@ class RSNAIntracranialDataset(data.Dataset):
     def __getitem__(self, index):
         file = self.files[index]
         path = os.path.join(self.dcm_path, file)
-        if os.path.exists(path) or os.path.getsize(path) == 0:
+        if os.path.exists(path) and os.path.getsize(path) > 0:
             x = pydicom.dcmread(path, stop_before_pixels=False)
             x = normalized_dicom_pixels(x)
             y = self.labels[index] if self.labels != None else []
