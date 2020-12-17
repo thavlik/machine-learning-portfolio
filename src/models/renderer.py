@@ -20,7 +20,9 @@ class BaseRenderer(nn.Module):
                                      f'valid options are {InceptionV3.BLOCK_INDEX_BY_DIM}')
             block_idx = [InceptionV3.BLOCK_INDEX_BY_DIM[i]
                          for i in fid_blocks]
+            print('Loading InceptionV3')
             self.inception = InceptionV3(block_idx, use_fid_inception=True)
+            print('InceptionV3 loaded')
 
     @abstractmethod
     def decode(self,
