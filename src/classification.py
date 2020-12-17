@@ -78,7 +78,7 @@ class ClassificationExperiment(pl.LightningModule):
         fn(test_input=test_input,
            targets=targets,
            predictions=predictions,
-           classes=self.params['classes'],
+           classes=plot['classes'],
            out_path=out_path,
            **plot['params'])
 
@@ -176,11 +176,11 @@ class ClassificationExperiment(pl.LightningModule):
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
 
-        classes = self.params['classes']
         
         # Persist separate validation indices for each plot
         val_indices = []
         for plot in self.plots:
+            classes = plot['classes']
             examples_per_class = plot['examples_per_class']
             indices = []
             for obj in classes:
