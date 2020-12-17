@@ -6,6 +6,8 @@ import pydicom
 from .dicom_util import normalized_dicom_pixels
 import boto3
 import tempfile
+from botocore import UNSIGNED
+from botocore.config import Config
 
 
 def get_inventory(bucket, root, prefix):
@@ -89,7 +91,9 @@ class RSNAIntracranialDataset(data.Dataset):
         dcm_path = os.path.join(root, self.prefix)
         self.dcm_path = dcm_path
         if self.download:
-            s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
+            s3 = boto3.resource('s3',
+                                endpoint_url=s3_endpoint_url,
+                                config=Config(signature_version=UNSIGNED))
             self.bucket = s3.Bucket(s3_bucket)
             self.files = get_inventory(self.bucket, root, self.prefix)
             if train:
