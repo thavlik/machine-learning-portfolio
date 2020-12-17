@@ -130,7 +130,6 @@ class RSNAIntracranialDataset(data.Dataset):
             return (x, y)
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
-        print(f'Downloading {file}')
         s3 = boto3.resource('s3',
                             endpoint_url=self.s3_endpoint_url)
         bucket = s3.Bucket(self.s3_bucket)
