@@ -140,14 +140,14 @@ class DeepLesionDataset(data.Dataset):
             s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
             self.bucket = s3.Bucket(s3_bucket)
             inventory_path = os.path.join(root, 'inventory.txt')
-            if not os.path.exists(inventory_path):
+            if not os.path.exists(inventory_path) or os.path.getsize(inventory_path) == 0:
                 with open(inventory_path, 'wb') as f:
                     obj = self.bucket.Object('inventory.txt')
                     obj.download_fileobj(f)
             with open(inventory_path, 'r') as f:
                 self.files = [tuple(line.strip().split(','))
                               for line in f]
-            if not os.path.exists(labels_csv_path):
+            if not os.path.exists(labels_csv_path) or os.path.getsize(labels_csv_path) == 0:
                 with open(inventory_path, 'wb') as f:
                     obj = self.bucket.Object('DL_info.csv')
                     obj.download_fileobj(f)
