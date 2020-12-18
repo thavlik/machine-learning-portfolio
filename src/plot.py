@@ -48,7 +48,7 @@ def eeg(orig: Tensor,
     batch_size, num_channels, num_samples = orig.shape
     cols = batch_size
     fig = make_subplots(rows=num_channels, cols=cols)
-    if layout_params != None:
+    if layout_params is not None:
         if 'title' in layout_params:
             layout_params['title'] = plot_title(template=layout_params['title'],
                                                 model=model_name,
@@ -132,7 +132,7 @@ def plot2d(orig: Tensor,
             i += 1
         if done:
             break
-    if title != None:
+    if title is not None:
         interpolated = plot_title(title,
                                   model_name,
                                   epoch)

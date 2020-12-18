@@ -4,7 +4,7 @@ import torch
 import torch.utils.data as data
 from torch import Tensor
 import pydicom
-from .dicom_util import normalized_dicom_pixels
+from dicom_util import normalized_dicom_pixels
 import boto3
 import tempfile
 from botocore import UNSIGNED
@@ -13,21 +13,32 @@ import subprocess
 import gzip
 
 
-def get_inventory(bucket, root, prefix):
+def get_inventory(bucket,
+                  root: str,
+                  prefix: str,
+                  download: bool,
+                  use_gzip: bool):
     filename = 'inventory.txt'
+    if use_gzip:
+        filename += '.gz'
     path = os.path.join(root, prefix, filename)
-    if os.path.exists(path) and os.path.getsize(path) > 0:
+    if notexist(path):
+        if not download:
+            raise ValueError(f'with download == False, {path} not found')
+        parent = os.path.dirname(path)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+        with open(path, 'wb') as f:
+            obj = bucket.Object(prefix + filename)
+            obj.download_fileobj(f)
+    if use_gzip:
+        with gzip.open(path) as f:
+            content = f.read().decode('utf-8')
+    else:
         with open(path, 'r') as f:
-            return [line.strip() for line in f]
-    parent = os.path.dirname(path)
-    if not os.path.exists(parent):
-        os.makedirs(parent)
-    with open(path, 'wb') as f:
-        obj = bucket.Object(prefix + filename)
-        obj.download_fileobj(f)
-    with open(path, 'r') as f:
-        return [line.strip() for line in f]
-
+            content = f.read()
+    lines = content.splitlines()
+    return lines
 
 def load_labels_csv(path: str) -> list:
     if not os.path.exists(path):
@@ -40,31 +51,35 @@ def load_labels_csv(path: str) -> list:
                  'subarachnoid',
                  'subdural',
                  'any']
-    f = gzip.open(path) if path.endswith('.gz') else open(path, 'r')
-    try:
-        hdr = f.readline()
-        if hdr != 'ID,Label\n':
-            raise ValueError(f'bad header (got "{hdr}")')
-        cur_id = None
-        cur_labels = None
-        for i, line in enumerate(f):
-            item, label = line.strip().split(',')
-            label = int(label)
-            if not label in [0, 1]:
-                raise ValueError(f'invalid class label on line {i}')
-            _, id, classname = item.split('_')
-            if cur_id == None:
-                cur_id = id
-                cur_labels = [0] * len(label_idx)
-            elif id != cur_id:
-                labels[cur_id] = cur_labels
-                cur_id = id
-                cur_labels = [0] * len(label_idx)
-            cur_labels[label_idx.index(classname)] = label
-        # Don't exclude the last item
-        labels[cur_id] = cur_labels
-    finally:
-        f.close()
+    if path.endswith('.gz'):
+        with gzip.open(path) as f:
+            content = f.read().decode('utf-8')
+    else:
+        with open(path, 'r') as f:
+            content = f.read()
+    lines = content.splitlines()
+    hdr = lines[0]
+    if hdr != 'ID,Label':
+        raise ValueError(f'bad header (got "{hdr}")')
+    lines = lines[1:]
+    cur_id = None
+    cur_labels = None
+    for i, line in enumerate(lines):
+        item, label = line.split(',')
+        label = int(label)
+        if not label in [0, 1]:
+            raise ValueError(f'invalid class label on line {i}')
+        _, id, classname = item.split('_')
+        if cur_id is None:
+            cur_id = id
+            cur_labels = [0] * len(label_idx)
+        elif id != cur_id:
+            labels[cur_id] = cur_labels
+            cur_id = id
+            cur_labels = [0] * len(label_idx)
+        cur_labels[label_idx.index(classname)] = label
+    # Don't exclude the last item
+    labels[cur_id] = cur_labels
     return labels
 
 
@@ -88,7 +103,7 @@ class RSNAIntracranialDataset(data.Dataset):
                  root: str,
                  train: bool = True,
                  download: bool = True,
-                 s3_bucket: str = 'rsna-intracranial',
+                 s3_bucket: str = 'rsna-ich',
                  s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
                  delete_after_use: bool = False,
                  use_gzip: bool = True):
@@ -107,7 +122,8 @@ class RSNAIntracranialDataset(data.Dataset):
             s3 = boto3.resource('s3',
                                 endpoint_url=s3_endpoint_url)
             bucket = s3.Bucket(s3_bucket)
-            self.files = get_inventory(bucket, root, self.prefix)
+            self.files = get_inventory(
+                bucket, root, self.prefix, download=download, use_gzip=use_gzip)
             if train:
                 labels_csv_key = 'stage_2_train.csv'
                 if use_gzip:
@@ -131,25 +147,14 @@ class RSNAIntracranialDataset(data.Dataset):
 
     def load_dcm(self, path: str) -> Tensor:
         if self.use_gzip:
-            f = gzip.open(path)
-            try:
+            with gzip.open(path) as f:
                 x = pydicom.dcmread(f, stop_before_pixels=False)
-            finally:
-                f.close()
         else:
             x = pydicom.dcmread(path, stop_before_pixels=False)
         x = normalized_dicom_pixels(x)
         return x
 
-    def __getitem__(self, index):
-        file = self.files[index]
-        path = os.path.join(self.dcm_path, file)
-        y = self.labels[index] if self.labels != None else []
-        if os.path.exists(path) and os.path.getsize(path) > 0:
-            x = self.load_dcm(path)
-            return (x, y)
-        elif not self.download:
-            raise ValueError(f'File {path} does not exist')
+    def download_dcm(self, file: str, path: str):
         s3 = boto3.resource('s3',
                             endpoint_url=self.s3_endpoint_url)
         bucket = s3.Bucket(self.s3_bucket)
@@ -157,8 +162,20 @@ class RSNAIntracranialDataset(data.Dataset):
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         with open(path, 'wb') as f:
-            obj = bucket.Object(self.prefix + file)
+            key = self.prefix + file
+            obj = bucket.Object(key)
             obj.download_fileobj(f)
+
+    def __getitem__(self, index):
+        file = self.files[index]
+        if self.use_gzip:
+            file += '.gz'
+        path = os.path.join(self.dcm_path, file)
+        y = self.labels[index] if self.labels is not None else []
+        if notexist(path):
+            if not self.download:
+                raise ValueError(f'File {path} does not exist')
+            self.download_dcm(file, path)
         x = self.load_dcm(path)
         if self.delete_after_use:
             os.remove(path)

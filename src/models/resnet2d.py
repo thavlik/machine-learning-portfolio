@@ -37,7 +37,7 @@ class BasicBlock2d(nn.Module):
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        if self.shortcut != None:
+        if self.shortcut is not None:
             out += self.shortcut(x)
         out = F.relu(out)
         return out
@@ -78,7 +78,7 @@ class TransposeBasicBlock2d(nn.Module):
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        if self.shortcut != None:
+        if self.shortcut is not None:
             out += self.shortcut(x)
         out = F.relu(out)
         return out

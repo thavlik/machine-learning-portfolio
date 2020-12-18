@@ -24,14 +24,14 @@ class ResNetRL2d(TorchModelV2, nn.Module):
         TorchModelV2.__init__(self, obs_space, action_space, num_outputs,
                               model_config, name)
 
-        if pooling != None:
+        if pooling is not None:
             pool_fn = get_pooling2d(pooling)
 
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features, h_dim))
-            if pooling != None:
+            if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
         self.layers = nn.Sequential(
@@ -39,7 +39,7 @@ class ResNetRL2d(TorchModelV2, nn.Module):
             nn.Flatten(),
             nn.Dropout(p=dropout),   
         )
-        if pooling != None:
+        if pooling is not None:
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError(

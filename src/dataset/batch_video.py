@@ -29,7 +29,7 @@ class BatchVideoDataLoader(object):
         videos = [os.path.join(dir, f)
                   for f in os.listdir(dir)
                   if f.endswith('.mp4')]
-        if limit != None:
+        if limit is not None:
             videos = videos[:limit]
         self.vl = VideoLoader(videos,
                               ctx=[cpu(0)],

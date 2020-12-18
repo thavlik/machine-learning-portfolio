@@ -23,7 +23,7 @@ class VideoDataset(data.Dataset):
         super(VideoDataset, self).__init__()
         videos = []
         for f in os.listdir(dir):
-            if limit != None and len(videos) >= limit:
+            if limit is not None and len(videos) >= limit:
                 break
             if f.endswith('.mp4'):
                 videos.append(f)

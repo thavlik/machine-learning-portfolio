@@ -260,7 +260,7 @@ def comparison(config: dict, run_args: dict) -> None:
                 for step, line in enumerate(f):
                     line = line.strip().split(',')
                     for idx in metric_col:
-                        if idx == None:
+                        if idx is None:
                             # Metric not available
                             continue
                         col = line[idx]
@@ -355,7 +355,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     torch.manual_seed(manual_seed)
     np.random.seed(manual_seed)
     experiment = create_experiment(config, run_args)
-    if experiment == None:
+    if experiment is None:
         return
     experiment = experiment.cuda()
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],

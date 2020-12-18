@@ -38,7 +38,7 @@ class ResNetVAE2d(BaseVAE):
         if enable_fid:
             self.inception = InceptionV3(fid_blocks, use_fid_inception=True)
 
-        if pooling != None:
+        if pooling is not None:
             pool_fn = get_pooling2d(pooling)
 
         # Encoder
@@ -47,7 +47,7 @@ class ResNetVAE2d(BaseVAE):
         for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features,
                                         h_dim))
-            if pooling != None:
+            if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
         layers = nn.Sequential(
@@ -57,7 +57,7 @@ class ResNetVAE2d(BaseVAE):
         )
 
         in_features = hidden_dims[-1] * width * height
-        if pooling != None:
+        if pooling is not None:
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError(

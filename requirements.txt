@@ -1,4 +1,5 @@
 torch
+opencv-python
 torchvision
 pytorch-lightning>=1.0.7
 test-tube

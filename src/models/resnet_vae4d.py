@@ -33,7 +33,7 @@ class ResNetVAE4d(BaseVAE):
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
 
-        if pooling != None:
+        if pooling is not None:
             pool_fn = get_pooling4d(pooling)
 
         # Encoder
@@ -41,7 +41,7 @@ class ResNetVAE4d(BaseVAE):
         in_features = channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock4d(in_features, h_dim))
-            if pooling != None:
+            if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
         self.encoder = nn.Sequential(
@@ -50,7 +50,7 @@ class ResNetVAE4d(BaseVAE):
             nn.Dropout(p=dropout),
         )
         in_features = hidden_dims[-1] * width * height * depth * frames
-        if pooling != None:
+        if pooling is not None:
             in_features /= 16**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError('noninteger number of features - perhaps there is too much pooling?')
