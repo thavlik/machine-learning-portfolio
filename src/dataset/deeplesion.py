@@ -174,6 +174,9 @@ class DeepLesionDataset(data.Dataset):
                     f'with download == False, {path} was not found')
             s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint_url)
             bucket = s3.Bucket(self.s3_bucket)
+            dirname = os.path.dirname(path)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
             with open(path, 'wb') as file:
                 key = f'Images_png/{d}/{f}'
                 print(f'Downloading {key}')
