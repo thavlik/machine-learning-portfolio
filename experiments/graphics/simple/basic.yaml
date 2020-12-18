@@ -39,5 +39,5 @@ trainer_params:
   check_val_every_n_epoch: 100_000
 
 logging_params:
-  name: "NeuralGBuffer"
+  name: "BasicNeuralRenderer"
 
