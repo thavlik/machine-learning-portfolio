@@ -148,7 +148,7 @@ class DeepLesionDataset(data.Dataset):
                 self.files = [tuple(line.strip().split(','))
                               for line in f]
             if not os.path.exists(labels_csv_path) or os.path.getsize(labels_csv_path) == 0:
-                with open(inventory_path, 'wb') as f:
+                with open(labels_csv_path, 'wb') as f:
                     obj = self.bucket.Object('DL_info.csv')
                     obj.download_fileobj(f)
         else:
