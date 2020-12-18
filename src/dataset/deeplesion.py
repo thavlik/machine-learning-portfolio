@@ -100,10 +100,10 @@ def load_labels_csv(path: str,
                 'size': [width, height],
                 'dicom_windows': dicom_windows,
             }
-            components = [values[k] for k in components]
+            comps = [values[k] for k in components]
             if flatten_components:
-                components = torch.Tensor(flatten(components))
-            labels[filename] = components
+                comps = torch.Tensor(flatten(comps))
+            labels[filename] = comps
     return labels
 
 
