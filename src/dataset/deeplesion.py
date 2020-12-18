@@ -100,8 +100,7 @@ def load_labels_csv(path: str,
                 'size': [width, height],
                 'dicom_windows': dicom_windows,
             }
-            comps = [[1.0]]
-            comps.extend([values[k] for k in components])
+            comps = [values[k] for k in components]
             if flatten_components:
                 comps = torch.Tensor(flatten(comps))
             labels[filename] = comps
@@ -184,10 +183,13 @@ class DeepLesionDataset(data.Dataset):
         x = read_hu(path)
         x = torch.Tensor(x)
         x = x.unsqueeze(0)
-        y = self.labels.get(f'{d}_{f}', self.zeros)
+        key = f'{d}_{f}'
+        y = self.labels.get(key, None)
+        label = torch.Tensor([0 if y is None else 1])
+        y = y or self.zeros
         if self.delete_after_use:
             os.remove(path)
-        return (x, y)
+        return (x, label, y)
 
     def __len__(self):
         return len(self.files)

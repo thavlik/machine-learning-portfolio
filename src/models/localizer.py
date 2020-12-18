@@ -9,6 +9,7 @@ from .util import reparameterize
 class Localizer(nn.Module):
     """ Base class for a model that carries out nonlinear localization.
     """
+
     def __init__(self,
                  name: str,
                  num_output_features: int) -> None:
@@ -21,20 +22,17 @@ class Localizer(nn.Module):
         raise NotImplementedError
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
-        mu, log_var = self.predict(input)
+        label, mu, log_var = self.predict(input)
         pred = reparameterize(mu, log_var)
-        return pred
+        return label, pred
 
     def loss_function(self,
-                      prediction: Tensor,
-                      target: Tensor,
+                      predictions: Tensor,
+                      targets: Tensor,
                       objective: str = 'mse') -> dict:
         loss = torch.Tensor([0.0])
-        for pred, targ in zip(prediction, target):
-            if torch.is_nonzero(targ[0]):
-                loss += F.mse_loss(prediction, target)
-            else:
-                # Only certainty should be penalized
-                # because there is no lesion
-                loss += (pred[0] - 1.0) ** 2
+        for pred_label, pred_params, targ_label, targ_params in zip(predictions[0], predictions[1], targets[0], targets[1]):
+            loss += (pred_label - targ_label) ** 2
+            if torch.is_nonzero(targ_label):
+                loss += F.mse_loss(pred_params, targ_params)
         return {'loss': loss}

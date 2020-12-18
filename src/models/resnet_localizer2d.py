@@ -51,6 +51,10 @@ class ResNetLocalizer2d(Localizer):
                 raise ValueError(
                     'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
+        self.label = nn.Sequential(
+            nn.Linear(in_features, 1),
+            nn.BatchNorm1d(1),
+        )
         self.mu = nn.Sequential(
             nn.Linear(in_features, num_output_features),
             nn.BatchNorm1d(num_output_features),
@@ -63,6 +67,7 @@ class ResNetLocalizer2d(Localizer):
 
     def predict(self, input: Tensor) -> List[Tensor]:
         y = self.layers(input)
+        label = torch.sigmoid(self.label(y))
         mu = self.activation(self.mu(y))
         log_var = self.activation(self.log_var(y))
-        return [mu, log_var]
+        return [label, mu, log_var]

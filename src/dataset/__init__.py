@@ -78,7 +78,7 @@ def get_example_shape(data: dict):
 def get_output_features(data: dict) -> int:
     if data['name'] == 'deeplesion':
         # First component is certainty of class label
-        return 1 + sum([DLCOMPLEN[k]
-                        for k in data['training']['components']])
+        return sum([DLCOMPLEN[k]
+                    for k in data['training']['components']])
     else:
         raise NotImplementedError
