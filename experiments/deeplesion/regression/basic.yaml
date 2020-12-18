@@ -19,7 +19,7 @@ exp_params:
     split: 0.7
     flatten_labels: true
     loader:
-      num_workers: 16
+      num_workers: 0
       drop_last: true
     training:
       root: /data/deeplesion
