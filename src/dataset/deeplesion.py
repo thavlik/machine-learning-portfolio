@@ -132,24 +132,26 @@ class DeepLesionDataset(data.Dataset):
         super(DeepLesionDataset, self).__init__()
         self.root = root
         self.download = download
+        self.s3_bucket = s3_bucket
+        self.s3_endpoint_url = s3_endpoint_url
         self.delete_after_use = delete_after_use
         labels_csv_path = os.path.join(root, 'DL_info.csv')
         if self.download:
             if not os.path.exists(root):
                 os.makedirs(root)
             s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
-            self.bucket = s3.Bucket(s3_bucket)
+            bucket = s3.Bucket(s3_bucket)
             inventory_path = os.path.join(root, 'inventory.txt')
             if not os.path.exists(inventory_path) or os.path.getsize(inventory_path) == 0:
                 with open(inventory_path, 'wb') as f:
-                    obj = self.bucket.Object('inventory.txt')
+                    obj = bucket.Object('inventory.txt')
                     obj.download_fileobj(f)
             with open(inventory_path, 'r') as f:
                 self.files = [tuple(line.strip().split(','))
                               for line in f]
             if not os.path.exists(labels_csv_path) or os.path.getsize(labels_csv_path) == 0:
                 with open(labels_csv_path, 'wb') as f:
-                    obj = self.bucket.Object('DL_info.csv')
+                    obj = bucket.Object('DL_info.csv')
                     obj.download_fileobj(f)
         else:
             images_dir = os.path.join(root, 'Images_png')
@@ -169,8 +171,10 @@ class DeepLesionDataset(data.Dataset):
             if not self.download:
                 raise ValueError(
                     f'with download == False, {path} was not found')
+            s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint_url)
+            bucket = s3.Bucket(self.s3_bucket)
             with open(path, 'wb') as file:
-                obj = self.bucket.Object(f'Images_png/{d}/{f}')
+                obj = bucket.Object(f'Images_png/{d}/{f}')
                 obj.download_fileobj(file)
         x = read_hu(path)
         x = torch.Tensor(x)
