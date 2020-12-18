@@ -13,9 +13,15 @@ class MyLocalizationModel(nn.Module):
     ...
 
     def forward(self, input: Tensor) -> Tensor:
-        mu, log_var = self.predict(input)
+        # `labels` predicts the probability of lesion presence.
+        # `mu` and `log_var` are the predicted parameters
+        # of the normal distribution (when lesion is present)
+        labels, mu, log_var = self.predict(input)
+
+        # Sample from the normal distribution
         pred = reparameterize(mu, log_var)
-        return pred
+        
+        return labels, pred
 ```
 
 ## Results
