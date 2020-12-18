@@ -8,7 +8,6 @@ exp_params:
     training:
       root: /data
       download: true
-      delete_after_use: true
   batch_size: 64
   warmup_steps: 256
   
