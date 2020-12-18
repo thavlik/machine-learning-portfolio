@@ -17,7 +17,7 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      root: E:/deeplesion
+      root: /data/deeplesion
       components:
         - measurement_coordinates
         - bounding_boxes
