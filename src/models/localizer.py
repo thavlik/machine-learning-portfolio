@@ -29,10 +29,15 @@ class Localizer(nn.Module):
     def loss_function(self,
                       predictions: Tensor,
                       targets: Tensor,
-                      objective: str = 'mse') -> dict:
-        loss = torch.Tensor([0.0])
+                      objective: str = 'mse',
+                      localization_weight: float = 1.0) -> dict:
+        label_loss = torch.Tensor([0.0])
+        localization_loss = torch.Tensor([0.0])
         for pred_label, pred_params, targ_label, targ_params in zip(predictions[0], predictions[1], targets[0], targets[1]):
-            loss += (pred_label - targ_label) ** 2
+            label_loss += (pred_label - targ_label) ** 2
             if torch.is_nonzero(targ_label):
-                loss += F.mse_loss(pred_params, targ_params)
-        return {'loss': loss}
+                localization_loss += F.mse_loss(pred_params, targ_params)
+        loss = label_loss + localization_loss * localization_weight
+        return {'loss': loss,
+                'Label_Loss': label_loss,
+                'Localization_Loss': localization_loss}
