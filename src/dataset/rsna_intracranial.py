@@ -2,12 +2,15 @@ import os
 import numpy as np
 import torch
 import torch.utils.data as data
+from torch import Tensor
 import pydicom
 from .dicom_util import normalized_dicom_pixels
 import boto3
 import tempfile
 from botocore import UNSIGNED
 from botocore.config import Config
+import subprocess
+import gzip
 
 
 def get_inventory(bucket, root, prefix):
@@ -31,15 +34,14 @@ def load_labels_csv(path: str) -> list:
         raise ValueError(
             f'Labels file {path} does not exist')
     labels = {}
-    label_idx = [
-        'epidural',
-        'intraparenchymal',
-        'intraventricular',
-        'subarachnoid',
-        'subdural',
-        'any',
-    ]
-    with open(path, 'r') as f:
+    label_idx = ['epidural',
+                 'intraparenchymal',
+                 'intraventricular',
+                 'subarachnoid',
+                 'subdural',
+                 'any']
+    f = gzip.open(path) if path.endswith('.gz') else open(path, 'r')
+    try:
         hdr = f.readline()
         if hdr != 'ID,Label\n':
             raise ValueError(f'bad header (got "{hdr}")')
@@ -61,6 +63,8 @@ def load_labels_csv(path: str) -> list:
             cur_labels[label_idx.index(classname)] = label
         # Don't exclude the last item
         labels[cur_id] = cur_labels
+    finally:
+        f.close()
     return labels
 
 
@@ -86,7 +90,8 @@ class RSNAIntracranialDataset(data.Dataset):
                  download: bool = True,
                  s3_bucket: str = 'rsna-intracranial',
                  s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
-                 delete_after_use: bool = False):
+                 delete_after_use: bool = False,
+                 use_gzip: bool = True):
         super(RSNAIntracranialDataset, self).__init__()
         self.root = root
         self.train = train
@@ -95,6 +100,7 @@ class RSNAIntracranialDataset(data.Dataset):
         self.download = download
         self.delete_after_use = delete_after_use
         self.prefix = 'stage_2_train/' if train else 'stage_2_test/'
+        self.use_gzip = use_gzip
         dcm_path = os.path.join(root, self.prefix)
         self.dcm_path = dcm_path
         if self.download:
@@ -103,10 +109,13 @@ class RSNAIntracranialDataset(data.Dataset):
             bucket = s3.Bucket(s3_bucket)
             self.files = get_inventory(bucket, root, self.prefix)
             if train:
-                labels_csv_path = os.path.join(root, 'stage_2_train.csv')
+                labels_csv_key = 'stage_2_train.csv'
+                if use_gzip:
+                    labels_csv_key += '.gz'
+                labels_csv_path = os.path.join(root, labels_csv_key)
                 if notexist(labels_csv_path):
                     with open(labels_csv_path, 'wb') as f:
-                        obj = bucket.Object('stage_2_train.csv')
+                        obj = bucket.Object(labels_csv_key)
                         obj.download_fileobj(f)
                 self.labels = process_labels(
                     self.files, labels_csv_path) if train else None
@@ -120,13 +129,24 @@ class RSNAIntracranialDataset(data.Dataset):
             self.labels = process_labels(
                 self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
 
+    def load_dcm(self, path: str) -> Tensor:
+        if self.use_gzip:
+            f = gzip.open(path)
+            try:
+                x = pydicom.dcmread(f, stop_before_pixels=False)
+            finally:
+                f.close()
+        else:
+            x = pydicom.dcmread(path, stop_before_pixels=False)
+        x = normalized_dicom_pixels(x)
+        return x
+
     def __getitem__(self, index):
         file = self.files[index]
         path = os.path.join(self.dcm_path, file)
         y = self.labels[index] if self.labels != None else []
         if os.path.exists(path) and os.path.getsize(path) > 0:
-            x = pydicom.dcmread(path, stop_before_pixels=False)
-            x = normalized_dicom_pixels(x)
+            x = self.load_dcm(path)
             return (x, y)
         elif not self.download:
             raise ValueError(f'File {path} does not exist')
@@ -139,11 +159,10 @@ class RSNAIntracranialDataset(data.Dataset):
         with open(path, 'wb') as f:
             obj = bucket.Object(self.prefix + file)
             obj.download_fileobj(f)
-        ds = pydicom.dcmread(path, stop_before_pixels=False)
-        data = normalized_dicom_pixels(ds)
+        x = self.load_dcm(path)
         if self.delete_after_use:
             os.remove(path)
-        return (data, y)
+        return (x, y)
 
     def __len__(self):
         return len(self.files)

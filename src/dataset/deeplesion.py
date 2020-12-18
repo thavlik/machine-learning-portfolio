@@ -109,10 +109,10 @@ def load_labels_csv(path: str,
 def ensure_downloaded(key, path, bucket):
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         with open(path, 'wb') as f:
-            print(f'Downloading {key}')
+            #print(f'Downloading {key}')
             obj = bucket.Object(key)
             obj.download_fileobj(f)
-            print(f'{key} downloaded')
+            #print(f'{key} downloaded')
             
 class DeepLesionDataset(data.Dataset):
     def __init__(self,
@@ -179,10 +179,8 @@ class DeepLesionDataset(data.Dataset):
                 os.makedirs(dirname)
             with open(path, 'wb') as file:
                 key = f'Images_png/{d}/{f}'
-                print(f'Downloading {key}')
                 obj = bucket.Object(key)
                 obj.download_fileobj(file)
-                print(f'{key} downloaded')
         x = read_hu(path)
         x = torch.Tensor(x)
         x = x.unsqueeze(0)

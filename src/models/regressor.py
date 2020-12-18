@@ -29,6 +29,7 @@ class Regressor(nn.Module):
                       prediction: Tensor,
                       target: Tensor,
                       objective: str = 'mse') -> dict:
+        # TODO: deal with healthy vs unhealthy loss
         if objective == 'mse':
             loss = F.mse_loss(prediction, target)
         else:
