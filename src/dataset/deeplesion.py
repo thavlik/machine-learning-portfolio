@@ -106,7 +106,14 @@ def load_labels_csv(path: str,
             labels[filename] = comps
     return labels
 
-
+def ensure_downloaded(key, path, bucket):
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        with open(path, 'wb') as f:
+            print(f'Downloading {key}')
+            obj = bucket.Object(key)
+            obj.download_fileobj(f)
+            print(f'{key} downloaded')
+            
 class DeepLesionDataset(data.Dataset):
     def __init__(self,
                  root: str,
@@ -142,17 +149,11 @@ class DeepLesionDataset(data.Dataset):
             s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
             bucket = s3.Bucket(s3_bucket)
             inventory_path = os.path.join(root, 'inventory.txt')
-            if not os.path.exists(inventory_path) or os.path.getsize(inventory_path) == 0:
-                with open(inventory_path, 'wb') as f:
-                    obj = bucket.Object('inventory.txt')
-                    obj.download_fileobj(f)
+            ensure_downloaded('inventory.txt', inventory_path, bucket)
             with open(inventory_path, 'r') as f:
                 self.files = [tuple(line.strip().split(','))
                               for line in f]
-            if not os.path.exists(labels_csv_path) or os.path.getsize(labels_csv_path) == 0:
-                with open(labels_csv_path, 'wb') as f:
-                    obj = bucket.Object('DL_info.csv')
-                    obj.download_fileobj(f)
+            ensure_downloaded('DL_info.csv', labels_csv_path, bucket)
         else:
             images_dir = os.path.join(root, 'Images_png')
             files = []
