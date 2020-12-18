@@ -174,8 +174,11 @@ class DeepLesionDataset(data.Dataset):
             s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint_url)
             bucket = s3.Bucket(self.s3_bucket)
             with open(path, 'wb') as file:
-                obj = bucket.Object(f'Images_png/{d}/{f}')
+                key = f'Images_png/{d}/{f}'
+                print(f'Downloading {key}')
+                obj = bucket.Object(key)
                 obj.download_fileobj(file)
+                print(f'{key} downloaded')
         x = read_hu(path)
         x = torch.Tensor(x)
         x = x.unsqueeze(0)
