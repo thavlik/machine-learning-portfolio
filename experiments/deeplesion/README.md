@@ -1,7 +1,7 @@
 These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesion) dataset released by the [National Institute of Health](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images) in 2018. The modeling task entails detecting and localizing visible lesions.
 
 ## Initial Attempt
-My first effort entailed modeling the probability of a lesion being present and the lesion's bounding box as a multivariate  gaussian. Concretely, this means that instead of the network directly predicting the class labels, the network predicts mean and log variance values that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114).
+My first effort entailed modeling the probability of a lesion being present and the lesion's bounding box as a multivariate  gaussian. Concretely, this means that instead of the model directly predicting the class labels, it predicts mean and variance parameters that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use in was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114).
 
 ```python
 def reparameterize(mu: Tensor, logvar: Tensor) -> Tensor:
