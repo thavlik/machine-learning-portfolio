@@ -27,6 +27,10 @@ class Regressor(nn.Module):
 
     def loss_function(self,
                       prediction: Tensor,
-                      target: Tensor) -> dict:
-        loss = F.mse_loss(prediction, target)
+                      target: Tensor,
+                      objective: str = 'mse') -> dict:
+        if objective == 'mse':
+            loss = F.mse_loss(prediction, target)
+        else:
+            raise NotImplementedError
         return {'loss': loss}

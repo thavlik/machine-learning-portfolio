@@ -135,6 +135,8 @@ class DeepLesionDataset(data.Dataset):
         self.delete_after_use = delete_after_use
         labels_csv_path = os.path.join(root, 'DL_info.csv')
         if self.download:
+            if not os.path.exists(root):
+                os.makedirs(root)
             s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
             self.bucket = s3.Bucket(s3_bucket)
             inventory_path = os.path.join(root, 'inventory.txt')
