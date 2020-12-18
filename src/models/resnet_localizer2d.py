@@ -8,11 +8,11 @@ from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
 from .inception import InceptionV3
-from .regressor import Regressor
+from .localizer import Localizer
 from .util import get_pooling2d, get_activation
 
 
-class ResNetRegressor2d(Regressor):
+class ResNetLocalizer2d(Localizer):
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],

@@ -3,7 +3,7 @@ import torch
 from models import create_model
 from vae import VAEExperiment
 from classification import ClassificationExperiment
-from regression import RegressionExperiment
+from localization import LocalizationExperiment
 from dataset import ReferenceDataset, get_example_shape, get_output_features
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -21,7 +21,7 @@ from merge_strategy import strategy
 from neural_gbuffer import neural_gbuffer
 
 
-def regression2d(config: dict, run_args: dict) -> RegressionExperiment:
+def localization2d(config: dict, run_args: dict) -> LocalizationExperiment:
     exp_params = config['exp_params']
     c, h, w = get_example_shape(exp_params['data'])
     num_output_features = get_output_features(exp_params['data'])
@@ -30,7 +30,7 @@ def regression2d(config: dict, run_args: dict) -> RegressionExperiment:
                          height=h,
                          channels=c,
                          num_output_features=num_output_features)
-    return RegressionExperiment(model,
+    return LocalizationExperiment(model,
                                 params=exp_params)
 
 
@@ -329,7 +329,7 @@ entrypoints = {
     'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,
     'comparison': comparison,
-    'regression2d': regression2d,
+    'localization2d': localization2d,
     'rl2d': rl2d,
     'vae1d': vae1d,
     'vae2d': vae2d,

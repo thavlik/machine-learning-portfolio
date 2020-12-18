@@ -18,18 +18,18 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional
 from plot import get_plot_fn
-from models import Regressor
+from models import Localizer
 from merge_strategy import strategy
 from typing import List
 
 
-class RegressionExperiment(pl.LightningModule):
+class LocalizationExperiment(pl.LightningModule):
     def __init__(self,
-                 regressor: Regressor,
+                 localizer: Localizer,
                  params: dict) -> None:
         super().__init__()
 
-        self.regressor = regressor
+        self.localizer = localizer
         self.params = params
         self.curr_device = None
 
@@ -42,7 +42,7 @@ class RegressionExperiment(pl.LightningModule):
             self.plots = []
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
-        return self.regressor(input, **kwargs)
+        return self.localizer(input, **kwargs)
 
     def sample_images(self, plot: dict, val_indices: Tensor):
         revert = self.training
@@ -59,7 +59,7 @@ class RegressionExperiment(pl.LightningModule):
             for x in batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
-                x = self.regressor(x)
+                x = self.localizer(x)
                 predictions.append(x)
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))
@@ -90,7 +90,7 @@ class RegressionExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        train_loss = self.regressor.loss_function(y, labels,
+        train_loss = self.localizer.loss_function(y, labels,
                                                   **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
@@ -105,7 +105,7 @@ class RegressionExperiment(pl.LightningModule):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.forward(real_img).cpu()
-        val_loss = self.regressor.loss_function(y, labels,
+        val_loss = self.localizer.loss_function(y, labels,
                                                 **self.params.get('loss_params', {}))
         return val_loss
 
@@ -120,7 +120,7 @@ class RegressionExperiment(pl.LightningModule):
             self.log('val/' + metric, torch.Tensor(values).mean())
 
     def configure_optimizers(self):
-        optims = [optim.Adam(self.regressor.parameters(),
+        optims = [optim.Adam(self.localizer.parameters(),
                              **self.params['optimizer'])]
         scheds = []
         return optims, scheds

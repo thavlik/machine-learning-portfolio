@@ -116,7 +116,7 @@
             },
             "args": [
                 "--config",
-                "experiments/deeplesion/regression/basic.yaml"
+                "experiments/deeplesion/localization/basic.yaml"
             ]
         },
         {

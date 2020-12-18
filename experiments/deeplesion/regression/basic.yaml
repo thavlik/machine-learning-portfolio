@@ -1,8 +1,8 @@
-entrypoint: regression2d
+entrypoint: localization2d
 
 model_params:
-  arch: ResNetRegressor2d
-  name: ResNetRegressor2d
+  arch: ResNetLocalizer2d
+  name: ResNetLocalizer2d
   pooling: max
   hidden_dims: [64, 128, 128, 128, 64]
   

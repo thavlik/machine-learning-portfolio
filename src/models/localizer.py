@@ -6,8 +6,8 @@ from typing import List, Callable, Union, Any, TypeVar, Tuple
 from .util import reparameterize
 
 
-class Regressor(nn.Module):
-    """ Base class for a model that carries out nonlinear regression.
+class Localizer(nn.Module):
+    """ Base class for a model that carries out nonlinear localization.
     """
     def __init__(self,
                  name: str,

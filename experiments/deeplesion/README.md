@@ -9,7 +9,7 @@ def reparameterize(mu: Tensor, logvar: Tensor) -> Tensor:
     eps = torch.randn_like(std)
     return eps * std + mu
 
-class MyRegressionModel(nn.Module):
+class MyLocalizationModel(nn.Module):
     ...
 
     def forward(self, input: Tensor) -> Tensor:
