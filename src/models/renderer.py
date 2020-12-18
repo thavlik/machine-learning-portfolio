@@ -14,9 +14,7 @@ class BaseRenderer(nn.Module):
         self.name = name
         self.enable_fid = enable_fid
         if enable_fid:
-            print('Loading InceptionV3')
             self.inception = InceptionV3(fid_blocks, use_fid_inception=True)
-            print('InceptionV3 loaded')
 
     @abstractmethod
     def decode(self,

@@ -28,10 +28,9 @@ COPY requirements.txt .
 RUN conda install cudatoolkit=10.1
 RUN pip install https://download.pytorch.org/whl/cu101/torch-1.6.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
 RUN pip install https://download.pytorch.org/whl/cu101/torchvision-0.7.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
+RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
 RUN pip install -r requirements.txt
-
-COPY experiments experiments
-COPY src src
-COPY docker_entrypoint.sh .
-RUN chmod +x ./docker_entrypoint.sh
+WORKDIR /
+RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
+WORKDIR /machine-learning-portfolio
 CMD ["./docker_entrypoint.sh"]
