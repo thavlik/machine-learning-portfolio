@@ -100,7 +100,7 @@ def load_labels_csv(path: str,
                 'size': [width, height],
                 'dicom_windows': dicom_windows,
             }
-            comps = [1.0]
+            comps = [[1.0]]
             comps.extend([values[k] for k in components])
             if flatten_components:
                 comps = torch.Tensor(flatten(comps))
@@ -165,6 +165,7 @@ class DeepLesionDataset(data.Dataset):
             self.files = files
         self.labels = load_labels_csv(
             labels_csv_path, components, flatten_labels)
+        self.zeros = torch.zeros(self.labels[list(self.labels.keys())[0]].shape[0])
 
     def __getitem__(self, index):
         d, f = self.files[index]
@@ -185,7 +186,7 @@ class DeepLesionDataset(data.Dataset):
         x = read_hu(path)
         x = torch.Tensor(x)
         x = x.unsqueeze(0)
-        y = self.labels.get(f'{d}_{f}', [])
+        y = self.labels.get(f'{d}_{f}', self.zeros)
         if self.delete_after_use:
             os.remove(path)
         return (x, y)

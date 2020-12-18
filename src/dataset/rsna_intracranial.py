@@ -4,7 +4,7 @@ import torch
 import torch.utils.data as data
 from torch import Tensor
 import pydicom
-from dicom_util import normalized_dicom_pixels
+from .dicom_util import normalized_dicom_pixels
 import boto3
 import tempfile
 from botocore import UNSIGNED

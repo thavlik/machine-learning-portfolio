@@ -351,13 +351,14 @@ def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
 
 
 def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
+    torch.set_num_threads(4)
     manual_seed = config.get('manual_seed', 100)
     torch.manual_seed(manual_seed)
     np.random.seed(manual_seed)
     experiment = create_experiment(config, run_args)
     if experiment is None:
         return
-    experiment = experiment.cuda()
+    #experiment = experiment.cuda()
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,

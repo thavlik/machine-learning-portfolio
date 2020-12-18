@@ -105,6 +105,21 @@
             ]
         },
         {
+            "name": "Python: train DeepLesion Basic",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "-1",
+            },
+            "args": [
+                "--config",
+                "experiments/deeplesion/regression/basic.yaml"
+            ]
+        },
+        {
             "name": "Python: train DeepLesion VAE",
             "type": "python",
             "request": "launch",
