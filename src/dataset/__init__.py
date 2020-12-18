@@ -10,6 +10,7 @@ from .batch_video import *
 from .toy_neural_graphics import *
 import nonechucks as nc
 
+
 def split_dataset(dataset, split):
     n_train_imgs = np.floor(len(dataset) * split).astype('int')
     n_val_imgs = len(dataset) - n_train_imgs
@@ -76,7 +77,8 @@ def get_example_shape(data: dict):
 
 def get_output_features(data: dict) -> int:
     if data['name'] == 'deeplesion':
-        return sum([DLCOMPLEN[k]
-                    for k in data['training']['components']])
+        # First component is certainty of class label
+        return 1 + sum([DLCOMPLEN[k]
+                        for k in data['training']['components']])
     else:
         raise NotImplementedError

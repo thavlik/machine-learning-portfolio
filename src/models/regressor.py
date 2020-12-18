@@ -27,11 +27,14 @@ class Regressor(nn.Module):
 
     def loss_function(self,
                       prediction: Tensor,
-                      target: Tensor,
+                      target: List[Tensor],
                       objective: str = 'mse') -> dict:
-        # TODO: deal with healthy vs unhealthy loss
-        if objective == 'mse':
-            loss = F.mse_loss(prediction, target)
-        else:
-            raise NotImplementedError
+        loss = 0.0
+        for pred, targ in zip(prediction, target):
+            if len(targ) == 0:
+                # Only certainty should be penalized
+                # because there is no lesion
+                loss += (pred[0] - 1.0) ** 2
+            else:
+                loss += F.mse_loss(prediction, target)
         return {'loss': loss}

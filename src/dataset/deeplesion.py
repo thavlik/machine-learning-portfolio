@@ -100,7 +100,8 @@ def load_labels_csv(path: str,
                 'size': [width, height],
                 'dicom_windows': dicom_windows,
             }
-            comps = [values[k] for k in components]
+            comps = [1.0]
+            comps.extend([values[k] for k in components])
             if flatten_components:
                 comps = torch.Tensor(flatten(comps))
             labels[filename] = comps
@@ -119,7 +120,7 @@ class DeepLesionDataset(data.Dataset):
                  root: str,
                  download: bool = True,
                  s3_bucket: str = 'deeplesion',
-                 s3_endpoint_url: str = 'https://s3.us-central-1.wasabisys.com',
+                 s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
                  delete_after_use: bool = False,
                  flatten_labels: bool = True,
                  components: List[str] = [
