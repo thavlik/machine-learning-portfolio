@@ -110,10 +110,8 @@ def load_labels_csv(path: str,
 def ensure_downloaded(key, path, bucket):
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         with open(path, 'wb') as f:
-            #print(f'Downloading {key}')
             obj = bucket.Object(key)
             obj.download_fileobj(f)
-            #print(f'{key} downloaded')
             
 class DeepLesionDataset(data.Dataset):
     def __init__(self,
