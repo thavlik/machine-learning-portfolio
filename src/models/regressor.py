@@ -20,7 +20,7 @@ class Regressor(nn.Module):
     def predict(self, input: Tensor) -> List[Tensor]:
         raise NotImplementedError
 
-    def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
+    def forward(self, input: Tensor, **kwargs) -> Tensor:
         mu, log_var = self.predict(input)
         pred = reparameterize(mu, log_var)
         return pred
