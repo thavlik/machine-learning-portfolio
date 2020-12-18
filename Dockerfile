@@ -17,6 +17,7 @@ RUN apt-get update \
         libgl1-mesa-dev \
         nodejs \
         npm \
+        nano \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && npm install -g \
