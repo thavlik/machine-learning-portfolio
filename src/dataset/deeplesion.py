@@ -186,7 +186,7 @@ class DeepLesionDataset(data.Dataset):
         x = read_hu(path)
         x = torch.Tensor(x)
         x = x.unsqueeze(0)
-        y = self.labels.get(f'{d}_{f}', None)
+        y = self.labels.get(f'{d}_{f}', [])
         if self.delete_after_use:
             os.remove(path)
         return (x, y)
