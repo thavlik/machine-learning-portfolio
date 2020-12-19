@@ -4,8 +4,8 @@ model_params:
   arch: ResNetLocalizer2d
   name: ResNetLocalizer2d
   pooling: max
-  #hidden_dims: [64, 128, 128, 128, 64]
-  hidden_dims: [4, 4, 4, 4, 4]
+  hidden_dims: [32, 32, 32, 32, 32, 32, 32, 32]
+  #hidden_dims: [4, 4, 4, 4, 4]
   
 exp_params:
   loss_params:
@@ -20,7 +20,7 @@ exp_params:
     split: 0.7
     flatten_labels: true
     loader:
-      num_workers: 0
+      num_workers: 8
       drop_last: true
     training:
       root: /data/deeplesion
