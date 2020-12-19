@@ -91,11 +91,11 @@ class LocalizationExperiment(pl.LightningModule):
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
+        real_img = real_img.to(self.curr_device)
         print('================ DEVICE ==============')
         print(self.device)
         print('================ END DEVICE ==============')
 
-        real_img = real_img.to(self.curr_device)
         pred_labels, pred_params = [y.cpu() for y in self.forward(real_img)]
 
         train_loss = self.localizer.loss_function([pred_labels, pred_params],
