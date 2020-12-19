@@ -27,9 +27,9 @@ class MyLocalizationModel(nn.Module):
 ```
 
 ## Results
-(TODO: insert picture of validation results)
+![](images/DeepLesion_Basic_localize_lesions_0.png)
 
 (TODO: insert picture of training dynamics)
 
 ## TODO
-- Visualize results
+- Improve visualization
