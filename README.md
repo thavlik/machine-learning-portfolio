@@ -54,7 +54,6 @@ Please open an issue or pull request if you would like to contribute.
 ## TODO
 - Send logs to s3
 - Manually back up weights to s3 every n steps
-- visualize DeepLesion
 
 ## License
 Everything is released under MIT / Apache 2.0 dual license, which is extremely permissive. Open an issue if somehow neither is sufficient.
