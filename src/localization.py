@@ -92,9 +92,6 @@ class LocalizationExperiment(pl.LightningModule):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        print('================ DEVICE ==============')
-        print(self.device)
-        print('================ END DEVICE ==============')
 
         pred_labels, pred_params = [y.cpu() for y in self.forward(real_img)]
 
