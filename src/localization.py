@@ -59,7 +59,7 @@ class LocalizationExperiment(pl.LightningModule):
             x, target_label, target_param = item
             x = x.unsqueeze(0)
             test_input.append(x)
-            pred_label, pred_param = self.localizer(x)
+            pred_label, pred_param = self.localizer(x.to(self.curr_device))
             pred_labels.append(pred_label.detach().cpu())
             pred_params.append(pred_param.detach().cpu())
             target_labels.append(target_label.unsqueeze(0))

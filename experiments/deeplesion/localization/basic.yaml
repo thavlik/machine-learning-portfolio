@@ -29,7 +29,7 @@ exp_params:
         - bounding_boxes
   plot:
     fn: localize_lesions
-    sample_every_n_steps: 5_000
+    sample_every_n_steps: 50
     batch_size: 8
     params: {}
   
