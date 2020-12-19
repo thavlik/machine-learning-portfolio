@@ -1,6 +1,6 @@
 exp_params:
   data:
-    name: rsna-intracranial
+    name: rsna-ich
     split: 0.7
     loader:
       num_workers: 12
@@ -8,6 +8,6 @@ exp_params:
     training:
       root: /data
       download: true
-  batch_size: 64
+      use_zip: true
+  batch_size: 4
   warmup_steps: 256
-  
