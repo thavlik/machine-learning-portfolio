@@ -66,7 +66,7 @@ def load_labels_csv(path: str,
             parts = parts[4:]
             measurement_coordinates = [
                 float(s.strip()) for s in measurement_coordinates.split(',')]
-            bounding_boxes = [float(s.strip())
+            bounding_boxes = [float(s.strip())/512.0
                               for s in bounding_boxes.split(',')]
             lesion_diameters_pixel = [
                 float(s.strip()) for s in lesion_diameters_pixel.split(',')]

@@ -63,11 +63,19 @@ def localize_lesions(test_input: Tensor,
                      indicator_thickness: int = 16):
     rows = test_input.shape[0]
     cols = 1
+    h, w = test_input.shape[2:]
     if figsize is None:
         figsize = [20, rows * 15]
     fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
     for (ax, x, pred_label, pred_param, targ_label, targ_param) in zip(axs, test_input, pred_labels, pred_params, target_labels, target_params):
-        #label_acc = (targ_label - pred_label) ** 2
+        pred_param[0] *= w
+        pred_param[1] *= h
+        pred_param[2] *= w
+        pred_param[3] *= h
+        targ_param[0] *= w
+        targ_param[1] *= h
+        targ_param[2] *= w
+        targ_param[3] *= h
         orig_x = x.squeeze().numpy()
         x = apply_softwindow(orig_x)
         c_segs = create_segmentation(orig_x, [targ_param.numpy()]).astype(int)
@@ -81,6 +89,7 @@ def localize_lesions(test_input: Tensor,
                             color=(0, 1, 0),
                             mode='thick')
         # TODO
+        #label_acc = (targ_label - pred_label) ** 2
         #x = add_indicator_to_image(
         #    x, label_acc, indicator_thickness, after=False)
         ax.imshow(x)
