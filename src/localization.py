@@ -45,29 +45,30 @@ class LocalizationExperiment(pl.LightningModule):
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.localizer(input, **kwargs)
 
-    def sample_images(self, plot: dict, val_indices: Tensor):
+    def sample_images(self, plot: dict, batch: Tensor):
         revert = self.training
         if revert:
             self.eval()
 
         test_input = []
-        predictions = []
-
-        for class_indices in val_indices:
-            batch = [self.sample_dataloader.dataset[int(i)][0]
-                     for i in class_indices]
-            class_input = []
-            for x in batch:
-                x = x.unsqueeze(0)
-                class_input.append(x)
-                x = self.localizer(x)
-                predictions.append(x)
-            class_input = torch.cat(class_input, dim=0)
-            test_input.append(class_input.unsqueeze(0))
-
+        pred_labels = []
+        pred_params = []
+        target_labels = []
+        target_params = []
+        for item in batch:
+            x, target_label, target_param = item
+            x = x.unsqueeze(0)
+            test_input.append(x)
+            pred_label, pred_param = self.localizer(x)
+            pred_labels.append(pred_label.detach().cpu())
+            pred_params.append(pred_param.detach().cpu())
+            target_labels.append(target_label.unsqueeze(0))
+            target_params.append(target_param.unsqueeze(0))
         test_input = torch.cat(test_input, dim=0).cpu()
-        targets = torch.cat(targets, dim=0).cpu()
-        predictions = torch.cat(predictions, dim=0).cpu()
+        pred_labels = torch.cat(pred_labels, dim=0)
+        pred_params = torch.cat(pred_params, dim=0)
+        target_labels = torch.cat(target_labels, dim=0)
+        target_params = torch.cat(target_params, dim=0)
 
         # Extensionless output path (let plotting function choose extension)
         out_path = os.path.join(self.logger.save_dir,
@@ -76,9 +77,10 @@ class LocalizationExperiment(pl.LightningModule):
                                 f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         fn = get_plot_fn(plot['fn'])
         fn(test_input=test_input,
-           targets=targets,
-           predictions=predictions,
-           baselines=torch.Tensor([0.0 for _ in range(6)]),
+           pred_labels=pred_labels,
+           pred_params=pred_params,
+           target_labels=target_labels,
+           target_params=target_params,
            out_path=out_path,
            **plot['params'])
 
@@ -97,10 +99,10 @@ class LocalizationExperiment(pl.LightningModule):
                                                   **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
-        if self.global_step > 0:
-            for plot, val_indices in zip(self.plots, self.val_indices):
-                if self.global_step % plot['sample_every_n_steps'] == 0:
-                    self.sample_images(plot, val_indices)
+        # if self.global_step > 0:
+        for plot, val_batch in zip(self.plots, self.val_batches):
+            if self.global_step % plot['sample_every_n_steps'] == 0:
+                self.sample_images(plot, val_batch)
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
@@ -179,30 +181,21 @@ class LocalizationExperiment(pl.LightningModule):
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
 
-        val_indices = []
+        val_batches = []
         for plot in self.plots:
-            indices = [get_positive_idx(dataset)
-                       for _ in range(plot['batch_size'])]
-            val_indices.append(indices)
-        self.val_indices = val_indices
+            batch = [get_positive_example(dataset)
+                     for _ in range(plot['batch_size'])]
+            for _, label, _ in batch:
+                assert torch.is_nonzero(label)
+            val_batches.append(batch)
+        self.val_batches = val_batches
 
         return self.sample_dataloader
 
 
-def get_positive_idx(ds, end_idx=None):
-    n = len(ds)
-    start_idx = np.random.randint(0, n) if end_idx is None else 0
-    for i in range(n - start_idx):
-        index = i + start_idx
-        if get_label(ds, index):
-            return index
-    if end_idx is not None:
-        raise ValueError('unable to seek')
-    return get_positive_idx(ds, end_idx=start_idx)
-
-
-def get_label(ds, index):
+def get_positive_example(ds):
     try:
-        return ds.get_label(index)
+        return ds.get_positive_example()
     except:
-        return get_label(ds.dataset, index)
+        return get_positive_example(ds.dataset)
+

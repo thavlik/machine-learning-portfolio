@@ -56,6 +56,7 @@ def get_pooling4d(name: str) -> nn.Module:
 act_options = {
     'sigmoid': nn.Sigmoid,
     'tanh': nn.Tanh,
+    'leaky-relu': nn.LeakyReLU,
     'relu': nn.ReLU,
 }
 

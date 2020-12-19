@@ -22,7 +22,7 @@ class ResNetLocalizer2d(Localizer):
                  num_output_features: int,
                  dropout: float = 0.4,
                  pooling: str = None,
-                 output_activation: str = 'relu') -> None:
+                 output_activation: str = 'leaky-relu') -> None:
         super().__init__(name=name,
                          num_output_features=num_output_features)
         self.width = width

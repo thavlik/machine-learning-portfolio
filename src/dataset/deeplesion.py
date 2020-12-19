@@ -170,7 +170,21 @@ class DeepLesionDataset(data.Dataset):
     def get_label(self, index):
         d, f = self.files[index]
         key = f'{d}_{f}'
-        return key in self.labels
+        y = 1 if key in self.labels else 0
+        return torch.Tensor([y])
+
+    def get_positive_example(self, end_idx: int = None):
+        n = len(self)
+        start_idx = np.random.randint(0, n) if end_idx is None else 0
+        for i in range(n - start_idx):
+            index = i + start_idx
+            d, f = self.files[index]
+            key = f'{d}_{f}'
+            if key in self.labels:
+                return self.__getitem__(index)
+        if end_idx is not None:
+            raise ValueError('unable to seek')
+        return self.get_positive_example(end_idx=start_idx)
 
     def __getitem__(self, index):
         d, f = self.files[index]
@@ -192,9 +206,9 @@ class DeepLesionDataset(data.Dataset):
         x = torch.Tensor(x)
         x = x.unsqueeze(0)
         key = f'{d}_{f}'
-        y = self.labels.get(key, None)
-        label = torch.Tensor([0 if y is None else 1])
-        y = y or self.zeros
+        label = key in self.labels
+        y = self.labels[key] if label else self.zeros
+        label = torch.Tensor([float(label)])
         if self.delete_after_use:
             os.remove(path)
         return (x, label, y)

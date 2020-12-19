@@ -21,6 +21,7 @@ from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from torchvision.utils import save_image
 from torch.utils.data import Subset
 import nonechucks as nc
+from skimage.segmentation import mark_boundaries
 
 
 def plot_title(template: str,
@@ -36,8 +37,56 @@ def plot_title(template: str,
     return interpolated
 
 
-def localize_lesions():
-    pass
+def create_segmentation(in_img, bbox):
+    yy, xx = np.meshgrid(range(in_img.shape[0]),
+                         range(in_img.shape[1]),
+                         indexing='ij')
+    out_seg = np.zeros_like(in_img)
+    for box in bbox:
+        start_x, start_y, end_x, end_y = box
+        c_seg = (xx < end_x) & (xx > start_x) & (yy < end_y) & (yy > start_y)
+        out_seg += c_seg
+    return np.clip(out_seg, 0, 1).astype(np.float32)
+
+
+def apply_softwindow(x): return (
+    255*plt.cm.gray(0.5*np.clip((x-50)/350, -1, 1)+0.5)[:, :, :3]).astype(np.uint8)
+
+
+def localize_lesions(test_input: Tensor,
+                     pred_labels: Tensor,
+                     pred_params: Tensor,
+                     target_labels: Tensor,
+                     target_params: Tensor,
+                     out_path: str,
+                     figsize: List[float] = None,
+                     indicator_thickness: int = 16):
+    rows = test_input.shape[0]
+    cols = 1
+    if figsize is None:
+        figsize = [20, rows * 15]
+    fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
+    for (ax, x, pred_label, pred_param, targ_label, targ_param) in zip(axs, test_input, pred_labels, pred_params, target_labels, target_params):
+        #label_acc = (targ_label - pred_label) ** 2
+        orig_x = x.squeeze().numpy()
+        x = apply_softwindow(orig_x)
+        c_segs = create_segmentation(orig_x, [targ_param.numpy()]).astype(int)
+        x = mark_boundaries(image=x,
+                            label_img=c_segs,
+                            color=(1, 1, 0),
+                            mode='thick')
+        c_segs = create_segmentation(orig_x, [pred_param.numpy()]).astype(int)
+        x = mark_boundaries(image=x,
+                            label_img=c_segs,
+                            color=(0, 1, 0),
+                            mode='thick')
+        # TODO
+        #x = add_indicator_to_image(
+        #    x, label_acc, indicator_thickness, after=False)
+        ax.imshow(x)
+    fig.savefig(out_path + '.png', bbox_inches='tight')
+    plt.close(fig)
+    plt.close('all')
 
 
 def eeg(orig: Tensor,
