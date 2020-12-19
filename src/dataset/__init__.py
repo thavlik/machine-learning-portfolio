@@ -48,7 +48,6 @@ def get_dataset(name: str,
 
 
 dataset_dims = {
-    'eeg': (1, 8192),  # channels, length
     'cq500': (1, 512, 512),  # channels, height, width
     'deeplesion': (1, 512, 512),
     'rsna-intracranial': (1, 512, 512),
@@ -69,7 +68,7 @@ def get_example_shape(data: dict):
         l = data['loader']
         return torch.Size((l['num_frames'], 3, l['height'], l['width']))
     if name == 'grasp-and-lift-eeg':
-        return (32, data['training']['num_samples'])
+        return torch.Size((32, data['training']['num_samples']))
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return torch.Size(dataset_dims[name])

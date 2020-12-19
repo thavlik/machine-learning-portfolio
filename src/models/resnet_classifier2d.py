@@ -3,7 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from .classifier import Classifier
 from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
-from torch import nn, Tensor
+from torch import nn, Tensor, Size
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
 from math import sqrt, ceil
@@ -15,9 +15,7 @@ class ResNetClassifier2d(Classifier):
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],
-                 width: int,
-                 height: int,
-                 channels: int,
+                 input_shape: Size,
                  num_classes: int,
                  dropout: float = 0.4,
                  pooling: str = None) -> None:

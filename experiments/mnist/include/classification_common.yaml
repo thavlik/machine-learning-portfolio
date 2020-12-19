@@ -1,6 +1,6 @@
 include: experiments/mnist/include/dataset.yaml
 
-entrypoint: classification2d
+entrypoint: classification
 
 model_params:
   arch: 'ResNetClassifier2d'

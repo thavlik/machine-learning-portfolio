@@ -1,0 +1,39 @@
+entrypoint: "classification"
+
+model_params:
+  arch: 'ResNetClassifier1d'
+  name: 'ResNetClassifier1d'
+  hidden_dims: [512, 1024, 1024, 512]
+  num_classes: 6
+  load_weights: ../midcon-ml/logs/Classification/version_18/checkpoints/epoch=0.ckpt
+
+exp_params:
+  manual_seed: 6602
+  data:
+    name: grasp-and-lift-eeg
+    split: 0.7
+    training:
+      root: E:/grasp-and-lift-eeg-detection
+      num_samples: 2048
+      last_label_only: true
+    loader:
+      pin_memory: false
+      num_workers: 0
+  batch_size: 32
+  warmup_steps: 512
+  loss_params:
+    baseline_accuracy: 0.9739857316017151
+  optimizer:
+    lr: 0.00005
+    weight_decay: 0.000005
+
+trainer_params:
+  max_epochs: 1000000
+  log_every_n_steps: 20
+  check_val_every_n_epoch: 1
+
+logging_params:
+  save_dir: "logs/"
+  name: "EEGClassifBasic"
+
+manual_seed: 6602

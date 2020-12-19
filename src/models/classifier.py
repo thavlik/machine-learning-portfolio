@@ -20,12 +20,15 @@ class Classifier(nn.Module):
     def loss_function(self,
                       prediction: Tensor,
                       target: Tensor,
-                      objective: str = 'mse') -> dict:
+                      objective: str = 'bce',
+                      baseline_accuracy: float = None) -> dict:
         result = {}
         if objective == 'nll':
             result['loss'] = F.nll_loss(prediction, target)
         elif objective == 'mse':
             result['loss'] = F.mse_loss(prediction, target)
+        elif objective == 'bce':
+            result['loss'] = F.binary_cross_entropy(prediction, target)
         else:
             raise ValueError(f'Objective "{objective}" not implemented')
 
@@ -37,9 +40,9 @@ class Classifier(nn.Module):
         avg_acc = avg_acc.float().mean()
         result['accuracy/avg'] = avg_acc
 
-        #if baseline_accuracy is not None:
-        #    result['rel_acc/avg'] = (avg_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
-        #    result['rel_acc/any'] = (any_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+        if baseline_accuracy is not None:
+            result['rel_acc/avg'] = (avg_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+            result['rel_acc/any'] = (any_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
 
         num_classes = target.shape[1]
 
@@ -47,7 +50,7 @@ class Classifier(nn.Module):
             acc = torch.round(prediction[:, i]).int() == target[:, i]
             acc = acc.float().mean()
             result[f'accuracy/class_{i}'] = acc
-            #if baseline_accuracy is not None:
-            #    result[f'rel_acc/class_{i}'] = (acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+            if baseline_accuracy is not None:
+                result[f'rel_acc/class_{i}'] = (acc - baseline_accuracy) / (1.0 - baseline_accuracy)
         
         return result

@@ -31,16 +31,13 @@ def localization2d(config: dict, run_args: dict) -> LocalizationExperiment:
                          channels=c,
                          num_output_features=num_output_features)
     return LocalizationExperiment(model,
-                                params=exp_params)
+                                  params=exp_params)
 
 
-def classification2d(config: dict, run_args: dict) -> ClassificationExperiment:
+def classification(config: dict, run_args: dict) -> ClassificationExperiment:
     exp_params = config['exp_params']
-    c, h, w = get_example_shape(exp_params['data'])
     model = create_model(**config['model_params'],
-                         width=w,
-                         height=h,
-                         channels=c)
+                         input_shape=get_example_shape(exp_params['data']))
     return ClassificationExperiment(model,
                                     params=exp_params)
 
@@ -325,7 +322,7 @@ def comparison_tune(config: dict, run_args: dict) -> None:
 
 
 entrypoints = {
-    'classification2d': classification2d,
+    'classification': classification,
     'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,
     'comparison': comparison,
@@ -351,7 +348,7 @@ def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
 
 
 def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
-    torch.set_num_threads(4)
+    torch.set_num_threads(run_args['num_threads'])
     manual_seed = config.get('manual_seed', 100)
     torch.manual_seed(manual_seed)
     np.random.seed(manual_seed)

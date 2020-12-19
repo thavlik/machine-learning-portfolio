@@ -63,6 +63,12 @@ parser.add_argument('--num-samples',
                     type=int,
                     help='number of times to repeat the experiment (default to experiment config num_samples)',
                     default=None)
+parser.add_argument('--num-threads',
+                    dest="num_threads",
+                    metavar='NUM_THREADS',
+                    type=int,
+                    help='number of cpu threads to use (defaults to 4)',
+                    default=4)
 parser.add_argument('--smoke-test',
                     dest="smoke_test",
                     metavar='DRY_RUN',
@@ -88,6 +94,7 @@ for i in range(num_samples):
     start = time.time()
     run_series(config,
                save_dir=args.save_dir,
+               num_threads=args.num_threads,
                exp_no=0,
                total_experiments=total_experiments,
                smoke_test=args.smoke_test)

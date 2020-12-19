@@ -1,7 +1,7 @@
 include:
   - experiments/mnist/include/classification_common.yaml
 
-entrypoint: classification2d
+entrypoint: classification
 
 logging_params:
   name: "MNIST_Basic"
