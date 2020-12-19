@@ -5,7 +5,7 @@ dir=$(pwd)
 docker run \
     -it \
     -p 6007:6006 \
-    -v $(wslpath -w logs)/DeepLesion_Basic:/logs  \
+    -v $(wslpath -w logs)/localization2d:/logs  \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \

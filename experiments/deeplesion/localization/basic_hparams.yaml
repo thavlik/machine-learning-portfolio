@@ -1,0 +1,11 @@
+entrypoint: hparam_search
+
+num_samples: 4
+
+max_steps: 2000
+
+randomize_seed: true
+
+experiment:
+  - experiments/deeplesion/localization/basic.yaml
+  - experiments/deeplesion/include/hparams.yaml

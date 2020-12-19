@@ -117,6 +117,18 @@
             ]
         },
         {
+            "name": "Python: train DeepLesion HParams",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/deeplesion/localization/basic_hparams.yaml"
+            ]
+        },
+        {
             "name": "Python: train DeepLesion VAE",
             "type": "python",
             "request": "launch",

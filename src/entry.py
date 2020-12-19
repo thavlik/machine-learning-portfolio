@@ -155,6 +155,9 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         'max_steps': config.get('max_steps', 50),
         'log_every_n_steps': 1,
     })
+    if config.get('randomize_seed', False):
+        print('Warning: randomizing seed for each trial')
+        run_config['manual_seed'] = tune.sample_from(lambda spec: np.random.randint(0, 64_000))
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,

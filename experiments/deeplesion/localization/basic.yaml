@@ -4,7 +4,7 @@ model_params:
   arch: ResNetLocalizer2d
   name: ResNetLocalizer2d
   pooling: max
-  hidden_dims: [256, 128, 64, 64, 32, 32]
+  hidden_dims: [128, 128, 64, 64, 32, 32]
   #zhidden_dims: [32, 32, 32, 32, 32, 32, 32, 32]
   #hidden_dims: [4, 4, 4, 4, 4]
   
