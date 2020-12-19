@@ -211,6 +211,8 @@ class DeepLesionDataset(data.Dataset):
         label = torch.Tensor([float(label)])
         if self.delete_after_use:
             os.remove(path)
+        if x.shape != torch.Size([1, 512, 512]):
+            raise ValueError(f'Invalid shape {x.shape}')
         return (x, label, y)
 
     def __len__(self):

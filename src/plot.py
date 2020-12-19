@@ -65,7 +65,7 @@ def localize_lesions(test_input: Tensor,
     cols = 1
     h, w = test_input.shape[2:]
     if figsize is None:
-        figsize = [20, rows * 15]
+        figsize = [5, rows * 6]
     fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
     for (ax, x, pred_label, pred_param, targ_label, targ_param) in zip(axs, test_input, pred_labels, pred_params, target_labels, target_params):
         pred_param[0] *= w
