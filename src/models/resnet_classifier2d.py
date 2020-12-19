@@ -21,9 +21,9 @@ class ResNetClassifier2d(Classifier):
                  pooling: str = None) -> None:
         super().__init__(name=name,
                          num_classes=num_classes)
-        self.width = input_shape[0]
+        self.width = input_shape[2]
         self.height = input_shape[1]
-        self.channels = input_shape[2]
+        self.channels = input_shape[0]
         self.hidden_dims = hidden_dims.copy()
         if pooling is not None:
             pool_fn = get_pooling2d(pooling)
