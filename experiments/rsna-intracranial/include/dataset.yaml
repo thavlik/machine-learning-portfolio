@@ -8,6 +8,6 @@ exp_params:
     training:
       root: /data/rsna-ich
       download: true
-      use_zip: true
+      use_gzip: true
   batch_size: 4
   warmup_steps: 256
