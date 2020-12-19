@@ -21,6 +21,7 @@ from plot import get_plot_fn
 from models import Localizer
 from merge_strategy import strategy
 from typing import List
+from plot import get_labels
 
 
 class LocalizationExperiment(pl.LightningModule):
@@ -96,10 +97,10 @@ class LocalizationExperiment(pl.LightningModule):
                                                   **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
-        # if self.global_step > 0:
-        #    for plot, val_indices in zip(self.plots, self.val_indices):
-        #        if self.global_step % plot['sample_every_n_steps'] == 0:
-        #            self.sample_images(plot, val_indices)
+        if self.global_step > 0:
+            for plot, val_indices in zip(self.plots, self.val_indices):
+                if self.global_step % plot['sample_every_n_steps'] == 0:
+                    self.sample_images(plot, val_indices)
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
@@ -177,4 +178,31 @@ class LocalizationExperiment(pl.LightningModule):
                                             shuffle=False,
                                             **self.params['data'].get('loader', {}))
         self.num_val_imgs = len(self.sample_dataloader)
+
+        val_indices = []
+        for plot in self.plots:
+            indices = [get_positive_idx(dataset)
+                       for _ in range(plot['batch_size'])]
+            val_indices.append(indices)
+        self.val_indices = val_indices
+
         return self.sample_dataloader
+
+
+def get_positive_idx(ds, end_idx=None):
+    n = len(ds)
+    start_idx = np.random.randint(0, n) if end_idx is None else 0
+    for i in range(n - start_idx):
+        index = i + start_idx
+        if get_label(ds, index):
+            return index
+    if end_idx is not None:
+        raise ValueError('unable to seek')
+    return get_positive_idx(ds, end_idx=start_idx)
+
+
+def get_label(ds, index):
+    try:
+        return ds.get_label(index)
+    except:
+        return get_label(ds.dataset, index)

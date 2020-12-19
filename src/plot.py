@@ -36,6 +36,10 @@ def plot_title(template: str,
     return interpolated
 
 
+def localize_lesions():
+    pass
+
+
 def eeg(orig: Tensor,
         recons: Tensor,
         model_name: str,
@@ -530,6 +534,7 @@ plot_fn = {
     'plot2d': plot2d,
     'classifier2d': classifier2d,
     'dcm': plot2d_dcm,
+    'localize_lesions': localize_lesions,
     'fmri_prob_atlas': fmri_prob_atlas,
     'fmri_stat_map_video': fmri_stat_map_video,
     'video': plot_video,

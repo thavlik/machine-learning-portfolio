@@ -29,11 +29,9 @@ exp_params:
         - lesion_diameters_pixel
         - normalized_lesion_location
   plot:
-    fn: dcm
-    params:
-      scaling: 2.0
-      suptitle:
-        y: 0.78
+    fn: localize_lesions
+    batch_size: 8
+    params: {}
   
 trainer_params:
   max_epochs: 5

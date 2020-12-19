@@ -106,12 +106,14 @@ def load_labels_csv(path: str,
             labels[filename] = comps
     return labels
 
+
 def ensure_downloaded(key, path, bucket):
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         with open(path, 'wb') as f:
             obj = bucket.Object(key)
             obj.download_fileobj(f)
-            
+
+
 class DeepLesionDataset(data.Dataset):
     def __init__(self,
                  root: str,
@@ -162,7 +164,13 @@ class DeepLesionDataset(data.Dataset):
             self.files = files
         self.labels = load_labels_csv(
             labels_csv_path, components, flatten_labels)
-        self.zeros = torch.zeros(self.labels[list(self.labels.keys())[0]].shape[0])
+        self.zeros = torch.zeros(
+            self.labels[list(self.labels.keys())[0]].shape[0])
+
+    def get_label(self, index):
+        d, f = self.files[index]
+        key = f'{d}_{f}'
+        return key in self.labels
 
     def __getitem__(self, index):
         d, f = self.files[index]
