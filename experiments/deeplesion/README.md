@@ -26,7 +26,10 @@ class MyLocalizationModel(nn.Module):
         return labels, bbox
 ```
 
+Note that the prediction for class label (lesion present vs. absent) is inferred directly, without involvement of the normal distribution. Bounding box coordinates only contribute to loss when a lesion is present.
+
 ## Results
+The picture below is a placeholder that visualizes where lesions are on the image. A model will soon be trained to predict these coordinates, which will then be overlayed in a different color.
 ![](images/DeepLesion_Basic_localize_lesions_0.png)
 
 (TODO: insert picture of training dynamics)
