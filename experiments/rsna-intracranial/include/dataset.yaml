@@ -6,7 +6,7 @@ exp_params:
       num_workers: 12
       drop_last: true
     training:
-      root: /data
+      root: /data/rsna-ich
       download: true
       use_zip: true
   batch_size: 4
