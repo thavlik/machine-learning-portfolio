@@ -103,10 +103,10 @@ class LocalizationExperiment(pl.LightningModule):
                                                   **self.params.get('loss_params', {}))
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
-        # if self.global_step > 0:
-        for plot, val_batch in zip(self.plots, self.val_batches):
-            if self.global_step % plot['sample_every_n_steps'] == 0:
-                self.sample_images(plot, val_batch)
+        if self.global_step > 0:
+            for plot, val_batch in zip(self.plots, self.val_batches):
+                if self.global_step % plot['sample_every_n_steps'] == 0:
+                    self.sample_images(plot, val_batch)
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
