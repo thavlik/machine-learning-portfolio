@@ -21,14 +21,14 @@ class ResNetClassifier2d(Classifier):
                  pooling: str = None) -> None:
         super().__init__(name=name,
                          num_classes=num_classes)
-        self.width = width
-        self.height = height
-        self.channels = channels
+        self.width = input_shape[0]
+        self.height = input_shape[1]
+        self.channels = input_shape[2]
         self.hidden_dims = hidden_dims.copy()
         if pooling is not None:
             pool_fn = get_pooling2d(pooling)
         modules = []
-        in_features = channels
+        in_features = self.channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock2d(in_features,
                                         h_dim))
@@ -40,7 +40,7 @@ class ResNetClassifier2d(Classifier):
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * width * height
+        in_features = hidden_dims[-1] * self.width * self.height
         if pooling is not None:
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
