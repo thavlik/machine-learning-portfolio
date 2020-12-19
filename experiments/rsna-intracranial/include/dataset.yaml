@@ -1,6 +1,6 @@
 exp_params:
   data:
-    name: rsna-ich
+    name: rsna-intracranial
     split: 0.7
     loader:
       num_workers: 12
