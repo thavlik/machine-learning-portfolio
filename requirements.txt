@@ -21,3 +21,4 @@ deepmerge
 decord
 requests
 pytorch3d
+visdom
