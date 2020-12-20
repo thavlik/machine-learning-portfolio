@@ -4,18 +4,17 @@ model_params:
   arch: ResNetLocalizer2d
   name: ResNetLocalizer2d
   pooling: max
-  #hidden_dims: [128, 128, 64, 64, 32, 32]
-  hidden_dims: [4, 4, 4, 4, 4]
+  hidden_dims: [128, 128, 64, 64, 32, 32]
+  #hidden_dims: [4, 4, 4, 4, 4]
   
 exp_params:
   save_weights:
-    every_n_steps: 10
+    every_n_steps: 10_000
     delete_old: true
-    local: {zs}
+    local: {}
     s3:
       endpoint: https://nyc3.digitaloceanspaces.com
       bucket: deeplesion
-      prefix: logs/
   loss_params:
     objective: mse
   batch_size: 4
