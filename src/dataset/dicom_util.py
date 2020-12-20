@@ -32,6 +32,8 @@ def normalized_dicom_pixels(ds):
     x = np.array(x, dtype='float32')
     x = x * slope + intercept
     x = torch.Tensor(x)
+    if x.numel() != 512 * 512:
+        raise ValueError('Invalid number of input elements '
+                         f'got {x.numel()}, expected {512 * 512}')
     x = x.view(1, 512, 512)
-    assert x.shape == torch.Size([1, 512, 512]), f'got shape {ds.shape}'
     return x
