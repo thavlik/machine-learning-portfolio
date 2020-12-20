@@ -26,11 +26,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     opts = {
-        #'rsna-intracranial': {
-        #'root': args.root or 'E:/rsna-intracranial',
-        #'download': False,
-        #'use_gzip': False,
-        #},
+        # 'rsna-intracranial': {
+        # 'root': args.root or 'E:/rsna-intracranial',
+        # 'download': False,
+        # 'use_gzip': False,
+        # },
         'rsna-intracranial': {
             'root': '/data/rsna-ich',
             'download': True,
@@ -46,9 +46,9 @@ if __name__ == '__main__':
 
     for train in [False, True]:
         ds = get_dataset(args.dataset,
-                        opts[args.dataset],
-                        train=train,
-                        safe=False)
+                         opts[args.dataset],
+                         train=train,
+                         safe=False)
         loader = DataLoader(ds,
                             batch_size=1,
                             num_workers=args.num_workers,
