@@ -22,6 +22,7 @@ from models import Classifier
 from merge_strategy import strategy
 from typing import List
 from plot import get_random_example_with_label
+from linear_warmup import LinearWarmup
 
 class ClassificationExperiment(pl.LightningModule):
 
@@ -127,31 +128,11 @@ class ClassificationExperiment(pl.LightningModule):
         optims = [optim.Adam(self.classifier.parameters(),
                              **self.params['optimizer'])]
         scheds = []
+        if 'warmup_steps' in self.params:
+            scheds.append(LinearWarmup(optims[0],
+                                       lr=self.params['optimizer']['lr'],
+                                       num_steps=self.params['warmup_steps']))
         return optims, scheds
-
-    def optimizer_step(
-        self,
-        epoch: int,
-        batch_idx: int,
-        optimizer: Optimizer,
-        optimizer_idx: int,
-        optimizer_closure: Optional[Callable],
-        on_tpu: bool,
-        using_native_amp: bool,
-        using_lbfgs: bool,
-    ) -> None:
-        # warm up lr, linear ramp
-        warmup_steps = self.params.get('warmup_steps', 0)
-        if warmup_steps > 0 and self.trainer.global_step < warmup_steps:
-            lr_scale = min(1.0, float(
-                self.trainer.global_step + 1) / float(warmup_steps))
-            lr = lr_scale * self.params['optimizer']['lr']
-            for pg in optimizer.param_groups:
-                pg['lr'] = lr
-
-        # update params
-        optimizer.step(closure=optimizer_closure)
-        optimizer.zero_grad()
 
     def train_dataloader(self):
         ds_params = self.params['data'].get('training', {})
