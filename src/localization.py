@@ -93,9 +93,9 @@ class LocalizationExperiment(pl.LightningModule):
     def save_weights(self, params: dict):
         if 'local' in params:
             checkpoint_dir = os.path.join(self.logger.save_dir,
-                                       self.logger.name,
-                                       f"version_{self.logger.version}",
-                                       "checkpoints")
+                                          self.logger.name,
+                                          f"version_{self.logger.version}",
+                                          "checkpoints")
             path = os.path.join(checkpoint_dir, f'step{self.global_step}.pt')
             torch.save(self.state_dict(), path)
             if params.get('delete_old', True):
@@ -110,7 +110,8 @@ class LocalizationExperiment(pl.LightningModule):
             buf.seek(0)
             s3_params = params['s3']
             prefix = s3_params.get('prefix', 'logs/')
-            key = prefix + f"{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step}.pt"
+            key = prefix + \
+                f"{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step}.pt"
             bucket = s3_params['bucket']
             s3 = boto3.client('s3',
                               endpoint_url=s3_params['endpoint'])
