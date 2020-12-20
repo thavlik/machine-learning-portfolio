@@ -5,7 +5,7 @@ from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
 from .trends_fmri import *
-from .video import *
+#from .video import *
 from .batch_video import *
 from .toy_neural_graphics import *
 import nonechucks as nc
@@ -30,7 +30,7 @@ datasets = {
     'trends-fmri': TReNDSfMRIDataset,
     'grasp-and-lift-eeg': GraspAndLiftEEGDataset,
     'toy-neural-graphics': ToyNeuralGraphicsDataset,
-    'video': VideoDataset,
+    #'video': VideoDataset,
 }
 
 

@@ -11,9 +11,6 @@ import decord
 from decord import VideoLoader, VideoReader
 from decord import cpu, gpu
 
-decord.bridge.set_bridge('torch')
-
-
 class VideoDataset(data.Dataset):
     def __init__(self,
                  dir: str,
