@@ -37,13 +37,15 @@ datasets = {
 def get_dataset(name: str,
                 params: dict,
                 split: float = None,
-                train: bool = True):
+                train: bool = True,
+                safe: bool = True):
     if name not in datasets:
         raise ValueError(f"unknown dataset '{name}'")
     ds = datasets[name](**params)
     if split is not None:
         ds = split_dataset(ds, split)[1 if train else 0]
-    ds = nc.SafeDataset(ds)
+    if safe:
+        ds = nc.SafeDataset(ds)
     return ds
 
 

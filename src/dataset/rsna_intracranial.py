@@ -22,7 +22,7 @@ def get_inventory(bucket,
     if use_gzip:
         filename += '.gz'
     path = os.path.join(root, prefix, filename)
-    if notexist(path):
+    if not_exist(path):
         if not download:
             raise ValueError(f'with download == False, {path} not found')
         parent = os.path.dirname(path)
@@ -94,7 +94,7 @@ def process_labels(files: list, path: str) -> torch.Tensor:
     return torch.Tensor(labels)
 
 
-def notexist(path):
+def not_exist(path):
     return not os.path.exists(path) or os.path.getsize(path) == 0
 
 
@@ -129,7 +129,7 @@ class RSNAIntracranialDataset(data.Dataset):
                 if use_gzip:
                     labels_csv_key += '.gz'
                 labels_csv_path = os.path.join(root, labels_csv_key)
-                if notexist(labels_csv_path):
+                if not_exist(labels_csv_path):
                     with open(labels_csv_path, 'wb') as f:
                         obj = bucket.Object(labels_csv_key)
                         obj.download_fileobj(f)
@@ -140,10 +140,16 @@ class RSNAIntracranialDataset(data.Dataset):
         else:
             if not os.path.exists(dcm_path):
                 raise ValueError(f'Directory {dcm_path} does not exist')
+            if use_gzip:
+                ext = '.dcm.gz'
+                labels_file = 'stage_2_train.csv.gz'
+            else:
+                ext = '.dcm'
+                labels_file = 'stage_2_train.csv'
             self.files = [f for f in os.listdir(dcm_path)
-                          if f.endswith('.dcm')]
+                          if f.endswith(ext)]
             self.labels = process_labels(
-                self.files, os.path.join(root, 'stage_2_train.csv')) if train else None
+                self.files, os.path.join(root, labels_file)) if train else None
 
     def load_dcm(self, path: str) -> Tensor:
         if self.use_gzip:
@@ -172,7 +178,7 @@ class RSNAIntracranialDataset(data.Dataset):
             file += '.gz'
         path = os.path.join(self.dcm_path, file)
         y = self.labels[index] if self.labels is not None else []
-        if notexist(path):
+        if not_exist(path):
             if not self.download:
                 raise ValueError(f'File {path} does not exist')
             self.download_dcm(file, path)
