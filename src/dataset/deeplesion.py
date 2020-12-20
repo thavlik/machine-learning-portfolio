@@ -119,7 +119,7 @@ class DeepLesionDataset(data.Dataset):
                  root: str,
                  download: bool = True,
                  s3_bucket: str = 'deeplesion',
-                 s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
+                 s3_endpoint: str = 'https://nyc3.digitaloceanspaces.com',
                  delete_after_use: bool = False,
                  flatten_labels: bool = True,
                  components: List[str] = [
@@ -140,13 +140,13 @@ class DeepLesionDataset(data.Dataset):
         self.root = root
         self.download = download
         self.s3_bucket = s3_bucket
-        self.s3_endpoint_url = s3_endpoint_url
+        self.s3_endpoint = s3_endpoint
         self.delete_after_use = delete_after_use
         labels_csv_path = os.path.join(root, 'DL_info.csv')
         if self.download:
             if not os.path.exists(root):
                 os.makedirs(root)
-            s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
+            s3 = boto3.resource('s3', endpoint_url=s3_endpoint)
             bucket = s3.Bucket(s3_bucket)
             inventory_path = os.path.join(root, 'inventory.txt')
             ensure_downloaded('inventory.txt', inventory_path, bucket)
@@ -193,7 +193,7 @@ class DeepLesionDataset(data.Dataset):
             if not self.download:
                 raise ValueError(
                     f'with download == False, {path} was not found')
-            s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint_url)
+            s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint)
             bucket = s3.Bucket(self.s3_bucket)
             dirname = os.path.dirname(path)
             if not os.path.exists(dirname):

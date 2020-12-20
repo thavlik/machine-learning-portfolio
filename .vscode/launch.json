@@ -123,6 +123,9 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "-1"
+            },
             "args": [
                 "--config",
                 "experiments/deeplesion/localization/basic_hparams.yaml"
