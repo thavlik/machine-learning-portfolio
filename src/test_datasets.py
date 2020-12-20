@@ -1,6 +1,6 @@
 import argparse
 import sys
-
+from tqdm import tqdm
 from dataset import get_dataset
 
 parser = argparse.ArgumentParser(
@@ -20,7 +20,7 @@ for train in [False, True]:
     }, train=train, safe=False)
     n = len(ds)
     bad_indices = []
-    for i in range(n):
+    for i in tqdm(range(n)):
         try:
             ex = ds[i]
         except KeyboardInterrupt:
@@ -29,7 +29,7 @@ for train in [False, True]:
             bad_indices.append(i)
             print(f'Encountered bad index ({i}):')
             print(sys.exc_info()[0])
-        if i % 50 == 0:
-            print(f'[{i}/{n}] checked')
+        #if i % 50 == 0:
+        #    print(f'[{i}/{n}] checked')
     print('Bad indices:')
     print(bad_indices)
