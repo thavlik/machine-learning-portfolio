@@ -2,6 +2,7 @@ import gc
 import os
 import math
 import torch
+import io
 import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
@@ -22,6 +23,7 @@ from models import Localizer
 from merge_strategy import strategy
 from typing import List
 from plot import get_labels
+import boto3
 
 
 class LocalizationExperiment(pl.LightningModule):
@@ -101,15 +103,31 @@ class LocalizationExperiment(pl.LightningModule):
         if self.global_step > 0:
             if 'save_weights' in self.params:
                 params = self.params['save_weights']
-                if self.global_step % params['every_n_steps'] == 0:
+                interval = params['every_n_steps']
+                if self.global_step % interval == 0:
                     if 's3' in params:
-                        raise NotImplementedError
+                        buf = io.BytesIO()
+                        torch.save(self.state_dict(), buf)
+                        buf.seek(0)
                         s3_params = params['s3']
-                        path = ''
-                        key = s3_params.get('prefix', '') + ''
-                        import boto3
-                        s3 = boto3.client('s3', endpoint_url=s3_params['endpoint'])
-                        s3.upload_file(path, s3_params['bucket'], key)
+                        prefix = s3_params.get('prefix', '')
+                        key = prefix + f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step}.pt"
+                        bucket = s3_params['bucket']
+                        print(f'Saving state to s3://{bucket}/{key}')
+                        s3 = boto3.client('s3',
+                                          endpoint_url=s3_params['endpoint'])
+                        s3.put_object(Body=buf,
+                                      Bucket=bucket,
+                                      Key=key)
+                        if s3_params.get('delete_old', True):
+                            old_key = prefix + f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step - interval}.pt"
+                            try:
+                                # Try and delete the old checkpoint now that
+                                # the new one is uploaded.
+                                s3.delete_object(Bucket=bucket, Key=old_key)
+                            except:
+                                pass
+                        
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)
@@ -208,4 +226,3 @@ def get_positive_example(ds):
         return ds.get_positive_example()
     except:
         return get_positive_example(ds.dataset)
-

@@ -358,7 +358,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     if experiment is None:
         return
     experiment.hparams = config
-    experiment = experiment.cuda()
+    #experiment = experiment.cuda()
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,
