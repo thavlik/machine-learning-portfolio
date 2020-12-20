@@ -38,7 +38,7 @@ def normalized_dicom_pixels(ds):
         if dim.floor() != dim.ceil():
             raise ValueError('Non-square number of input elements '
                              f'got {x.numel()}')
-        dim = dim.item()
+        dim = dim.int().item()
         x = x.view(1, dim, dim)
         x = ToPILImage()(x)
         x = Resize((512, 512))(x)
