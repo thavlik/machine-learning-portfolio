@@ -30,6 +30,7 @@ class CQ500Dataset(data.Dataset):
         super().__init__()
         self.root = root
         self.download = download
+        self.use_gzip = use_gzip
         self.s3_bucket = s3_bucket
         self.s3_endpoint = s3_endpoint
         labels_csv_path = os.path.join(root, 'reads.csv')
