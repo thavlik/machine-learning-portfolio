@@ -9,9 +9,15 @@ model_params:
   #hidden_dims: [4, 4, 4, 4, 4]
   
 exp_params:
+  save_weights:
+    every_n_step: 50_000
+    s3:
+      endpoint: https://nyc3.digitaloceanspaces.com
+      bucket: deeplesion
+      prefix: logs/
   loss_params:
     objective: mse
-  batch_size: 2
+  batch_size: 4
   optimizer:
     lr: 0.00002
     weight_decay: 0.00001

@@ -99,6 +99,17 @@ class LocalizationExperiment(pl.LightningModule):
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         if self.global_step > 0:
+            if 'save_weights' in self.params:
+                params = self.params['save_weights']
+                if self.global_step % params['every_n_steps'] == 0:
+                    if 's3' in params:
+                        raise NotImplementedError
+                        s3_params = params['s3']
+                        path = ''
+                        key = s3_params.get('prefix', '') + ''
+                        import boto3
+                        s3 = boto3.client('s3', endpoint_url=s3_params['endpoint'])
+                        s3.upload_file(path, s3_params['bucket'], key)
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)

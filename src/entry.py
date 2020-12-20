@@ -148,7 +148,6 @@ def get_best_config(analysis,
 def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     import ray
     from ray import tune
-    ray.init(num_cpus=6, num_gpus=1)
     run_config = load_config(config['experiment'])
     run_config = generate_run_config(run_config)
     run_config['trainer_params'] = strategy.merge(run_config['trainer_params'].copy(), {
