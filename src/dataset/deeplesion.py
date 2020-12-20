@@ -37,7 +37,7 @@ COMPONENT_LENGTHS = {
 
 
 def get_output_features(components: List[str]) -> int:
-    return sum([DLCOMPLEN[k]
+    return sum([COMPONENT_LENGTHS[k]
                 for k in components])
 
 
