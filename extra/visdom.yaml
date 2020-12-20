@@ -17,9 +17,9 @@ spec:
           image: thavlik/visdom:latest
           imagePullPolicy: Always
           command:
-            - visdom
-            - -enable_login
-            - -port 80
+            - sh
+            - -c
+            - mkdir /root/.visdom && visdom -enable_login -port "80"
           ports:
             - containerPort: 80
           resources:
@@ -27,6 +27,8 @@ spec:
               cpu: 500m
               memory: 512Mi
           env:
+            - name: VISDOM_COOKIE
+              value: myvisdomcookie
             - name: VISDOM_USE_ENV_CREDENTIALS
               value: "1"
             - name: VISDOM_USERNAME
@@ -52,64 +54,3 @@ spec:
   - name: public
     port: 80
 ---
-# Source: https://www.reddit.com/r/Traefik/comments/d36iry/traefik_20_with_certmanager/
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: default
-  name: visdom-ingress
-spec:
-  rules:
-    - host: visdom.foldy.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: visdom
-                port:
-                  number: 80
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: visdom-https-only
-spec:
-  redirectScheme:
-    scheme: https
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: visdom-gateway-80
-spec:
-  entryPoints:
-    - web
-  routes:
-    - match: Host(`visdom.foldy.dev`) && PathPrefix(`/`)
-      kind: Rule
-      services:
-        - name: visdom
-          port: 80
-      middlewares:
-        - name: visdom-https-only
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: visdom-gateway-tls
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`visdom.foldy.dev`) && PathPrefix(`/`)
-      kind: Rule
-      services:
-        - name: visdom
-          port: 80
-  tls:
-    secretName: visdom-ingress-tls
