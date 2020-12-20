@@ -37,12 +37,12 @@ def normalized_dicom_pixels(ds):
         dim = torch.sqrt(torch.Tensor([x.numel()]))
         if dim.floor() != dim.ceil():
             raise ValueError('Non-square number of input elements '
-                             f'got {x.numel()}')
+                             f'got {x.numel()} (dcm header reports {ds.Rows}x{ds.Columns})')
         dim = dim.int().item()
         x = x.view(1, dim, dim)
         x = ToPILImage()(x)
         x = Resize((512, 512))(x)
         x = ToTensor()(x)
-        print(f'Successfully resized to {x.shape} from {int(dim)}x{int(dim)}')
+        print(f'Successfully resized from {int(dim)}x{int(dim)}')
     x = x.view(1, 512, 512)
     return x
