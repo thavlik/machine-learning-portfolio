@@ -34,6 +34,7 @@ def normalized_dicom_pixels(ds):
     x = x * slope + intercept
     x = torch.Tensor(x)
     if x.numel() != 512 * 512:
+        print(f'Got shape {x.shape}')
         dim = torch.sqrt(torch.Tensor([x.numel()]))
         if dim.floor() != dim.ceil():
             raise ValueError('Non-square number of input elements '
