@@ -36,6 +36,11 @@ COMPONENT_LENGTHS = {
 }
 
 
+def get_output_features(components: List[str]) -> int:
+    return sum([DLCOMPLEN[k]
+                for k in components])
+
+
 def flatten(test_list):
     # define base case to exit recursive method
     if len(test_list) == 0:

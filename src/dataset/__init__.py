@@ -1,5 +1,5 @@
 from .cq500 import *
-from .deeplesion import DeepLesionDataset, COMPONENT_LENGTHS as DLCOMPLEN
+from .deeplesion import DeepLesionDataset, get_output_features as deeplesion_get_output_features
 from .dicom_util import *
 from .grasp_and_lift_eeg import *
 from .reference import *
@@ -79,7 +79,6 @@ def get_example_shape(data: dict):
 def get_output_features(data: dict) -> int:
     if data['name'] == 'deeplesion':
         # First component is certainty of class label
-        return sum([DLCOMPLEN[k]
-                    for k in data['training']['components']])
+        return deeplesion_get_output_features(data['training']['components'])
     else:
         raise NotImplementedError
