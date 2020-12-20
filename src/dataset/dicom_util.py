@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from torchvision.transforms import Resize, ToPILImage, ToTensor
 
 
 def raw_dicom_pixels(ds):
@@ -33,7 +34,13 @@ def normalized_dicom_pixels(ds):
     x = x * slope + intercept
     x = torch.Tensor(x)
     if x.numel() != 512 * 512:
-        raise ValueError('Invalid number of input elements '
-                         f'got {x.numel()}, expected {512 * 512}')
+        dim = torch.sqrt(x.numel().float())
+        if dim.floor() != dim.ceil():
+            raise ValueError('Non-square number of input elements '
+                             f'got {x.numel()}')
+        x = ToPILImage()(x)
+        x = Resize((512, 512))(x)
+        x = ToTensor()(x)
+        print(f'Successfully resized from {int(dim)}x{int(dim)}')
     x = x.view(1, 512, 512)
     return x
