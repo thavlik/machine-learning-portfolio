@@ -153,8 +153,13 @@ class RSNAIntracranialDataset(data.Dataset):
 
     def load_dcm(self, path: str) -> Tensor:
         if self.use_gzip:
-            with gzip.open(path) as f:
+            f = gzip.open(path)
+            try:
                 x = pydicom.dcmread(f, stop_before_pixels=False)
+            finally:
+                f.close()
+            #with gzip.open(path) as f:
+            #    x = pydicom.dcmread(f, stop_before_pixels=False)
         else:
             x = pydicom.dcmread(path, stop_before_pixels=False)
         x = normalized_dicom_pixels(x)
