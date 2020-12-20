@@ -39,8 +39,8 @@ for train in [False, True]:
     for i in tqdm(n):
         try:
             path = os.path.join(ds.root, ds.files[i] + '.gz')
-            with gzip.open(path) as f:
-                contents = f.read()
+            #with gzip.open(path) as f:
+            #    contents = f.read()
             #ex = ds[i]
         except KeyboardInterrupt:
             raise
