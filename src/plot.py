@@ -15,13 +15,15 @@ import nilearn.plotting as nlplt
 from dataset.trends_fmri import load_subject
 from PIL import Image, ImageDraw, ImageFont
 import subprocess
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from merge_strategy import strategy
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from torchvision.utils import save_image
 from torch.utils.data import Subset
 import nonechucks as nc
 from skimage.segmentation import mark_boundaries
+from visdom import Visdom
+from skimage.io import imread
 
 
 def plot_title(template: str,
@@ -59,8 +61,9 @@ def localize_lesions(test_input: Tensor,
                      target_labels: Tensor,
                      target_params: Tensor,
                      out_path: str,
-                     figsize: List[float] = None,
-                     indicator_thickness: int = 16):
+                     figsize: Optional[List[float]] = None,
+                     indicator_thickness: Optional[int] = 16,
+                     vis: Optional[Visdom] = None):
     rows = test_input.shape[0]
     cols = 1
     h, w = test_input.shape[2:]
@@ -90,12 +93,18 @@ def localize_lesions(test_input: Tensor,
                             mode='thick')
         # TODO
         #label_acc = (targ_label - pred_label) ** 2
-        #x = add_indicator_to_image(
+        # x = add_indicator_to_image(
         #    x, label_acc, indicator_thickness, after=False)
         ax.imshow(x)
-    fig.savefig(out_path + '.png', bbox_inches='tight')
+    out_path += '.png'
+    fig.savefig(out_path, bbox_inches='tight')
     plt.close(fig)
     plt.close('all')
+    if vis is not None:
+        img = imread(out_path)
+        img = img[:, :, :3]
+        img = np.transpose(img, axes=(2, 0, 1))
+        vis.image(img, opts=dict(caption='Lesion Localization'))
 
 
 def eeg(orig: Tensor,

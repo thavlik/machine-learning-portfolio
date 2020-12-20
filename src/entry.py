@@ -19,6 +19,7 @@ from plot import plot_comparison
 import pandas as pd
 from merge_strategy import strategy
 from neural_gbuffer import neural_gbuffer
+from visdom import Visdom
 
 
 def localization2d(config: dict, run_args: dict) -> LocalizationExperiment:
@@ -156,7 +157,8 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     })
     if config.get('randomize_seed', False):
         print('Warning: randomizing seed for each trial')
-        run_config['manual_seed'] = tune.sample_from(lambda spec: np.random.randint(0, 64_000))
+        run_config['manual_seed'] = tune.sample_from(
+            lambda spec: np.random.randint(0, 64_000))
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,
@@ -350,7 +352,7 @@ def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
 
 
 def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
-    #torch.set_num_threads(run_args['num_threads'])
+    # torch.set_num_threads(run_args['num_threads'])
     manual_seed = config.get('manual_seed', 100)
     torch.manual_seed(manual_seed)
     np.random.seed(manual_seed)
@@ -364,6 +366,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
                                debug=False,
                                create_git_tag=False)
     tt_logger.log_hyperparams(config)
+
     if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5
     checkpoint_callback = ModelCheckpoint(

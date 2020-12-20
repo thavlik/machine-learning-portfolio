@@ -25,6 +25,7 @@ from typing import List
 from plot import get_labels
 from linear_warmup import LinearWarmup
 import boto3
+from visdom import Visdom
 
 
 class LocalizationExperiment(pl.LightningModule):
@@ -36,6 +37,16 @@ class LocalizationExperiment(pl.LightningModule):
         self.localizer = localizer
         self.params = params
         self.curr_device = None
+
+        if 'visdom' in params:
+            params = self.params['visdom']
+            self.vis = Visdom(server=params['host'],
+                              port=params['port'],
+                              env=params['env'],
+                              username=os.environ.get('VISDOM_USERNAME', None),
+                              password=os.environ.get('VISDOM_PASSWORD', None))
+        else:
+            self.vis = None
 
         if 'plot' in self.params:
             plots = self.params['plot']
@@ -85,9 +96,11 @@ class LocalizationExperiment(pl.LightningModule):
            target_labels=target_labels,
            target_params=target_params,
            out_path=out_path,
+           vis=self.vis,
            **plot['params'])
 
         gc.collect()
+
         if revert:
             self.train()
 

@@ -69,6 +69,18 @@ parser.add_argument('--num-threads',
                     type=int,
                     help='number of cpu threads to use (defaults to 4)',
                     default=4)
+parser.add_argument('--visdom-host',
+                    dest="visdom_host",
+                    metavar='VISDOM_HOST',
+                    type=str,
+                    help='visdom host name',
+                    default='https://visdom.foldy.dev')
+parser.add_argument('--visdom-port',
+                    dest="visdom_port",
+                    metavar='VISDOM_PORT',
+                    type=int,
+                    help='visdom port',
+                    default=80)
 parser.add_argument('--smoke-test',
                     dest="smoke_test",
                     metavar='DRY_RUN',
@@ -86,7 +98,7 @@ decord.bridge.set_bridge('torch')
 config = load_config(args.config)
 total_experiments = count_experiments(config)
 
-num_samples = args.num_samples or 1#or (config.get('num_samples', 1) if type(config) is dict else 1)
+num_samples = args.num_samples or 1
 
 deltas = []
 for i in range(num_samples):

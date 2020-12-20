@@ -9,13 +9,13 @@ model_params:
   
 exp_params:
   warmup_steps: 256
-  save_weights:
-    every_n_steps: 10_000
-    delete_old: true
-    local: {}
-    s3:
-      endpoint: https://nyc3.digitaloceanspaces.com
-      bucket: deeplesion
+  #save_weights:
+  #  every_n_steps: 10_000
+  #  delete_old: true
+  #  local: {}
+  #  s3:
+  #    endpoint: https://nyc3.digitaloceanspaces.com
+  #    bucket: deeplesion
   loss_params:
     objective: mse
   batch_size: 4
