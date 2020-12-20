@@ -43,7 +43,7 @@ def get_dataset(name: str,
     ds = datasets[name](**params)
     if split is not None:
         ds = split_dataset(ds, split)[1 if train else 0]
-    #ds = nc.SafeDataset(ds)
+    ds = nc.SafeDataset(ds)
     return ds
 
 
