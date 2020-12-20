@@ -6,12 +6,16 @@ import numpy as np
 import torch
 import torch.utils.data as data
 from skimage.io import imread
+from skimage.transform import resize
 import tempfile
 from typing import List
 
 
 def read_hu(x):
-    return imread(x).astype(np.float32) - 32768.0
+    x = imread(x)
+    x = resize(x, (512, 512))
+    x = x.astype(np.float32) - 32768.0
+    return x
 
 
 HEADER = "File_name,Patient_index,Study_index,Series_ID,Key_slice_index,Measurement_coordinates,Bounding_boxes,Lesion_diameters_Pixel_,Normalized_lesion_location,Coarse_lesion_type,Possibly_noisy,Slice_range,Spacing_mm_px_,Image_size,DICOM_windows,Patient_gender,Patient_age,Train_Val_Test\n"

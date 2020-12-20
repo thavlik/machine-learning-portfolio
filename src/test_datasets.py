@@ -14,9 +14,9 @@ args = parser.parse_args()
 
 opts = {
     'rsna-intracranial': {
-        'root': '/data/rsna-ich',
-        'download': True,
-        'use_gzip': True,
+        'root': 'E:/rsna-intracranial',
+        'download': False,
+        'use_gzip': False,
     },
     'deeplesion': {
         'root': 'E:/deeplesion',
