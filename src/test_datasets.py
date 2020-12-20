@@ -18,6 +18,11 @@ opts = {
         'download': False,
         'use_gzip': False,
     },
+    'rsna-intracranial-gzip': {
+        'root': '/data/rsna-ich',
+        'download': True,
+        'use_gzip': True,
+    },
     'deeplesion': {
         'root': 'E:/deeplesion',
         'download': False,
