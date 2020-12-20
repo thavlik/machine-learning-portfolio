@@ -23,6 +23,7 @@ from models import Localizer
 from merge_strategy import strategy
 from typing import List
 from plot import get_labels
+from linear_warmup import LinearWarmup
 import boto3
 
 
@@ -170,8 +171,13 @@ class LocalizationExperiment(pl.LightningModule):
         optims = [optim.Adam(self.localizer.parameters(),
                              **self.params['optimizer'])]
         scheds = []
+        if 'warmup_steps' in self.params:
+            scheds.append(LinearWarmup(optims[0],
+                                       lr=self.params['optimizer']['lr'],
+                                       num_steps=self.params['warmup_steps']))
         return optims, scheds
 
+    """
     def optimizer_step(
         self,
         epoch: int,
@@ -195,6 +201,7 @@ class LocalizationExperiment(pl.LightningModule):
         # update params
         optimizer.step(closure=optimizer_closure)
         optimizer.zero_grad()
+    """
 
     def train_dataloader(self):
         ds_params = self.params['data'].get('training', {})
