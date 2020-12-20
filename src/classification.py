@@ -23,6 +23,7 @@ from merge_strategy import strategy
 from typing import List
 from plot import get_random_example_with_label
 from linear_warmup import LinearWarmup
+from visdom import Visdom
 
 class ClassificationExperiment(pl.LightningModule):
 
@@ -34,6 +35,16 @@ class ClassificationExperiment(pl.LightningModule):
         self.classifier = classifier
         self.params = params
         self.curr_device = None
+
+        if 'visdom' in params:
+            params = self.params['visdom']
+            self.vis = Visdom(server=params['host'],
+                              port=params['port'],
+                              env=params['env'],
+                              username=os.environ.get('VISDOM_USERNAME', None),
+                              password=os.environ.get('VISDOM_PASSWORD', None))
+        else:
+            self.vis = None
 
         if 'plot' in self.params:
             plots = self.params['plot']
@@ -84,6 +95,7 @@ class ClassificationExperiment(pl.LightningModule):
            predictions=predictions,
            classes=plot['classes'],
            out_path=out_path,
+           vis=self.vis,
            **plot['params'])
 
         gc.collect()

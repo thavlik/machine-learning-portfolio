@@ -492,9 +492,10 @@ def classifier2d(test_input: Tensor,
                  classes: list,
                  out_path: str,
                  background: List[float] = [0.7, 0.7, 0.7],
-                 indicator_thickness: int = None,
-                 padding: int = None,
-                 font_size: int = 28):
+                 indicator_thickness: Optional[int] = None,
+                 padding: Optional[int] = None,
+                 font_size: int = 28,
+                 vis: Optional[Visdom] = None):
     background = torch.Tensor(background)
     if test_input.shape[1] == 1:
         test_input = test_input.repeat(1, 3, 1, 1)
@@ -534,6 +535,12 @@ def classifier2d(test_input: Tensor,
     if not out_path.endswith('.png'):
         out_path += '.png'
     save_image(img, out_path)
+    if vis is not None:
+        img = imread(out_path)
+        img = img[:, :, :3]
+        img = np.transpose(img, axes=(2, 0, 1))
+        vis.image(img, opts=dict(caption='Class Predictions'))
+
 
 
 def add_indicator_to_image(img: Tensor,
