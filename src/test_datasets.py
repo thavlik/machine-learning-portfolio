@@ -13,12 +13,12 @@ parser.add_argument('--dataset',
 args = parser.parse_args()
 
 opts = {
+    #'rsna-intracranial': {
+    #    'root': 'E:/rsna-intracranial',
+    #    'download': False,
+    #    'use_gzip': False,
+    #},
     'rsna-intracranial': {
-        'root': 'E:/rsna-intracranial',
-        'download': False,
-        'use_gzip': False,
-    },
-    'rsna-intracranial-gzip': {
         'root': '/data/rsna-ich',
         'download': True,
         'use_gzip': True,
