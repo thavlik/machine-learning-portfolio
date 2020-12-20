@@ -109,7 +109,8 @@ class LocalizationExperiment(pl.LightningModule):
             torch.save(self.state_dict(), buf)
             buf.seek(0)
             s3_params = params['s3']
-            key = f"logs/{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step}.pt"
+            prefix = s3_params.get('prefix', '')
+            key = prefix + f"logs/{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step}.pt"
             bucket = s3_params['bucket']
             s3 = boto3.client('s3',
                               endpoint_url=s3_params['endpoint'])
