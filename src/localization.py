@@ -90,6 +90,42 @@ class LocalizationExperiment(pl.LightningModule):
         if revert:
             self.train()
 
+    def save_weights(self, params: dict):
+        if 'local' in params:
+            checkpoint_dir = os.path.join(self.logger.save_dir,
+                                       self.logger.name,
+                                       f"version_{self.logger.version}",
+                                       "checkpoints")
+            path = os.path.join(checkpoint_dir, f'step{self.global_step}.pt')
+            torch.save(self.state_dict(), path)
+            if params.get('delete_old', True):
+                try:
+                    old_checkpoint = f"step{self.global_step - params['every_n_steps']}.pt"
+                    os.remove(os.path.join(checkpoint_dir, old_checkpoint))
+                except:
+                    pass
+        if 's3' in params:
+            buf = io.BytesIO()
+            torch.save(self.state_dict(), buf)
+            buf.seek(0)
+            s3_params = params['s3']
+            prefix = s3_params.get('prefix', '')
+            key = prefix + \
+                f"{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step}.pt"
+            bucket = s3_params['bucket']
+            s3 = boto3.client('s3',
+                              endpoint_url=s3_params['endpoint'])
+            s3.put_object(Body=buf,
+                          Bucket=bucket,
+                          Key=key)
+            if params.get('delete_old', True):
+                old_key = prefix + \
+                    f"{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step - params['every_n_steps']}.pt"
+                try:
+                    s3.delete_object(Bucket=bucket, Key=old_key)
+                except:
+                    pass
+
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
@@ -103,34 +139,8 @@ class LocalizationExperiment(pl.LightningModule):
         if self.global_step > 0:
             if 'save_weights' in self.params:
                 params = self.params['save_weights']
-                interval = params['every_n_steps']
-                if self.global_step % interval == 0:
-                    if 's3' in params:
-                        buf = io.BytesIO()
-                        torch.save(self.state_dict(), buf)
-                        buf.seek(0)
-                        s3_params = params['s3']
-                        prefix = s3_params.get('prefix', '')
-                        key = prefix + \
-                            f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step}.pt"
-                        bucket = s3_params['bucket']
-                        print(f'Saving state to s3://{bucket}/{key}')
-                        s3 = boto3.client('s3',
-                                          endpoint_url=s3_params['endpoint'])
-                        s3.put_object(Body=buf,
-                                      Bucket=bucket,
-                                      Key=key)
-                        if s3_params.get('delete_old', True):
-                            old_key = prefix + \
-                                f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step - interval}.pt"
-                            try:
-                                # Try and delete the old checkpoint now that
-                                # the new one is uploaded.
-                                s3.delete_object(Bucket=bucket,
-                                                 Key=old_key)
-                            except:
-                                pass
-
+                if self.global_step % params['every_n_steps'] == 0:
+                    self.save_weights(params)
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)

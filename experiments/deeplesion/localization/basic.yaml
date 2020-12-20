@@ -10,6 +10,8 @@ model_params:
 exp_params:
   save_weights:
     every_n_steps: 10
+    delete_old: true
+    local: {zs}
     s3:
       endpoint: https://nyc3.digitaloceanspaces.com
       bucket: deeplesion
