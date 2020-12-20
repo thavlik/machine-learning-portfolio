@@ -29,6 +29,8 @@ opts = {
     },  
 }
 
+print(f'Verifying {args.dataset}')
+
 for train in [False, True]:
     ds = get_dataset(args.dataset,
                      opts[args.dataset],
