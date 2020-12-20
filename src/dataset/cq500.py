@@ -47,9 +47,16 @@ class CQ500Dataset(data.Dataset):
         self.labels = load_labels(labels_csv_path)
 
     def __getitem__(self, index):
-
-        s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint)
-        bucket = s3.Bucket(self.s3_bucket)
+        path = ''
+        if self.use_gzip:
+            path += '.gz'
+        if not os.path.exists(path) or os.path.getsize(path) == 0:
+            key = ''
+            s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint)
+            bucket = s3.Bucket(self.s3_bucket)
+            with open(path, 'wb') as f:
+                obj = bucket.Object(key)
+                obj.download_fileobj(f)
 
         ds = pydicom.dcmread(self.files[index], stop_before_pixels=False)
         data = raw_dicom_pixels(ds)
