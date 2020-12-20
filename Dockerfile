@@ -24,6 +24,7 @@ RUN apt-get update \
         electron@6.1.4 \
         orca \
         vtop
+RUN echo 'alias watchsmi="watch -n 0.5 nvidia-smi"' >> /root/.bashrc
 WORKDIR /app
 COPY requirements.txt .
 RUN conda install cudatoolkit=10.1
