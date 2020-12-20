@@ -36,7 +36,7 @@ for train in [False, True]:
                      safe=False)
     n = len(ds)
     bad_indices = []
-    for i in tqdm(n):
+    for i in tqdm(range(n)):
         try:
             print(i)
             #path = os.path.join(ds.root, ds.files[i] + '.gz')
