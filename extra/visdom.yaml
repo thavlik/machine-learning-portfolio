@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visdom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visdom
+  template:
+    metadata:
+      labels:
+        app: visdom
+    spec:
+      containers:
+        - name: visdom
+          image: thavlik/visdom:latest
+          imagePullPolicy: Always
+          command:
+            - visdom
+            - -enable_login
+            - -port 80
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          env:
+            - name: VISDOM_USE_ENV_CREDENTIALS
+              value: "1"
+            - name: VISDOM_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: visdom-cred
+                  key: username
+            - name: VISDOM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: visdom-cred
+                  key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visdom
+spec:
+  type: ClusterIP
+  selector:
+    app: visdom
+  ports:
+  - name: public
+    port: 80
