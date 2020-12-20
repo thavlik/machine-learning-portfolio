@@ -38,7 +38,8 @@ for train in [False, True]:
     bad_indices = []
     for i in tqdm(n):
         try:
-            path = os.path.join(ds.root, ds.files[i] + '.gz')
+            print(i)
+            #path = os.path.join(ds.root, ds.files[i] + '.gz')
             #with gzip.open(path) as f:
             #    contents = f.read()
             #ex = ds[i]
