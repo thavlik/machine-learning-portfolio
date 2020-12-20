@@ -39,6 +39,8 @@ def normalized_dicom_pixels(ds):
         #    raise ValueError('Non-square number of input elements '
         #                     f'got {x.numel()} (dcm header reports {ds.Rows}x{ds.Columns})')
         #dim = dim.int().item()
+        if ds.Columns * ds.Rows != x.numel():
+            raise ValueError(f'dimensions {ds.Rows}x{ds.Columns} does not match numel {x.numel()}')
         x = x.view(1, ds.Columns, ds.Rows)
         x = ToPILImage()(x)
         x = Resize((512, 512))(x)

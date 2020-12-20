@@ -9,15 +9,26 @@ parser.add_argument('--dataset',
                     dest="dataset",
                     metavar='DATASET',
                     help='dataset name',
-                    default='rsna-intracranial')
+                    default='deeplesion')
 args = parser.parse_args()
 
-for train in [False, True]:
-    ds = get_dataset(args.dataset, {
+opts = {
+    'rsna-intracranial': {
         'root': '/data/rsna-ich',
         'download': True,
         'use_gzip': True,
-    }, train=train, safe=False)
+    },
+    'deeplesion': {
+        'root': 'E:/deeplesion',
+        'download': False,
+    },  
+}
+
+for train in [False, True]:
+    ds = get_dataset(args.dataset,
+                     opts[args.dataset],
+                     train=train,
+                     safe=False)
     n = len(ds)
     bad_indices = []
     for i in tqdm(range(n)):
