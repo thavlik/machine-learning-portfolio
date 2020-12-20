@@ -36,9 +36,12 @@ for train in [False, True]:
                      safe=False)
     n = len(ds)
     bad_indices = []
-    for i in tqdm(range(n)):
+    for i in tqdm(n):
         try:
-            ex = ds[i]
+            path = os.path.join(ds.root, ds.files[i] + '.gz')
+            with gzip.open(path) as f:
+                contents = f.read()
+            #ex = ds[i]
         except KeyboardInterrupt:
             raise
         except:
