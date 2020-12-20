@@ -26,16 +26,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     opts = {
-        'rsna-intracranial': {
-        'root': args.root or 'E:/rsna-intracranial',
-        'download': False,
-        'use_gzip': False,
-        },
         #'rsna-intracranial': {
-        #    'root': '/data/rsna-ich',
-        #    'download': True,
-        #    'use_gzip': True,
+        #'root': args.root or 'E:/rsna-intracranial',
+        #'download': False,
+        #'use_gzip': False,
         #},
+        'rsna-intracranial': {
+            'root': '/data/rsna-ich',
+            'download': True,
+            'use_gzip': True,
+        },
         'deeplesion': {
             'root': args.root or 'E:/deeplesion',
             'download': False,
