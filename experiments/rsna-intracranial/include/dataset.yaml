@@ -4,7 +4,7 @@ exp_params:
     split: 0.7
     loader:
       pin_memory: false
-      num_workers: 0
+      num_workers: 24
       drop_last: true
     training:
       root: /data/rsna-ich
