@@ -111,7 +111,8 @@ class LocalizationExperiment(pl.LightningModule):
                         buf.seek(0)
                         s3_params = params['s3']
                         prefix = s3_params.get('prefix', '')
-                        key = prefix + f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step}.pt"
+                        key = prefix + \
+                            f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step}.pt"
                         bucket = s3_params['bucket']
                         print(f'Saving state to s3://{bucket}/{key}')
                         s3 = boto3.client('s3',
@@ -120,14 +121,16 @@ class LocalizationExperiment(pl.LightningModule):
                                       Bucket=bucket,
                                       Key=key)
                         if s3_params.get('delete_old', True):
-                            old_key = prefix + f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step - interval}.pt"
+                            old_key = prefix + \
+                                f"{self.logger.name}/version_{self.logger.version}/weights/step{self.global_step - interval}.pt"
                             try:
                                 # Try and delete the old checkpoint now that
                                 # the new one is uploaded.
-                                s3.delete_object(Bucket=bucket, Key=old_key)
+                                s3.delete_object(Bucket=bucket,
+                                                 Key=old_key)
                             except:
                                 pass
-                        
+
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)
