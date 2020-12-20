@@ -29,7 +29,7 @@ for train in [False, True]:
             bad_indices.append(i)
             print(f'Encountered bad index ({i}):')
             print(sys.exc_info()[0])
-        if i % 1000 == 0:
+        if i % 50 == 0:
             print(f'[{i}/{n}] checked')
     print('Bad indices:')
     print(bad_indices)
