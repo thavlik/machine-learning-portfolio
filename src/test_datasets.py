@@ -14,7 +14,7 @@ args = parser.parse_args()
 
 for train in [False, True]:
     ds = get_dataset(args.dataset, {
-        'root': 'E:/rsna-intracranial',
+        'root': '/data/rsna-ich',
         'download': True,
         'use_gzip': True,
     }, train=train, safe=False)
