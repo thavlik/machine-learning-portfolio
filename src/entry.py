@@ -350,7 +350,7 @@ def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
 
 
 def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
-    torch.set_num_threads(run_args['num_threads'])
+    #torch.set_num_threads(run_args['num_threads'])
     manual_seed = config.get('manual_seed', 100)
     torch.manual_seed(manual_seed)
     np.random.seed(manual_seed)
