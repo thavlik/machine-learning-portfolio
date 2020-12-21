@@ -8,9 +8,10 @@ from skimage.io import imread
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from skimage.segmentation import mark_boundaries
+from skimage.transform import resize
 
 
-def read_hu(x): return imread(x).astype(np.float32)-32768
+def read_hu(x): return resize(imread(x).astype(np.float32)-32768, (512, 512))
 
 
 def create_boxes(in_row):
@@ -68,10 +69,11 @@ for ax1, (_, c_row) in zip(m_axs, patient_df.sample(50, random_state=0).iterrows
     #ax1.set_title('{Patient_age}-{Patient_gender}'.format(**c_row))
     #ax1.axis('off')
     c_segs = create_segmentation(c_img, c_row).astype(int)
-    ax1.imshow(mark_boundaries(image=apply_softwindow(c_img),
-                               label_img=c_segs,
-                               color=(0, 1, 0),
-                               mode='thick'))
+    #ax1.imshow(mark_boundaries(image=apply_softwindow(c_img),
+    #                           label_img=c_segs,
+    #                           color=(0, 1, 0),
+    #                           mode='thick'))
+    ax1.imshow(apply_softwindow(c_img))
     ax1.set_title('Segmentation Map')
 
 plt.show()

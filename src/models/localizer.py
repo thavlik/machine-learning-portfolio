@@ -28,10 +28,11 @@ class Localizer(nn.Module):
                       pred_params: Tensor,
                       targ_params: Tensor,
                       objective: str = 'iou') -> dict:
-        eps = 1e-7
-        localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
+        localization_loss = F.mse_loss(pred_params, targ_params)
+        #eps = 1e-7
+        #localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
         #localization_loss = -torch.log(localization_loss)
-        localization_loss = 1.0 / localization_loss
+        #localization_loss = 1.0 / localization_loss
         loss = localization_loss
         return {'loss': loss,
                 'Localization_Loss': localization_loss}
@@ -49,8 +50,8 @@ def bb_intersection_over_union(boxA, boxB):
     interArea = torch.max(zeros, xB - xA + 1) * torch.max(zeros, yB - yA + 1)
     # compute the area of both the prediction and ground-truth
     # rectangles
-    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    boxAArea = (boxA[:, 2] - boxA[:, 0] + 1) * (boxA[:, 3] - boxA[:, 1] + 1)
+    boxBArea = (boxB[:, 2] - boxB[:, 0] + 1) * (boxB[:, 3] - boxB[:, 1] + 1)
     # compute the intersection over union by taking the intersection
     # area and dividing it by the sum of prediction + ground-truth
     # areas - the interesection area

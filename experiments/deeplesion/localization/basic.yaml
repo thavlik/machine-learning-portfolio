@@ -18,7 +18,7 @@ exp_params:
   #    bucket: deeplesion
   loss_params:
     objective: mse
-  batch_size: 4
+  batch_size: 2
   optimizer:
     lr: 0.00005
     weight_decay: 0.00001
@@ -31,8 +31,8 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      #root: /data/deeplesion
       root: /data/deeplesion
+      #root: E:/deeplesion
       only_positives: true
       components:
         - bounding_boxes

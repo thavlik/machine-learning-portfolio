@@ -11,11 +11,7 @@ import tempfile
 from typing import List
 
 
-def read_hu(x):
-    x = imread(x)
-    x = resize(x, (512, 512))
-    x = x.astype(np.float32) - 32768.0
-    return x
+def read_hu(x): return resize(imread(x).astype(np.float32)-32768, (512, 512))
 
 
 HEADER = "File_name,Patient_index,Study_index,Series_ID,Key_slice_index,Measurement_coordinates,Bounding_boxes,Lesion_diameters_Pixel_,Normalized_lesion_location,Coarse_lesion_type,Possibly_noisy,Slice_range,Spacing_mm_px_,Image_size,DICOM_windows,Patient_gender,Patient_age,Train_Val_Test\n"

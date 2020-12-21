@@ -41,11 +41,11 @@ def plot_title(template: str,
     return interpolated
 
 
-def create_segmentation(in_img, bbox):
-    yy, xx = np.meshgrid(range(in_img.shape[0]),
-                         range(in_img.shape[1]),
+def create_segmentation(mask_shape, bbox):
+    yy, xx = np.meshgrid(range(mask_shape[0]),
+                         range(mask_shape[1]),
                          indexing='ij')
-    out_seg = np.zeros_like(in_img)
+    out_seg = np.zeros((mask_shape[0], mask_shape[1]))
     for box in bbox:
         start_x, start_y, end_x, end_y = box
         c_seg = (xx < end_x) & (xx > start_x) & (yy < end_y) & (yy > start_y)
@@ -79,16 +79,17 @@ def localize_lesions(test_input: Tensor,
         targ_param[1] *= h
         targ_param[2] *= w
         targ_param[3] *= h
-        orig_x = x.squeeze().numpy()
-        x = apply_softwindow(orig_x)
-        c_segs = create_segmentation(orig_x, [targ_param.numpy()]).astype(int)
+        x = x.numpy().squeeze()
+        mask_shape = x.shape
+        x = apply_softwindow(x)
+        targ_segs = create_segmentation(mask_shape, [targ_param.numpy()]).astype(int)
+        pred_segs = create_segmentation(mask_shape, [pred_param.numpy()]).astype(int)
         x = mark_boundaries(image=x,
-                            label_img=c_segs,
+                            label_img=pred_segs,
                             color=(1, 1, 0),
                             mode='thick')
-        c_segs = create_segmentation(orig_x, [pred_param.numpy()]).astype(int)
         x = mark_boundaries(image=x,
-                            label_img=c_segs,
+                            label_img=targ_segs,
                             color=(0, 1, 0),
                             mode='thick')
         ax.imshow(x)
@@ -100,7 +101,9 @@ def localize_lesions(test_input: Tensor,
         img = imread(out_path)
         img = img[:, :, :3]
         img = np.transpose(img, axes=(2, 0, 1))
-        vis.image(img, opts=dict(caption='Lesion Localization'))
+        vis.image(img,
+                  win='localize',
+                  opts=dict(caption='Lesion Localization'))
 
 
 def eeg(orig: Tensor,
