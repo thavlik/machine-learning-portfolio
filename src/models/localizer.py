@@ -41,10 +41,10 @@ class Localizer(nn.Module):
                 localization_loss += F.mse_loss(pred_params, targ_params)
                 iou_loss += 1.0 - bb_intersection_over_union(pred_params, targ_params)
         loss = label_loss + localization_loss * localization_weight + iou_loss * iou_weight
-        return {'loss': loss.detach(),
-                'Label_Loss': label_loss.detach(),
-                'IOU_Loss': iou_loss.detach(),
-                'Localization_Loss': localization_loss.detach()}
+        return {'loss': loss,
+                'Label_Loss': label_loss,
+                'IOU_Loss': iou_loss,
+                'Localization_Loss': localization_loss}
 
 def bb_intersection_over_union(boxA, boxB):
     # Source: https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
