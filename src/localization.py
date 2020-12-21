@@ -141,6 +141,7 @@ class LocalizationExperiment(pl.LightningModule):
                     pass
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
+        """
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
@@ -158,8 +159,9 @@ class LocalizationExperiment(pl.LightningModule):
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)
-        gc.collect()
         return train_loss
+        """
+        return {'loss': torch.zeros(1, 1).squeeze()}
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, targ_labels, targ_params = batch
