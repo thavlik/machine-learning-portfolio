@@ -196,7 +196,7 @@ class DeepLesionDataset(data.Dataset):
         return self.get_positive_example(end_idx=start_idx)
 
     def __getitem__(self, index):
-        return (torch.zeros(torch.Size([1, 512, 512])), torch.zeros(1), torch.zeros(4))
+        return (torch.zeros(torch.Size([1, 512, 512])), torch.Tensor([1 if np.random.randint(0, 2) == 1 else 0]), torch.zeros(4))
 
         d, f = self.files[index]
         path = os.path.join(self.root, 'Images_png', d, f)
