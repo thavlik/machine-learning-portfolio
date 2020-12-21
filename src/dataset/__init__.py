@@ -38,7 +38,7 @@ def get_dataset(name: str,
                 params: dict,
                 split: float = None,
                 train: bool = True,
-                safe: bool = False):
+                safe: bool = True):
     if name not in datasets:
         raise ValueError(f"unknown dataset '{name}'")
     ds = datasets[name](**params)
