@@ -104,19 +104,18 @@ class BaseExperiment(pl.LightningModule):
     def log_train_step(self, train_loss: dict):
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
-        if True or self.global_step > 0:
-            revert = self.training
-            if revert:
-                self.eval()
-            if 'save_weights' in self.params:
-                if self.global_step % self.params['save_weights']['every_n_steps'] == 0:
-                    self.save_weights()
-            for plot, val_batch in zip(self.plots, self.val_batches):
-                if self.global_step % plot['sample_every_n_steps'] == 0:
-                    self.sample_images(plot, val_batch)
-                    gc.collect()
-            if revert:
-                self.train()
+        revert = self.training
+        if revert:
+            self.eval()
+        if self.global_step > 0 and 'save_weights' in self.params:
+            if self.global_step % self.params['save_weights']['every_n_steps'] == 0:
+                self.save_weights()
+        for plot, val_batch in zip(self.plots, self.val_batches):
+            if self.global_step % plot['sample_every_n_steps'] == 0:
+                self.sample_images(plot, val_batch)
+                gc.collect()
+        if revert:
+            self.train()
 
     def validation_epoch_end(self, outputs: list):
         avg = {}
