@@ -42,26 +42,12 @@ class LocalizationExperiment(pl.LightningModule):
             params = self.params['visdom']
             username = os.environ.get('VISDOM_USERNAME', None)
             password = os.environ.get('VISDOM_PASSWORD', None)
-            print(params)
-            print(username)
-            print(password)
-            #import requests
-            #sess = requests.Session()
-            #url = "%s:%s%s" % (params['host'], params['port'], '/')
-            #print(url)
-            #resp = sess.post(url, json=dict(
-            #    username=username,
-            #    password=password))
-            #if resp.status_code != requests.codes.ok:
-            #    raise RuntimeError(f"got status code {resp.status_code}")
-
             self.vis = Visdom(server=params['host'],
                               port=params['port'],
                               env=params['env'],
                               username=username,
                               password=password)
-            self.vis.image(torch.zeros(3, 256, 256).numpy())
-            
+            self.vis.image(torch.zeros(3, 256, 256).numpy(), win='test')
         else:
             self.vis = None
 

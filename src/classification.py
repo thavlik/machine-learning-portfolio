@@ -43,7 +43,7 @@ class ClassificationExperiment(pl.LightningModule):
                               env=params['env'],
                               username=os.environ.get('VISDOM_USERNAME', None),
                               password=os.environ.get('VISDOM_PASSWORD', None))
-            self.vis.image(torch.zeros(3, 256, 256).numpy())
+            self.vis.image(torch.zeros(3, 256, 256).numpy(), win='test')
         else:
             self.vis = None
 
