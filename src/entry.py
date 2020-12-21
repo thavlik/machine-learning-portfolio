@@ -24,14 +24,12 @@ from visdom import Visdom
 
 def localization2d(config: dict, run_args: dict) -> LocalizationExperiment:
     exp_params = config['exp_params']
-    c, h, w = get_example_shape(exp_params['data'])
+    input_shape = get_example_shape(exp_params['data'])
     num_output_features = get_output_features(exp_params['data'])
-    model = create_model(**config['model_params'],
-                         width=w,
-                         height=h,
-                         channels=c,
-                         num_output_features=num_output_features)
-    return LocalizationExperiment(model,
+    localizer = create_model(**config['model_params'],
+                             input_shape=input_shape,
+                             num_output_features=num_output_features)
+    return LocalizationExperiment(localizer,
                                   params=exp_params)
 
 

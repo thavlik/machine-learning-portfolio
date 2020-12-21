@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional
 from plot import get_plot_fn
-from models import Localizer
+from models import Classifier, Localizer
 from merge_strategy import strategy
 from typing import List
 from plot import get_labels
@@ -27,6 +27,7 @@ from linear_warmup import LinearWarmup
 import boto3
 from visdom import Visdom
 from base_experiment import BaseExperiment
+
 
 class LocalizationExperiment(BaseExperiment):
     def __init__(self,
@@ -101,21 +102,20 @@ class LocalizationExperiment(BaseExperiment):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        pred_labels, pred_params = [y.cpu() for y in self.forward(real_img)]
-        train_loss = self.localizer.loss_function([pred_labels, pred_params],
-                                                  [targ_labels, targ_params],
+        pred_params = self.localizer(real_img).cpu()
+        train_loss = self.localizer.loss_function(pred_params,
+                                                  targ_params,
                                                   **self.params.get('loss_params', {}))
         self.log_train_step(train_loss)
         return train_loss
-        
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        pred_labels, pred_params = [y.cpu() for y in self.forward(real_img)]
-        val_loss = self.localizer.loss_function([pred_labels, pred_params],
-                                                [targ_labels, targ_params],
+        pred_params = self.localizer(real_img).cpu()
+        val_loss = self.localizer.loss_function(pred_params,
+                                                targ_params,
                                                 **self.params.get('loss_params', {}))
         return val_loss
 

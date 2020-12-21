@@ -137,6 +137,7 @@ class DeepLesionDataset(data.Dataset):
                  s3_bucket: str = 'deeplesion',
                  s3_endpoint: str = 'https://nyc3.digitaloceanspaces.com',
                  delete_after_use: bool = False,
+                 only_positives: bool = False,
                  flatten_labels: bool = True,
                  components: List[str] = [
                      'measurement_coordinates',
@@ -182,6 +183,10 @@ class DeepLesionDataset(data.Dataset):
             labels_csv_path, components, flatten_labels)
         self.zeros = torch.zeros(
             self.labels[list(self.labels.keys())[0]].shape[0])
+        if only_positives:
+            self.files = [(d, f)
+                          for d, f in self.files
+                          if f'{d}_{f}' in self.labels]
 
     def get_label(self, index):
         d, f = self.files[index]
