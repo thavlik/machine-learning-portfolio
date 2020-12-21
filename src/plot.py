@@ -560,7 +560,9 @@ def classifier2d(test_input: Tensor,
         img = imread(out_path)
         img = img[:, :, :3]
         img = np.transpose(img, axes=(2, 0, 1))
-        vis.image(img, opts=dict(caption='Class Predictions'))
+        vis.image(img,
+                  win='class_preds',
+                  opts=dict(caption='Class Predictions'))
 
 
 def add_indicator_to_image(img: Tensor,
