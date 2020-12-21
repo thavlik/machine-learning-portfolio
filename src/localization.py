@@ -105,7 +105,7 @@ class LocalizationExperiment(BaseExperiment):
         train_loss = self.localizer.loss_function([pred_labels, pred_params],
                                                   [targ_labels, targ_params],
                                                   **self.params.get('loss_params', {}))
-        self.log_train_loss(train_loss)
+        self.log_train_step(train_loss)
         return train_loss
         
 

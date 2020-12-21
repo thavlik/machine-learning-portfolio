@@ -64,7 +64,8 @@ class BaseExperiment(pl.LightningModule):
     def get_val_batches(self, dataset):
         raise NotImplementedError
 
-    def save_weights(self, params: dict):
+    def save_weights(self):
+        params = self.params['save_weights']
         if 'local' in params:
             checkpoint_dir = os.path.join(self.logger.save_dir,
                                           self.logger.name,
@@ -100,7 +101,7 @@ class BaseExperiment(pl.LightningModule):
                 except:
                     pass
 
-    def log_train_loss(self, train_loss: dict):
+    def log_train_step(self, train_loss: dict):
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         if self.global_step > 0:
@@ -108,9 +109,8 @@ class BaseExperiment(pl.LightningModule):
             if revert:
                 self.eval()
             if 'save_weights' in self.params:
-                params = self.params['save_weights']
-                if self.global_step % params['every_n_steps'] == 0:
-                    self.save_weights(params)
+                if self.global_step % self.params['save_weights']['every_n_steps'] == 0:
+                    self.save_weights()
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)
