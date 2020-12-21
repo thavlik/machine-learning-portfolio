@@ -1,0 +1,11 @@
+entrypoint: hparam_search
+
+num_samples: 4
+
+max_steps: 10_000
+
+randomize_seed: true
+
+experiment:
+  - experiments/rsna-intracranial/classification/basic.yaml
+  - experiments/rsna-intracranial/include/hparams.yaml
