@@ -32,7 +32,7 @@ exp_params:
       drop_last: true
     training:
       #root: /data/deeplesion
-      root: E:/deeplesion
+      root: /data/deeplesion
       only_positives: true
       components:
         - bounding_boxes
