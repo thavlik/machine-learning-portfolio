@@ -37,7 +37,7 @@ exp_params:
         - bounding_boxes
   visdom:
     host: https://visdom.foldy.dev
-    port: 80
+    port: 443
     env: deeplesion
   plot:
     fn: localize_lesions

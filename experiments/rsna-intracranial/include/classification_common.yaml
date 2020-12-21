@@ -19,7 +19,7 @@ exp_params:
     weight_decay: 0.00001
   visdom:
     host: https://visdom.foldy.dev
-    port: 80
+    port: 443
     env: rsna-ich
   plot:
     fn: classifier2d
