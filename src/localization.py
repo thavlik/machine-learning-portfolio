@@ -47,7 +47,6 @@ class LocalizationExperiment(pl.LightningModule):
                               env=params['env'],
                               username=username,
                               password=password)
-            self.vis.image(torch.zeros(3, 256, 256).numpy(), win='test')
         else:
             self.vis = None
 
