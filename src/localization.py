@@ -64,23 +64,17 @@ class LocalizationExperiment(BaseExperiment):
 
     def sample_images(self, plot: dict, batch: Tensor):
         test_input = []
-        pred_labels = []
         pred_params = []
-        target_labels = []
         target_params = []
         for item in batch:
             x, target_label, target_param = item
             x = x.unsqueeze(0)
             test_input.append(x)
-            pred_label, pred_param = self.localizer(x.to(self.curr_device))
-            pred_labels.append(pred_label.detach().cpu())
+            pred_param = self.localizer(x.to(self.curr_device))
             pred_params.append(pred_param.detach().cpu())
-            target_labels.append(target_label.unsqueeze(0))
             target_params.append(target_param.unsqueeze(0))
         test_input = torch.cat(test_input, dim=0).cpu()
-        pred_labels = torch.cat(pred_labels, dim=0)
         pred_params = torch.cat(pred_params, dim=0)
-        target_labels = torch.cat(target_labels, dim=0)
         target_params = torch.cat(target_params, dim=0)
 
         # Extensionless output path (let plotting function choose extension)
@@ -90,9 +84,7 @@ class LocalizationExperiment(BaseExperiment):
                                 f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         fn = get_plot_fn(plot['fn'])
         fn(test_input=test_input,
-           pred_labels=pred_labels,
            pred_params=pred_params,
-           target_labels=target_labels,
            target_params=target_params,
            out_path=out_path,
            vis=self.vis,

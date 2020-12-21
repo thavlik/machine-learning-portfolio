@@ -56,9 +56,7 @@ def apply_softwindow(x): return (
 
 
 def localize_lesions(test_input: Tensor,
-                     pred_labels: Tensor,
                      pred_params: Tensor,
-                     target_labels: Tensor,
                      target_params: Tensor,
                      out_path: str,
                      figsize: Optional[List[float]] = None,
@@ -70,7 +68,7 @@ def localize_lesions(test_input: Tensor,
     if figsize is None:
         figsize = [5, rows * 6]
     fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
-    for (ax, x, pred_label, pred_param, targ_label, targ_param) in zip(axs, test_input, pred_labels, pred_params, target_labels, target_params):
+    for (ax, x, pred_param, targ_param) in zip(axs, test_input, pred_params, target_params):
         pred_param[0] *= w
         pred_param[1] *= h
         pred_param[2] *= w
@@ -91,10 +89,6 @@ def localize_lesions(test_input: Tensor,
                             label_img=c_segs,
                             color=(0, 1, 0),
                             mode='thick')
-        # TODO
-        #label_acc = (targ_label - pred_label) ** 2
-        # x = add_indicator_to_image(
-        #    x, label_acc, indicator_thickness, after=False)
         ax.imshow(x)
     out_path += '.png'
     fig.savefig(out_path, bbox_inches='tight')
