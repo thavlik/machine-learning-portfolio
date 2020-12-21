@@ -163,7 +163,7 @@ class LocalizationExperiment(pl.LightningModule):
         """
         l = torch.zeros(1, 1).squeeze()
         l.requires_grad_(True)
-        l *= torch.rand(1, 1).squeeze()
+        l = l * torch.rand(1, 1).squeeze()
         return {'loss': l}
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
