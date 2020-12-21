@@ -148,8 +148,8 @@ class LocalizationExperiment(pl.LightningModule):
         train_loss = self.localizer.loss_function([pred_labels, pred_params],
                                                   [targ_labels, targ_params],
                                                   **self.params.get('loss_params', {}))
-        self.logger.experiment.log({'train/' + key: val.item()
-                                    for key, val in train_loss.items()})
+        #self.logger.experiment.log({'train/' + key: val.item()
+        #                            for key, val in train_loss.items()})
         if self.global_step > 0:
             if 'save_weights' in self.params:
                 params = self.params['save_weights']
