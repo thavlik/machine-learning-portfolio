@@ -40,12 +40,16 @@ class LocalizationExperiment(pl.LightningModule):
 
         if 'visdom' in params:
             params = self.params['visdom']
+            username = os.environ.get('VISDOM_USERNAME', None)
+            password = os.environ.get('VISDOM_PASSWORD', None)
             print(params)
+            print(username)
+            print(password)
             self.vis = Visdom(server=params['host'],
                               port=params['port'],
                               env=params['env'],
-                              username=os.environ.get('VISDOM_USERNAME', None),
-                              password=os.environ.get('VISDOM_PASSWORD', None))
+                              username=username,
+                              password=password)
             self.vis.image(torch.zeros(3, 256, 256).numpy())
         else:
             self.vis = None
