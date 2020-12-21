@@ -29,6 +29,9 @@ exp_params:
 trainer_params:
   max_epochs: 1000000
   log_every_n_steps: 20
+  #val_check_interval: 0.1
+  limit_train_batches: 0.1
+  limit_val_batches: 0.1
   check_val_every_n_epoch: 1
 
 logging_params:

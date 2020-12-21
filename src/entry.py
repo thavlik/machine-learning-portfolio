@@ -376,10 +376,10 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
         mode='min'
     )
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
-                     min_epochs=1,
                      num_sanity_val_steps=5,
                      logger=tt_logger,
                      checkpoint_callback=checkpoint_callback,
+                     log_gpu_memory='all',
                      **config['trainer_params'])
     print(
         f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")

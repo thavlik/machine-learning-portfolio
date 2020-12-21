@@ -31,14 +31,14 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      root: /data/deeplesion
-      #root: E:/deeplesion
+      #root: /data/deeplesion
+      root: E:/deeplesion
       components:
         - bounding_boxes
-  visdom:
-    host: https://visdom.foldy.dev
-    port: 443
-    env: deeplesion
+  #visdom:
+  #  host: https://visdom.foldy.dev
+  #  port: 443
+  #  env: deeplesion
   plot:
     fn: localize_lesions
     sample_every_n_steps: 10_000
