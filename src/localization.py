@@ -40,6 +40,7 @@ class LocalizationExperiment(pl.LightningModule):
 
         if 'visdom' in params:
             params = self.params['visdom']
+            print(params)
             self.vis = Visdom(server=params['host'],
                               port=params['port'],
                               env=params['env'],
