@@ -7,7 +7,7 @@ model_params:
   name: 'ResNetClassifier2d'
   num_classes: 6
   #hidden_dims: [32, 32, 32, 32, 32, 32, 32, 32]
-  hidden_dims: [256, 192, 128, 96, 64, 32, 32]
+  hidden_dims: [512, 256, 256, 128, 64, 64, 32]
   pooling: max
 
 exp_params:
