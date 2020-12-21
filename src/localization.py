@@ -51,6 +51,13 @@ class LocalizationExperiment(pl.LightningModule):
                               username=username,
                               password=password)
             self.vis.image(torch.zeros(3, 256, 256).numpy())
+            import requests
+            sess = requests.Session()
+            resp = sess.post("%s:%s%s" % (self.server, self.port, self.base_url), json=dict(
+                username=username,
+                password=password))
+            if resp.status_code != requests.codes.ok:
+                raise RuntimeError(f"got status code {resp.status_code}")
         else:
             self.vis = None
 
