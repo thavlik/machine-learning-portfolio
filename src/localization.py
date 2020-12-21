@@ -158,6 +158,7 @@ class LocalizationExperiment(pl.LightningModule):
             for plot, val_batch in zip(self.plots, self.val_batches):
                 if self.global_step % plot['sample_every_n_steps'] == 0:
                     self.sample_images(plot, val_batch)
+        gc.collect()
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
