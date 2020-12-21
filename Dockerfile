@@ -18,6 +18,7 @@ RUN apt-get update \
         nodejs \
         npm \
         nano \
+        htop \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && npm install -g \
