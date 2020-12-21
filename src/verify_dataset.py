@@ -37,8 +37,8 @@ if __name__ == '__main__':
             'use_gzip': True,
         },
         'deeplesion': {
-            'root': args.root or 'E:/deeplesion',
-            'download': False,
+            'root': args.root or '/data/deeplesion',
+            'download': True,
         },
     }
 
