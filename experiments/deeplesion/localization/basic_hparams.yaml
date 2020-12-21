@@ -2,7 +2,7 @@ entrypoint: hparam_search
 
 num_samples: 4
 
-max_steps: 5_000
+max_steps: 20_000
 
 randomize_seed: true
 
