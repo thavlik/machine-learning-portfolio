@@ -161,7 +161,9 @@ class LocalizationExperiment(pl.LightningModule):
                     self.sample_images(plot, val_batch)
         return train_loss
         """
-        return {'loss': torch.zeros(1, 1).squeeze()}
+        l = torch.zeros(1, 1).squeeze()
+        l.requires_grad_(True)
+        return {'loss': l}
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, targ_labels, targ_params = batch
