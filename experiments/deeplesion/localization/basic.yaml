@@ -39,16 +39,17 @@ exp_params:
   #  host: https://visdom.foldy.dev
   #  port: 443
   #  env: deeplesion
-  plot:
-    fn: localize_lesions
-    sample_every_n_steps: 10_000
-    batch_size: 8
-    params: {}
+  #plot:
+  #  fn: localize_lesions
+  #  sample_every_n_steps: 10_000
+  #  batch_size: 8
+  #  params: {}
   
 trainer_params:
-  max_epochs: 5
+  max_epochs: 1_000_000
   log_every_n_steps: 20
   check_val_every_n_epoch: 1
+  overfit_batches: 4
 
 logging_params:
   name: "DeepLesion_Basic"

@@ -372,7 +372,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     checkpoint_callback = ModelCheckpoint(
         save_top_k=1,
         verbose=True,
-        monitor='loss',
+        monitor='val/loss',
         mode='min'
     )
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",

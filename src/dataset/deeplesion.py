@@ -75,7 +75,7 @@ def load_labels_csv(path: str,
             parts = parts[4:]
             measurement_coordinates = [
                 float(s.strip()) for s in measurement_coordinates.split(',')]
-            bounding_boxes = [float(s.strip())/512.0
+            bounding_boxes = [float(s.strip())
                               for s in bounding_boxes.split(',')]
             lesion_diameters_pixel = [
                 float(s.strip()) for s in lesion_diameters_pixel.split(',')]
@@ -95,6 +95,13 @@ def load_labels_csv(path: str,
             parts = parts[1:]
             gender, age, _ = parts[0][1:].split(',')
             age = int(age) if age != 'NaN' else 0
+
+            # Normalize bounding box coordinates
+            bounding_boxes[0] /= width
+            bounding_boxes[1] /= height
+            bounding_boxes[2] /= width
+            bounding_boxes[3] /= height
+
             values = {
                 'measurement_coordinates': measurement_coordinates,
                 'bounding_boxes': bounding_boxes,
