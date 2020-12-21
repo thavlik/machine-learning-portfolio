@@ -45,15 +45,15 @@ class LocalizationExperiment(pl.LightningModule):
             print(params)
             print(username)
             print(password)
-            import requests
-            sess = requests.Session()
-            url = "%s:%s%s" % (params['host'], params['port'], '/')
-            print(url)
-            resp = sess.post(url, json=dict(
-                username=username,
-                password=password))
-            if resp.status_code != requests.codes.ok:
-                raise RuntimeError(f"got status code {resp.status_code}")
+            #import requests
+            #sess = requests.Session()
+            #url = "%s:%s%s" % (params['host'], params['port'], '/')
+            #print(url)
+            #resp = sess.post(url, json=dict(
+            #    username=username,
+            #    password=password))
+            #if resp.status_code != requests.codes.ok:
+            #    raise RuntimeError(f"got status code {resp.status_code}")
 
             self.vis = Visdom(server=params['host'],
                               port=params['port'],
