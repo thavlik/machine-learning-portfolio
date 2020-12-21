@@ -7,7 +7,7 @@ import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
 from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torch import nn
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
@@ -61,7 +61,7 @@ class BaseExperiment(pl.LightningModule):
         raise NotImplementedError
 
     @abstractmethod
-    def get_val_batches(self, dataset):
+    def get_val_batches(self, dataset: Dataset) -> list:
         raise NotImplementedError
 
     def save_weights(self):
@@ -104,7 +104,7 @@ class BaseExperiment(pl.LightningModule):
     def log_train_step(self, train_loss: dict):
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
-        if self.global_step > 0:
+        if True or self.global_step > 0:
             revert = self.training
             if revert:
                 self.eval()

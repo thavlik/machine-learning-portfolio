@@ -21,9 +21,11 @@ from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from torchvision.utils import save_image
 from torch.utils.data import Subset
 import nonechucks as nc
-from skimage.segmentation import mark_boundaries
 from visdom import Visdom
 from skimage.io import imread
+from skimage import exposure
+from skimage.segmentation import mark_boundaries
+from skimage.transform import resize
 
 
 def plot_title(template: str,
@@ -480,11 +482,32 @@ def plot_comparison(result_dict: dict,
     fig.write_image(out_path)
 
 
+def ct_filter(x):
+    x = x.squeeze().numpy()
+    x = exposure.equalize_hist(x)
+    x = plt.Normalize()(x)
+    x = plt.cm.bone(x)
+    x = resize(x, (256, 256, 4))
+    x = torch.Tensor(x)
+    x = torch.transpose(x, 0, -1)
+    x = x.squeeze()
+    x = x[:3, ...]
+    x = torch.transpose(x, 1, 2)
+    return x
+
+
+def run_img_filter(x, img_filter: str):
+    if img_filter == 'ct':
+        return ct_filter(x)
+    raise NotImplementedError
+
+
 def classifier2d(test_input: Tensor,
                  predictions: Tensor,
                  targets: Tensor,
                  classes: list,
                  out_path: str,
+                 img_filter: Optional[str] = None,
                  background: List[float] = [0.7, 0.7, 0.7],
                  indicator_thickness: Optional[int] = None,
                  padding: Optional[int] = None,
@@ -510,6 +533,10 @@ def classifier2d(test_input: Tensor,
             # Class relative accuracy
             class_rel_acc = torch.round(pred).int() == labels.int()
             class_rel_acc = class_rel_acc.float().mean()
+
+            if img_filter is not None:
+                img = run_img_filter(img, img_filter)
+
             img = add_indicator_to_image(
                 img, class_rel_acc, indicator_thickness, after=False)
 
@@ -534,7 +561,6 @@ def classifier2d(test_input: Tensor,
         img = img[:, :, :3]
         img = np.transpose(img, axes=(2, 0, 1))
         vis.image(img, opts=dict(caption='Class Predictions'))
-
 
 
 def add_indicator_to_image(img: Tensor,

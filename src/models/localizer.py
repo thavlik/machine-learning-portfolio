@@ -11,11 +11,9 @@ class Localizer(nn.Module):
     """
 
     def __init__(self,
-                 name: str,
-                 num_output_features: int) -> None:
+                 name: str) -> None:
         super().__init__()
         self.name = name
-        self.num_output_features = num_output_features
 
     @abstractmethod
     def predict(self, input: Tensor) -> List[Tensor]:

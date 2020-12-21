@@ -25,10 +25,8 @@ from visdom import Visdom
 def localization2d(config: dict, run_args: dict) -> LocalizationExperiment:
     exp_params = config['exp_params']
     input_shape = get_example_shape(exp_params['data'])
-    num_output_features = get_output_features(exp_params['data'])
     localizer = create_model(**config['model_params'],
-                             input_shape=input_shape,
-                             num_output_features=num_output_features)
+                             input_shape=input_shape)
     return LocalizationExperiment(localizer,
                                   params=exp_params)
 

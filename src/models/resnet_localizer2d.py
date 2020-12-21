@@ -17,12 +17,10 @@ class ResNetLocalizer2d(Localizer):
                  name: str,
                  hidden_dims: List[int],
                  input_shape: Size,
-                 num_output_features: int,
                  dropout: float = 0.4,
                  pooling: str = None,
                  output_activation: str = 'sigmoid') -> None:
-        super().__init__(name=name,
-                         num_output_features=num_output_features)
+        super().__init__(name=name)
         self.width = input_shape[2]
         self.height = input_shape[1]
         self.channels = input_shape[0]
@@ -50,12 +48,12 @@ class ResNetLocalizer2d(Localizer):
                     'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
         self.mu = nn.Sequential(
-            nn.Linear(in_features, num_output_features),
-            nn.BatchNorm1d(num_output_features),
+            nn.Linear(in_features, 4),
+            nn.BatchNorm1d(4),
         )
         self.log_var = nn.Sequential(
-            nn.Linear(in_features, num_output_features),
-            nn.BatchNorm1d(num_output_features),
+            nn.Linear(in_features, 4),
+            nn.BatchNorm1d(4),
         )
         self.activation = get_activation(output_activation)
 

@@ -7,7 +7,7 @@ import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
 from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torch import nn
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
@@ -34,33 +34,7 @@ class LocalizationExperiment(BaseExperiment):
                  localizer: Localizer,
                  params: dict) -> None:
         super().__init__(params)
-
         self.localizer = localizer
-        self.params = params
-        self.curr_device = None
-
-        if 'visdom' in params:
-            params = self.params['visdom']
-            username = os.environ.get('VISDOM_USERNAME', None)
-            password = os.environ.get('VISDOM_PASSWORD', None)
-            self.vis = Visdom(server=params['host'],
-                              port=params['port'],
-                              env=params['env'],
-                              username=username,
-                              password=password)
-        else:
-            self.vis = None
-
-        if 'plot' in self.params:
-            plots = self.params['plot']
-            if type(plots) is not list:
-                plots = [plots]
-            self.plots = plots
-        else:
-            self.plots = []
-
-    def forward(self, input: Tensor, **kwargs) -> Tensor:
-        return self.localizer(input, **kwargs)
 
     def sample_images(self, plot: dict, batch: Tensor):
         test_input = []
@@ -117,7 +91,7 @@ class LocalizationExperiment(BaseExperiment):
         scheds = self.configure_schedulers(optims)
         return optims, scheds
 
-    def get_val_batches(self, dataset):
+    def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []
         for plot in self.plots:
             batch = [get_positive_example(dataset)

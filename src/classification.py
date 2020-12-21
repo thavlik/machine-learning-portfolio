@@ -6,7 +6,7 @@ import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
 from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torch import nn
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
@@ -16,69 +16,41 @@ from plotly.subplots import make_subplots
 from plotly.graph_objects import Figure
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
-from typing import Callable, Optional
+from typing import Callable, Optional, List
 from plot import get_plot_fn
 from models import Classifier
 from merge_strategy import strategy
 from typing import List
 from plot import get_random_example_with_label
 from linear_warmup import LinearWarmup
-from visdom import Visdom
+from base_experiment import BaseExperiment
 
-class ClassificationExperiment(pl.LightningModule):
+class ClassificationExperiment(BaseExperiment):
 
     def __init__(self,
                  classifier: Classifier,
                  params: dict) -> None:
-        super(ClassificationExperiment, self).__init__()
-
+        super().__init__(params)
         self.classifier = classifier
-        self.params = params
-        self.curr_device = None
 
-        if 'visdom' in params:
-            params = self.params['visdom']
-            self.vis = Visdom(server=params['host'],
-                              port=params['port'],
-                              env=params['env'],
-                              username=os.environ.get('VISDOM_USERNAME', None),
-                              password=os.environ.get('VISDOM_PASSWORD', None))
-        else:
-            self.vis = None
-
-        if 'plot' in self.params:
-            plots = self.params['plot']
-            if type(plots) is not list:
-                plots = [plots]
-            self.plots = plots
-        else:
-            self.plots = []
-
-    def forward(self, input: Tensor, **kwargs) -> Tensor:
-        return self.classifier(input, **kwargs)
-
-    def sample_images(self, plot: dict, val_indices: Tensor):
-        return
-        
-        revert = self.training
-        if revert:
-            self.eval()
-
+    def sample_images(self, plot: dict, batches: List[Tensor]):
         test_input = []
         predictions = []
         targets = []
-        for class_indices in val_indices:
-            batch = [self.sample_dataloader.dataset[int(i)]
-                     for i in class_indices]
+        for class_batch in batches:
             class_input = []
-            for x, y in batch:
+            class_predictions = []
+            class_targets = []
+            for x, y in class_batch:
                 x = x.unsqueeze(0)
                 class_input.append(x)
                 x = self.classifier(x.to(self.curr_device)).detach().cpu()
-                predictions.append(x)
-                targets.append(y.unsqueeze(0))
+                class_predictions.append(x)
+                class_targets.append(y.unsqueeze(0))
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))
+            predictions.append(torch.cat(class_predictions, dim=0).unsqueeze(0))
+            targets.append(torch.cat(class_targets, dim=0).unsqueeze(0))
 
         test_input = torch.cat(test_input, dim=0)
         targets = torch.cat(targets, dim=0)
@@ -98,97 +70,49 @@ class ClassificationExperiment(pl.LightningModule):
            vis=self.vis,
            **plot['params'])
 
-        gc.collect()
-        if revert:
-            self.train()
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        y = self.forward(real_img).cpu()
-        train_loss = self.classifier.loss_function(y, labels.cpu(),
+        y = self.classifier(real_img).cpu()
+        train_loss = self.classifier.loss_function(y, labels,
                                                    **self.params.get('loss_params', {}))
-        del real_img
-        self.logger.experiment.log({'train/' + key: val.item()
-                                    for key, val in train_loss.items()})
-        for plot, val_indices in zip(self.plots, self.val_indices):
-            if self.global_step % plot['sample_every_n_steps'] == 0:
-                self.sample_images(plot, val_indices)
+        self.log_train_step(train_loss)
         return train_loss
 
     def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        y = self.forward(real_img).cpu()
+        y = self.classifier(real_img).cpu()
         val_loss = self.classifier.loss_function(y, labels.cpu(),
                                                  **self.params.get('loss_params', {}))
         return val_loss
 
-    def validation_epoch_end(self, outputs: list):
-        avg = {}
-        for output in outputs:
-            for k, v in output.items():
-                items = avg.get(k, [])
-                items.append(v)
-                avg[k] = items
-        for metric, values in avg.items():
-            self.log('val/' + metric, torch.Tensor(values).mean())
-
     def configure_optimizers(self):
         optims = [optim.Adam(self.classifier.parameters(),
                              **self.params['optimizer'])]
-        scheds = []
-        if 'warmup_steps' in self.params:
-            scheds.append(LinearWarmup(optims[0],
-                                       lr=self.params['optimizer']['lr'],
-                                       num_steps=self.params['warmup_steps']))
+        scheds = self.configure_schedulers(optims)
         return optims, scheds
-
-    def train_dataloader(self):
-        ds_params = self.params['data'].get('training', {})
-        dataset = get_dataset(self.params['data']['name'],
-                              ds_params,
-                              split=self.params['data'].get('split', None),
-                              train=True)
-        self.num_train_imgs = len(dataset)
-        return DataLoader(dataset,
-                          batch_size=self.params['batch_size'],
-                          shuffle=True,
-                          **self.params['data'].get('loader', {}))
-
-    def val_dataloader(self):
-        ds_params = strategy.merge(
-            self.params['data'].get('training', {}).copy(),
-            self.params['data'].get('validation', {}))
-        dataset = get_dataset(self.params['data']['name'],
-                              ds_params,
-                              split=self.params['data'].get('split', None),
-                              train=False)
-        self.sample_dataloader = DataLoader(dataset,
-                                            batch_size=self.params['batch_size'],
-                                            shuffle=False,
-                                            **self.params['data'].get('loader', {}))
-        self.num_val_imgs = len(self.sample_dataloader)
-
-        
-        # Persist separate validation indices for each plot
-        val_indices = []
+    
+    def get_val_batches(self, dataset: Dataset) -> list:
+        val_batches = []
         for plot in self.plots:
             classes = plot['classes']
             examples_per_class = plot['examples_per_class']
-            indices = []
+            class_batches = []
             for obj in classes:
+                batch = []
                 class_indices = []
                 for _ in range(examples_per_class):
                     idx = get_random_example_with_label(dataset,
                                                         torch.Tensor(obj['labels']),
                                                         all_=obj['all'],
                                                         exclude=class_indices)
+                    batch.append(dataset[idx])
                     class_indices.append(idx)
-                indices.append(class_indices)
-            val_indices.append(indices)
-        self.val_indices = val_indices
+                class_batches.append(batch)
+            val_batches.append(class_batches)
+        return val_batches
 
-        return self.sample_dataloader
