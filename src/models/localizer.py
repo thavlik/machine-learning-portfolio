@@ -21,8 +21,8 @@ class Localizer(nn.Module):
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         mu, log_var = self.predict(input)
-        pred = reparameterize(mu, log_var)
-        return pred
+        #pred = reparameterize(mu, log_var)
+        return mu
 
     def loss_function(self,
                       pred_params: Tensor,
