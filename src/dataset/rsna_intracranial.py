@@ -87,7 +87,7 @@ def process_labels(files: list, path: str) -> torch.Tensor:
     labels_dict = load_labels_csv(path)
     labels = []
     for f in files:
-        id = os.path.basename(f)[3:-4]
+        id = os.path.basename(f)[3:f.index('.')]
         if id not in labels_dict:
             raise ValueError(f'missing class labels for {f}')
         labels.append(labels_dict[id])
@@ -179,8 +179,6 @@ class RSNAIntracranialDataset(data.Dataset):
 
     def __getitem__(self, index):
         file = self.files[index]
-        if self.use_gzip:
-            file += '.gz'
         path = os.path.join(self.dcm_path, file)
         y = self.labels[index] if self.labels is not None else []
         if not_exist(path):
