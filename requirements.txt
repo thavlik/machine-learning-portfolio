@@ -10,6 +10,7 @@ nilearn
 pylibjpeg
 pylibjpeg-libjpeg
 matplotlib
+lz4
 ray[tune]
 gym
 dm-tree
