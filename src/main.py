@@ -44,74 +44,74 @@ def run_series(series: Union[dict, List[dict]],
             exp_no += 1
     return exp_no
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='thavlik portfolio entrypoint')
+    parser.add_argument('--config',  '-c',
+                        dest="config",
+                        metavar='FILE',
+                        help='path to the experiment config file',
+                        default='experiments/all.yaml')
+    parser.add_argument('--save-dir',
+                        dest="save_dir",
+                        metavar='SAVE_DIR',
+                        help='save directory for logs and screenshots',
+                        default='logs')
+    parser.add_argument('--num-samples',
+                        dest="num_samples",
+                        metavar='NUM_SAMPLES',
+                        type=int,
+                        help='number of times to repeat the experiment (default to experiment config num_samples)',
+                        default=None)
+    parser.add_argument('--num-threads',
+                        dest="num_threads",
+                        metavar='NUM_THREADS',
+                        type=int,
+                        help='number of cpu threads to use (defaults to 4)',
+                        default=4)
+    parser.add_argument('--visdom-host',
+                        dest="visdom_host",
+                        metavar='VISDOM_HOST',
+                        type=str,
+                        help='visdom host name',
+                        default='https://visdom.foldy.dev')
+    parser.add_argument('--visdom-port',
+                        dest="visdom_port",
+                        metavar='VISDOM_PORT',
+                        type=int,
+                        help='visdom port',
+                        default=80)
+    parser.add_argument('--smoke-test',
+                        dest="smoke_test",
+                        metavar='DRY_RUN',
+                        help='smoke test mode (stop after a couple steps)',
+                        default=False)
+    args = parser.parse_args()
 
-parser = argparse.ArgumentParser(
-    description='thavlik portfolio entrypoint')
-parser.add_argument('--config',  '-c',
-                    dest="config",
-                    metavar='FILE',
-                    help='path to the experiment config file',
-                    default='experiments/all.yaml')
-parser.add_argument('--save-dir',
-                    dest="save_dir",
-                    metavar='SAVE_DIR',
-                    help='save directory for logs and screenshots',
-                    default='logs')
-parser.add_argument('--num-samples',
-                    dest="num_samples",
-                    metavar='NUM_SAMPLES',
-                    type=int,
-                    help='number of times to repeat the experiment (default to experiment config num_samples)',
-                    default=None)
-parser.add_argument('--num-threads',
-                    dest="num_threads",
-                    metavar='NUM_THREADS',
-                    type=int,
-                    help='number of cpu threads to use (defaults to 4)',
-                    default=4)
-parser.add_argument('--visdom-host',
-                    dest="visdom_host",
-                    metavar='VISDOM_HOST',
-                    type=str,
-                    help='visdom host name',
-                    default='https://visdom.foldy.dev')
-parser.add_argument('--visdom-port',
-                    dest="visdom_port",
-                    metavar='VISDOM_PORT',
-                    type=int,
-                    help='visdom port',
-                    default=80)
-parser.add_argument('--smoke-test',
-                    dest="smoke_test",
-                    metavar='DRY_RUN',
-                    help='smoke test mode (stop after a couple steps)',
-                    default=False)
-args = parser.parse_args()
+    if args.smoke_test:
+        print('Executing smoke test - training will stop after a couple steps.')
 
-if args.smoke_test:
-    print('Executing smoke test - training will stop after a couple steps.')
+    cudnn.deterministic = True
+    cudnn.benchmark = True
+    decord.bridge.set_bridge('torch')
 
-cudnn.deterministic = True
-cudnn.benchmark = True
-decord.bridge.set_bridge('torch')
+    config = load_config(args.config)
+    total_experiments = count_experiments(config)
 
-config = load_config(args.config)
-total_experiments = count_experiments(config)
+    num_samples = args.num_samples or 1
 
-num_samples = args.num_samples or 1
-
-deltas = []
-for i in range(num_samples):
-    print(f'Running sample {i+1}/{num_samples}')
-    start = time.time()
-    run_series(config,
-               save_dir=args.save_dir,
-               num_threads=args.num_threads,
-               exp_no=0,
-               total_experiments=total_experiments,
-               smoke_test=args.smoke_test)
-    delta = time.time() - start
-    deltas.append(delta)
-    print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')
-print(f'Each sample took {np.mean(deltas)} seconds on average')
-print(f"============== Completed ==============")
+    deltas = []
+    for i in range(num_samples):
+        print(f'Running sample {i+1}/{num_samples}')
+        start = time.time()
+        run_series(config,
+                save_dir=args.save_dir,
+                num_threads=args.num_threads,
+                exp_no=0,
+                total_experiments=total_experiments,
+                smoke_test=args.smoke_test)
+        delta = time.time() - start
+        deltas.append(delta)
+        print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')
+    print(f'Each sample took {np.mean(deltas)} seconds on average')
+    print(f"============== Completed ==============")
