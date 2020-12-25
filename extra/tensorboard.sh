@@ -2,10 +2,13 @@
 set -euo pipefail
 cd "$(dirname "$0")"/..
 dir=$(pwd)
+docker container stop hometb || true
+docker container rm hometb || true
 docker run \
-    -it \
+    -d \
+    --name hometb \
     -p 6007:6006 \
-    -v $(wslpath -w logs)/localization2d:/logs  \
+    -v $(wslpath -w logs)/RSNA_Basic:/logs  \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \

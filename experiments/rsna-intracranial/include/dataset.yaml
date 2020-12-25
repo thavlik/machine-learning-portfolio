@@ -4,11 +4,10 @@ exp_params:
     split: 0.7
     loader:
       pin_memory: false
-      num_workers: 6
+      num_workers: 0
       drop_last: true
     training:
       root: /data/rsna-ich
       download: false
       use_gzip: true
-  batch_size: 4
   warmup_steps: 256

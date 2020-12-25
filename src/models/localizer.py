@@ -11,9 +11,11 @@ class Localizer(nn.Module):
     """
 
     def __init__(self,
-                 name: str) -> None:
+                 name: str,
+                 logvar_scale: float) -> None:
         super().__init__()
         self.name = name
+        self.logvar_scale = logvar_scale
 
     @abstractmethod
     def predict(self, input: Tensor) -> List[Tensor]:
@@ -21,8 +23,8 @@ class Localizer(nn.Module):
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         mu, log_var = self.predict(input)
-        #pred = reparameterize(mu, log_var)
-        return mu
+        pred = reparameterize(mu, log_var * self.logvar_scale)
+        return pred
 
     def loss_function(self,
                       pred_params: Tensor,

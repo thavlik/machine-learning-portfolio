@@ -10,6 +10,7 @@ from typing import List, Union
 import numpy as np
 import decord
 
+
 def count_experiments(series: Union[dict, List[dict]]) -> int:
     if type(series) != list:
         series = [series]
@@ -43,6 +44,7 @@ def run_series(series: Union[dict, List[dict]],
             gc.collect()
             exp_no += 1
     return exp_no
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -86,6 +88,11 @@ if __name__ == '__main__':
                         metavar='DRY_RUN',
                         help='smoke test mode (stop after a couple steps)',
                         default=False)
+    parser.add_argument('--gpu',
+                        dest="gpu",
+                        metavar='GPU_NUM',
+                        help='gpu number to use',
+                        default=0)
     args = parser.parse_args()
 
     if args.smoke_test:
@@ -102,14 +109,15 @@ if __name__ == '__main__':
 
     deltas = []
     for i in range(num_samples):
-        print(f'Running sample {i+1}/{num_samples}')
+        print(f'Running sample {i+1}/{num_samples} on cuda:{args.gpu}')
         start = time.time()
         run_series(config,
-                save_dir=args.save_dir,
-                num_threads=args.num_threads,
-                exp_no=0,
-                total_experiments=total_experiments,
-                smoke_test=args.smoke_test)
+                   save_dir=args.save_dir,
+                   num_threads=args.num_threads,
+                   gpu=args.gpu,
+                   exp_no=0,
+                   total_experiments=total_experiments,
+                   smoke_test=args.smoke_test)
         delta = time.time() - start
         deltas.append(delta)
         print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')

@@ -67,7 +67,7 @@ class ClassificationExperiment(BaseExperiment):
            predictions=predictions,
            classes=plot['classes'],
            out_path=out_path,
-           vis=self.vis,
+           vis=self.visdom(),
            **plot['params'])
 
 
@@ -75,8 +75,8 @@ class ClassificationExperiment(BaseExperiment):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        y = self.classifier(real_img).cpu()
-        train_loss = self.classifier.loss_function(y, labels,
+        y = self.classifier(real_img)
+        train_loss = self.classifier.loss_function(y.cpu(), labels.cpu(),
                                                    **self.params.get('loss_params', {}))
         self.log_train_step(train_loss)
         return train_loss
@@ -85,8 +85,8 @@ class ClassificationExperiment(BaseExperiment):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
-        y = self.classifier(real_img).cpu()
-        val_loss = self.classifier.loss_function(y, labels.cpu(),
+        y = self.classifier(real_img)
+        val_loss = self.classifier.loss_function(y.cpu(), labels.cpu(),
                                                  **self.params.get('loss_params', {}))
         return val_loss
 

@@ -19,8 +19,10 @@ class ResNetLocalizer2d(Localizer):
                  input_shape: Size,
                  dropout: float = 0.4,
                  pooling: str = None,
-                 output_activation: str = 'sigmoid') -> None:
-        super().__init__(name=name)
+                 output_activation: str = 'sigmoid',
+                 logvar_scale: float = 0.05) -> None:
+        super().__init__(name=name,
+                         logvar_scale=logvar_scale)
         self.width = input_shape[2]
         self.height = input_shape[1]
         self.channels = input_shape[0]

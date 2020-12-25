@@ -36,18 +36,6 @@ class BaseExperiment(pl.LightningModule):
         self.params = params
         self.curr_device = None
 
-        if 'visdom' in params:
-            params = self.params['visdom']
-            username = os.environ.get('VISDOM_USERNAME', None)
-            password = os.environ.get('VISDOM_PASSWORD', None)
-            self.vis = Visdom(server=params['host'],
-                              port=params['port'],
-                              env=params['env'],
-                              username=username,
-                              password=password)
-        else:
-            self.vis = None
-
         if 'plot' in self.params:
             plots = self.params['plot']
             if type(plots) is not list:
@@ -55,6 +43,19 @@ class BaseExperiment(pl.LightningModule):
             self.plots = plots
         else:
             self.plots = []
+
+    def visdom(self):
+        if 'visdom' in self.params:
+            params = self.params['visdom']
+            username = os.environ.get('VISDOM_USERNAME', None)
+            password = os.environ.get('VISDOM_PASSWORD', None)
+            return Visdom(server=params['host'],
+                          port=params['port'],
+                          env=params['env'],
+                          username=username,
+                          password=password)
+        else:
+            return None
 
     @abstractmethod
     def sample_images(self, plot: dict, batch: Tensor):
