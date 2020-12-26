@@ -14,7 +14,11 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-Because of the reasonably large image size (512x512), small batch sizes were required. In such situations, it is unclear if batch normalization is beneficial. A hyperparameter search was carried out to determine the effect of batch norm and an ideal learning rate, which indicated  
+After a few days of training, the model showed some evidence of convergence (prediction is yellow, ground truth is green):
+
+![](images/initial_localization.png) 
+
+Because of the reasonably large image size (512x512), small batch sizes were required. In such situations, it is unclear if batch normalization is beneficial. A hyperparameter search was carried out to determine the effect of batch norm and an ideal learning rate, which indicated 
 
 TODO: insert hparam result
 
