@@ -35,4 +35,4 @@ class ResNetGaussianLocalizer2d(ResNetLocalizer2d):
 
 
 def reparameterize_normal(mu: Tensor, std_dev: Tensor) -> Tensor:
-    return Normal(mu, std_dev).rsample(mu.shape)
+    return Normal(mu, std_dev).rsample()

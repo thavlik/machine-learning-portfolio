@@ -31,7 +31,9 @@ To add sophistication, the next iteration attempts to model the lesion's boundin
 from torch.distributions import Normal
 
 def reparameterize_normal(mu: Tensor, std_dev: Tensor) -> Tensor:
-    return Normal(mu, std_dev).rsample(mu.shape)
+    dist = Normal(mu, std_dev)
+    bbox = dist.rsample(mu.shape)
+    return bbox
 
 class MyLocalizationModel(nn.Module):
     ...
@@ -42,7 +44,8 @@ class MyLocalizationModel(nn.Module):
 
         # Sample from the normal distribution to produce the
         # final bounding box estimate.
-        bbox = reparameterize_normal(mu, std_dev)
+        dist = Normal(mu, std_dev)
+        bbox = dist.rsample()
         
         return bbox
 ```
