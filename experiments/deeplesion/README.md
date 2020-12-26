@@ -7,10 +7,10 @@ My first effort entailed modeling the location of lesions directly:
 class MyLocalizationModel(nn.Module):
     ...
 
-    def forward(self, input: Tensor) -> Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         # The model directly predicts the minX/maxX
         # and minY/maxY of the lesion
-        bbox = self.predict(input)        
+        bbox = self.predict(x)        
         return bbox
 ```
 
@@ -33,9 +33,9 @@ from torch.distributions import Normal
 class MyLocalizationModel(nn.Module):
     ...
 
-    def forward(self, input: Tensor) -> Tensor:
+    def forward(self, x: Tensor) -> Tensor:
         # The model predicts parameters of the distribution
-        mu, std_dev = self.predict(input)
+        mu, std_dev = self.predict(x)
 
         # Sample from the normal distribution to produce the
         # final bounding box estimate.
@@ -51,8 +51,8 @@ The hope was that the model would capture information about lesion margins, with
 class MyLocalizationModel(nn.Module):
     ...
 
-    def forward(self, input: Tensor, kappa: float) -> Tensor:
-        mu, std_dev = self.predict(input)
+    def forward(self, x: Tensor, kappa: float) -> Tensor:
+        mu, std_dev = self.predict(x)
 
         # Scale the standard deviation from [0, 1] to [0, kappa]
         # where kappa is typically a very small value (e.g. 0.05)
