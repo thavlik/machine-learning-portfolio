@@ -30,11 +30,6 @@ To add sophistication, the next iteration attempts to model the lesion's boundin
 ```python
 from torch.distributions import Normal
 
-def reparameterize_normal(mu: Tensor, std_dev: Tensor) -> Tensor:
-    dist = Normal(mu, std_dev)
-    bbox = dist.rsample(mu.shape)
-    return bbox
-
 class MyLocalizationModel(nn.Module):
     ...
 
