@@ -14,7 +14,7 @@ exp_params:
     objective: mse
   batch_size: 3
   optimizer:
-    lr: 0.00001
+    lr: 0.0002
     weight_decay: 0.00001
   visdom:
     host: https://visdom.foldy.dev
