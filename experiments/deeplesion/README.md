@@ -65,7 +65,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`.
+This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, making it increasingly similar to the direct approach.
 
 ## TODO
 - Improve visualization
