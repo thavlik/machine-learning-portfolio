@@ -65,12 +65,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-## Results
-The picture below is a placeholder that visualizes where lesions are on the image. A model will soon be trained to predict these coordinates, which will then be overlayed in a different color.
-
-![](images/DeepLesion_Basic_localize_lesions_0.png)
-
-(TODO: insert picture of training dynamics)
+This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`.
 
 ## TODO
 - Improve visualization
