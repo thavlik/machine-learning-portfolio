@@ -61,7 +61,7 @@ class LocalizationExperiment(BaseExperiment):
            pred_params=pred_params,
            target_params=target_params,
            out_path=out_path,
-           vis=self.vis,
+           vis=self.visdom(),
            **plot['params'])
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
