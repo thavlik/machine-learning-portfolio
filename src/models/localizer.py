@@ -3,28 +3,20 @@ from torch import nn, Tensor
 from torch.nn import functional as F
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
-from .util import reparameterize
 
 
 class Localizer(nn.Module):
-    """ Base class for a model that carries out nonlinear localization.
+    """ Base class for a model that carries out localization.
     """
 
     def __init__(self,
-                 name: str,
-                 logvar_scale: float) -> None:
+                 name: str) -> None:
         super().__init__()
         self.name = name
-        self.logvar_scale = logvar_scale
 
     @abstractmethod
-    def predict(self, input: Tensor) -> List[Tensor]:
+    def forward(self, x: Tensor, **kwargs) -> Tensor:
         raise NotImplementedError
-
-    def forward(self, input: Tensor, **kwargs) -> Tensor:
-        mu, log_var = self.predict(input)
-        pred = reparameterize(mu, log_var * self.logvar_scale)
-        return pred
 
     def loss_function(self,
                       pred_params: Tensor,

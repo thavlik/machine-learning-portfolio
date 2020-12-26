@@ -19,13 +19,13 @@ class ResNetLocalizer2d(Localizer):
                  input_shape: Size,
                  dropout: float = 0.4,
                  pooling: str = None,
-                 output_activation: str = 'sigmoid',
-                 logvar_scale: float = 0.05) -> None:
-        super().__init__(name=name,
-                         logvar_scale=logvar_scale)
+                 batch_normalize: bool = False,
+                 output_activation: str = 'sigmoid') -> None:
+        super().__init__(name=name)
         self.width = input_shape[2]
         self.height = input_shape[1]
         self.channels = input_shape[0]
+        self.batch_normalize = batch_normalize
         self.hidden_dims = hidden_dims.copy()
         if pooling is not None:
             pool_fn = get_pooling2d(pooling)
@@ -49,18 +49,18 @@ class ResNetLocalizer2d(Localizer):
                 raise ValueError(
                     'noninteger number of features - perhaps there is too much pooling?')
             in_features = int(in_features)
-        self.mu = nn.Sequential(
-            nn.Linear(in_features, 4),
-            nn.BatchNorm1d(4),
-        )
-        self.log_var = nn.Sequential(
-            nn.Linear(in_features, 4),
-            nn.BatchNorm1d(4),
-        )
         self.activation = get_activation(output_activation)
+        self.prediction = nn.Linear(in_features, 4)
+        if batch_normalize:
+            self.output = nn.Sequential(    
+                nn.BatchNorm1d(4),
+                self.activation,    
+            )
+        else:
+            self.output = self.activation
 
-    def predict(self, input: Tensor) -> List[Tensor]:
-        y = self.layers(input)
-        mu = self.activation(self.mu(y))
-        log_var = self.activation(self.log_var(y))
-        return [mu, log_var]
+    def forward(self, x: Tensor) -> Tensor:
+        x = self.layers(x)
+        x = self.prediction(x)
+        x = self.output(x)
+        return x

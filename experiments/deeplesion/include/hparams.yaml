@@ -1,3 +1,7 @@
+model_params:
+  batch_normalize:
+    grid_search: [false, true]
+    
 exp_params:
   optimizer:
     lr:

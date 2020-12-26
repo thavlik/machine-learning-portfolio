@@ -5,6 +5,7 @@ from .renderer import BaseRenderer
 from .resnet_classifier1d import ResNetClassifier1d
 from .resnet_classifier2d import ResNetClassifier2d
 from .resnet_embed2d import ResNetEmbed2d
+from .resnet_gaussian_localizer2d import ResNetGaussianLocalizer2d
 from .resnet_sandwich2d import ResNetSandwich2d
 from .resnet_renderer2d import ResNetRenderer2d
 from .resnet_localizer2d import ResNetLocalizer2d
@@ -24,6 +25,7 @@ models = {
     'ResNetClassifier2d': ResNetClassifier2d,
     'ResNetEmbed2d': ResNetEmbed2d,
     'ResNetSandwich2d': ResNetSandwich2d,
+    'ResNetGaussianLocalizer2d': ResNetGaussianLocalizer2d,
     'ResNetLocalizer2d': ResNetLocalizer2d,
     'ResNetRenderer2d': ResNetRenderer2d,
     'ResNetRL1d': ResNetRL1d,
