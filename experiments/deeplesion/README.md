@@ -16,7 +16,9 @@ class MyLocalizationModel(nn.Module):
 
 After a few days of training, the model showed some evidence of convergence (prediction is yellow, ground truth is green):
 
-![](images/initial_localization.png) 
+![](images/initial_localization.png)
+
+The model also appears to be making mistakes characteristic of a non-expert by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left tile) suggest those examples are on their way towards overfitting.
 
 Because of the reasonably large image size (512x512), small batch sizes were required. In such situations, it is unclear if batch normalization is beneficial. A hyperparameter search was carried out to determine the effect of batch norm and an ideal learning rate, which indicated 
 
