@@ -1,0 +1,8 @@
+include: experiments/deeplesion/localization/basic.yaml
+
+model_params:
+  arch: ResNetGaussianLocalizer2d
+  name: ResNetGaussianLocalizer2d
+  
+logging_params:
+  name: "DeepLesion_Gaussian"

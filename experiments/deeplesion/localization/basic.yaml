@@ -1,8 +1,8 @@
 entrypoint: localization2d
 
 model_params:
-  arch: ResNetLocalizer2d
-  name: ResNetLocalizer2d
+  arch: ResNetGaussianLocalizer2d
+  name: ResNetGaussianLocalizer2d
   pooling: max
   batch_normalize: false
   hidden_dims: [128, 128, 64, 64, 32, 32]

@@ -20,9 +20,7 @@ After a few days of training, the model showed some evidence of convergence (pre
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left tile) suggest these examples are on their way towards overfitting.
 
-Because of the reasonably large image size (512x512), small batch sizes were required. In such situations, it is unclear if batch normalization is beneficial. A hyperparameter search was carried out to determine the effect of batch norm and an ideal learning rate, which indicated 
-
-TODO: insert hparam result
+Because of the reasonably large image size (512x512), small batch sizes were required. In such situations, it is unclear if batch normalization is beneficial. A hyperparameter search was carried out to determine the effect of batch norm, which indicated superior training performance in its absence. 
 
 ## Multivariate Guassian
 To add sophistication, the next iteration attempts to model the lesion's bounding box as a multivariate gaussian. Concretely, this means that instead of the model directly predicting the class labels, it predicts mean and standard deviation parameters that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use in was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unlike with variational autoencoders - which use a log normal distribution - this implementation uses the classic normal distribution:
