@@ -6,7 +6,6 @@ model_params:
   pooling: max
   batch_normalize: false
   hidden_dims: [128, 128, 64, 64, 32, 32]
-  #hidden_dims: [4, 4, 4, 4, 4]
   
 exp_params:
   warmup_steps: 256
@@ -33,7 +32,6 @@ exp_params:
       drop_last: true
     training:
       root: /data/deeplesion
-      #root: E:/deeplesion
       only_positives: true
       components:
         - bounding_boxes
