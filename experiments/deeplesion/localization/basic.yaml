@@ -21,7 +21,7 @@ exp_params:
     objective: mse
   batch_size: 4
   optimizer:
-    lr: 0.0002
+    lr: 0.0007
     weight_decay: 0.00001
   save_weights_every_n_steps: 10_000
   data:
