@@ -155,7 +155,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         print('Warning: randomizing seed for each trial')
         run_config['manual_seed'] = tune.sample_from(
             lambda spec: np.random.randint(0, 64_000))
-    ray.init(num_cpus=8, num_gpus=2)
+    ray.init(num_cpus=8, num_gpus=1)
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,
@@ -357,7 +357,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     if experiment is None:
         return
     experiment.hparams = config
-    experiment = experiment.to('cuda:' + str(run_args.get('gpu', 0)))
+    experiment = experiment.cuda() #to('cuda:' + str(run_args.get('gpu', 0)))
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,

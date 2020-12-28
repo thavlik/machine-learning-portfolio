@@ -1,0 +1,11 @@
+entrypoint: hparam_search
+
+num_samples: 2
+
+max_steps: 7_000
+
+randomize_seed: true
+
+experiment:
+  - experiments/grasp_and_lift_eeg/classification/basic.yaml
+  - experiments/grasp_and_lift_eeg/include/hparams.yaml
