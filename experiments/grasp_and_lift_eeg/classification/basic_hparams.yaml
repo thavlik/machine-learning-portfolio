@@ -2,7 +2,9 @@ entrypoint: hparam_search
 
 num_samples: 2
 
-max_steps: 7_000
+num_train_steps: 10_000
+
+num_val_steps: 1_000
 
 randomize_seed: true
 

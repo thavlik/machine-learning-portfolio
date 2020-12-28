@@ -116,9 +116,7 @@ def generate_run_config(config: dict):
     return recurse(config.copy(), template)
 
 
-def get_best_config(analysis,
-                    metric: str = 'loss',
-                    scope: str = 'last-5-avg') -> dict:
+def get_best_config(analysis, metric: str, scope: str) -> dict:
     """ Retrieves the best config from a tune hyperparameter
     search by averaging the metrics of all matching samples.
     This is more sophisticated than analysis.get_best_config,
@@ -148,14 +146,17 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     run_config = load_config(config['experiment'])
     run_config = generate_run_config(run_config)
     run_config['trainer_params'] = strategy.merge(run_config['trainer_params'].copy(), {
-        'max_steps': config.get('max_steps', 50),
+        'limit_train_batches': config['num_train_steps'],
+        'limit_val_batches': config['num_val_steps'],
+        'check_val_every_n_epoch': 1,
         'log_every_n_steps': 1,
+        'max_epochs': config.get('num_epochs', 1),
     })
     if config.get('randomize_seed', False):
         print('Warning: randomizing seed for each trial')
         run_config['manual_seed'] = tune.sample_from(
             lambda spec: np.random.randint(0, 64_000))
-    ray.init(num_cpus=8, num_gpus=1)
+    ray.init(num_cpus=8, num_gpus=2)
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,
@@ -169,7 +170,11 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
             'gpu': 1,
         },
     )
-    best_config = get_best_config(analysis)
+    metric = config.get('metric', 'val/loss')
+    scope = config.get('scope', 'last')
+    best_config = get_best_config(analysis=analysis,
+                                  metric=metric,
+                                  scope=scope)
     # Restore original trainer_params, which were overridden
     # so the hparam search is shorter than a full experiment.
     best_config['trainer_params'] = config['trainer_params']
@@ -302,26 +307,6 @@ def comparison(config: dict, run_args: dict) -> None:
                         layout_params=plot.get('layout_params', {}))
 
 
-def comparison_tune(config: dict, run_args: dict) -> None:
-    import ray
-    from ray.util.sgd.integration.torch import DistributedTrainableCreator
-    ray.init(**config.get('ray_options', {}))
-    distributed_train_cifar = DistributedTrainableCreator(
-        my_trainable,
-        use_gpu=True,
-        num_workers=4,
-        num_workers_per_host=4,
-        num_gpus_per_worker=1,
-        num_cpus_per_worker=1,
-    )
-    tune.run(
-        distributed_train_cifar,
-        resources_per_trial=None,
-        config=config,
-        num_samples=num_samples,
-    )
-
-
 entrypoints = {
     'classification': classification,
     'classification_embed2d': classification_embed2d,
@@ -357,7 +342,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     if experiment is None:
         return
     experiment.hparams = config
-    experiment = experiment.cuda() #to('cuda:' + str(run_args.get('gpu', 0)))
+    experiment = experiment.cuda()  # to('cuda:' + str(run_args.get('gpu', 0)))
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,

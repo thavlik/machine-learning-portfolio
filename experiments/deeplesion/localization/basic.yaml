@@ -6,7 +6,7 @@ model_params:
   pooling: max
   batch_normalize: false
   hidden_dims: [128, 128, 64, 64, 32, 32]
-  
+
 exp_params:
   warmup_steps: 256
   save_weights:

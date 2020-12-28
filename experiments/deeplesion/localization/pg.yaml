@@ -1,0 +1,8 @@
+include: experiments/deeplesion/localization/basic.yaml
+
+model_params:
+  arch: ResNetPGLocalizer2d
+  name: ResNetPGLocalizer2d
+  
+logging_params:
+  name: "DeepLesion_PG"

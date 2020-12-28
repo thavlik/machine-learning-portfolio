@@ -9,6 +9,10 @@ model_params:
 
 exp_params:
   manual_seed: 6602
+  save_weights:
+    every_n_steps: 10_000
+    delete_old: true
+    local: {}
   data:
     name: grasp-and-lift-eeg
     split: 0.7
@@ -30,7 +34,8 @@ exp_params:
 trainer_params:
   max_epochs: 1000000
   log_every_n_steps: 20
-  check_val_every_n_epoch: 1
+  val_check_interval: 10000
+  limit_val_batches: 1024
 
 logging_params:
   save_dir: "logs/"
