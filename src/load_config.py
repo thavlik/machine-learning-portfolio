@@ -1,7 +1,7 @@
 import os
 import yaml
 from typing import List, Union
-from merge_strategy import strategy
+from merge_strategy import deep_merge
 
 
 def load_config(path: Union[str, List[str]]) -> Union[dict, List[dict]]:
@@ -37,10 +37,10 @@ def load_config(path: Union[str, List[str]]) -> Union[dict, List[dict]]:
                 includes = [includes]
             merged = {}
             for include in includes:
-                merged = strategy.merge(merged, load_config(include))
+                merged = deep_merge(merged, load_config(include))
             # Merge this config file in last
-            config = strategy.merge(merged, config)
+            config = deep_merge(merged, config)
             # Remove include directive now that merge has occured
             del config['include']
-        result = strategy.merge(result, config)
+        result = deep_merge(result, config)
     return result

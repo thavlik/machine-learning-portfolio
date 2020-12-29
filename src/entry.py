@@ -6,7 +6,7 @@ from classification import ClassificationExperiment
 from localization import LocalizationExperiment
 from dataset import ReferenceDataset, get_example_shape, get_output_features
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, Callback
 from pytorch_lightning.loggers import TestTubeLogger
 import numpy as np
 from pytorch_lightning import Trainer
@@ -17,29 +17,33 @@ from ray.rllib.models import ModelCatalog
 from env import get_env
 from plot import plot_comparison
 import pandas as pd
-from merge_strategy import strategy
+from merge_strategy import deep_merge
 from neural_gbuffer import neural_gbuffer
 from visdom import Visdom
+from pytorch_lightning.core.saving import save_hparams_to_yaml
 
 
-def localization2d(config: dict, run_args: dict) -> LocalizationExperiment:
-    exp_params = config['exp_params']
-    input_shape = get_example_shape(exp_params['data'])
-    localizer = create_model(**config['model_params'],
-                             input_shape=input_shape)
-    return LocalizationExperiment(localizer,
-                                  params=exp_params)
+class OnCheckpointHparams(Callback):
+    def on_save_checkpoint(self, trainer, pl_module):
+        if trainer.current_epoch == 0:
+            file_path = os.path.join(trainer.logger.save_dir,
+                                     trainer.logger.name,
+                                     f"version_{trainer.logger.version}",
+                                     "hparams.yaml")
+            print(f"Saving hparams to file_path: {file_path}")
+            save_hparams_to_yaml(config_yaml=file_path,
+                                 hparams=pl_module.hparams)
 
 
-def classification(config: dict, run_args: dict) -> ClassificationExperiment:
-    exp_params = config['exp_params']
-    model = create_model(**config['model_params'],
-                         input_shape=get_example_shape(exp_params['data']))
-    return ClassificationExperiment(model,
-                                    params=exp_params)
+def localization2d(config: dict, run_args: dict):
+    return LocalizationExperiment(config)
 
 
-def classification_embed2d(config: dict, run_args: dict) -> ClassificationExperiment:
+def classification(config: dict, run_args: dict):
+    return ClassificationExperiment(config)
+
+
+def classification_embed2d(config: dict, run_args: dict):
     base_experiment = experiment_main(
         load_config(config['base_experiment']), run_args)
     encoder = base_experiment.model.get_encoder()
@@ -146,7 +150,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     from ray import tune
     run_config = load_config(config['experiment'])
     run_config = generate_run_config(run_config)
-    run_config['trainer_params'] = strategy.merge(run_config['trainer_params'].copy(), {
+    run_config['trainer_params'] = deep_merge(run_config['trainer_params'].copy(), {
         'limit_train_batches': config['num_train_steps'],
         'limit_val_batches': config['num_val_steps'],
         'check_val_every_n_epoch': 1,
@@ -180,13 +184,6 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     # so the hparam search is shorter than a full experiment.
     best_config['trainer_params'] = config['trainer_params']
     experiment_main(best_config, run_args)
-    #exp_params = best_config['exp_params']
-    #c, l = get_example_shape(exp_params['data'])
-    # model = create_model(**best_config['model_params'],
-    #                     num_samples=l,
-    #                     channels=c)
-    # return VAEExperiment(model,
-    #                     params=exp_params)
 
 
 def vae2d(config: dict, run_args: dict) -> VAEExperiment:
@@ -342,7 +339,6 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     experiment = create_experiment(config, run_args)
     if experiment is None:
         return
-    experiment.save_hyperparameters(config)
     experiment = experiment.cuda()
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
@@ -352,16 +348,18 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
 
     if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5
-    checkpoint_callback = ModelCheckpoint(
-        save_top_k=1,
-        verbose=True,
-        monitor='val/loss',
-        mode='min'
-    )
     runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
                      num_sanity_val_steps=5,
                      logger=tt_logger,
-                     checkpoint_callback=checkpoint_callback,
+                     checkpoint_callback=True,
+                     callbacks=[
+                         OnCheckpointHparams(),
+                         ModelCheckpoint(
+                             save_top_k=1,
+                             verbose=True,
+                             monitor='val/loss',
+                             mode='min'
+                         )],
                      log_gpu_memory='all',
                      **config['trainer_params'])
     print(

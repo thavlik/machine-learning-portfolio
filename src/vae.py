@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from typing import Callable, Optional, Tuple
 from plot import get_plot_fn
 from models.base import BaseVAE
-from merge_strategy import strategy
+from merge_strategy import deep_merge
 from torch.nn.parallel import DistributedDataParallel
 from ray import tune
 from linear_warmup import LinearWarmup
@@ -172,7 +172,7 @@ class VAEExperiment(pl.LightningModule):
                           **dl_params)
 
     def val_dataloader(self):
-        ds_params = strategy.merge(
+        ds_params = deep_merge(
             self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
         dl_params = self.params['data'].get('loader', {})

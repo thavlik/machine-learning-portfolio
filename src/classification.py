@@ -24,13 +24,15 @@ from typing import List
 from plot import get_random_example_with_label
 from linear_warmup import LinearWarmup
 from base_experiment import BaseExperiment
+from models import create_model
+from dataset import get_example_shape
 
 class ClassificationExperiment(BaseExperiment):
 
-    def __init__(self,
-                 classifier: Classifier,
-                 params: dict) -> None:
-        super().__init__(params)
+    def __init__(self, config: dict):
+        super().__init__(config)
+        classifier = create_model(**config['model_params'],
+                                  input_shape=get_example_shape(config['exp_params']['data']))
         self.classifier = classifier
 
     def sample_images(self, plot: dict, batches: List[Tensor]):
@@ -49,7 +51,8 @@ class ClassificationExperiment(BaseExperiment):
                 class_targets.append(y.unsqueeze(0))
             class_input = torch.cat(class_input, dim=0)
             test_input.append(class_input.unsqueeze(0))
-            predictions.append(torch.cat(class_predictions, dim=0).unsqueeze(0))
+            predictions.append(
+                torch.cat(class_predictions, dim=0).unsqueeze(0))
             targets.append(torch.cat(class_targets, dim=0).unsqueeze(0))
 
         test_input = torch.cat(test_input, dim=0)
@@ -69,7 +72,6 @@ class ClassificationExperiment(BaseExperiment):
            out_path=out_path,
            vis=self.visdom(),
            **plot['params'])
-
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
@@ -95,7 +97,7 @@ class ClassificationExperiment(BaseExperiment):
                              **self.params['optimizer'])]
         scheds = self.configure_schedulers(optims)
         return optims, scheds
-    
+
     def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []
         for plot in self.plots:
@@ -107,7 +109,8 @@ class ClassificationExperiment(BaseExperiment):
                 class_indices = []
                 for _ in range(examples_per_class):
                     idx = get_random_example_with_label(dataset,
-                                                        torch.Tensor(obj['labels']),
+                                                        torch.Tensor(
+                                                            obj['labels']),
                                                         all_=obj['all'],
                                                         exclude=class_indices)
                     batch.append(dataset[idx])
@@ -115,4 +118,3 @@ class ClassificationExperiment(BaseExperiment):
                 class_batches.append(batch)
             val_batches.append(class_batches)
         return val_batches
-

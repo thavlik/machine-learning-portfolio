@@ -20,7 +20,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional, List
 from plot import get_plot_fn
 from models import Localizer
-from merge_strategy import strategy
+from merge_strategy import deep_merge
 from typing import List
 from plot import get_labels
 from linear_warmup import LinearWarmup
@@ -29,10 +29,12 @@ from visdom import Visdom
 
 
 class BaseExperiment(pl.LightningModule):
-    def __init__(self,
-                 params: dict) -> None:
+    def __init__(self, config: dict):
         super().__init__()
 
+        self.save_hyperparameters(config)
+
+        params = config['exp_params']
         self.params = params
         self.curr_device = None
 
@@ -149,7 +151,7 @@ class BaseExperiment(pl.LightningModule):
                           **self.params['data'].get('loader', {}))
 
     def val_dataloader(self):
-        ds_params = strategy.merge(
+        ds_params = deep_merge(
             self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
         dataset = get_dataset(self.params['data']['name'],

@@ -16,7 +16,7 @@ from dataset.trends_fmri import load_subject
 from PIL import Image, ImageDraw, ImageFont
 import subprocess
 from typing import List, Tuple, Optional
-from merge_strategy import strategy
+from merge_strategy import deep_merge
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 from torchvision.utils import save_image
 from torch.utils.data import Subset
@@ -460,7 +460,7 @@ def plot_comparison(result_dict: dict,
                     out_path: str,
                     scatter_params: dict = {},
                     layout_params: dict = {}):
-    p = strategy.merge(dict(line=dict(width=1.0)), scatter_params)
+    p = deep_merge(dict(line=dict(width=1.0)), scatter_params)
     fig = go.Figure()
     for name, data in result_dict.items():
         x = data[:, 0]
@@ -477,7 +477,7 @@ def plot_comparison(result_dict: dict,
                   font=dict(
                       size=18,
                   ))
-    params = strategy.merge(params, layout_params)
+    params = deep_merge(params, layout_params)
     fig.update_layout(**params)
     dir = os.path.dirname(out_path)
     if not os.path.exists(dir):

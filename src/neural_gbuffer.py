@@ -19,7 +19,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from typing import Callable, Optional
 from plot import get_plot_fn
 from models.classifier import Classifier
-from merge_strategy import strategy
+from merge_strategy import deep_merge
 from models import create_model, BaseRenderer
 from linear_warmup import LinearWarmup
 
@@ -79,7 +79,7 @@ class NeuralGBufferExperiment(pl.LightningModule):
                           **self.params['data'].get('loader', {}))
 
     def val_dataloader(self):
-        ds_params = strategy.merge(
+        ds_params = deep_merge(
             self.params['data'].get('training', {}).copy(),
             self.params['data'].get('validation', {}))
         dataset = get_dataset(self.params['data']['name'], ds_params)

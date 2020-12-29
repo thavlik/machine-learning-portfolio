@@ -27,13 +27,16 @@ from linear_warmup import LinearWarmup
 import boto3
 from visdom import Visdom
 from base_experiment import BaseExperiment
-
+from models import create_model
+from dataset import get_example_shape
 
 class LocalizationExperiment(BaseExperiment):
-    def __init__(self,
-                 localizer: Localizer,
-                 params: dict) -> None:
-        super().__init__(params)
+    def __init__(self, config: dict):
+        super().__init__(config)
+        exp_params = config['exp_params']
+        input_shape = get_example_shape(exp_params['data'])
+        localizer = create_model(**config['model_params'],
+                                 input_shape=input_shape)
         self.localizer = localizer
 
     def sample_images(self, plot: dict, batch: Tensor):
