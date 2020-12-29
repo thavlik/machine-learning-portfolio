@@ -341,8 +341,8 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     experiment = create_experiment(config, run_args)
     if experiment is None:
         return
-    experiment.hparams = config
-    experiment = experiment.cuda()  # to('cuda:' + str(run_args.get('gpu', 0)))
+    experiment.save_hyperparameters(config)
+    experiment = experiment.cuda()
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,
