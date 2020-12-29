@@ -161,7 +161,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         print('Warning: randomizing seed for each trial')
         run_config['manual_seed'] = tune.sample_from(
             lambda spec: np.random.randint(0, 64_000))
-    ray.init(num_cpus=8, num_gpus=2)
+    ray.init(num_cpus=8, num_gpus=1)
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,
