@@ -5,7 +5,7 @@ model_params:
   name: ResNetGaussianLocalizer2d
   pooling: max
   batch_normalize: false
-  hidden_dims: [128, 128, 64, 64, 32, 32]
+  hidden_dims: [128, 128, 96, 64, 32, 24]
 
 exp_params:
   warmup_steps: 256
