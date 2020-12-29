@@ -125,6 +125,7 @@ def get_best_config(analysis, metric: str, scope: str) -> dict:
     """
     options = []
     for trial in analysis.trials:
+        print(trial.metric_analysis.keys())
         loss = trial.metric_analysis[metric][scope]
         found = False
         for config, losses in options:
