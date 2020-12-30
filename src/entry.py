@@ -151,7 +151,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     run_config = load_config(config['experiment'])
     run_config = generate_run_config(run_config)
     run_config['trainer_params'] = deep_merge(run_config['trainer_params'].copy(), {
-        'limit_train_batches': config['num_train_steps'],
+        'max_steps': config['num_train_steps'],
         'limit_val_batches': config['num_val_steps'],
         'check_val_every_n_epoch': 1,
         'log_every_n_steps': 1,
@@ -161,7 +161,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         print('Warning: randomizing seed for each trial')
         run_config['manual_seed'] = tune.sample_from(
             lambda spec: np.random.randint(0, 64_000))
-    ray.init(num_cpus=8, num_gpus=1)
+    ray.init()
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,
@@ -171,7 +171,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         local_dir=run_args['save_dir'],
         num_samples=config['num_samples'],
         resources_per_trial={
-            'cpu': 8,
+            'cpu': 2,
             'gpu': 1,
         },
     )
