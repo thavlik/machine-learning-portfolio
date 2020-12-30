@@ -5,4 +5,4 @@ model_params:
 exp_params:
   optimizer:
     lr:
-      grid_search: [0.006, 0.008, 0.01]
+      grid_search: [0.007, 0.008, 0.01]
