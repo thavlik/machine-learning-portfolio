@@ -1,6 +1,6 @@
 entrypoint: hparam_search
 
-num_samples: 2
+num_samples: 4
 
 num_train_steps: 8_000
 
