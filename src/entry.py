@@ -7,7 +7,7 @@ from localization import LocalizationExperiment
 from dataset import ReferenceDataset, get_example_shape, get_output_features
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback
-from pytorch_lightning.loggers import TestTubeLogger
+from pytorch_lightning.loggers import TestTubeLogger, TensorBoardLogger
 import numpy as np
 from pytorch_lightning import Trainer
 from load_config import load_config
