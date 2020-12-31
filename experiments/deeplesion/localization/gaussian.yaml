@@ -7,7 +7,7 @@ exp_params:
 model_params:
   arch: ResNetGaussianLocalizer2d
   name: ResNetGaussianLocalizer2d
-  dropout: 0.2
+  dropout: 0.15
   
 logging_params:
   name: "DeepLesion_Gaussian"
