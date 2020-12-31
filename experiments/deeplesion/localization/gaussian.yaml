@@ -2,12 +2,12 @@ include: experiments/deeplesion/localization/basic.yaml
 
 exp_params:
   optimizer:
-    lr: 0.01
+    lr: 0.008
 
 model_params:
   arch: ResNetGaussianLocalizer2d
   name: ResNetGaussianLocalizer2d
-  dropout: 0.15
+  dropout: 0.25
   
 logging_params:
   name: "DeepLesion_Gaussian"
