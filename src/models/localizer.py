@@ -25,7 +25,7 @@ class Localizer(nn.Module):
                       objective: str = 'iou',
                       iou_weight: float = 1.0) -> dict:
         localization_loss = F.mse_loss(pred_params, targ_params)
-        iou_loss = -torch.Tensor(giou(pred_params.detach().numpy(), targ_params.detach().numpy())).mean()
+        iou_loss = torch.Tensor(giou(pred_params.detach().numpy(), targ_params.detach().numpy())).mean()
         #eps = 1e-7
         #localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
         #localization_loss = -torch.log(localization_loss)
