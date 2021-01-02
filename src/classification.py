@@ -96,6 +96,7 @@ class ClassificationExperiment(BaseExperiment):
         y = self.classifier(real_img)
         val_loss = self.classifier.loss_function(y.cpu(), labels.cpu(),
                                                  **self.params.get('loss_params', {}))
+        self.log_val_step(val_loss)
         return val_loss
 
     def configure_optimizers(self):

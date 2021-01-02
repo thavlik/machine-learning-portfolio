@@ -109,10 +109,6 @@ class BaseExperiment(pl.LightningModule):
                     pass
 
     def log_train_step(self, train_loss: dict):
-        if self.enable_tune:
-            from ray import tune
-            tune.report(**{key: val.item()
-                           for key, val in train_loss.items()})
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         revert = self.training
@@ -127,6 +123,12 @@ class BaseExperiment(pl.LightningModule):
                 gc.collect()
         if revert:
             self.train()
+    
+    def log_val_step(self, val_loss: dict):
+        if self.enable_tune:
+            from ray import tune
+            tune.report(**{key: val.item()
+                           for key, val in val_lossval_loss.items()})
 
     def validation_epoch_end(self, outputs: list):
         avg = {}

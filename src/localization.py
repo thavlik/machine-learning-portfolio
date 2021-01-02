@@ -92,6 +92,7 @@ class LocalizationExperiment(BaseExperiment):
         val_loss = self.localizer.loss_function(pred_params,
                                                 targ_params,
                                                 **self.params.get('loss_params', {}))
+        self.log_val_step(val_loss)
         return val_loss
 
     def configure_optimizers(self):
