@@ -32,9 +32,11 @@ class ClassificationExperiment(BaseExperiment):
 
     def __init__(self,
                  config: dict,
-                 enable_tune: bool = False):
+                 enable_tune: bool = False,
+                 **kwargs):
         super().__init__(config=config,
-                         enable_tune=enable_tune)
+                         enable_tune=enable_tune,
+                         **kwargs)
         classifier = create_model(**config['model_params'],
                                   input_shape=get_example_shape(config['exp_params']['data']))
         self.classifier = classifier

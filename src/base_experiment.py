@@ -31,7 +31,8 @@ from visdom import Visdom
 class BaseExperiment(pl.LightningModule):
     def __init__(self,
                  config: dict,
-                 enable_tune: bool = False):
+                 enable_tune: bool = False,
+                 **kwargs):
         super().__init__()
 
         self.save_hyperparameters(config)

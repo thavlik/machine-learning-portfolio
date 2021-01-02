@@ -34,9 +34,11 @@ from dataset import get_example_shape
 class LocalizationExperiment(BaseExperiment):
     def __init__(self,
                  config: dict,
-                 enable_tune: bool = False):
+                 enable_tune: bool = False,
+                 **kwargs):
         super().__init__(config=config,
-                         enable_tune=enable_tune)
+                         enable_tune=enable_tune,
+                         **kwargs)
         exp_params = config['exp_params']
         input_shape = get_example_shape(exp_params['data'])
         localizer = create_model(**config['model_params'],
