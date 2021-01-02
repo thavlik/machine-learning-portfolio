@@ -127,7 +127,7 @@ class BaseExperiment(pl.LightningModule):
     def log_val_step(self, val_loss: dict):
         if self.enable_tune:
             from ray import tune
-            tune.report(**{key: val.item()
+            tune.report(**{key: 'val/' + val.item()
                            for key, val in val_loss.items()})
 
     def validation_epoch_end(self, outputs: list):
