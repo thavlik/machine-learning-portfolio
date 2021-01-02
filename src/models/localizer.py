@@ -3,6 +3,7 @@ from torch import nn, Tensor
 from torch.nn import functional as F
 from abc import abstractmethod
 from typing import List, Callable, Union, Any, TypeVar, Tuple
+from .iou import giou
 
 
 class Localizer(nn.Module):
@@ -21,14 +22,17 @@ class Localizer(nn.Module):
     def loss_function(self,
                       pred_params: Tensor,
                       targ_params: Tensor,
-                      objective: str = 'iou') -> dict:
+                      objective: str = 'iou',
+                      iou_weight: float = 1.0) -> dict:
         localization_loss = F.mse_loss(pred_params, targ_params)
+        iou_loss = torch.Tensor(giou(pred_params.detach().numpy(), targ_params.detach().numpy())).mean()
         #eps = 1e-7
         #localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
         #localization_loss = -torch.log(localization_loss)
         #localization_loss = 1.0 / localization_loss
-        loss = localization_loss
+        loss = localization_loss + iou_loss * iou_weight
         return {'loss': loss,
+                'IOU_Loss': iou_loss,
                 'Localization_Loss': localization_loss}
 
 
