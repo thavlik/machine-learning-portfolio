@@ -128,7 +128,7 @@ class BaseExperiment(pl.LightningModule):
         if self.enable_tune:
             from ray import tune
             tune.report(**{key: val.item()
-                           for key, val in val_lossval_loss.items()})
+                           for key, val in val_loss.items()})
 
     def validation_epoch_end(self, outputs: list):
         avg = {}
