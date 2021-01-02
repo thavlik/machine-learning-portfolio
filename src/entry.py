@@ -36,11 +36,11 @@ class OnCheckpointHparams(Callback):
 
 
 def localization2d(config: dict, run_args: dict):
-    return LocalizationExperiment(config)
+    return LocalizationExperiment(config, **run_args)
 
 
 def classification(config: dict, run_args: dict):
-    return ClassificationExperiment(config)
+    return ClassificationExperiment(config, **run_args)
 
 
 def classification_embed2d(config: dict, run_args: dict):
@@ -183,6 +183,10 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     # Restore original trainer_params, which were overridden
     # so the hparam search is shorter than a full experiment.
     best_config['trainer_params'] = config['trainer_params']
+
+    print('Best config:')
+    print(best_config)
+
     experiment_main(best_config, run_args)
 
 

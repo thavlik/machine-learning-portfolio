@@ -29,7 +29,9 @@ from visdom import Visdom
 
 
 class BaseExperiment(pl.LightningModule):
-    def __init__(self, config: dict):
+    def __init__(self,
+                 config: dict,
+                 enable_tune: bool = False):
         super().__init__()
 
         self.save_hyperparameters(config)
@@ -37,6 +39,7 @@ class BaseExperiment(pl.LightningModule):
         params = config['exp_params']
         self.params = params
         self.curr_device = None
+        self.enable_tune = enable_tune
 
         if 'plot' in self.params:
             plots = self.params['plot']
@@ -105,6 +108,10 @@ class BaseExperiment(pl.LightningModule):
                     pass
 
     def log_train_step(self, train_loss: dict):
+        if self.enable_tune:
+            from ray import tune
+            tune.report(**{key: val.item()
+                           for key, val in train_loss.items()})
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         revert = self.training

@@ -27,10 +27,14 @@ from base_experiment import BaseExperiment
 from models import create_model
 from dataset import get_example_shape
 
+
 class ClassificationExperiment(BaseExperiment):
 
-    def __init__(self, config: dict):
-        super().__init__(config)
+    def __init__(self,
+                 config: dict,
+                 enable_tune: bool = False):
+        super().__init__(config=config,
+                         enable_tune=enable_tune)
         classifier = create_model(**config['model_params'],
                                   input_shape=get_example_shape(config['exp_params']['data']))
         self.classifier = classifier
