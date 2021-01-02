@@ -111,10 +111,10 @@ class BaseExperiment(pl.LightningModule):
     def log_train_step(self, train_loss: dict):
         self.logger.experiment.log({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
-        revert = self.training
         if self.global_step > 0 and 'save_weights' in self.params:
             if self.global_step % self.params['save_weights']['every_n_steps'] == 0:
                 self.save_weights()
+        revert = self.training
         if revert:
             self.eval()
         for plot, val_batch in zip(self.plots, self.val_batches):
