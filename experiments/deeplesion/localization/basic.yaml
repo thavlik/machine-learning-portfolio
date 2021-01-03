@@ -1,10 +1,11 @@
 entrypoint: localization2d
 
 model_params:
-  arch: ResNetGaussianLocalizer2d
-  name: ResNetGaussianLocalizer2d
+  arch: ResNetLocalizer2d
+  name: ResNetLocalizer2d
   pooling: max
   batch_normalize: false
+  dropout: 0.1
   hidden_dims: [128, 128, 96, 64, 32, 24]
 
 exp_params:
@@ -20,7 +21,7 @@ exp_params:
     objective: mse
   batch_size: 4
   optimizer:
-    lr: 0.0007
+    lr: 0.02
     weight_decay: 0.00001
   save_weights_every_n_steps: 10_000
   data:
