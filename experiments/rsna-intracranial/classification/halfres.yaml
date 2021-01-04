@@ -5,9 +5,12 @@ model_params:
   name: 'ResNetClassifier2d'
   num_classes: 6
   hidden_dims: [192, 128, 96, 64]
+  dropout: 0.1
 
 exp_params:
   batch_size: 8
+  optimizer:
+    lr: 0.01
   data:
     training:
       lod: 1

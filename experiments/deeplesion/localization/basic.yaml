@@ -49,6 +49,8 @@ exp_params:
 trainer_params:
   max_epochs: 10_000_000
   log_every_n_steps: 20
+  #limit_train_batches: 10
+  check_val_every_n_epoch: 1
 
 logging_params:
   name: "DeepLesion_Basic"

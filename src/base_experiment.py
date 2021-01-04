@@ -125,10 +125,7 @@ class BaseExperiment(pl.LightningModule):
             self.train()
     
     def log_val_step(self, val_loss: dict):
-        if self.enable_tune:
-            from ray import tune
-            tune.report(**{'val/' + key: val.item()
-                           for key, val in val_loss.items()})
+        pass
 
     def validation_epoch_end(self, outputs: list):
         avg = {}
@@ -138,7 +135,12 @@ class BaseExperiment(pl.LightningModule):
                 items.append(v)
                 avg[k] = items
         for metric, values in avg.items():
-            self.log('val/' + metric, torch.Tensor(values).mean())
+            key = 'val/' + metric
+            mean = torch.Tensor(values).mean()
+            self.log(key, mean)
+            if self.enable_tune:
+                from ray import tune
+                tune.report(**{key: mean})
 
     def configure_schedulers(self, optims: List[Optimizer]) -> list:
         scheds = []
