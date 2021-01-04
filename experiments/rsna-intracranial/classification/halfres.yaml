@@ -14,3 +14,6 @@ exp_params:
   data:
     training:
       lod: 1
+
+logging_params:
+  name: "RSNA_HalfRes"
