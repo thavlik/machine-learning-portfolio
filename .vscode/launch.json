@@ -105,7 +105,7 @@
             ]
         },
         {
-            "name": "Python: train DeepLesion Basic",
+            "name": "Python: train DeepLesion HalfRes",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -113,7 +113,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/deeplesion/localization/basic.yaml"
+                "experiments/deeplesion/localization/halfres.yaml"
             ]
         },
         {

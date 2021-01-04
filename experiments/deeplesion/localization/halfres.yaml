@@ -1,0 +1,7 @@
+include: experiments/deeplesion/localization/basic.yaml
+
+exp_params:
+  batch_size: 6
+  data:
+    training:
+      lod: 1
