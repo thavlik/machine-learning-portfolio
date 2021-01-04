@@ -2,6 +2,7 @@ include: experiments/deeplesion/localization/basic.yaml
 
 model_params:
   dropout: 0.1
+  hidden_dims: [256, 256, 256, 256]
 
 exp_params:
   batch_size: 8
