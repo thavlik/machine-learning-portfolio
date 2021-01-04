@@ -1,7 +1,67 @@
-include:
-  - experiments/rsna-intracranial/include/classification_common.yaml
+include: experiments/rsna-intracranial/include/dataset.yaml
 
 entrypoint: classification
+
+model_params:
+  arch: 'ResNetClassifier2d'
+  name: 'ResNetClassifier2d'
+  num_classes: 6
+  hidden_dims: [128, 128, 128, 128]
+  pooling: max
+
+exp_params:
+  loss_params:
+    objective: mse
+  batch_size: 4
+  optimizer:
+    lr: 0.0002
+    weight_decay: 0.00001
+  visdom:
+    host: https://visdom.foldy.dev
+    port: 443
+    env: rsna-ich
+  plot:
+    fn: classifier2d
+    sample_every_n_steps: 10_000
+    examples_per_class: 6
+    classes:
+    - name: Control
+      labels: [0, 0, 0, 0, 0, 0]
+      all: true
+      baseline: 0.2
+    - name: Epidural
+      labels: [1, 0, 0, 0, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Intraparenchymal
+      labels: [0, 1, 0, 0, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Intraventricular
+      labels: [0, 0, 1, 0, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Subarachnoid
+      labels: [0, 0, 0, 1, 0, 0]
+      all: false
+      baseline: 0.2
+    - name: Subdural
+      labels: [0, 0, 0, 0, 1, 0]
+      all: false
+      baseline: 0.2
+    - name: Any
+      labels: [0, 0, 0, 0, 0, 1]
+      all: false
+      baseline: 0.2
+    params:
+      img_filter: ct
+
+trainer_params:
+  max_epochs: 8
+  log_every_n_steps: 20
+  check_val_every_n_epoch: 1
+
+manual_seed: 1498
 
 logging_params:
   name: "RSNA_Basic"
