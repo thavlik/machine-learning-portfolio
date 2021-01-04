@@ -318,7 +318,7 @@
             ]
         },
         {
-            "name": "Python: train RSNA Basic",
+            "name": "Python: train RSNA Basic HalfRes",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -326,7 +326,7 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/rsna-intracranial/classification/basic.yaml"
+                "experiments/rsna-intracranial/classification/basic_halfres.yaml"
             ]
         },
         {

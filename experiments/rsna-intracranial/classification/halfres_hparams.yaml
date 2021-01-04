@@ -1,0 +1,8 @@
+include: experiments/rsna-intracranial/classification/basic_hparams.yaml
+
+experiment:
+  - experiments/rsna-intracranial/classification/halfres.yaml
+  - experiments/rsna-intracranial/include/hparams.yaml
+
+resources_per_trial:
+  gpu: 0.5

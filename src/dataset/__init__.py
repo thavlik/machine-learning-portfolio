@@ -52,7 +52,6 @@ def get_dataset(name: str,
 dataset_dims = {
     'cq500': (1, 512, 512),  # channels, height, width
     'deeplesion': (1, 512, 512),
-    'rsna-intracranial': (1, 512, 512),
     'trends-fmri': (53, 63, 52, 53),
 }
 
@@ -71,6 +70,12 @@ def get_example_shape(data: dict):
         return torch.Size((l['num_frames'], 3, l['height'], l['width']))
     if name == 'grasp-and-lift-eeg':
         return torch.Size((32, data['training']['num_samples']))
+    if name == 'rsna-intracranial':
+        lod = data['training'].get('lod', 0)
+        divisor = 2 ** lod
+        size = 512 // divisor
+        size = (1, size, size)
+        return torch.Size(size)
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return torch.Size(dataset_dims[name])

@@ -11,6 +11,7 @@ from botocore import UNSIGNED
 from botocore.config import Config
 import subprocess
 import gzip
+from torchvision.transforms import Resize, ToPILImage, ToTensor
 
 
 def get_inventory(bucket,
@@ -39,6 +40,7 @@ def get_inventory(bucket,
             content = f.read()
     lines = content.splitlines()
     return lines
+
 
 def load_labels_csv(path: str) -> list:
     if not os.path.exists(path):
@@ -106,7 +108,8 @@ class RSNAIntracranialDataset(data.Dataset):
                  s3_bucket: str = 'rsna-ich',
                  s3_endpoint_url: str = 'https://nyc3.digitaloceanspaces.com',
                  delete_after_use: bool = False,
-                 use_gzip: bool = True):
+                 use_gzip: bool = True,
+                 lod: int = 0):
         super(RSNAIntracranialDataset, self).__init__()
         self.root = root
         self.train = train
@@ -116,6 +119,7 @@ class RSNAIntracranialDataset(data.Dataset):
         self.delete_after_use = delete_after_use
         self.prefix = 'stage_2_train/' if train else 'stage_2_test/'
         self.use_gzip = use_gzip
+        self.out_size = (512 // 2 ** lod, 512 // 2 ** lod) if lod > 0 else None
         dcm_path = os.path.join(root, self.prefix)
         self.dcm_path = dcm_path
         if self.download:
@@ -158,7 +162,7 @@ class RSNAIntracranialDataset(data.Dataset):
                 x = pydicom.dcmread(f, stop_before_pixels=False)
             finally:
                 f.close()
-            #with gzip.open(path) as f:
+            # with gzip.open(path) as f:
             #    x = pydicom.dcmread(f, stop_before_pixels=False)
         else:
             x = pydicom.dcmread(path, stop_before_pixels=False)
@@ -188,6 +192,8 @@ class RSNAIntracranialDataset(data.Dataset):
         x = self.load_dcm(path)
         if self.delete_after_use:
             os.remove(path)
+        if self.out_size is not None:
+            x = ToTensor()(Resize(self.out_size)(ToPILImage()(x)))
         return (x, y)
 
     def __len__(self):
