@@ -5,4 +5,4 @@ experiment:
   - experiments/deeplesion/include/hparams.yaml
 
 resources_per_trial:
-  gpu: 0.5
+  gpu: 1.0
