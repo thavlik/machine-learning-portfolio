@@ -4,5 +4,3 @@ experiment:
   - experiments/deeplesion/localization/halfres.yaml
   - experiments/deeplesion/include/hparams.yaml
 
-resources_per_trial:
-  gpu: 1.0
