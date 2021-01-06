@@ -136,6 +136,7 @@ class DeepLesionDataset(data.Dataset):
                  only_positives: bool = False,
                  flatten_labels: bool = True,
                  lod: int = 0,
+                 limit: int = None,
                  components: List[str] = [
                      'measurement_coordinates',
                      'bounding_boxes',
@@ -185,6 +186,8 @@ class DeepLesionDataset(data.Dataset):
             self.files = [(d, f)
                           for d, f in self.files
                           if f'{d}_{f}' in self.labels]
+        if limit is not None:
+            self.files = self.files[:limit]
 
     def get_label(self, index):
         d, f = self.files[index]

@@ -34,6 +34,7 @@ exp_params:
     training:
       root: /data/deeplesion
       only_positives: true
+      limit: 32
       components:
         - bounding_boxes
   visdom:
@@ -49,8 +50,8 @@ exp_params:
 trainer_params:
   max_epochs: 10_000_000
   log_every_n_steps: 20
-  limit_train_batches: 10
-  limit_val_batches: 5
+  #limit_train_batches: 10
+  #limit_val_batches: 5
   check_val_every_n_epoch: 100
 
 logging_params:
