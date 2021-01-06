@@ -34,7 +34,7 @@ exp_params:
     training:
       root: /data/deeplesion
       only_positives: true
-      limit: 128
+      #limit: 128
       components:
         - bounding_boxes
   visdom:
