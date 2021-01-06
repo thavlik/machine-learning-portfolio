@@ -11,8 +11,7 @@ from botocore import UNSIGNED
 from botocore.config import Config
 import subprocess
 import gzip
-from torchvision.transforms import Resize, ToPILImage, ToTensor
-
+from torch.nn import functional as F
 
 def get_inventory(bucket,
                   root: str,
@@ -119,7 +118,7 @@ class RSNAIntracranialDataset(data.Dataset):
         self.delete_after_use = delete_after_use
         self.prefix = 'stage_2_train/' if train else 'stage_2_test/'
         self.use_gzip = use_gzip
-        self.out_size = (512 // 2 ** lod, 512 // 2 ** lod) if lod > 0 else None
+        self.lod = lod
         dcm_path = os.path.join(root, self.prefix)
         self.dcm_path = dcm_path
         if self.download:
@@ -162,8 +161,6 @@ class RSNAIntracranialDataset(data.Dataset):
                 x = pydicom.dcmread(f, stop_before_pixels=False)
             finally:
                 f.close()
-            # with gzip.open(path) as f:
-            #    x = pydicom.dcmread(f, stop_before_pixels=False)
         else:
             x = pydicom.dcmread(path, stop_before_pixels=False)
         x = normalized_dicom_pixels(x)
@@ -192,8 +189,9 @@ class RSNAIntracranialDataset(data.Dataset):
         x = self.load_dcm(path)
         if self.delete_after_use:
             os.remove(path)
-        if self.out_size is not None:
-            x = ToTensor()(Resize(self.out_size)(ToPILImage()(x)))
+        if self.lod is not None:
+            for _ in range(self.lod):
+                x = F.avg_pool2d(x, 2, stride=2)
         return (x, y)
 
     def __len__(self):

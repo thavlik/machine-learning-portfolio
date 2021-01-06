@@ -9,7 +9,7 @@ from skimage.io import imread
 from skimage.transform import resize
 import tempfile
 from typing import List
-from torchvision.transforms import Resize, ToPILImage, ToTensor
+from torch.nn import functional as F
 
 def read_hu(x): return resize(imread(x).astype(np.float32)-32768, (512, 512))
 
@@ -157,7 +157,7 @@ class DeepLesionDataset(data.Dataset):
         self.s3_bucket = s3_bucket
         self.s3_endpoint = s3_endpoint
         self.delete_after_use = delete_after_use
-        self.out_size = (512 // 2 ** lod, 512 // 2 ** lod) if lod > 0 else None
+        self.lod = lod
         labels_csv_path = os.path.join(root, 'DL_info.csv')
         if self.download:
             if not os.path.exists(root):
@@ -235,8 +235,9 @@ class DeepLesionDataset(data.Dataset):
             os.remove(path)
         if x.shape != torch.Size([1, 512, 512]):
             raise ValueError(f'Invalid shape {x.shape}')
-        if self.out_size is not None:
-            x = ToTensor()(Resize(self.out_size)(ToPILImage()(x)))
+        if self.lod is not None:
+            for _ in range(self.lod):
+                x = F.avg_pool2d(x, 2, stride=2)
         return (x, label, y)
 
     def __len__(self):

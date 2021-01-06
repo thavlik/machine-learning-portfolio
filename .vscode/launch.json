@@ -114,7 +114,10 @@
             "args": [
                 "--config",
                 "experiments/deeplesion/localization/halfres.yaml"
-            ]
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1"
+            }
         },
         {
             "name": "Python: train DeepLesion HParams",
