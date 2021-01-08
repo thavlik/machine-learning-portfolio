@@ -37,9 +37,8 @@ class ClassificationExperiment(BaseExperiment):
         super().__init__(config=config,
                          enable_tune=enable_tune,
                          **kwargs)
-        classifier = create_model(**config['model_params'],
-                                  input_shape=get_example_shape(config['exp_params']['data']))
-        self.classifier = classifier
+        self.classifier = create_model(**config['model_params'],
+                                       input_shape=get_example_shape(config['exp_params']['data']))
 
     def sample_images(self, plot: dict, batches: List[Tensor]):
         test_input = []

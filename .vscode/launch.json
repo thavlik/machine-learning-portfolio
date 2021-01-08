@@ -143,8 +143,23 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/deeplesion/vae/fid.yaml"
+                "experiments/deeplesion/vae/mse.yaml"
             ]
+        },
+        {
+            "name": "Python: train DeepLesion VAE HalfRes",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/deeplesion/vae/halfres_mse.yaml"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1"
+            }
         },
         {
             "name": "Python: train EEG RL PPO",

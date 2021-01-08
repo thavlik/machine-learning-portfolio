@@ -1,11 +1,44 @@
 include:
   - experiments/include/vae2d/mse.yaml
-  - experiments/deeplesion/include/common.yaml
+
+model_params:
+  pooling: max
+  dropout: 0.1
+  hidden_dims: [256, 256, 256, 256]
 
 exp_params:
-  plot:
-    params:
-      title: "${model}, DeepLesion, MSE loss, Epoch ${epoch}"
-      
+  warmup_steps: 256
+  save_weights:
+    every_n_steps: 10_000
+    delete_old: true
+    local: {}
+  batch_size: 4
+  optimizer:
+    lr: 0.01
+    weight_decay: 0.00001
+  save_weights_every_n_steps: 10_000
+  data:
+    name: deeplesion
+    split: 0.7
+    flatten_labels: true
+    loader:
+      num_workers: 0
+      drop_last: true
+    training:
+      root: /data/deeplesion
+      only_positives: true
+      include_label: false
+      components:
+        - bounding_boxes
+  visdom:
+    host: https://visdom.foldy.dev
+    port: 443
+    env: deeplesion
+  
+trainer_params:
+  max_epochs: 10_000_000
+  log_every_n_steps: 20
+  check_val_every_n_epoch: 100
+
 logging_params:
-  name: "DeepLesion_VAE_MSE"
+  name: "DeepLesionVAE_MSE"

@@ -8,4 +8,4 @@ exp_params:
       title: "${model}, DeepLesion, FID loss, Epoch ${epoch}"
 
 logging_params:
-  name: "DeepLesion_VAE_FID"
+  name: "DeepLesionVAE_FID"

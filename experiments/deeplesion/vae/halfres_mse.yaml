@@ -1,0 +1,16 @@
+include: experiments/deeplesion/vae/mse.yaml
+
+model_params:
+  dropout: 0.1
+  hidden_dims: [128, 256, 512, 256, 128]
+
+exp_params:
+  batch_size: 10
+  optimizer:
+    lr: 0.01
+  data:
+    training:
+      lod: 1
+
+logging_params:
+  name: "DeepLesionVAE_HalfRes"

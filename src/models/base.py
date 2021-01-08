@@ -29,10 +29,11 @@ class BaseVAE(nn.Module):
     def get_encoder(self) -> List[nn.Module]:
         raise NotImplementedError
 
-    def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
-        mu, log_var = self.encode(input)
+    def forward(self, x: Tensor, **kwargs) -> List[Tensor]:
+        mu, log_var = self.encode(x)
         z = reparameterize(mu, log_var)
-        return [self.decode(z, **kwargs), input, mu, log_var, z]
+        y = self.decode(z, **kwargs)
+        return [y, x, mu, log_var, z]
 
     def sample(self,
                num_samples: int,
@@ -68,7 +69,8 @@ class BaseVAE(nn.Module):
                       objective: str = 'default',
                       beta: float = 1.0,
                       gamma: float = 1.0,
-                      target_capacity: float = 25.0) -> dict:
+                      target_capacity: float = 25.0,
+                      **kwargs) -> dict:
         recons_loss = F.mse_loss(recons, input)
 
         result = {'loss': recons_loss,

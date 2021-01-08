@@ -191,16 +191,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
 
 
 def vae2d(config: dict, run_args: dict) -> VAEExperiment:
-    exp_params = config['exp_params']
-    c, h, w = get_example_shape(exp_params['data'])
-    model = create_model(**config['model_params'],
-                         width=w,
-                         height=h,
-                         channels=c,
-                         enable_fid='fid_weight' in exp_params,
-                         progressive_growing=len(exp_params['progressive_growing']) if 'progressive_growing' in exp_params else 0)
-    return VAEExperiment(model,
-                         params=exp_params)
+    return VAEExperiment(config, **run_args)
 
 
 def vae3d(config: dict, run_args: dict) -> VAEExperiment:

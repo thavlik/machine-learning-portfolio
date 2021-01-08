@@ -7,7 +7,7 @@ import numpy as np
 from torch import optim, Tensor
 from torchvision import transforms
 from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
 from dataset import get_dataset, BatchVideoDataLoader
@@ -21,25 +21,28 @@ from models.base import BaseVAE
 from merge_strategy import deep_merge
 from torch.nn.parallel import DistributedDataParallel
 from ray import tune
-from linear_warmup import LinearWarmup
+from base_experiment import BaseExperiment
+from models import create_model
+from dataset import get_example_shape
 
 
-class VAEExperiment(pl.LightningModule):
+class VAEExperiment(BaseExperiment):
 
     def __init__(self,
-                 vae_model: BaseVAE,
-                 params: dict,
-                 enable_tune: bool = False) -> None:
-        super(VAEExperiment, self).__init__()
-        self.model = vae_model
-        self.params = params
-        self.curr_device = None
-        self.enable_tune = enable_tune
-
-        plots = self.params['plot']
-        if type(plots) is not list:
-            plots = [plots]
-        self.plots = plots
+                 config: dict,
+                 enable_tune: bool = False,
+                 **kwargs) -> None:
+        super(VAEExperiment, self).__init__(config=config,
+                                            enable_tune=enable_tune,
+                                            **kwargs)
+        params = config['exp_params']
+        c, h, w = get_example_shape(params['data'])
+        self.model = create_model(**config['model_params'],
+                                  width=w,
+                                  height=h,
+                                  channels=c,
+                                  enable_fid='fid_weight' in params,
+                                  progressive_growing=len(params['progressive_growing']) if 'progressive_growing' in params else 0)
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
@@ -54,14 +57,10 @@ class VAEExperiment(pl.LightningModule):
                 return lod, alpha
         return (0, 0.0)
 
-    def training_step(self, *args, **kwargs):
-        train_loss, _ = self.training_step_raw(*args, **kwargs)
-        return train_loss
-
-    def training_step_raw(self,
-                          batch,
-                          batch_idx,
-                          optimizer_idx=0):
+    def training_step(self,
+                      batch,
+                      batch_idx,
+                      optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
@@ -73,22 +72,10 @@ class VAEExperiment(pl.LightningModule):
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         train_loss = self.model.loss_function(*results, **kwargs)
-        self.logger.experiment.log({key: val.item()
-                                    for key, val in train_loss.items()})
-        if self.enable_tune:
-            tune.report(**{key: val.item()
-                           for key, val in train_loss.items()})
-        if self.global_step > 0:
-            for plot, val_indices in zip(self.plots, self.val_indices):
-                if self.global_step % plot['sample_every_n_steps'] == 0:
-                    self.sample_images(plot, val_indices)
-        return train_loss, results
+        self.log_train_step(train_loss)
+        return train_loss
 
-    def validation_step(self, *args, **kwargs):
-        val_loss, _ = self.validation_step_raw(*args, **kwargs)
-        return val_loss
-
-    def validation_step_raw(self, batch, batch_idx, optimizer_idx=0):
+    def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
@@ -104,26 +91,19 @@ class VAEExperiment(pl.LightningModule):
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         val_loss = self.model.loss_function(*results, **kwargs)
-        return val_loss, results
+        self.log_val_step(val_loss)
+        return val_loss
 
-    def validation_epoch_end(self, outputs: dict):
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
-        self.log('avg_val_loss', avg_loss)
-        if self.enable_tune:
-            tune.report(avg_val_loss=avg_loss)
-
-    def sample_images(self, plot: dict, val_indices: Tensor):
+    def sample_images(self, plot: dict, batch: Tensor):
         revert = self.training
         if revert:
             self.eval()
         test_input = []
         recons = []
-        batch = torch.cat([self.sample_dataloader.dataset[int(i)][0].unsqueeze(0)
-                           for i in val_indices], dim=0).to(self.curr_device)
         for x in batch:
             x = x.unsqueeze(0)
             test_input.append(x)
-            x = self.model.generate(x, labels=[])
+            x = self.model.generate(x.to(self.curr_device), labels=[]).detach().cpu()
             recons.append(x)
         test_input = torch.cat(test_input, dim=0)
         recons = torch.cat(recons, dim=0)
@@ -148,13 +128,21 @@ class VAEExperiment(pl.LightningModule):
     def configure_optimizers(self):
         optims = [optim.Adam(self.model.parameters(),
                              **self.params['optimizer'])]
-        scheds = []
-        if 'warmup_steps' in self.params:
-            scheds.append(LinearWarmup(optims[0],
-                                       lr=self.params['optimizer']['lr'],
-                                       num_steps=self.params['warmup_steps']))
+        scheds = self.configure_schedulers(optims)
         return optims, scheds
 
+    def get_val_batches(self, dataset: Dataset) -> list:
+        val_batches = []
+        n = len(dataset)
+        for plot in self.plots:
+            indices = torch.randint(low=0,
+                                    high=n,
+                                    size=(plot['batch_size'], 1)).squeeze()
+            batch = [dataset[i][0] for i in indices]
+            val_batches.append(batch)
+        return val_batches
+
+    """
     def train_dataloader(self):
         ds_params = self.params['data'].get('training', {})
         dl_params = self.params['data'].get('loader', {})
@@ -196,3 +184,4 @@ class VAEExperiment(pl.LightningModule):
                                           size=(plot['batch_size'], 1)).squeeze()
                             for plot in self.plots]
         return self.sample_dataloader
+    """

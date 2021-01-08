@@ -137,6 +137,7 @@ class DeepLesionDataset(data.Dataset):
                  flatten_labels: bool = True,
                  lod: int = 0,
                  limit: int = None,
+                 include_label: bool = True,
                  components: List[str] = [
                      'measurement_coordinates',
                      'bounding_boxes',
@@ -158,6 +159,7 @@ class DeepLesionDataset(data.Dataset):
         self.s3_endpoint = s3_endpoint
         self.delete_after_use = delete_after_use
         self.lod = lod
+        self.include_label = include_label
         labels_csv_path = os.path.join(root, 'DL_info.csv')
         if self.download:
             if not os.path.exists(root):
@@ -238,7 +240,10 @@ class DeepLesionDataset(data.Dataset):
         if self.lod is not None:
             for _ in range(self.lod):
                 x = F.avg_pool2d(x, 2, stride=2)
-        return (x, label, y)
+        if self.include_label:
+            return (x, label, y)
+        else:
+            return (x, y)
 
     def __len__(self):
         return len(self.files)

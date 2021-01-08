@@ -180,14 +180,16 @@ class ResNetVAE2d(BaseVAE):
     def loss_function(self,
                       recons: Tensor,
                       orig: Tensor,
-                      fid_weight: float = 1.0) -> dict:
+                      *args,
+                      fid_weight: float = 1.0,
+                      **kwargs) -> dict:
         if 'lod' in kwargs:
+            raise NotImplementedError
             n = kwargs['lod']-1
             for _ in range(n):
                 orig = F.max_pool2d(orig, 2)
 
-        result = super(ResNetVAE2d, self).loss_function(
-            recons, orig, *args, **kwargs)
+        result = super(ResNetVAE2d, self).loss_function(recons, orig, *args, **kwargs)
 
         if self.enable_fid:
             fid_loss = self.fid(orig, recons).sum()
