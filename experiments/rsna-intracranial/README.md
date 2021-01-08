@@ -16,7 +16,7 @@ Training beyond one epoch did not increase validation accuracy. Optimal performa
 
 ![overfitting tensorboard](images/overfitting.jpg)
 
-Because such high validation accuracy was observed so early into training, it makes me wonder if the validation set is composed of categorically easier examples. I have no way of making a qualitative determination without the ability to read CTs.
+Because such high validation accuracy was observed so early into training, it makes me wonder if the validation set is composed of categorically easier examples. I have no way of making a qualitative judgment about this without the ability to read CTs.
 
 ## Results
 ![](images/RSNA_HalfRes_classifier2d_20000.jpg)
