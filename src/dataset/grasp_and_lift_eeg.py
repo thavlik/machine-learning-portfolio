@@ -4,6 +4,7 @@ import zipfile
 
 import requests
 import torch
+import torch.nn.functional as F
 import torch.utils.data as data
 
 
@@ -90,12 +91,14 @@ class GraspAndLiftEEGDataset(data.Dataset):
                  train: bool = True,
                  download: bool = True,
                  num_samples: int = None,
-                 last_label_only: bool = False):
+                 last_label_only: bool = False,
+                 lod: int = 0):
         super(GraspAndLiftEEGDataset, self).__init__()
         if num_samples is None and last_label_only:
             raise ValueError('last_label_only cannot be used without setting num_samples')
         self.num_samples = num_samples
         self.last_label_only = last_label_only
+        self.lod = lod
         data_dir = os.path.join(root, 'train' if train else 'test')
         if not os.path.exists(data_dir):
             if not download:
@@ -205,10 +208,19 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 Y.append(y)
         return X, Y if len(Y) > 0 else None
 
+    def _pool_lod(self, x):
+        if self.lod > 0:
+            for _ in range(self.lod):
+                x = F.avg_pool1d(x, 2, stride=2)
+        return x
+
     def __getitem__(self, index):
         if self.num_samples is None:
             # Return the entire example (e.g. reinforcement learning)
-            return (self.X[index], self.Y[index] if self.Y is not None else [])
+            x = self.X[index]
+            x = self._pool_lod(x)
+            y = self.Y[index] if self.Y is not None else []
+            return (x, y)
         # Find the example and offset for the index
         ofs = 0
         for i, x in enumerate(self.X):
@@ -218,6 +230,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 continue
             j = index - ofs
             x = x[:, j:j + self.num_samples]
+            x = self._pool_lod(x)
             if self.Y is not None:
                 if self.last_label_only:
                     # Only return the label for the last sample
@@ -225,6 +238,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 else:
                     # Return labels for all samples
                     y = self.Y[i][:, j:j + self.num_samples]
+                    y = self._pool_lod(y)
             else:
                 y = []
             return x, y
