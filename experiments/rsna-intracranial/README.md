@@ -1,4 +1,4 @@
-These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/).
+These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/) in 2019. It proposes a relatively simple task where one or more classes of ICH are assigned to individual CT slices. 
 
 ## Results
 ![](images/RSNA_HalfRes_classifier2d_20000.jpg)
