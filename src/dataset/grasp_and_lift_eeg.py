@@ -211,7 +211,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
     def _pool_lod(self, x):
         if self.lod > 0:
             for _ in range(self.lod):
-                x = F.avg_pool1d(x, 2, stride=2)
+                x = F.avg_pool1d(x.unsqueeze(0), 2, stride=2).squeeze()
         return x
 
     def __getitem__(self, index):

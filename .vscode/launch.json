@@ -171,6 +171,18 @@
             ]
         },
         {
+            "name": "Python: train EEG HalfRes",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/grasp_and_lift_eeg/classification/halfres.yaml"
+            ]
+        },
+        {
             "name": "Python: train EEG VAE",
             "type": "python",
             "request": "launch",

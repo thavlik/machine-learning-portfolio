@@ -67,7 +67,11 @@ def get_example_shape(data: dict):
         l = data['loader']
         return torch.Size((l['num_frames'], 3, l['height'], l['width']))
     if name == 'grasp-and-lift-eeg':
-        return torch.Size((32, data['training']['num_samples']))
+        size = data['training']['num_samples']
+        lod = data['training'].get('lod', 0)
+        divisor = 2 ** lod
+        size = size // divisor
+        return torch.Size((32, size))
     if name in ['rsna-intracranial', 'deeplesion', 'cq500']:
         lod = data['training'].get('lod', 0)
         divisor = 2 ** lod
