@@ -3,7 +3,7 @@
 These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/) in 2019. It proposes a relatively simple task where one or more classes of ICH are assigned to individual CT slices. 
 
 ## Relevant Experiments
-| File                                                                     | Slice Resolution | Notes
+| File                                                                     | Input Resolution | Notes
 | ------------------------------------------------------------------------ | ---------------- | ------
 | [classification/basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
 | [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
