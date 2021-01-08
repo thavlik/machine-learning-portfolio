@@ -13,7 +13,8 @@ The left indicator bar represents per-class accuracy and the right represents ac
 
 Because model accuracy is high, all indicators bars are green. However, the `Control` column's per-class indicators are all a perceivably lighter shade of green than those of other columns, suggesting the model is biased in favor of [type 1 error](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors). This is considered desirable for such medical technology because *type 2 errors* - false negative - are far more likely to be fatal; human attention should *always* be directed at edge cases.
 
-## Training Dynamics
+## Materials & Methods
+### Training Dynamics
 Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function, which likely only worked so well because of the dataset's relatively even distribution of class labels.
 
 ![training tensorboard](images/training-dynamics.jpg)
@@ -24,12 +25,12 @@ Training beyond one epoch did not increase validation accuracy. Optimal performa
 
 Because such high validation accuracy was observed so early into training, it is possible that the validation set is composed of categorically easier examples. It is difficult to make this qualitative judgment without the ability to interpret CTs.
 
-## Half-Resolution Training
+### Half-Resolution Training
 The weights from any fully convolutional network are able to be applied to images of arbitrary dimensions - even dimensions differing from those with which it was trained. While larger convolutional kernel sizes are able to more easily capture large-scale details, they come with a significant increase in compute overhead. For simplicity, my portfolio uses the 3x3 and 1x1 kernels exclusively, and other aspects of the experiment (model architecture, input resolution, etc.) are optimized against this small kernel size.
 
 Training at half the input resolution (256x256) can be seen as analagous to doubling the dimensions of the kernel (up to 6x6) and enabling the model to more easily capture detail at those larger scales. Reduced memory overhead and larger batch sizes can be appreciated with this single change, leading to dramatically higher training performance.
 
-## Experiment Files
+### Experiment Files
 | File                                                                     | Input Resolution | Notes
 | ------------------------------------------------------------------------ | ---------------- | ------
 | [classification/basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
