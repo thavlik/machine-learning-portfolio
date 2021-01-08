@@ -21,7 +21,7 @@ Because such high validation accuracy was observed so early into training, it ma
 ## Results
 ![](images/RSNA_HalfRes_classifier2d_20000.jpg)
 
-The left indicator bar represents per-class accuracy and the right represents accuracy across all classes. Visualizing these metrics separately helps gauge performance on a per-class basis. Low (baseline) performance is mapped to red, and 100% accuracy is signified in bright green.
+The left indicator bar represents per-class accuracy and the right represents accuracy across all classes. Visualizing these metrics separately helps gauge performance on a per-class basis. Low (baseline) performance is mapped to red, and 100% accuracy is signified in bright green. The `Control` column's per-class indicators are all a perceivably lighter shade of green than those of other columns, suggesting the model is biased in favor of [type 1 error](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors).
 
 Columns include examples with at least the designated class label, and may have more labels (meaning some examples could have been displayed in multiple columns). This was done because some classes of hemorrhage do not occur in isolation within the dataset. Concretely, the "Epidural" column includes any examples positive for epidural hemhorrage, some of which are also positive for intraparenchymal, subarachnoid, etc. The "Control" column features exclusively healthy subjects. 
 
