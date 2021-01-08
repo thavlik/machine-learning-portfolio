@@ -1,0 +1,15 @@
+include: experiments/grasp_and_lift_eeg/classification/basic.yaml
+
+model_params:
+  dropout: 0.15
+
+exp_params:
+  batch_size: 64
+  optimizer:
+    lr: 0.015
+  data:
+    training:
+      lod: 1
+
+logging_params:
+  name: "GraspLift_HalfRes"
