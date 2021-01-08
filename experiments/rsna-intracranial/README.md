@@ -39,4 +39,4 @@ Training at half the input resolution (256x256) can be seen as analagous to doub
 | [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
 
 ## Download Results
-The weights and training stats for two runs are available for download here: [Link](https://nyc3.digitaloceanspaces.com/rsna-ich/results/RSNA_HalfRes.zip)
+The weights, configs, and logs for two runs are available for download: [Link](https://nyc3.digitaloceanspaces.com/rsna-ich/results/RSNA_HalfRes.zip)
