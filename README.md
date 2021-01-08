@@ -4,9 +4,9 @@ This is a repository of my personal deep learning projects.
 ## Supervised Experiments
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
 
-- [DeepLesion](experiments/deeplesion/README.md): localization of tumors on CT scans (full body)
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
+- [DeepLesion](experiments/deeplesion/README.md): localization of tumors on CT scans (full body)
 - [Neural Rendering](experiments/graphics/README.md): single-shot, differentiable 3D rendering
 
 <!---
