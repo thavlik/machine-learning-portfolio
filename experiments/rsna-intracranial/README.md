@@ -7,7 +7,7 @@ These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://w
 | ------------------------------------------------------------------------ | ---------------- | ------
 | [classification/basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
 | [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
-| [classification/halfres.yaml](classification/halfres.yaml)               | 256x256          | Half-resolution input
+| [classification/halfres.yaml](classification/halfres.yaml)               | 256x256          | Half-resolution input slices
 | [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
 
 ## Half-Resolution Training
