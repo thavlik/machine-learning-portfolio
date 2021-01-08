@@ -71,7 +71,8 @@ def get_example_shape(data: dict):
         lod = data['training'].get('lod', 0)
         divisor = 2 ** lod
         size = size // divisor
-        return torch.Size((32, size))
+        size = (32, size)
+        return torch.Size(size)
     if name in ['rsna-intracranial', 'deeplesion', 'cq500']:
         lod = data['training'].get('lod', 0)
         divisor = 2 ** lod
