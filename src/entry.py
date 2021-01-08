@@ -44,7 +44,7 @@ def classification(config: dict, run_args: dict):
 
 
 def classification_embed2d(config: dict, run_args: dict):
-    base_experiment = experiment_main(
+    base_experiment, _ = experiment_main(
         load_config(config['base_experiment']), run_args)
     encoder = base_experiment.model.get_encoder()
     encoder.requires_grad = False
@@ -60,7 +60,7 @@ def classification_embed2d(config: dict, run_args: dict):
 
 
 def classification_sandwich2d(config: dict, run_args: dict) -> ClassificationExperiment:
-    base_experiment = experiment_main(
+    base_experiment, _ = experiment_main(
         load_config(config['base_experiment']), run_args)
     encoder = base_experiment.model.get_encoder()
     encoder.requires_grad = False
@@ -247,7 +247,7 @@ def comparison(config: dict, run_args: dict) -> None:
     num_samples = config.get('num_samples', 1)
     for _ in range(num_samples):
         for path in config['series']:
-            experiment = experiment_main(load_config(path), run_args)
+            experiment, _ = experiment_main(load_config(path), run_args)
             path = os.path.join(experiment.logger.save_dir,
                                 experiment.logger.name,
                                 'version_' + str(experiment.logger.version),
@@ -367,11 +367,23 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
                          )],
                      log_gpu_memory='all',
                      **config['trainer_params'])
+
+    if run_args.get('validate', False):
+        print(
+            f"======= Validating {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")
+        #runner.model = experiment
+        #results = runner.run_evaluation()
+        results = runner.test(experiment,
+                              ckpt_path=config['model_params']['load_weights'],
+                              test_dataloaders=experiment.val_dataloader())
+        # eval_loop_results, deprecated_eval_results = runner.run_evaluation(max_batches=1024) # max_batches=run_args.get('max_batches', None)
+        return experiment, results
+
     print(
         f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")
     print(config)
-    runner.fit(experiment)
-    return experiment
+    results = runner.fit(experiment)
+    return experiment, results
 
 
 def flatten(S):

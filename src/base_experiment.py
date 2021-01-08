@@ -123,6 +123,12 @@ class BaseExperiment(pl.LightningModule):
                 gc.collect()
         if revert:
             self.train()
+
+    def test_step(self, *args, **kwargs):
+        return self.validation_step(*args, **kwargs)
+
+    def test_epoch_end(self, *args, **kwargs):
+        return self.validation_epoch_end(*args, **kwargs)
     
     def log_val_step(self, val_loss: dict):
         pass

@@ -93,6 +93,11 @@ if __name__ == '__main__':
                         metavar='GPU_NUM',
                         help='gpu number to use',
                         default=0)
+    parser.add_argument('--validate',
+                        dest="validate",
+                        metavar='VALIDATE',
+                        help='validation mode',
+                        default=False)
     args = parser.parse_args()
 
     if args.smoke_test:
@@ -117,7 +122,8 @@ if __name__ == '__main__':
                    gpu=args.gpu,
                    exp_no=0,
                    total_experiments=total_experiments,
-                   smoke_test=args.smoke_test)
+                   smoke_test=args.smoke_test,
+                   validate=args.validate)
         delta = time.time() - start
         deltas.append(delta)
         print(f'Sample {i+1}/{num_samples} completed in {delta} seconds')
