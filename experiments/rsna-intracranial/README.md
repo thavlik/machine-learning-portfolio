@@ -1,6 +1,6 @@
 # RSNA Intracranial Hemorrhage Detection
 
-These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/) in 2019. It proposes a relatively simple task where one or more classes of ICH are assigned to individual CT slices. 
+These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.rsna.org/education/ai-resources-and-training/ai-image-challenge/rsna-intracranial-hemorrhage-detection-challenge-2019) dataset released by the Radiological Society of North America in 2019. It proposes a relatively simple task where one or more classes of ICH are assigned to individual CT slices. 
 
 ## Results
 ~95% validation accuracy was achieved with <12 hours of training on a single 1080 Ti.
