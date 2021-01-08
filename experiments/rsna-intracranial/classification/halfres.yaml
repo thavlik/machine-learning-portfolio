@@ -5,6 +5,7 @@ model_params:
   name: 'ResNetClassifier2d'
   num_classes: 6
   hidden_dims: [256, 192, 128, 64]
+  load_weights: logs/RSNA_HalfRes/version_0/checkpoints/epoch=0-step=18819.ckpt
   dropout: 0.15
 
 exp_params:

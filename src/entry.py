@@ -360,6 +360,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
                          OnCheckpointHparams(),
                          ModelCheckpoint(
                              save_top_k=1,
+                             save_last=True,
                              verbose=True,
                              monitor='val/loss',
                              mode='min'

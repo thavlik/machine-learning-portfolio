@@ -17,6 +17,7 @@ class ResNetClassifier2d(Classifier):
                  hidden_dims: List[int],
                  input_shape: Size,
                  num_classes: int,
+                 load_weights: str = None,
                  dropout: float = 0.4,
                  pooling: str = None) -> None:
         super().__init__(name=name,
@@ -52,6 +53,15 @@ class ResNetClassifier2d(Classifier):
             nn.BatchNorm1d(num_classes),
             nn.Sigmoid(),
         )
+        if load_weights is not None:
+            new = self.state_dict()
+            old = torch.load(load_weights)['state_dict']
+            for k, v in new.items():
+                ok = f'classifier.{k}'
+                if ok in old:
+                    new[k] = old[ok].cpu()
+                    print(f'Loaded weights for layer {k}')
+            self.load_state_dict(new)
 
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         y = self.layers(input)

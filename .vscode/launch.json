@@ -321,7 +321,7 @@
             ]
         },
         {
-            "name": "Python: train RSNA Basic HalfRes",
+            "name": "Python: train RSNA HalfRes",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
@@ -329,8 +329,11 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--config",
-                "experiments/rsna-intracranial/classification/basic_halfres.yaml"
-            ]
+                "experiments/rsna-intracranial/classification/halfres.yaml"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1"
+            }
         },
         {
             "name": "Python: train RSNA VAE",
