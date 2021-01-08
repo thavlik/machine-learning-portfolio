@@ -3,12 +3,12 @@
 These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/) in 2019. It proposes a relatively simple task where one or more classes of ICH are assigned to individual CT slices. 
 
 ## Experiment Files
-| File                                                      | Input Resolution | Notes
-| --------------------------------------------------------- | ---------------- | ------
-| [basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
-| [basic_hparams.yaml](classification/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
-| [halfres.yaml](classification/halfres.yaml)               | 256x256          | Half-resolution input
-| [halfres_hparams.yaml](classification/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
+| File                                                                     | Input Resolution | Notes
+| ------------------------------------------------------------------------ | ---------------- | ------
+| [classification/basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
+| [classification/halfres.yaml](classification/halfres.yaml)               | 256x256          | Half-resolution input
+| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
 
 ## Half-Resolution Training
 The weights from any fully convolutional network are able to be applied to images of arbitrary dimensions - even dimensions differing from those with which it was trained. While larger convolutional kernel sizes are able to more easily capture large-scale details, they come with a significant increase in compute overhead. For simplicity, my portfolio uses the 3x3 and 1x1 kernels exclusively, and other aspects of the experiment (model architecture, input resolution, etc.) are optimized against this small kernel size.
