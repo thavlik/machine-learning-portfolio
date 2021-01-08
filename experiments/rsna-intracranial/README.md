@@ -8,7 +8,7 @@ The weights from any fully convolutional network are able to be applied to image
 Training at half the input resolution (256x256) can be seen as analagous to doubling the dimensions of the kernel (up to 6x6) and enabling the model to more easily capture detail at those larger scales. Reduced memory overhead and larger batch sizes can be appreciated with this single change, leading to dramatically higher training performance.
 
 ## Training Dynamics
-Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function, which probably only worked so well because of the dataset's relatively even distribution of class labels.
+Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function, which likely only worked so well because of the dataset's relatively even distribution of class labels.
 
 ![training tensorboard](images/training-dynamics.jpg)
 
@@ -16,7 +16,7 @@ Training beyond one epoch did not increase validation accuracy. Optimal performa
 
 ![overfitting tensorboard](images/overfitting.jpg)
 
-Because such high validation accuracy was observed so early into training, it makes me wonder if the validation set is composed of categorically easier examples. I have no way of making a qualitative judgment about this without the ability to read CTs.
+Because such high validation accuracy was observed so early into training, it is possible that the validation set is composed of categorically easier examples. It is difficult to make this qualitative judgment without the ability to interpret CTs.
 
 ## Results
 ~95% validation accuracy was achieved with <12 hours of training on a single 1080 Ti.
