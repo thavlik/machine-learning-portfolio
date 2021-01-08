@@ -1,7 +1,7 @@
 These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.kaggle.com/c/rsna-intracranial-hemorrhage-detection) dataset released by the [Radiological Society of North America](https://www.rsna.org/).
 
 ## Results
-![](images/img.png)
+![](images/RSNA_HalfRes_classifier2d_20000.jpg)
 
 The left indicator bar represents per-class accuracy and the right represents accuracy across all classes. Visualizing these metrics separately helps gauge performance on a per-class basis. Low (baseline) performance is mapped to red, and 100% accuracy is signified with bright green.
 
