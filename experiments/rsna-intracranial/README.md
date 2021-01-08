@@ -8,7 +8,7 @@ The weights from any fully convolutional network are able to be applied to image
 Training at half the input resolution (256x256) can be seen as analagous to doubling the dimensions of the kernel (up to 6x6) and enabling the model to more easily capture detail at those larger scales. Reduced memory overhead and larger batch sizes can be appreciated with this single change, leading to dramatically higher training performance and ~95% validation accuracy within <12 hours of training on a single 1080 Ti.
 
 ## Training Dynamics
-Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function, which probably only worked so well because of the dataset's distribution of class labels.
+Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function, which probably only worked so well because of the dataset's relatively even distribution of class labels.
 
 ![training tensorboard](images/training-dynamics.jpg)
 
