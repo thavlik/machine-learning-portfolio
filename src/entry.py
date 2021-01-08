@@ -376,6 +376,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
         results = runner.test(experiment,
                               ckpt_path=config['model_params']['load_weights'],
                               test_dataloaders=experiment.val_dataloader())
+        print(results)
         # eval_loop_results, deprecated_eval_results = runner.run_evaluation(max_batches=1024) # max_batches=run_args.get('max_batches', None)
         return experiment, results
 
