@@ -15,7 +15,7 @@ exp_params:
   plot:
     fn: 'plot2d'
     batch_size: 16
-    sample_every_n_steps: 16
+    sample_every_n_steps: 10_000
     params:
       title: "Epoch ${epoch}"
       scaling: 1.0

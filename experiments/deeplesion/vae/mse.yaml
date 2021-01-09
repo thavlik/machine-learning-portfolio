@@ -4,7 +4,7 @@ include:
 model_params:
   pooling: max
   dropout: 0.1
-  hidden_dims: [256, 256, 256, 256]
+  hidden_dims: [64, 128, 256, 128, 64]
 
 exp_params:
   warmup_steps: 256
@@ -34,6 +34,9 @@ exp_params:
     host: https://visdom.foldy.dev
     port: 443
     env: deeplesion
+  plot:
+    params:
+      img_filter: apply_softwindow
   
 trainer_params:
   max_epochs: 10_000_000

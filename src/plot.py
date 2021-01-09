@@ -170,9 +170,10 @@ def plot2d(orig: Tensor,
            cols: int,
            display: str = 'horizontal',
            scaling: float = 1.0,
-           dpi: int = 110,
+           dpi: int = 400,
            title: str = None,
            suptitle: dict = {},
+           img_filter: str = None,
            imshow_args: dict = {}):
     fig = figure.Figure(figsize=(cols * scaling, rows * scaling),
                         dpi=dpi)
@@ -194,7 +195,16 @@ def plot2d(orig: Tensor,
             if i >= n:
                 done = True
                 break
-            img = torch.cat([orig[i], recons[i]], dim=dim)
+            o = orig[i]
+            r = recons[i]
+            if img_filter is not None:
+                o = run_img_filter(o, img_filter)
+                r = run_img_filter(r, img_filter)
+            img = torch.cat([o, r], dim=dim).byte()
+            #img = img.numpy()
+            #img = np.transpose(img, axes=(2, 0, 1))
+            #img = img.astype(np.byte)
+            #img = Image.frombytes(img)
             img = to_pil(img)
             ax = grid[i]
             ax.axis('off')
@@ -502,6 +512,17 @@ def ct_filter(x):
 def run_img_filter(x, img_filter: str):
     if img_filter == 'ct':
         return ct_filter(x)
+    elif img_filter == 'apply_softwindow':
+        x = x.numpy().squeeze()
+        x = apply_softwindow(x)
+        x = torch.Tensor(x)
+        # HxWxC -> CxWxH
+        x = torch.transpose(x, 0, -1)
+        x = x.squeeze()
+        x = x[:3, ...]
+        # CxWxH -> CxHxW
+        x = torch.transpose(x, 1, 2)
+        return x
     raise NotImplementedError
 
 
