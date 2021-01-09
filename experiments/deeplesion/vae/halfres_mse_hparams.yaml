@@ -1,0 +1,6 @@
+include: experiments/deeplesion/vae/basic_hparams.yaml
+
+experiment:
+  - experiments/deeplesion/vae/halfres.yaml
+  - experiments/deeplesion/include/hparams.yaml
+
