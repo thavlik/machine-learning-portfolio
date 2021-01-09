@@ -8,7 +8,7 @@ docker run \
     -d \
     --name hometb \
     -p 6007:6006 \
-    -v $(wslpath -w logs)/RSNA_HalfRes:/logs  \
+    -v $(wslpath -w logs)/localization2d:/logs  \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \
