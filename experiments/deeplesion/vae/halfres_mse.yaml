@@ -7,7 +7,7 @@ model_params:
 exp_params:
   batch_size: 12
   optimizer:
-    lr: 0.01
+    lr: 0.02
   data:
     training:
       lod: 1
