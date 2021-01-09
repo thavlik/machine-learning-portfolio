@@ -1,6 +1,6 @@
 include: experiments/deeplesion/vae/mse_hparams.yaml
 
 experiment:
-  - experiments/deeplesion/vae/halfres.yaml
+  - experiments/deeplesion/vae/halfres_mse.yaml
   - experiments/deeplesion/include/hparams.yaml
 
