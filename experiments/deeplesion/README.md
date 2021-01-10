@@ -80,6 +80,6 @@ Unsurprisingly, the multivariate gaussian architecture performs comparably to th
 | [localization/halfres_hparams.yaml](localization/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
 
 ## Future Direction
-DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (creative unsupervised pre-training) are critical for challenging deep learning problems. Incidentally, their use is widespread.
+DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (creative unsupervised pre-training) are critical for nontrivial deep learning problems. Incidentally, their use is widespread.
 
 
