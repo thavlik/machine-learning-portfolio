@@ -26,7 +26,7 @@ class MyLocalizationModel(nn.Module):
 A hyperparameter search was carried out to determine the effect of batch normalization, which indicated superior training performance in its absence.
 
 ### Half-Resolution Training
-The model never converges with full resolution inputs, likely due to perceptual limitations with the 3x3 convolutional kernel. Halving the input resolution results in an effective doubling of kernel dimensions. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters.
+Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance. 
 
 ### Multivariate Guassian
 To add sophistication, the next iteration attempts to model the lesion's bounding box as a multivariate gaussian. Concretely, this means that instead of the model directly predicting the class labels, it predicts mean and standard deviation parameters that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use in was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unlike with variational autoencoders - which use a log normal distribution - this implementation uses the classic normal distribution:
@@ -49,7 +49,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-The hope was that the model would capture information about lesion margins, with overfitting occuring as the standard deviation approaches zero. Sigmoidal activation was used for all output activation layers to normalize predictions to [0, 1]. This permits the introduction of another hyperparameter, `kappa`, that scales the normalized standard deviation to an even smaller, more appropriate range:
+The goal was to capture information about lesion margins, with overfitting occuring as the standard deviation approaches zero. Sigmoidal activation was used for all output activation layers to normalize predictions to [0, 1]. This permits the introduction of another hyperparameter, `kappa`, that scales the normalized standard deviation to an even smaller, more appropriate range:
 
 ```python
 class MyLocalizationModel(nn.Module):
@@ -68,4 +68,6 @@ class MyLocalizationModel(nn.Module):
 ```
 
 This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, allowing this technique to blended with the direct approach.
+
+Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed. 
 
