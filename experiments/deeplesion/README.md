@@ -6,7 +6,7 @@ After several days of training, the model showed some evidence of convergence on
 
 ![](images/initial_localization.png)
 
-The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top right tile) suggest these examples may be "harder" than those in the training split.
+The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left tile) suggest these examples may be "harder" than those in the training split.
 
 ## Materials & Methods
 ### Initial Attempt
