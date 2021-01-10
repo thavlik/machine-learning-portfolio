@@ -1,6 +1,6 @@
-model_params:
-  dropout:
-    grid_search: [0.1, 0.15, 0.2]
+#model_params:
+#  dropout:
+#    grid_search: [0.1, 0.15, 0.2]
 
 exp_params:
   optimizer:
