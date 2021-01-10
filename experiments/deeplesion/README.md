@@ -72,3 +72,11 @@ This effectively limits the influence of the distribution and favors the central
 
 Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed. 
 
+### Experiment Files
+| File                                                                   | Input Resolution | Notes
+| ---------------------------------------------------------------------- | ---------------- | ------
+| [localization/basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
+| [localization/basic_hparams.yaml](classification/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
+| [localization/halfres.yaml](classification/halfres.yaml)               | 256x256          | Half-resolution input slices
+| [localization/halfres_hparams.yaml](classification/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
+
