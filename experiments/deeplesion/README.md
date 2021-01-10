@@ -11,7 +11,7 @@ The model appears to be making mistakes characteristic of non-experts by inaccur
 Because these examples were never exposed to the model during training, partial overlaps reflect weak generalization. This is hypothesized to be caused by the model granting excess saliency to the features of nearby tissue, as opposed to focusing more on the actual tumor pixels. This would be caused by discrepancies in surrounding tissue deformation between training and validation splits.
 
 ## Materials & Methods
-### Initial Attempt
+### Direct Prediction
 The simplest architecture entails modeling the location of lesions directly:
 
 ```python
@@ -27,11 +27,6 @@ class MyLocalizationModel(nn.Module):
 
 This design produced the 3x2 grid of validation examples under the *Results* section (above) after 96+ hours of training.
 
-### Half-Resolution Training
-Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance. 
-
-### Batch Normalization
-A hyperparameter search was carried out to determine the effect of batch normalization, which indicated superior training performance in its absence. This is likely due to small batch sizes, which are necessary even when halving the input resolution.
 
 ### Multivariate Guassian
 To add sophistication, the next iteration attempts to model the lesion's bounding box as a multivariate gaussian. Concretely, this means that instead of the model directly predicting the class labels, it predicts mean and standard deviation parameters that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use in was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unlike with variational autoencoders - which use a log normal distribution - this implementation uses the classic normal distribution:
@@ -74,6 +69,14 @@ class MyLocalizationModel(nn.Module):
 This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, allowing this technique to blended with the direct approach.
 
 Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed.
+
+### Half-Resolution Training
+Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance.
+
+The current results reflect full-resolution training, but all future results will train with half-resolution.
+
+### Batch Normalization
+A hyperparameter search was carried out to determine the effect of batch normalization on the output layer, which indicated superior performance in its absence. This is likely due to small batch sizes, which are necessary even when halving the input resolution.
 
 ### Experiment Files
 | File                                                                 | Input Resolution | Notes
