@@ -32,7 +32,7 @@ Configurations are defined in yaml files, which can be composed via the `include
 
 **Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
 
-If an experiment hangs during the initial validation pass, it is likely because [nonechucks](https://github.com/msamogh/nonechucks) is suppressing exceptions thrown by the dataset. This is a known issue, and soon nonechucks will be disabled by default.
+If an experiment hangs during the initial validation pass, it is likely because [nonechucks](https://github.com/msamogh/nonechucks) is suppressing exceptions thrown by the dataset. This behavior improves fault tolerance, but can complicate debugging.
 
 ## Relevant Literature
 Many of the ideas implemented in this repository were first detailed in the following papers:
