@@ -30,7 +30,7 @@ Configurations are defined in yaml files, which can be composed via the `include
 
 `python3 src/main.py --config experiments/mnist/vae/fid.yaml`
 
-**Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repo root.
+**Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repository root.
 
 If an experiment hangs during the initial validation pass, it is likely because [nonechucks](https://github.com/msamogh/nonechucks) is suppressing exceptions thrown by the dataset. This behavior improves fault tolerance, but can complicate debugging.
 
