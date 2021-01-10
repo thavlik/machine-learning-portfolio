@@ -8,7 +8,7 @@ After several days of training, there was some evidence of generalization to the
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left) suggest these examples may be "harder" than those in the training split.
 
-Because these examples were never exposed to the model during training, partial/complete overlaps respectively represent weak/strong generalization. This is hypothesized to be caused by the model granting excess saliency to the features of nearby tissue, as opposed to focusing exclusively on the tumor pixels. This would be caused by discrepancies in surrounding tissue deformation between training and validation splits.
+Because these examples were never exposed to the model during training, partial overlaps reflect weak generalization. This is hypothesized to be caused by the model granting excess saliency to the features of nearby tissue, as opposed to focusing exclusively on the tumor pixels. This would be caused by discrepancies in surrounding tissue deformation between training and validation splits.
 
 ## Materials & Methods
 ### Initial Attempt
