@@ -4,7 +4,7 @@ model_params:
   hidden_dims: [1024, 2048, 4096, 2048, 1024]
 
 exp_params:
-  batch_size: 18
+  batch_size: 20
   optimizer:
     lr: 0.005
   data:
