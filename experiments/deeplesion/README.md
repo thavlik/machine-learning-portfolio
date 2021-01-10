@@ -1,7 +1,11 @@
-These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesion) dataset released by the [National Institute of Health](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images) in 2018. The modeling task entails detecting and localizing the bounding boxes of visible lesions.
+These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesion) dataset released by the [National Institute of Health](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images) in 2018. The modeling task entails detecting and localizing the bounding boxes of visible lesions. 
 
 ## Results
-Results are still pending. This experiment does not like to converge!
+DeepLesion proved to be a particularly difficult endeavor. After several days of training, the model showed some evidence of convergence on validation examples (prediction is yellow, ground truth is green):
+
+![](images/initial_localization.png)
+
+The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top right tile) suggest these examples are "harder" than those in the training set.
 
 ## Materials & Methods
 ### Initial Attempt
@@ -18,14 +22,9 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-After a few days of training, the model showed some evidence of convergence (prediction is yellow, ground truth is green):
-
-![](images/initial_localization.png)
-
-The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left tile) suggest these examples are on their way towards overfitting.
-
 A hyperparameter search was carried out to determine the effect of batch normalization, which indicated superior training performance in its absence.
 
+### Half-Resolution Training
 The model never converges with full resolution inputs, likely due to perceptual limitations with the 3x3 convolutional kernel. Halving the input resolution results in an effective doubling of kernel dimensions. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters.
 
 ### Multivariate Guassian
