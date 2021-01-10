@@ -25,7 +25,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-This implementation produced the 3x2 grid of validation examples under the *Results* section (above) after 96+ hours of training.
+This design produced the 3x2 grid of validation examples under the *Results* section (above) after 96+ hours of training.
 
 ### Half-Resolution Training
 Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance. 
