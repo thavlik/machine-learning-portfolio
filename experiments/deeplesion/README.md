@@ -63,7 +63,8 @@ class MyLocalizationModel(nn.Module):
         # where kappa is typically a very small value (e.g. 0.05)
         std_dev *= kappa
 
-        bbox = reparameterize_normal(mu, std_dev)
+        dist = Normal(mu, std_dev)
+        bbox = dist.rsample()
         
         return bbox
 ```
