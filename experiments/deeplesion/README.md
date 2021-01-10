@@ -44,8 +44,7 @@ class MyLocalizationModel(nn.Module):
 
         # Sample from the normal distribution to produce the
         # final bounding box estimate.
-        dist = Normal(mu, std_dev)
-        bbox = dist.rsample()
+        bbox = Normal(mu, std_dev).rsample()
         
         return bbox
 ```
@@ -63,8 +62,7 @@ class MyLocalizationModel(nn.Module):
         # where kappa is typically a very small value (e.g. 0.05)
         std_dev *= kappa
 
-        dist = Normal(mu, std_dev)
-        bbox = dist.rsample()
+        bbox = Normal(mu, std_dev).rsample()
         
         return bbox
 ```
