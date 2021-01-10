@@ -12,7 +12,7 @@ Because these examples were never exposed to the model during training, partial 
 
 ## Materials & Methods
 ### Initial Attempt
-My first effort entailed modeling the location of lesions directly:
+The simplest architecture entails modeling the location of lesions directly:
 
 ```python
 class MyLocalizationModel(nn.Module):
