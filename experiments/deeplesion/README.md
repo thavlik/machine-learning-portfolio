@@ -69,7 +69,7 @@ class MyLocalizationModel(nn.Module):
 
 This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, allowing this technique to blended with the direct approach.
 
-Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed. 
+Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed.
 
 ### Experiment Files
 | File                                                                 | Input Resolution | Notes
@@ -78,4 +78,8 @@ Unsurprisingly, the multivariate gaussian architecture performs comparably to th
 | [localization/basic_hparams.yaml](localization/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
 | [localization/halfres.yaml](localization/halfres.yaml)               | 256x256          | Half-resolution input slices
 | [localization/halfres_hparams.yaml](localization/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
+
+## Future Direction
+DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on the Variational Autoencoder task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (creative unsupervised pre-training) are critical for challenging deep learning problems. Incidentally, their use is widespread.
+
 
