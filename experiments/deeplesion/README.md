@@ -2,7 +2,7 @@
 These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesion) dataset released by the [National Institute of Health](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images) in 2018. The modeling task entails detecting and localizing the bounding boxes of abdominal lesions for individually labeled CT slices.
 
 ## Results
-After several days of training, there was some evidence of generalization to the validation split (prediction is yellow, ground truth is green):
+After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split (prediction is yellow, ground truth is green):
 
 ![](images/initial_localization.png)
 
@@ -24,6 +24,8 @@ class MyLocalizationModel(nn.Module):
         bbox = self.predict(x)        
         return bbox
 ```
+
+This implementation produced the 3x2 grid of validation examples under the *Results* section (above) after 96+ hours of training.
 
 ### Half-Resolution Training
 Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance. 
