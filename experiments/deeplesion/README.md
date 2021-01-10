@@ -6,7 +6,7 @@ DeepLesion proved to be a particularly difficult endeavor. After several days of
 
 ![](images/initial_localization.png)
 
-The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top right tile) suggest these examples are "harder" than those in the training set.
+The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top right tile) suggest these examples may be "harder" than those in the training split.
 
 ## Materials & Methods
 ### Initial Attempt
