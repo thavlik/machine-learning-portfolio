@@ -23,7 +23,8 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-A hyperparameter search was carried out to determine the effect of batch normalization, which indicated superior training performance in its absence.
+### Batch Normalization
+A hyperparameter search was carried out to determine the effect of batch normalization, which indicated superior training performance in its absence. This is likely due to small batch sizes, which are necessary even when halving the input resolution.
 
 ### Half-Resolution Training
 Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance. 
