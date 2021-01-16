@@ -5,7 +5,7 @@ model_params:
   dropout: 0.1
 
 exp_params:
-  batch_size: 64
+  batch_size: 32
   optimizer:
     lr: 0.01
   data:
