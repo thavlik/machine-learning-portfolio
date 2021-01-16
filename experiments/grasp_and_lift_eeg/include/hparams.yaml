@@ -3,9 +3,9 @@ model_params:
     grid_search: [0.1, 0.3, 0.5]
 
 exp_params:
-  batch_size:
-    grid_search: [4, 8, 16, 32]
+  #batch_size:
+  #  grid_search: [4, 8, 16, 32, 48]
 
   optimizer:
     lr:
-      grid_search: [0.005, 0.01, 0.02, 0.05, 0.1]
+      grid_search: [0.001, 0.005, 0.01, 0.02, 0.05]
