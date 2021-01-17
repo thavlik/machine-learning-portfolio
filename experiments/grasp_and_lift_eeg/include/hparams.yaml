@@ -3,9 +3,10 @@ model_params:
     grid_search: [0.1, 0.3, 0.5]
 
 exp_params:
+  save_weights:
+    every_n_steps: 1_000_000_000
   #batch_size:
   #  grid_search: [4, 8, 16, 32, 48]
-
   optimizer:
     lr:
       grid_search: [0.001, 0.005, 0.01, 0.02, 0.05]
