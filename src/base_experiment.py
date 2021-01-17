@@ -73,9 +73,6 @@ class BaseExperiment(pl.LightningModule):
 
     def save_weights(self):
         params = self.params['save_weights']
-        if params['every_n_steps'] == 0:
-            # weight saving is disabled
-            return
         if 'local' in params:
             checkpoint_dir = os.path.join(self.logger.save_dir,
                                           self.logger.name,
@@ -118,7 +115,8 @@ class BaseExperiment(pl.LightningModule):
         if revert:
             self.eval()
         if self.global_step > 0 and 'save_weights' in self.params:
-            if self.global_step % self.params['save_weights']['every_n_steps'] == 0:
+            save_interval = self.params['save_weights']['every_n_steps']
+            if save_interval != 0 and self.global_step % save_interval == 0:
                 self.save_weights()
         for plot, val_batch in zip(self.plots, self.val_batches):
             if self.global_step % plot['sample_every_n_steps'] == 0:
