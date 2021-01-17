@@ -152,8 +152,8 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
     run_config = generate_run_config(run_config)
     run_config['trainer_params'] = deep_merge(run_config['trainer_params'].copy(), {
         'max_steps': config['num_train_steps'],
+        'val_check_interval': config['num_train_steps'],
         'limit_val_batches': config['num_val_steps'],
-        'check_val_every_n_epoch': 1,
         'log_every_n_steps': 1,
         'max_epochs': config.get('num_epochs', 1),
     })
