@@ -73,6 +73,9 @@ class BaseExperiment(pl.LightningModule):
 
     def save_weights(self):
         params = self.params['save_weights']
+        if params['every_n_steps'] == 0:
+            # weight saving is disabled
+            return
         if 'local' in params:
             checkpoint_dir = os.path.join(self.logger.save_dir,
                                           self.logger.name,
