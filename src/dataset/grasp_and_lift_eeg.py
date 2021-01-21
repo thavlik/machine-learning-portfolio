@@ -1,5 +1,6 @@
 import os
 import time
+from typing import Optional, List
 import zipfile
 
 import requests
@@ -92,7 +93,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
                  download: bool = True,
                  num_samples: int = None,
                  last_label_only: bool = False,
-                 lod: int = 0):
+                 lod: int = 0,
+                 subjects: Optional[List[int]] = None):
         super(GraspAndLiftEEGDataset, self).__init__()
         if num_samples is None and last_label_only:
             raise ValueError('last_label_only cannot be used without setting num_samples')
@@ -115,22 +117,27 @@ class GraspAndLiftEEGDataset(data.Dataset):
             print(f'Number of .csv.bin files ({len(bin_files)}) '
                   f'is less than the number of .csv ({len(csv_files)}).'
                   ' Compiling binary representation...')
-            self.load_from_csv(csv_files)
+            self.load_from_csv(csv_files, subjects)
         else:
-            self.load_from_bin(bin_files)
+            self.load_from_bin(bin_files, subjects)
 
-    def load_from_csv(self, csv_files):
-        self.X, self.Y = self.compile_bin(csv_files)
+    def load_from_csv(self, csv_files: List[str], subjects: Optional[List[int]]):
+        self.X, self.Y = self.compile_bin(csv_files, subjects)
         if self.num_samples is not None:
             # Divide each example up into windows
             self.total_examples = 0
             for x in self.X:
                 self.total_examples += x.shape[1] - self.num_samples + 1
 
-    def load_from_bin(self, bin_files: list):
+    def load_from_bin(self, bin_files: List[str], subjects: Optional[List[int]]):
         examples = {}
         self.total_examples = 0
         for file in bin_files:
+            if subjects is not None:
+                basename = os.path.basename(file)
+                subject = int(basename[4:basename.index('_')])
+                if subject not in subjects:
+                    continue
             is_data = file.endswith('_data.csv.bin')
             series = file[:-len('_data.csv.bin')
                           if is_data else -len('_events.csv.bin')]
@@ -170,9 +177,14 @@ class GraspAndLiftEEGDataset(data.Dataset):
         print(f'Unzipped in {int(delta)} seconds')
         os.remove(zip_path)
 
-    def compile_bin(self, csv_files: list):
+    def compile_bin(self, csv_files: List[str], subjects: Optional[List[int]]):
         examples = {}
         for i, file in enumerate(csv_files):
+            if subjects is not None:
+                basename = os.path.basename(file)
+                subject = int(basename[4:basename.index('_')])
+                if subject not in subjects:
+                    continue
             is_data = file.endswith('_data.csv')
             samples = []
             with open(file, 'r') as f:

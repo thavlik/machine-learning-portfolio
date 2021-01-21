@@ -16,11 +16,13 @@ exp_params:
     local: {}
   data:
     name: grasp-and-lift-eeg
-    split: 0.7
     training:
       root: /data/grasp-and-lift-eeg-detection
       num_samples: 2048
       last_label_only: true
+      subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    validation:
+      subjects: [10, 11, 12]
     loader:
       pin_memory: false
       num_workers: 0

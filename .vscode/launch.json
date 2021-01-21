@@ -195,7 +195,10 @@
             "args": [
                 "--config",
                 "experiments/grasp_and_lift_eeg/classification/halfres.yaml"
-            ]
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
         },
         {
             "name": "Python: train EEG VAE",
