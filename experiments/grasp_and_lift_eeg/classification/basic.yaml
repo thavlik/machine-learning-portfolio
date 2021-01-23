@@ -36,9 +36,9 @@ exp_params:
 
 trainer_params:
   max_epochs: 1000000
-  log_every_n_steps: 100
+  log_every_n_steps: 500
   val_check_interval: 10000
-  limit_val_batches: 8192
+  limit_val_batches: 1024
 
 logging_params:
   save_dir: "logs/"
