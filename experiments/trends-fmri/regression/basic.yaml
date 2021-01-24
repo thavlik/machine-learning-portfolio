@@ -1,0 +1,38 @@
+entrypoint: regression4d
+
+model_params:
+  arch: 'ResNetRegressor4d'
+  name: 'ResNetRegressor4d'
+  hidden_dims: [64, 64]
+  dropout: 0.1
+
+exp_params:
+  manual_seed: 6602
+  #save_weights:
+  #  every_n_steps: 10_000
+  #  delete_old: true
+  #  local: {}
+  data:
+    name: trends-fmri
+    training:
+      root: /data/trends-fmri
+    loader:
+      pin_memory: false
+      num_workers: 0
+  batch_size: 2
+  warmup_steps: 512
+  optimizer:
+    lr: 0.00005
+    weight_decay: 0.000005
+
+trainer_params:
+  max_epochs: 1000000
+  log_every_n_steps: 500
+  val_check_interval: 10000
+  limit_val_batches: 2048
+
+logging_params:
+  save_dir: "logs/"
+  name: "TReNDS_Basic"
+
+manual_seed: 6602

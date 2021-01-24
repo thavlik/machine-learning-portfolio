@@ -28,19 +28,46 @@ def load_subject(filename: str,
     return subject_niimg
 
 
+TRENDS_HEADER = "Id,age,domain1_var1,domain1_var2,domain2_var1,domain2_var2\n"
+
+
+def load_scores(path: str):
+    scores = {}
+    with open(path, 'r') as f:
+        hdr = f.readline()
+        if hdr != TRENDS_HEADER:
+            raise ValueError("bad header")
+        for line in f:
+            parts = line.strip().split(',')
+            if len(parts) == 0:
+                continue
+            scores[parts[0]] = [float(p)
+                                for p in parts[1:]
+                                if len(p) > 0]
+    return scores
+
+
 class TReNDSfMRIDataset(data.Dataset):
     def __init__(self,
-                 dir: str,
-                 mask_path: str):
+                 root: str,
+                 mask_path: str,
+                 train: bool = True):
         super(TReNDSfMRIDataset, self).__init__()
-        self.dir = dir
-        self.files = os.listdir(dir)
+        self.root = root
+        self.mat_dir = os.path.join(
+            root, 'fMRI_train' if train else 'fMRI_test')
+        self.files = os.listdir(self.mat_dir)
         self.mask = nl.image.load_img(mask_path)
+        self.scores = load_scores(os.path.join(root, 'train_scores.csv'))
 
     def __getitem__(self, index):
-        path = os.path.join(self.dir, self.files[index])
+        file = self.files[index]
+        path = os.path.join(self.mat_dir, file)
         data = load_subject(path, self.mask).get_data()
-        return (torch.Tensor(data), [])
+        data = torch.Tensor(data)
+        scores = self.scores[file[:-4]]
+        scores = torch.Tensor(scores)
+        return data, scores
 
     def __len__(self):
         return len(self.files)
@@ -50,9 +77,9 @@ if __name__ == '__main__':
     import nilearn.plotting as nlplt
     import matplotlib.pyplot as plt
     base_path = 'E:\\trends-fmri'
-    ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
+    ds = TReNDSfMRIDataset(base_path,
                            mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
-    print(ds[0].shape)
+    print(ds[0][0].shape)
     smri_filename = os.path.join(base_path, 'ch2better.nii')
     subject_filename = os.path.join(base_path, 'fMRI_test/10228.mat')
     mask_niimg = ds.mask
