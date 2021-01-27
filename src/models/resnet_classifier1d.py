@@ -58,7 +58,7 @@ class ResNetClassifier1d(Classifier):
     def forward(self, x: Tensor) -> Tensor:
         x = self.layers(x)
         x = x.reshape(x.shape[0], -1)
-        #x = self.dropout(x)
+        x = self.dropout(x)
         x = self.output(x)
         x = torch.sigmoid(x)
         return x

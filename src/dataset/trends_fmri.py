@@ -50,14 +50,13 @@ def load_scores(path: str):
 class TReNDSfMRIDataset(data.Dataset):
     def __init__(self,
                  root: str,
-                 mask_path: str,
                  train: bool = True):
         super(TReNDSfMRIDataset, self).__init__()
         self.root = root
         self.mat_dir = os.path.join(
             root, 'fMRI_train' if train else 'fMRI_test')
         self.files = os.listdir(self.mat_dir)
-        self.mask = nl.image.load_img(mask_path)
+        self.mask = nl.image.load_img(os.path.join(root, 'fMRI_mask.nii'))
         self.scores = load_scores(os.path.join(root, 'train_scores.csv'))
 
     def __getitem__(self, index):
@@ -77,8 +76,7 @@ if __name__ == '__main__':
     import nilearn.plotting as nlplt
     import matplotlib.pyplot as plt
     base_path = 'E:\\trends-fmri'
-    ds = TReNDSfMRIDataset(base_path,
-                           mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
+    ds = TReNDSfMRIDataset(base_path)
     print(ds[0][0].shape)
     smri_filename = os.path.join(base_path, 'ch2better.nii')
     subject_filename = os.path.join(base_path, 'fMRI_test/10228.mat')

@@ -6,12 +6,11 @@ import matplotlib.pyplot as plt
 import nibabel as nib
 from dataset.trends_fmri import load_subject, TReNDSfMRIDataset
 
-base_path = 'E:\\trends-fmri'
+base_path = '/data/trends-fmri'
 smri_filename = os.path.join(base_path, 'ch2better.nii')
 subject_filename = os.path.join(base_path, 'fMRI_test/10228.mat')
 
-ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
-                       mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
+ds = TReNDSfMRIDataset(base_path)
 
 subject_niimg = load_subject(subject_filename, ds.mask)
 grid_size = int(np.ceil(np.sqrt(subject_niimg.shape[0])))
@@ -31,7 +30,7 @@ for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
 plt.show()
 
 img = nl.image.new_img_like(ds.mask,
-                            ds[0].numpy(),
+                            ds[0][0].numpy(),
                             affine=ds.mask.affine,
                             copy_header=True)
 nlplt.plot_prob_atlas(img,

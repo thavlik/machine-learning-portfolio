@@ -154,7 +154,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         'max_steps': config['num_train_steps'],
         'val_check_interval': config['num_train_steps'],
         'limit_val_batches': config['num_val_steps'],
-        'log_every_n_steps': 1,
+        #'log_every_n_steps': 1,
         'max_epochs': config.get('num_epochs', 1),
     })
     if config.get('randomize_seed', False):
@@ -172,7 +172,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         num_samples=config['num_samples'],
         resources_per_trial=deep_merge({
             'cpu': 2,
-            'gpu': 1,
+            'gpu': 0.5,
         }, config.get('resources_per_trial', {})),
     )
     metric = config.get('metric', 'val/loss')
