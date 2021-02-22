@@ -26,7 +26,7 @@ Training beyond one epoch did not increase validation accuracy. Optimal performa
 Because such high validation accuracy was observed so early into training, it is possible that the validation set is composed of categorically easier examples. It is difficult to make this qualitative judgment without the ability to interpret CTs.
 
 ### Half-Resolution Training
-The weights from any fully convolutional network are able to be applied to images of arbitrary dimensions - even dimensions differing from those with which it was trained. While larger convolutional kernel sizes are able to more easily capture large-scale details, they come with a significant increase in compute overhead. For simplicity, my portfolio uses the 3x3 and 1x1 kernels exclusively, and other aspects of the experiment (model architecture, input resolution, etc.) are optimized against this small kernel size.
+The weights from any fully convolutional network are able to be applied to images of arbitrary dimensions - even dimensions differing from those with which it was trained. While larger convolutional kernel sizes are able to more easily capture large-scale details, they come with a significant increase in compute overhead. For simplicity, the 3x3 and 1x1 kernels are used exclusively, and other aspects of the experiment (model architecture, input resolution, etc.) are optimized against this small kernel size.
 
 Training at half the input resolution (256x256) can be seen as analagous to doubling the dimensions of the kernel (up to 6x6) and enabling the model to more easily capture detail at those larger scales. Reduced memory overhead and larger batch sizes can be appreciated with this single change, leading to dramatically higher training performance.
 

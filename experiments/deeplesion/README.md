@@ -76,7 +76,7 @@ Due to perceptual limitations with the 3x3 convolutional kernel, a large number 
 The current results reflect full-resolution training, but all future results will train with half-resolution.
 
 ### Batch Normalization
-A hyperparameter search was carried out to determine the effect of batch normalization on the output layer, which indicated superior performance in its absence. This is likely due to small batch sizes, which are necessary even when halving the input resolution.
+A hyperparameter search was carried out to determine the effect of batch normalization on the output layer, which indicated superior performance in its absence. This is likely due to small batch sizes, which are necessary even when halving the input resolution because of memory limits. The efficacy of batch normalization depends on many factors, including batch size and features of training data ([Ioffe & Szegedy 2015](https://arxiv.org/abs/1502.03167v3)).
 
 ### Experiment Files
 | File                                                                 | Input Resolution | Notes
@@ -87,5 +87,5 @@ A hyperparameter search was carried out to determine the effect of batch normali
 | [localization/halfres_hparams.yaml](localization/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
 
 ## Future Direction
-DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (creative unsupervised pre-training) are critical for nontrivial deep learning problems. Incidentally, their use is widespread (refer to the *Relevant Literature* section of the repository root).
+DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (unsupervised pre-training) are critical for nontrivial deep learning problems. Incidentally, their use is widespread (refer to the *Relevant Literature* section of the repository root).
 
