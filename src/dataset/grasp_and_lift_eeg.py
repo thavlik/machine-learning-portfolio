@@ -151,7 +151,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 ser = os.path.basename(file)
                 ser = ser[ser.index('_series')+7:]
                 ser = int(ser[:ser.index('_')])
-                if ser not in subjects:
+                if ser not in series:
                     continue
             is_data = file.endswith('_data.csv.bin')
             series = file[:-len('_data.csv.bin')
@@ -207,7 +207,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 ser = os.path.basename(file)
                 ser = ser[ser.index('_series')+7:]
                 ser = int(ser[:ser.index('_')])
-                if ser not in subjects:
+                if ser not in series:
                     continue
             is_data = file.endswith('_data.csv')
             samples = []
