@@ -1,4 +1,4 @@
-# thavlik ML portfolio
+# thavlik machine learning portfolio
 This is a repository of my personal deep learning projects.
 
 ## Supervised Experiments

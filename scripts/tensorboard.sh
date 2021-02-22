@@ -8,7 +8,7 @@ docker run \
     -d \
     --name hometb \
     -p 6007:6006 \
-    -v $(wslpath -w logs)/remote/classification:/logs \
+    -v $(wslpath -w logs)/remote/GraspLift_HalfRes:/logs \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \
