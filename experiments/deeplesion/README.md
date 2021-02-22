@@ -66,7 +66,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, allowing this technique to blended with the direct approach.
+This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, allowing this technique to be blended with the direct approach.
 
 Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed.
 
