@@ -94,10 +94,12 @@ class GraspAndLiftEEGDataset(data.Dataset):
                  num_samples: int = None,
                  last_label_only: bool = False,
                  lod: int = 0,
-                 subjects: Optional[List[int]] = None):
+                 subjects: Optional[List[int]] = None,
+                 series: Optional[List[int]] = None):
         super(GraspAndLiftEEGDataset, self).__init__()
         if num_samples is None and last_label_only:
-            raise ValueError('last_label_only cannot be used without setting num_samples')
+            raise ValueError(
+                'last_label_only cannot be used without setting num_samples')
         self.num_samples = num_samples
         self.last_label_only = last_label_only
         self.lod = lod
@@ -117,26 +119,39 @@ class GraspAndLiftEEGDataset(data.Dataset):
             print(f'Number of .csv.bin files ({len(bin_files)}) '
                   f'is less than the number of .csv ({len(csv_files)}).'
                   ' Compiling binary representation...')
-            self.load_from_csv(csv_files, subjects)
+            self.load_from_csv(csv_files, subjects=subjects, series=series)
         else:
-            self.load_from_bin(bin_files, subjects)
+            self.load_from_bin(bin_files, subjects=subjects, series=series)
 
-    def load_from_csv(self, csv_files: List[str], subjects: Optional[List[int]]):
-        self.X, self.Y = self.compile_bin(csv_files, subjects)
+    def load_from_csv(self,
+                      csv_files: List[str],
+                      subjects: Optional[List[int]] = None,
+                      series: Optional[List[int]] = None):
+        self.X, self.Y = self.compile_bin(
+            csv_files, subjects=subjects, series=series)
         if self.num_samples is not None:
             # Divide each example up into windows
             self.total_examples = 0
             for x in self.X:
                 self.total_examples += x.shape[1] - self.num_samples + 1
 
-    def load_from_bin(self, bin_files: List[str], subjects: Optional[List[int]]):
+    def load_from_bin(self,
+                      bin_files: List[str],
+                      subjects: Optional[List[int]] = None,
+                      series: Optional[List[int]] = None):
         examples = {}
         self.total_examples = 0
         for file in bin_files:
             if subjects is not None:
-                basename = os.path.basename(file)
-                subject = int(basename[4:basename.index('_')])
+                subject = os.path.basename(file)
+                subject = int(subject[4:subject.index('_')])
                 if subject not in subjects:
+                    continue
+            if series is not None:
+                ser = os.path.basename(file)
+                ser = ser[ser.index('_series')+7:]
+                ser = int(ser[:ser.index('_')])
+                if ser not in subjects:
                     continue
             is_data = file.endswith('_data.csv.bin')
             series = file[:-len('_data.csv.bin')
@@ -177,13 +192,22 @@ class GraspAndLiftEEGDataset(data.Dataset):
         print(f'Unzipped in {int(delta)} seconds')
         os.remove(zip_path)
 
-    def compile_bin(self, csv_files: List[str], subjects: Optional[List[int]]):
+    def compile_bin(self,
+                    csv_files: List[str],
+                    subjects: Optional[List[int]] = None,
+                    series: Optional[List[int]] = None):
         examples = {}
         for i, file in enumerate(csv_files):
             if subjects is not None:
-                basename = os.path.basename(file)
-                subject = int(basename[4:basename.index('_')])
+                subject = os.path.basename(file)
+                subject = int(subject[4:subject.index('_')])
                 if subject not in subjects:
+                    continue
+            if series is not None:
+                ser = os.path.basename(file)
+                ser = ser[ser.index('_series')+7:]
+                ser = int(ser[:ser.index('_')])
+                if ser not in subjects:
                     continue
             is_data = file.endswith('_data.csv')
             samples = []
