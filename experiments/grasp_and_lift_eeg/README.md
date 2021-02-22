@@ -3,6 +3,8 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 
 (TODO: insert picture of example data)
 
+There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects nontrivial. The relatively few participants (12) involved in creating this dataset makes such a feat unlikely. Each participant had eight trials, and generalization across a portion of these trials is much more tractable.
+
 ## Results
 (TODO: insert picture of validation results)
 
