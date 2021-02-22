@@ -1,5 +1,5 @@
 # Neural Rendering (work in progress)
-This directory houses experiments on neural rendering, which bypasses rasterization and renders pixels in screen space directly from model input. The arbitrarily complex relationship between inputs and outputs permits sophisticated modeling of the underlying data.
+Graphics rendering pipelines are becoming exponentially more complicated. Generative adversarial networks (GANs) are able to produce arbitrarily realistic imagery ([Goodfellow 2014](https://papers.nips.cc/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf), [Karras et al 2019](https://arxiv.org/abs/1912.04958)), providing an alternative means of achieving hyper-realistic computer graphics.
 
 ## The Basics
 The most basic neural rendering experiment attempts to reproduce the pixels drawn by a standard rasterization- based renderer according to a bounded transform.
