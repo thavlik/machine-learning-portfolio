@@ -10,7 +10,7 @@ Further work is warranted to determine if the trial split can be solved with pop
 ## Results
 Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a couple weeks. Random split training achieves high validation accuracy, but other methods fail to do so. 
 
-The following depicts >80% relative accuracy achieved within a day of training - a trend observed with all splitting methods:
+The following depicts >80% relative accuracy* achieved within a day of training - a trend observed with all splitting methods:
 
 ![](images/training_acc.jpg)
 
@@ -20,7 +20,7 @@ However, for the subject and trial splits, the validation accuracy (measured her
 
 These trends reflect immediate overfitting on the training data.
 
-### Relative Accuracy
+### *Relative Accuracy
 Because >97% of all the dataset's samples are not associated with any class label, the model's overall accuracy does not intuitively reflect how well it performs above baseline performance. The model quickly learns the optimal strategy of outputting mostly zeros - achieving accuracy over 97% - then slowly learns to selectively predict class labels based on features of the input data. Normalizing accuracy above the baseline to [0, 1] in a quantity termed *relative accuracy* elegantly represents model performance after it learns the approximate frequencies of the labels.
 
 **TODO**: show training dynamics
