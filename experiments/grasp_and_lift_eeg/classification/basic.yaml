@@ -5,7 +5,7 @@ model_params:
   name: 'ResNetClassifier1d'
   hidden_dims: [512, 1024, 1024, 512]
   num_classes: 6
-  dropout: 0.1
+  dropout: 0.3
   #load_weights: /Users/tlhavlik/Repositories/midcon-ml/logs/Classification/version_18/checkpoints/epoch=0.ckpt
 
 exp_params:

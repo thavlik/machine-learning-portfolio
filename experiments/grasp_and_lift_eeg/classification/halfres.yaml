@@ -1,11 +1,11 @@
 include: experiments/grasp_and_lift_eeg/classification/basic.yaml
 
 model_params:
-  hidden_dims: [256, 512, 256]
+  hidden_dims: [512, 1024, 1024, 512]
   dropout: 0.3
 
 exp_params:
-  batch_size: 100
+  batch_size: 64
   optimizer:
     lr: 0.001
   data:

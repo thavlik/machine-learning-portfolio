@@ -154,12 +154,12 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 if ser not in series:
                     continue
             is_data = file.endswith('_data.csv.bin')
-            series = file[:-len('_data.csv.bin')
-                          if is_data else -len('_events.csv.bin')]
+            key = file[:-len('_data.csv.bin')
+                       if is_data else -len('_events.csv.bin')]
             samples = torch.load(file)
-            item = examples.get(series, [None, None])
+            item = examples.get(key, [None, None])
             item[0 if is_data else 1] = samples
-            examples[series] = item
+            examples[key] = item
             if is_data and self.num_samples is not None:
                 self.total_examples += samples.shape[1] - self.num_samples + 1
         self.X = []
