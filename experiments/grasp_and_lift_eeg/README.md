@@ -12,7 +12,7 @@ Regardless of the split method, training accuracy increases logarithmically. Nea
 
 The following depicts >80% relative accuracy achieved within a day of training - a trend observed with all splitting methods:
 
-![](images/train_acc.jpg)
+![](images/training_acc.jpg)
 
 However, for the subject and trial splits, the validation accuracy (measured here at steps 20k and 40k) is strictly decreasing:
 
