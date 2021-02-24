@@ -3,14 +3,14 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 
 (TODO: insert picture of example data)
 
-There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned method.
-
-Further work is warranted to determine if the trial split can be solved with popular methods. However, spending hundreds of dollars on GPU rentals to achieve these negative results has encouraged me to work on different problems.
+There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. 
 
 ## Results
-Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a couple weeks. Random split training achieves high validation accuracy, but other methods fail to do so. 
+The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned method.
 
-The following depicts >80% relative accuracy* achieved within a day of training - a trend observed with all splitting methods:
+Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split training achieves high validation accuracy, but other methods fail to do so. 
+
+The following depicts >80% relative accuracy* achieved within two days of training - a trend observed with all splitting methods:
 
 ![](images/training_acc.jpg)
 
@@ -18,7 +18,7 @@ However, for the subject and trial splits, the validation accuracy (measured her
 
 ![](images/validation_acc.jpg)
 
-These trends reflect immediate overfitting on the training data.
+These trends reflect immediate overfitting on the training data. Further work is warranted to determine if the trial split can be solved with alternative methods. Because hundreds of dollars were invested in GPU rentals for this project only to achieve negative results, these findings are likely final.
 
 ### *Relative Accuracy
 Because >97% of all the dataset's samples are not associated with any class label, the model's overall accuracy does not intuitively reflect how well it performs above baseline performance. The model quickly learns the optimal strategy of outputting mostly zeros - achieving accuracy over 97% - then slowly learns to selectively predict class labels based on features of the input data. Normalizing accuracy above the baseline to [0, 1] in a quantity termed *relative accuracy* elegantly represents model performance after it learns the approximate frequencies of the labels.
