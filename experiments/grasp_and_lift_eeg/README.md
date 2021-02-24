@@ -16,7 +16,7 @@ The following depicts >80% relative accuracy achieved within a day of training -
 
 However, for the subject and trial splits, the validation accuracy (measured here at steps 20k and 40k) is strictly decreasing:
 
-![](images/val_acc.jpg)
+![](images/validation_acc.jpg)
 
 These trends reflect immediate overfitting on the training data.
 
