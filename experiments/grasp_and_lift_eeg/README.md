@@ -7,6 +7,7 @@ There are three ways to approach this supervised experiment: by splitting train/
 
 Further work is warranted to determine if the trial split can be solved with popular methods. However, spending hundreds of dollars on GPU rentals to achieve these negative results has encouraged me to move on to different problems.
 
+
 ## Results
 Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a couple weeks. Random split training achieves high validation accuracy, but other methods fail to do so. 
 
