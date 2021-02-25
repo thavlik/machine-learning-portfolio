@@ -8,7 +8,7 @@ There are three ways to approach this supervised experiment: by splitting train/
 ## Results
 The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned method.
 
-Regardless of the split method, training accuracy increased logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy. Subject and trial splits exhibit unfavorable training dynamics.
+Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy. Subject and trial splits exhibit unfavorable training dynamics.
 
 The following depicts >80% relative accuracy* achieved within two days of training - a trend observed with all splitting methods:
 
