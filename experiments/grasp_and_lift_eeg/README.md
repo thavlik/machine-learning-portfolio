@@ -14,7 +14,7 @@ The following depicts >80% relative accuracy* achieved within two days of traini
 
 ![](images/training_acc.jpg)
 
-However, when splitting the data by subject or trial, the validation accuracy (measured here at steps 20k and 40k) is strictly decreasing:
+However, when splitting the data by subject or trial, the validation accuracy (measured here at around 6 and 12 hours of training) is strictly decreasing:
 
 ![](images/validation_acc.jpg)
 
