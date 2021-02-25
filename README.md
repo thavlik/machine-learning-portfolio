@@ -6,9 +6,9 @@ These experiments make use of ground truth provided with the data. Ground truth 
 
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [DeepLesion](experiments/deeplesion/README.md): localization of abdominal tumors on CT scans
+- [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
 
 Works in progress:
-- [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md) (WIP): fine-grain detection of motor activity using EEG
 - [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 
 <!---
