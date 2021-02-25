@@ -46,7 +46,8 @@ Many of the ideas implemented in this repository were first detailed in the foll
 5. [Progressive Growing of GANs for Improved Quality, Stability, and Variation](https://arxiv.org/abs/1710.10196)
 6. [beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework](https://openreview.net/forum?id=Sy2fzU9gl)
 7. [Towards Photographic Image Manipulation with Balanced Growing of Generative Autoencoders](https://arxiv.org/abs/1904.06145)
-8. [Understanding disentangling in β-VAE](https://arxiv.org/pdf/1804.03599.pdf)
+8. [Understanding disentangling in β-VAE](https://arxiv.org/abs/1804.03599)
+9. [Analyzing and Improving the Image Quality of StyleGAN](https://arxiv.org/abs/1912.04958)
 
 ## Contributing
 This repository was intended to be repurposed. As part of the open source community, I do not share the perception that minor contributions from others dilutes the claim that this repository is fully representative of my research capabilities. On the contrary, publishing software good enough for others to justify spending their time and effort improving is a nontrivial achievement.
