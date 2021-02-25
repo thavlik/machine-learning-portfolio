@@ -48,7 +48,8 @@ Many of the ideas implemented in this repository were first detailed in the foll
 7. [Towards Photographic Image Manipulation with Balanced Growing of Generative Autoencoders](https://arxiv.org/abs/1904.06145)
 8. [Understanding disentangling in β-VAE](https://arxiv.org/abs/1804.03599)
 9. [Analyzing and Improving the Image Quality of StyleGAN](https://arxiv.org/abs/1912.04958)
-
+10. [Instance Normalization: The Missing Ingredient for Fast Stylization](https://arxiv.org/abs/1607.08022)
+ 
 ## Contributing
 This repository was intended to be repurposed. As part of the open source community, I do not share the perception that minor contributions from others dilutes the claim that this repository is fully representative of my research capabilities. On the contrary, publishing software good enough for others to justify spending their time and effort improving is a nontrivial achievement.
 
