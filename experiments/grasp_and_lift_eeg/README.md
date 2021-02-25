@@ -32,5 +32,5 @@ Because >97% of all the dataset's samples are not associated with any class labe
 | [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 1024 samples @ 250 Hz | Hyperparameter search for `halfres.yaml`
 
 ## Future Direction
-The random splitting method almost trains with the same data as it uses for validation, so it is unsurprising that it yields high validation accuracy. Because there does not appear to be enough data to generalize across subject or trial splits, further efforts could examine the effect of the random split's proportion. It is estimated that relatively few training examples (<50%) would be necessary to maintain high validation accuracy.
+The random splitting method almost trains with the same data as it uses for validation, so it is unsurprising that it yields high validation accuracy. Because there does not appear to be enough data to generalize across subject or trial splits, further efforts could examine the effect of the random split's proportion. It is estimated that relatively few training examples (<50% of the dataset) would be necessary to maintain high validation accuracy.
 
