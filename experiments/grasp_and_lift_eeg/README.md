@@ -8,7 +8,7 @@ There are three ways to approach this supervised experiment: by splitting train/
 ## Results
 The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned method.
 
-Regardless of the split method, training accuracy increased logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split training achieves high validation accuracy, but other methods fail to do so.
+Regardless of the split method, training accuracy increased logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy. Subject and trial splits exhibit unfavorable training dynamics.
 
 The following depicts >80% relative accuracy* achieved within two days of training - a trend observed with all splitting methods:
 
@@ -30,4 +30,7 @@ Because >97% of all the dataset's samples are not associated with any class labe
 | [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 2048 samples @ 500 Hz | Hyperparameter search for `basic.yaml`
 | [classification/halfres.yaml](classification/halfres.yaml)               | 1024 samples @ 250 Hz | Half-resolution input
 | [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 1024 samples @ 250 Hz | Hyperparameter search for `halfres.yaml`
+
+## Future Direction
+The random splitting method almost trains with the same data as it uses for validation, so it is unsurprising that it yields high validation accuracy. Because there does not appear to be enough data to generalize across subject or trial splits, further efforts could examine the effect of the random split's proportion. It is estimated that relatively few training examples (<50%) would be necessary to maintain high validation accuracy.
 
