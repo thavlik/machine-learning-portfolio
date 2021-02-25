@@ -5,7 +5,7 @@ This is a repository of my personal deep learning projects.
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
 
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
-- [DeepLesion](experiments/deeplesion/README.md): localization of abdominal tumors on CT scans
+- [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
 
 Works in progress:
