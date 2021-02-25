@@ -8,18 +8,26 @@ There are three ways to approach this supervised experiment: by splitting train/
 ## Results
 The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned method.
 
-Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split training achieves high validation accuracy, but other methods fail to do so. 
+Regardless of the split method, training accuracy increased logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split training achieves high validation accuracy, but other methods fail to do so.
 
 The following depicts >80% relative accuracy* achieved within two days of training - a trend observed with all splitting methods:
 
 ![](images/training_acc.jpg)
 
-However, for the subject and trial splits, the validation accuracy (measured here at steps 20k and 40k) is strictly decreasing:
+However, when splitting the data by subject or trial, the validation accuracy (measured here at steps 20k and 40k) is strictly decreasing:
 
 ![](images/validation_acc.jpg)
 
-These trends reflect immediate overfitting on the training data. Further work is warranted to determine if the trial split can be solved with alternative methods. Because hundreds of dollars were invested in GPU rentals for this project only to achieve negative results, these findings are likely final.
+This trend reflects immediate overfitting on the training data. Further work is justified to determine if the trial split can be solved with alternative methods.
 
 ### *Relative Accuracy
 Because >97% of all the dataset's samples are not associated with any class label, the model's overall accuracy does not intuitively reflect how well it performs above baseline performance. The model quickly learns the optimal strategy of outputting mostly zeros - achieving accuracy over 97% - then slowly learns to selectively predict class labels based on features of the input data. Normalizing accuracy above the baseline to [0, 1] in a quantity termed *relative accuracy* elegantly represents model performance after it learns the approximate frequencies of the labels.
+
+### Experiment Files
+| File                                                                     | Input Resolution      | Notes
+| ------------------------------------------------------------------------ | --------------------- | ------
+| [classification/basic.yaml](classification/basic.yaml)                   | 2048 samples @ 500 Hz | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 2048 samples @ 500 Hz | Hyperparameter search for `basic.yaml`
+| [classification/halfres.yaml](classification/halfres.yaml)               | 1024 samples @ 250 Hz | Half-resolution input
+| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 1024 samples @ 250 Hz | Hyperparameter search for `halfres.yaml`
 
