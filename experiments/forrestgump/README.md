@@ -13,6 +13,6 @@ While deep learning and fMRI are a powerful combination, the high dimensionality
 ### Experiment Files
 | File                                                                   | Input Resolution | Notes
 | ---------------------------------------------------------------------- | ---------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                 | 160x160x36       | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml) | 160x160x36       | Hyperparameter search for `basic.yaml`
+| [classification/basic.yaml](classification/basic.yaml)                 | Nx160x160x36     | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml) | Nx160x160x36     | Hyperparameter search for `basic.yaml`
 
