@@ -60,7 +60,8 @@ def compile_forrest_gump_h5py(root: str,
 class ForrestGumpDataset(data.Dataset):
     def __init__(self,
                  root: str,
-                 alignment: Optional[str] = None):
+                 alignment: Optional[str] = None,
+                 stride: int = 0):
         super(ForrestGumpDataset, self).__init__()
         self.root = root
 
