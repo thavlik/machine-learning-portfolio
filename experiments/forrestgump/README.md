@@ -18,6 +18,6 @@ While deep learning and fMRI are a powerful combination, the high dimensionality
 | -------------------------------------------------------------------------- | ---------------------- | ------------------- | -----
 | [classification/basic.yaml](classification/basic.yaml)                     | 160x160x36             | 16 frames @ 0.5 Hz  | "Vanilla" experiment setup
 | [classification/basic_hparams.yaml](classification/basic_hparams.yaml)     | 160x160x36             | 16 frames @ 0.5 Hz  | 16 frames @ 0.5 Hz  | Hyperparameter search for `basic.yaml`
-| [classification/strided.yaml](classification/strided.yaml)                 | 160x160x36             | 16 frames @ 0.25 Hz | Every other input frame is skipped
+| [classification/strided.yaml](classification/strided.yaml)                 | 160x160x36             | 16 frames @ 0.25 Hz | Every other frame is skipped
 | [classification/strided_hparams.yaml](classification/strided_hparams.yaml) | 160x160x36             | 16 frames @ 0.25 Hz | Hyperparameter search for `strided.yam
 
