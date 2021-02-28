@@ -14,8 +14,9 @@ Any `N` contiguous frames from a scene are assigned the indoor (0) or outdoor (1
 While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). TODO: explain how this problem was overcome
 
 ### Experiment Files
-| File                                                                   | Input Resolution | Notes
-| ---------------------------------------------------------------------- | ---------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                 | 16x160x160x36    | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml) | 16x160x160x36    | Hyperparameter search for `basic.yaml`
-
+| File                                                                       | Input Resolution | Notes
+| -------------------------------------------------------------------------- | ---------------- | ------
+| [classification/basic.yaml](classification/basic.yaml)                     | 16x160x160x36    | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)     | 16x160x160x36    | Hyperparameter search for `basic.yaml`
+| [classification/strided.yaml](classification/strided.yaml)                 | 16x160x160x36    | Every other input frame is skipped
+| [classification/strided_hparams.yaml](classification/strided_hparams.yaml) | 16x160x160x36    | Hyperparameter search for `strided.yaml`

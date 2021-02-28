@@ -1,0 +1,6 @@
+include: experiments/forrestgump/classification/basic.yaml
+
+exp_params:
+  data:
+    training:
+      stride: 1
