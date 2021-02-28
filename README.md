@@ -9,6 +9,7 @@ These experiments make use of ground truth provided with the data. Ground truth 
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
 
 Works in progress:
+- [Forrest Gump](experiments/forrestgump/README.md) (WIP): infer features of an audio-only film's scenes using fMRI
 - [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 
 <!---
