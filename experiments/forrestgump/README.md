@@ -6,13 +6,13 @@ TODO
 
 ## Materials & Methods
 ### Experiment Design
-Any `N` contiguous frames from a scene are assigned the indoor (0) or outdoor (1) label. The label is predicted by feeding the fMRI frames through a 4D convolutional network.
+Any `N` contiguous frames from a scene are assigned the indoor (0) or outdoor (1) label. The label is predicted by feeding the fMRI frames through a 4D convolutional network. Training/validation split is by scene, with 70% of scenes randomly selected for training and the remaining 30% used for validation.
 
 While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). TODO: explain how this problem was overcome
 
 ### Experiment Files
 | File                                                                   | Input Resolution | Notes
 | ---------------------------------------------------------------------- | ---------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                 | Nx160x160x36     | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml) | Nx160x160x36     | Hyperparameter search for `basic.yaml`
+| [classification/basic.yaml](classification/basic.yaml)                 | 16x160x160x36    | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml) | 16x160x160x36    | Hyperparameter search for `basic.yaml`
 
