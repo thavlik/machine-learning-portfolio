@@ -129,6 +129,10 @@ class ForrestGumpDataset(data.Dataset):
         frame_dur_sec = 2.0
         example_dur = frame_dur_sec * self.num_frames
         subj_no = int(floor(index / self.examples_per_subject)) + 1
+        subj = str(subj_no)
+        if len(subj) == 1:
+            subj = '0' + subj
+        subj = f'sub-{subj}'
         example_no = index % self.examples_per_subject
         scene_no = 0
         offset = 0
@@ -139,6 +143,7 @@ class ForrestGumpDataset(data.Dataset):
             scene_no += 1
         scene_example = example_no - offset
         scene = self.scenes[scene_no]
+        label = 1 if scene[3] else 0
         start_time = scene[0] + frame_dur_sec * scene_example
         end_time = start_time + example_dur
         file_times = [c * frame_dur_sec for c in self.FRAME_COUNTS]
@@ -159,20 +164,37 @@ class ForrestGumpDataset(data.Dataset):
         if end_file is None:
             raise ValueError("bad end file")
         if start_file != end_file:
-            raise ValueError("loading scenes on boundary currently not supported")
+            start_img_time = sum(file_times[:start_file])
+            start_dur = start_img_time - start_time
+            start_frames = int(start_dur // 2)
+            remainder = int(self.num_frames - start_frames)
 
-        subj = str(subj_no)
-        if len(subj) == 1:
-            subj = '0' + subj
-        subj = f'sub-{subj}'
-        filename = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{start_file}_bold.nii.gz'
-        filename = os.path.join(self.data_dir, subj,
-                                'ses-forrestgump', 'func', filename)
-        img = nl.image.load_img(filename)
-        img = img.get_data()
-        img = img[:, :, :, scene_example:scene_example+self.num_frames]
-        img = np.transpose(img, (3, 2, 0, 1))
-        return (img, 1 if scene[3] else 0)
+            start_path = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{start_file}_bold.nii.gz'
+            start_path = os.path.join(self.data_dir, subj,
+                                      'ses-forrestgump', 'func', start_path)
+            start_img = nl.image.load_img(start_path)
+            start_img = start_img.get_data()
+            start_img = start_img[:, :, :, start_img.shape[-1]-start_frames:]
+            start_img = np.transpose(start_img, (3, 2, 0, 1))
+
+            end_path = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{end_file}_bold.nii.gz'
+            end_path = os.path.join(self.data_dir, subj,
+                                    'ses-forrestgump', 'func', end_path)
+            end_img = nl.image.load_img(end_path)
+            end_img = end_img.get_data()
+            end_img = end_img[:, :, :, :remainder]
+            end_img = np.transpose(end_img, (3, 2, 0, 1))
+
+            img = np.concatenate([start_img, end_img], axis=0)
+        else:
+            filename = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{start_file}_bold.nii.gz'
+            filename = os.path.join(self.data_dir, subj,
+                                    'ses-forrestgump', 'func', filename)
+            img = nl.image.load_img(filename)
+            img = img.get_data()
+            img = img[:, :, :, scene_example:scene_example+self.num_frames]
+            img = np.transpose(img, (3, 2, 0, 1))
+        return (img, label)
 
     def __len__(self):
         return self.examples_per_subject * len(self.subjects)
@@ -183,7 +205,9 @@ if __name__ == '__main__':
     ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download')
     print(ds[0][1])
     print(ds[len(ds)-1][1])
+    for i, x in enumerate(ds):
+        print(f'{i}. {x[1]}')
     #i = len(ds) - 1
-    #while i >= 0:
+    # while i >= 0:
     #    print(f'{i}. {ds[i][1]}')
     #    i -= 1
