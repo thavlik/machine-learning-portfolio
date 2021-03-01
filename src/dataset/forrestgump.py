@@ -1,8 +1,9 @@
+import json
 import os
 import numpy as np
 import nilearn as nl
 import nilearn.plotting as nlplt
-from math import floor
+from math import ceil, floor
 import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy as np
@@ -13,8 +14,9 @@ from torch import Tensor
 from typing import Optional
 
 
-def compile_forrest_gump_h5py(root: str,
-                              alignment: Optional[str] = None):
+def convert_forrest_gump_h5py(root: str,
+                              alignment: Optional[str] = None,
+                              max_chunk_samples: int = 16):
     if alignment is None:
         data_dir = root
         identifier = 'acq-dico'
@@ -28,34 +30,48 @@ def compile_forrest_gump_h5py(root: str,
     else:
         raise ValueError(f"unknown alignment value '{alignment}'")
     subjects = [f for f in os.listdir(data_dir)
-                if f.startswith('sub-') and len(f) == 6]
+                if f.startswith('sub-') and len(f) == 6 and int(f[len('sub-'):]) <= 20]
     num_frames = 3599
+    out_dir = os.path.join(root, 'converted')
     try:
-        os.mkdir(os.path.join(root, 'compiled'))
+        os.mkdir(out_dir)
     except:
         pass
-    out_path = os.path.join(root, 'compiled', f'compiled_{identifier}.hdf5')
-    with h5py.File(out_path, 'w') as f:
-        ds = f.create_dataset(
-            'default', (len(subjects), num_frames, 160, 160, 36), dtype='int16')
-        for subject in subjects:
-            print(f'Compiling {subject}')
-            subj_no = int(subject[4:])-1
-            frame_no = 0
-            frames = None
-            for run in range(8):
-                filename = f'{subject}_ses-forrestgump_task-forrestgump_{identifier}_run-0{run+1}_bold.nii.gz'
-                filename = os.path.join(
-                    data_dir, subject, 'ses-forrestgump', 'func', filename)
-                img = nl.image.load_img(filename)
-                img = img.get_data()
-                img = np.transpose(img, (3, 0, 1, 2))
-                frames = img if frames is None else np.concatenate(
-                    (frames, img), axis=0)
-            ds[subj_no] = frames
-            if frames.shape[0] != num_frames:
-                raise ValueError(
-                    f'{subject} has {len(frames)} frames, expected {num_frames}')
+    metadata = {}
+    for subject in subjects:
+        print(f'Converting {subject}')
+        try:
+            os.mkdir(os.path.join(out_dir, subject))
+        except:
+            pass
+        subj_no = int(subject[4:])-1
+        frame_no = 0
+        frames = None
+        for run in range(8):
+            filename = f'{subject}_ses-forrestgump_task-forrestgump_{identifier}_run-0{run+1}_bold.nii.gz'
+            filename = os.path.join(
+                data_dir, subject, 'ses-forrestgump', 'func', filename)
+            img = nl.image.load_img(filename)
+            img = img.get_data()
+            img = np.transpose(img, (3, 2, 0, 1))
+            frames = img if frames is None else np.concatenate(
+                (frames, img), axis=0)
+        if frames.shape[0] != num_frames:
+            print(f'WARNING: {subject} has {len(frames)} frames, expected {num_frames}')
+        metadata[subject] = {
+            'num_frames': frames.shape[0],
+        }
+        with open(os.path.join(out_dir, 'metadata.json'), 'w') as f:
+            f.write(json.dumps(metadata))
+        num_chunks = ceil(frames.shape[0] / max_chunk_samples)
+        for i in range(num_chunks):
+            a = max_chunk_samples * i
+            b = min(a + max_chunk_samples, frames.shape[0])
+            out_path = os.path.join(out_dir, subject, subject + f'_{i}')
+            chunk = frames[a:b, ...]
+            np.save(out_path, chunk)
+    with open(os.path.join(out_dir, 'metadata.json'), 'w') as f:
+        f.write(json.dumps(metadata))
 
 
 def load_scenes(path: str) -> list:
@@ -234,7 +250,7 @@ class ForrestGumpDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    # compile_forrest_gump_h5py('/data/openneuro/ds000113-download')
+    convert_forrest_gump_h5py('/data/openneuro/ds000113-download')
     ds = ForrestGumpDataset(
         root='/data/openneuro/ds000113-download', alignment='linear')
     #print(f'last: {ds[len(ds)-1][1]}')
