@@ -97,7 +97,7 @@ class ForrestGumpDataset(data.Dataset):
 
     def __init__(self,
                  root: str,
-                 num_frames: int = 1,
+                 num_frames: int = 32,
                  alignment: Optional[str] = None,
                  stride: int = 0):
         super(ForrestGumpDataset, self).__init__()
@@ -183,7 +183,6 @@ if __name__ == '__main__':
     ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download')
     print(ds[0][1])
     print(ds[len(ds)-1][1])
-
     #i = len(ds) - 1
     #while i >= 0:
     #    print(f'{i}. {ds[i][1]}')
