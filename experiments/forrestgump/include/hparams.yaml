@@ -9,5 +9,6 @@ exp_params:
   data:
     name: forrestgump
     training:
-      offset:
-        grid_search: [-4, -2, 0, 2, 4]
+      label_offset:
+      # Offset all labels this many seconds into the future
+        grid_search: [0, 2, 4, 6]

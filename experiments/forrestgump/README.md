@@ -13,7 +13,7 @@ Any `N` contiguous BOLD frames are assigned the indoor (0) or outdoor (1) label 
 
 BOLD has a "built-in" acquisition delay due to the biological processes underlying changes in the brain's blood flow. The apparent lag between the stimulus (audiofilm) and response (fMRI) is on the order of seconds ([Liao et al 2005](https://www.math.mcgill.ca/keith/delay/delay.pdf)). An ideal offset duration can be determined with a hyperparameter search.
 
-While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). TODO: explain how this problem was overcome
+While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). This is sufficient when the model considers a single BOLD frame, but problematic when dealing with multiple. TODO: explain how this problem was overcome
 
 ### Experiment Files
 | File                                                                       | Frame Dimensions       | Temporal Resolution | Notes

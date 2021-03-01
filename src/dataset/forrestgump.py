@@ -19,7 +19,7 @@ def convert_forrest_gump_h5py(root: str,
                               max_chunk_samples: int = 16):
     if alignment is None:
         data_dir = root
-        identifier = 'acq-dico'
+        identifier = 'acq-raw'
     elif alignment == 'linear':
         data_dir = os.path.join(root, 'linear_anatomical_alignment')
         identifier = 'rec-dico7Tad2grpbold7Tad'
@@ -160,7 +160,7 @@ class ForrestGumpDataset(data.Dataset):
             root, "stimuli", "annotations", "scenes.csv"))
         if alignment is None:
             self.data_dir = root
-            self.identifier = 'acq-dico'
+            self.identifier = 'acq-raw'
         elif alignment == 'linear':
             self.data_dir = os.path.join(
                 root, 'derivatives', 'linear_anatomical_alignment')
