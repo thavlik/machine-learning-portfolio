@@ -120,7 +120,7 @@ class ForrestGumpDataset(data.Dataset):
 
     def __init__(self,
                  root: str,
-                 num_frames: int = 32,
+                 num_frames: int = 8,
                  offset_frames: int = 0,
                  alignment: Optional[str] = None):
         super(ForrestGumpDataset, self).__init__()
