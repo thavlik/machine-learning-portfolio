@@ -94,8 +94,7 @@ class ForrestGumpDataset(data.Dataset):
     at 0.5 Hz for the entire duration of the film are associated with
     class labels assigned to each scene.
 
-    Paper: https://www.nature.com/articles/sdata20143
-    Data: https://openneuro.org/datasets/ds000113/
+    https://openneuro.org/datasets/ds000113/
 
     Args:
         root: Path to download directory, e.g. /data/ds000113-download
