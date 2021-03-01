@@ -153,7 +153,7 @@ class ForrestGumpDataset(data.Dataset):
     def __getitem__(self, index):
         frame_dur_sec = 2.0
         example_dur = frame_dur_sec * self.num_frames
-        subj_no = int(floor(index / self.examples_per_subject)) + 1
+        subj_no = int(floor(index / self.examples_per_subject))
         subj = self.subjects[subj_no]
         example_no = index % self.examples_per_subject
         scene_no = 0
@@ -225,6 +225,7 @@ if __name__ == '__main__':
     # compile_forrest_gump_h5py('/data/openneuro/ds000113-download')
     ds = ForrestGumpDataset(
         root='/data/openneuro/ds000113-download', alignment='linear')
+    #print(f'last: {ds[len(ds)-1][1]}')
     for i in range(len(ds.subjects)):
         print(
             f'subject {i+1}: {ds[ds.examples_per_subject * i][1]}, {ds[ds.examples_per_subject * (i+1) - 1][1]}')
