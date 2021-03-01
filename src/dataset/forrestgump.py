@@ -97,15 +97,15 @@ class ForrestGumpDataset(data.Dataset):
     Args:
         root: Path to download directory, e.g. /data/ds000113-download
 
-        num_frames: Number of BOLD frames in an example. Note: each
-            frame is 2.0 seconds in duration.
+        num_frames: Number of BOLD frames in an example. Note: each frame
+            is 2.0 seconds in duration.
             
         offset_frames: Number of BOLD frames to delay between stimulation
             and label assignment. Activity of interest may only be visible
             after a short delay. Adjust this value so the apparent activity
             correlates optimally with the stimulation.
 
-        alignment: Alignment transformation geometry. Valid values
+        alignment: Optional alignment transformation geometry. Valid values
             are "linear" and "nonlinear".
     
     Labels:
