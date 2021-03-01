@@ -1,5 +1,0 @@
-include: experiments/forrestgump/classification/basic_hparams.yaml
-
-experiment:
-  - experiments/forrestgump/classification/strided.yaml
-  - experiments/forrestgump/include/hparams.yaml

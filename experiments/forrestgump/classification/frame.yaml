@@ -22,6 +22,7 @@ exp_params:
       drop_last: true
     training:
       root: /data/openneuro/ds000113-download
+      num_frames: 1
   warmup_steps: 256
 
 trainer_params:
@@ -31,5 +32,5 @@ trainer_params:
 manual_seed: 1498
 
 logging_params:
-  name: "ForrestGump_Basic"
+  name: "ForrestGump_Frame"
 
