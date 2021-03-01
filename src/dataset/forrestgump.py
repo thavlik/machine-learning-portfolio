@@ -102,7 +102,7 @@ class ForrestGumpDataset(data.Dataset):
 
         num_frames: Number of BOLD frames in an example. Note: each frame
             is 2.0 seconds in duration.
-            
+
         offset_frames: Number of BOLD frames to delay between stimulation
             and label assignment. Activity of interest may only be visible
             after a short delay. Adjust this value so the apparent activity
@@ -110,12 +110,13 @@ class ForrestGumpDataset(data.Dataset):
 
         alignment: Optional alignment transformation geometry. Valid values
             are "linear" and "nonlinear".
-    
+
     Labels:
-        0: The scene takes place inside
-        1: The scene takes place outside
+        0: The scene takes place indoors
+        1: The scene takes place outdoors
 
     """
+
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
 
     def __init__(self,
@@ -226,8 +227,9 @@ if __name__ == '__main__':
     ds = ForrestGumpDataset(
         root='/data/openneuro/ds000113-download', alignment='nonlinear')
     for i in range(len(ds.subjects)):
-        print(f'subject {i+1}: {ds[ds.examples_per_subject * i][1]}, {ds[ds.examples_per_subject * (i+1) - 1][1]}')
-    #for i, x in enumerate(ds):
+        print(
+            f'subject {i+1}: {ds[ds.examples_per_subject * i][1]}, {ds[ds.examples_per_subject * (i+1) - 1][1]}')
+    # for i, x in enumerate(ds):
     #    print(f'{i}. {x[1]}')
     #i = len(ds) - 1
     # while i >= 0:
