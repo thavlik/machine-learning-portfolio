@@ -160,9 +160,9 @@ class ForrestGumpDataset(data.Dataset):
                 break
             file_start_time = file_end_time
         if start_file is None:
-            raise ValueError("bad start file")
+            raise ValueError("unable to seek start file")
         if end_file is None:
-            raise ValueError("bad end file")
+            raise ValueError("unable to seek end file")
         if start_file != end_file:
             start_img_time = sum(file_times[:start_file])
             start_dur = start_img_time - start_time
