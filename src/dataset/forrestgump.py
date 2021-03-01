@@ -72,10 +72,7 @@ def load_scenes(path: str) -> list:
 
 
 def calc_scene_examples(scenes: list,
-                        num_frames: int,
-                        stride: int = 0):
-    if stride != 0:
-        raise NotImplementedError
+                        num_frames: int):
     frame_dur_sec = 2.0
     scene_examples = []
     for i in range(len(scenes)):
@@ -99,8 +96,7 @@ class ForrestGumpDataset(data.Dataset):
     def __init__(self,
                  root: str,
                  num_frames: int = 32,
-                 alignment: Optional[str] = None,
-                 stride: int = 0):
+                 alignment: Optional[str] = None):
         super(ForrestGumpDataset, self).__init__()
         self.root = root
         self.num_frames = num_frames
@@ -123,8 +119,7 @@ class ForrestGumpDataset(data.Dataset):
                     if f.startswith('sub-') and len(f) == 6 and int(f[len('sub-'):]) <= 20]
         self.subjects = subjects
         self.scene_examples = calc_scene_examples(self.scenes,
-                                                  num_frames=num_frames,
-                                                  stride=stride)
+                                                  num_frames=num_frames)
         self.examples_per_subject = sum(self.scene_examples)
 
     def __getitem__(self, index):
