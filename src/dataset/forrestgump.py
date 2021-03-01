@@ -32,7 +32,7 @@ def convert_forrest_gump_h5py(root: str,
     subjects = [f for f in os.listdir(data_dir)
                 if f.startswith('sub-') and len(f) == 6 and int(f[len('sub-'):]) <= 20]
     num_frames = 3599
-    out_dir = os.path.join(root, 'converted')
+    out_dir = os.path.join(root, 'converted', identifier)
     try:
         os.mkdir(out_dir)
     except:
