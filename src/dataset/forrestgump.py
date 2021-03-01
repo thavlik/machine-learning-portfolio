@@ -116,6 +116,10 @@ class ForrestGumpDataset(data.Dataset):
     Labels:
         0: The scene takes place indoors
         1: The scene takes place outdoors
+
+    Reference:
+        Liao et al. Estimating the delay of the fMRI response.
+        2005. https://www.math.mcgill.ca/keith/delay/delay.pdf
     """
 
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
