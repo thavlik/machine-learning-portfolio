@@ -90,7 +90,6 @@ def calc_scene_examples(scenes: list,
 
 
 class ForrestGumpDataset(data.Dataset):
-    #FRAME_COUNTS = [451, 441, 438, 488, 462, 439, 542, 338]
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
 
     def __init__(self,
