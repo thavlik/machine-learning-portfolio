@@ -126,6 +126,7 @@ class ForrestGumpDataset(data.Dataset):
         A.C. Evans. Estimating the Delay of the fMRI Response. NeuroImage,
         Volume 16, Issue 3, Part A. 2002. Pages 593-606. ISSN 1053-8119.
         https://doi.org/10.1006/nimg.2002.1096.
+        https://www.math.mcgill.ca/keith/delay/delay.pdf
     """
 
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
