@@ -90,13 +90,39 @@ def calc_scene_examples(scenes: list,
 
 
 class ForrestGumpDataset(data.Dataset):
+    """ Forrest Gump fMRI dataset from OpenNeuro.
+    Paper: https://www.nature.com/articles/sdata20143
+    Data: https://openneuro.org/datasets/ds000113/
+
+    Args:
+        root: Path to download directory, e.g. /data/ds000113-download
+
+        num_frames: Number of BOLD frames in an example. Note: each
+            frame is 2.0 seconds in duration.
+            
+        offset_frames: Number of BOLD frames to delay between stimulation
+            and label assignment. Activity of interest may only be visible
+            after a short delay. Adjust this value so the apparent activity
+            correlates optimally with the stimulation.
+
+        alignment: Alignment transformation geometry. Valid values
+            are "linear" and "nonlinear".
+    
+    Labels:
+        0: The scene takes place inside
+        1: The scene takes place outside
+
+    """
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
 
     def __init__(self,
                  root: str,
                  num_frames: int = 32,
+                 offset_frames: int = 0,
                  alignment: Optional[str] = None):
         super(ForrestGumpDataset, self).__init__()
+        if offset_frames != 0:
+            raise NotImplementedError
         self.root = root
         self.num_frames = num_frames
         self.scenes = load_scenes(os.path.join(
