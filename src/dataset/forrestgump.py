@@ -114,7 +114,6 @@ class ForrestGumpDataset(data.Dataset):
     Labels:
         0: The scene takes place indoors
         1: The scene takes place outdoors
-
     """
 
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
