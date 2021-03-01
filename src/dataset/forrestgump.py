@@ -109,11 +109,12 @@ class ForrestGumpDataset(data.Dataset):
             self.data_dir = root
             self.identifier = 'acq-dico'
         elif alignment == 'linear':
-            self.data_dir = os.path.join(root, 'linear_anatomical_alignment')
+            self.data_dir = os.path.join(
+                root, 'derivatives', 'linear_anatomical_alignment')
             self.identifier = 'rec-dico7Tad2grpbold7Tad'
         elif alignment == 'nonlinear':
             self.data_dir = os.path.join(
-                root, 'non-linear_anatomical_alignment')
+                root, 'derivatives', 'non-linear_anatomical_alignment')
             self.identifier = 'rec-dico7Tad2grpbold7TadNL'
         else:
             raise ValueError(f"unknown alignment value '{alignment}'")
@@ -202,11 +203,12 @@ class ForrestGumpDataset(data.Dataset):
 
 if __name__ == '__main__':
     # compile_forrest_gump_h5py('/data/openneuro/ds000113-download')
-    ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download')
-    print(ds[0][1])
-    print(ds[len(ds)-1][1])
-    for i, x in enumerate(ds):
-        print(f'{i}. {x[1]}')
+    ds = ForrestGumpDataset(
+        root='/data/openneuro/ds000113-download', alignment='nonlinear')
+    for i in range(20):
+        print(f'subject {i+1}: {ds[ds.examples_per_subject * i][1]}, {ds[ds.examples_per_subject * (i+1) - 1][1]}')
+    #for i, x in enumerate(ds):
+    #    print(f'{i}. {x[1]}')
     #i = len(ds) - 1
     # while i >= 0:
     #    print(f'{i}. {ds[i][1]}')
