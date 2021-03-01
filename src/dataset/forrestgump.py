@@ -118,8 +118,14 @@ class ForrestGumpDataset(data.Dataset):
         1: The scene takes place outdoors
 
     Reference:
-        Liao et al. Estimating the delay of the fMRI response.
-        2005. https://www.math.mcgill.ca/keith/delay/delay.pdf
+        Hanke, M., Baumgartner, F., Ibe, P. et al. A high-resolution 7-Tesla
+        fMRI dataset from complex natural stimulation with an audio movie.
+        Sci Data 1, 140003 (2014). https://doi.org/10.1038/sdata.2014.3
+
+        C.H. Liao, K.J. Worsley, J.-B. Poline, J.A.D. Aston, G.H. Duncan,
+        A.C. Evans. Estimating the Delay of the fMRI Response. NeuroImage,
+        Volume 16, Issue 3, Part A. 2002. Pages 593-606. ISSN 1053-8119.
+        https://doi.org/10.1006/nimg.2002.1096.
     """
 
     FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
