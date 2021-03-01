@@ -92,7 +92,7 @@ def calc_scene_examples(scenes: list,
 class ForrestGumpDataset(data.Dataset):
     """ Forrest Gump fMRI dataset from OpenNeuro. BOLD imagery acquired
     at 0.5 Hz for the entire duration of the film are associated with
-    class labels from each scene in the film.
+    class labels assigned to each scene.
 
     Paper: https://www.nature.com/articles/sdata20143
     Data: https://openneuro.org/datasets/ds000113/
