@@ -106,7 +106,9 @@ class ForrestGumpDataset(data.Dataset):
         offset_frames: Number of BOLD frames to delay between stimulation
             and label assignment. Activity of interest may only be visible
             after a short delay. Adjust this value so the apparent activity
-            correlates optimally with the stimulation.
+            correlates optimally with the stimulation. Note: fMRI by itself
+            has a delay on the order of seconds, so further offset may not
+            be necessary.
 
         alignment: Optional alignment transformation geometry. Valid values
             are "linear" and "nonlinear".
