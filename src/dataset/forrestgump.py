@@ -93,7 +93,8 @@ def calc_scene_examples(scenes: list,
 
 
 class ForrestGumpDataset(data.Dataset):
-    FRAME_COUNTS = [451, 441, 438, 488, 462, 439, 542, 338]
+    #FRAME_COUNTS = [451, 441, 438, 488, 462, 439, 542, 338]
+    FILE_DURATIONS = [902, 882, 876, 976, 924, 878, 1084, 676]
 
     def __init__(self,
                  root: str,
@@ -147,11 +148,10 @@ class ForrestGumpDataset(data.Dataset):
         label = 1 if scene[3] else 0
         start_time = scene[0] + frame_dur_sec * scene_example
         end_time = start_time + example_dur
-        file_times = [c * frame_dur_sec for c in self.FRAME_COUNTS]
         start_file = None
         end_file = None
         file_start_time = 0
-        for i, file_time in enumerate(file_times):
+        for i, file_time in enumerate(self.FILE_DURATIONS):
             file_end_time = file_start_time + file_time
             if file_start_time <= start_time and start_time < file_end_time:
                 start_file = i+1
@@ -165,7 +165,7 @@ class ForrestGumpDataset(data.Dataset):
         if end_file is None:
             raise ValueError("unable to seek end file")
         if start_file != end_file:
-            start_img_time = sum(file_times[:start_file])
+            start_img_time = sum(self.FILE_DURATIONS[:start_file])
             start_dur = start_img_time - start_time
             start_frames = int(start_dur / frame_dur_sec)
             remainder = int(self.num_frames - start_frames)
