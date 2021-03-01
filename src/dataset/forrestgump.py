@@ -166,7 +166,7 @@ class ForrestGumpDataset(data.Dataset):
         if start_file != end_file:
             start_img_time = sum(file_times[:start_file])
             start_dur = start_img_time - start_time
-            start_frames = int(start_dur // 2)
+            start_frames = int(start_dur / frame_dur_sec)
             remainder = int(self.num_frames - start_frames)
 
             start_path = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{start_file}_bold.nii.gz'
