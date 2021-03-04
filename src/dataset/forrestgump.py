@@ -52,13 +52,15 @@ def soft_label(scenes: list, t0: float, t1: float) -> float:
             labels = scene[2:]
             values.append(labels)
     labels = np.average(values, axis=0, weights=weights)
-    return labels
+    return tuple(labels)
 
 
-def convert_labels(scenes: list, frame_dur: float) -> list:
+def convert_labels(scenes: list,
+                   offset: float,
+                   frame_dur: float) -> list:
     labels = []
     for i in range(3599):
-        t0 = i * frame_dur
+        t0 = i * frame_dur - offset
         t1 = t0 + frame_dur
         label = soft_label(scenes, t0, t1)
         labels.append(label)
@@ -83,9 +85,9 @@ class ForrestGumpDataset(data.Dataset):
         num_frames: Number of BOLD frames in an example. Note: each frame
             is 2.0 seconds in duration.
 
-        offset_frames: Number of BOLD frames to delay between stimulation
-            and label assignment. Activity of interest may only be visible
-            after a short delay. Adjust this value so the apparent activity
+        offset: Number of seconds to delay between stimulation and label
+            assignment. Activity of interest may only be visible after a
+            short delay. Adjust this value so the apparent activity
             correlates optimally with the stimulation. Note: fMRI by itself
             has a delay on the order of seconds, so further offset may not
             be necessary.
@@ -112,16 +114,14 @@ class ForrestGumpDataset(data.Dataset):
     def __init__(self,
                  root: str,
                  num_frames: int = 8,
-                 offset_frames: int = 0,
+                 offset: float = 0.0,
                  alignment: Optional[str] = 'raw'):
         super(ForrestGumpDataset, self).__init__()
-        if offset_frames != 0:
-            raise NotImplementedError
         self.root = root
         self.num_frames = num_frames
         self.scenes = load_scenes(os.path.join(
             root, "stimuli", "annotations", "scenes.csv"))
-        self.labels = convert_labels(self.scenes, frame_dur=2.0)
+        self.labels = convert_labels(self.scenes, offset=offset, frame_dur=2.0)
         if alignment == 'raw':
             self.data_dir = os.path.join(root, 'converted', 'raw')
         elif alignment == 'linear':
