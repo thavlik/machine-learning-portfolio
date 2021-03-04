@@ -1,8 +1,7 @@
 from math import ceil
 import torch
-from torch import nn
-from torch.nn import functional as F
 from torch import nn, Tensor, Size
+from torch.nn import functional as F
 from typing import List
 from .classifier import Classifier
 from .inception import InceptionV3
