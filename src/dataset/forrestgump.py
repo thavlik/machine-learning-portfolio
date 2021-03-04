@@ -62,6 +62,8 @@ def convert_labels(scenes: list,
     for i in range(3599):
         t0 = i * frame_dur - offset
         t1 = t0 + frame_dur
+        if t1 <= 0.0:
+            continue
         label = soft_label(scenes, t0, t1)
         labels.append(label)
     return Tensor(labels)
@@ -131,7 +133,7 @@ class ForrestGumpDataset(data.Dataset):
         num_examples = 0
         for key in self.subject_keys:
             subject = self.subjects[key]
-            num_examples += subject['num_frames']
+            num_examples += min(subject['num_frames'], self.labels.shape[0])
         self.num_examples = num_examples
 
     def __getitem__(self, index):
@@ -139,7 +141,7 @@ class ForrestGumpDataset(data.Dataset):
         offset = 0
         for key in self.subject_keys:
             subject = self.subjects[key]
-            num_frames = subject['num_frames']
+            num_frames = min(subject['num_frames'], self.labels.shape[0])
             if offset + num_frames > index:
                 break
             offset += num_frames
@@ -155,6 +157,7 @@ class ForrestGumpDataset(data.Dataset):
             chunk_no += 1
         index -= offset
         chunk = np.load(os.path.join(self.data_dir, key, f'{key}_{chunk_no}.npy'))
+        chunk = chunk[-self.labels.shape[0]:, ...]
         img = chunk[index:index+1, ...]
         img = Tensor(img)
         return (img, labels)

@@ -15,7 +15,7 @@ exp_params:
     weight_decay: 0.00001
   data:
     name: forrestgump
-    split: 0.7
+    split: 0.6
     loader:
       pin_memory: false
       num_workers: 0
