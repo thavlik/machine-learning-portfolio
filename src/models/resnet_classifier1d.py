@@ -1,14 +1,12 @@
+from math import ceil
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torch import nn, Tensor, Size
+from typing import List
 from .classifier import Classifier
 from .resnet1d import BasicBlock1d
-from torch import nn, Tensor, Size
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
-from .inception import InceptionV3
-from .util import get_pooling1d, get_activation
+from .util import get_pooling1d
 
 
 class ResNetClassifier1d(Classifier):

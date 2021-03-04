@@ -53,7 +53,6 @@ def get_dataset(name: str,
 
 dataset_dims = {
     'trends-fmri': (53, 63, 52, 53),
-    'forrestgump': (160, 160, 36),
 }
 
 
@@ -82,6 +81,17 @@ def get_example_shape(data: dict) -> Size:
         size = 512 // divisor
         size = (1, size, size)
         return Size(size)
+    if name == 'forrestgump':
+        alignment = data['training'].get('alignment', 'raw')
+        if alignment is None or alignment == 'raw':
+            return (1, 32, 160, 160)
+        elif alignment == 'linear':
+            raise NotImplementedError
+            return (1, 32, 160, 160)
+        elif alignment == 'nonlinear':
+            return (1, 48, 132, 175)
+        else:
+            raise ValueError(f"unknown alignment '{alignment}'")
     if name not in dataset_dims:
         raise ValueError(f'unknown dataset "{name}"')
     return Size(dataset_dims[name])

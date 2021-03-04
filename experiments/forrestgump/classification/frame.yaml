@@ -3,13 +3,13 @@ entrypoint: classification
 model_params:
   arch: 'ResNetClassifier3d'
   name: 'ResNetClassifier3d'
-  num_classes: 6
+  num_classes: 2
   hidden_dims: [128, 128, 128, 128]
 
 exp_params:
   loss_params:
     objective: mse
-  batch_size: 4
+  batch_size: 2
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
@@ -22,7 +22,9 @@ exp_params:
       drop_last: true
     training:
       root: /data/openneuro/ds000113-download
-      num_frames: 1
+      alignment: nonlinear
+      offset: 4.0
+      squeeze: true
   warmup_steps: 256
 
 trainer_params:

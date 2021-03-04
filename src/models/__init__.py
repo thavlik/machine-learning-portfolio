@@ -4,6 +4,7 @@ from .localizer import Localizer
 from .renderer import BaseRenderer
 from .resnet_classifier1d import ResNetClassifier1d
 from .resnet_classifier2d import ResNetClassifier2d
+from .resnet_classifier3d import ResNetClassifier3d
 from .resnet_embed2d import ResNetEmbed2d
 from .resnet_gaussian_localizer2d import ResNetGaussianLocalizer2d
 from .resnet_sandwich2d import ResNetSandwich2d
@@ -23,6 +24,7 @@ ModelCatalog.register_custom_model("ResNetRL2d", ResNetRL2d)
 models = {
     'ResNetClassifier1d': ResNetClassifier1d,
     'ResNetClassifier2d': ResNetClassifier2d,
+    'ResNetClassifier3d': ResNetClassifier3d,
     'ResNetEmbed2d': ResNetEmbed2d,
     'ResNetSandwich2d': ResNetSandwich2d,
     'ResNetGaussianLocalizer2d': ResNetGaussianLocalizer2d,
