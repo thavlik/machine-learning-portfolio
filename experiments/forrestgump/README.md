@@ -1,5 +1,5 @@
 # Forrest Gump fMRI
-These experiments utilize the Forrest Gump fMRI dataset ([paper](https://www.nature.com/articles/sdata20143), [data](https://openneuro.org/datasets/ds000113/versions/1.3.0)). 20 participants were stimulated by the audio feature film *Forrest Gump* and brain activity was recorded with [BOLD imaging](https://en.wikipedia.org/wiki/Blood-oxygen-level-dependent_imaging) on a 7-tesla MRI, yielding a 3D image (160x160x36) every two seconds for the duration of the film. The dataset includes start/end times and class labels for each of the film's 198 scenes. Researchers attempt to correlate features of the fMRI scans with each scene's class labels.
+These experiments utilize the Forrest Gump fMRI dataset ([paper](https://www.nature.com/articles/sdata20143), [data](https://openneuro.org/datasets/ds000113/versions/1.3.0)). 20 participants were stimulated by the audio feature film *Forrest Gump* and brain activity was recorded with [BOLD imaging](https://en.wikipedia.org/wiki/Blood-oxygen-level-dependent_imaging) on a 7-tesla MRI, yielding a 3D image (36x160x160) every two seconds for the duration of the film. The dataset includes start/end times and class labels for each of the film's 198 scenes. Researchers attempt to correlate features of the fMRI scans with each scene's class labels.
 
 ## Results
 TODO
@@ -15,14 +15,14 @@ BOLD has a "built-in" acquisition delay due to the biological processes underlyi
 
 Input BOLD frames are fed to 3D convolutional layers with residual connections. A linear output layer then predicts the frame's soft labels. [Mean squared error](https://en.wikipedia.org/wiki/Mean_squared_error) is used to calculate multiclass loss.
 
-The dataset authors provided two alignment derivatives: linear and nonlinear. Raw scans are 160x160x36, nonlinear alignment is 48x132x175. TODO: measure linear, explain morez
+The dataset authors provided two alignment derivatives: linear and nonlinear. 
 
 ### Experiment Files
 | File                                                                              | Frame Dimensions | Temporal Resolution | Notes
 | --------------------------------------------------------------------------------- | ---------------- | ------------------- | -----
-| [classification/linear.yaml](classification/linear.yaml)                          | 48x132x175       | 1 frame @ 0.5 Hz    | Linear alignment 
+| [classification/linear.yaml](classification/linear.yaml)                          | 48x132x175       | 1 frame @ 0.5 Hz    | Linear alignment
 | [classification/linear_hparams.yaml](classification/linear_hparams.yaml)          | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `linear.yaml`
-| [classification/nonlinear.yaml](classification/nonlinear.yaml)                    | 48x132x175       | 1 frame @ 0.5 Hz    | Nonlinear alignment 
+| [classification/nonlinear.yaml](classification/nonlinear.yaml)                    | 48x132x175       | 1 frame @ 0.5 Hz    | Nonlinear alignment
 | [classification/nonlinear_hparams.yaml](classification/nonlinear_hparams.yaml)    | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `nonlinear.yaml`
 | [classification/unaligned.yaml](classification/unaligned.yaml)                    | 36x160x160       | 1 frame @ 0.5 Hz    | No alignment (raw), base experiment
 | [classification/unaligned_hparams.yaml](classification/unaligned_hparams.yaml)    | 36x160x160       | 1 frame @ 0.5 Hz    | Hyperparameter search for `unaligned.yaml`
