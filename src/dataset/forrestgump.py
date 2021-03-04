@@ -82,9 +82,6 @@ class ForrestGumpDataset(data.Dataset):
     Args:
         root: Path to download directory, e.g. /data/ds000113-download
 
-        num_frames: Number of BOLD frames in an example. Note: each frame
-            is 2.0 seconds in duration.
-
         offset: Number of seconds to delay between stimulation and label
             assignment. Activity of interest may only be visible after a
             short delay. Adjust this value so the apparent activity
@@ -94,6 +91,9 @@ class ForrestGumpDataset(data.Dataset):
 
         alignment: Optional alignment transformation geometry. Valid values
             are "raw", "linear", and "nonlinear".
+        
+        squeeze: Option to squeeze the data tensor, so as to make a single
+            example 3D instead of 4D.
 
     Labels:
         0: The scene takes place indoors
@@ -113,13 +113,11 @@ class ForrestGumpDataset(data.Dataset):
 
     def __init__(self,
                  root: str,
-                 num_frames: int = 8,
                  offset: float = 0.0,
                  alignment: Optional[str] = 'raw',
                  squeeze: Optional[bool] = False):
         super(ForrestGumpDataset, self).__init__()
         self.root = root
-        self.num_frames = num_frames
         self.squeeze = squeeze
         self.scenes = load_scenes(os.path.join(
             root, "stimuli", "annotations", "scenes.csv"))
