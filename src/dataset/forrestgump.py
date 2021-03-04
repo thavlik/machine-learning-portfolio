@@ -64,7 +64,7 @@ def convert_labels(scenes: list,
         t1 = t0 + frame_dur
         label = soft_label(scenes, t0, t1)
         labels.append(label)
-    return np.array(labels)
+    return Tensor(labels)
 
 
 def load_metadata(path: str):
@@ -133,23 +133,43 @@ class ForrestGumpDataset(data.Dataset):
         metadata = load_metadata(os.path.join(self.data_dir, 'metadata.json'))
         self.subjects = metadata['subjects']
         self.subject_keys = sorted(self.subjects.keys())
+        num_examples = 0
+        for key in self.subject_keys:
+            subject = self.subjects[key]
+            num_examples += subject['num_frames']
+        self.num_examples = num_examples
 
     def __getitem__(self, index):
         sub_no = 0
         offset = 0
-        for subject in self.subjects:
+        for key in self.subject_keys:
+            subject = self.subjects[key]
             num_frames = subject['num_frames']
             if offset + num_frames > index:
                 break
             offset += num_frames
             sub_no += 1
-        raise NotImplementedError
+        index -= offset
+        labels = self.labels[index]
+        chunk_no = 0
+        offset = 0
+        for chunk in subject['chunks']:
+            if offset + chunk > index:
+                break
+            offset += chunk
+            chunk_no += 1
+        index -= offset
+        chunk = np.load(os.path.join(self.data_dir, key, f'{key}_{chunk_no}.npy'))
+        img = chunk[index:index+1, ...]
+        img = Tensor(img)
+        return (img, labels)
 
     def __len__(self):
-        raise NotImplementedError
+        return self.num_examples
 
 
 if __name__ == '__main__':
     ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download',
                             alignment='linear')
     print(ds[0])
+    print(ds[1])
