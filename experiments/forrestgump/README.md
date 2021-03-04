@@ -9,10 +9,7 @@ TODO
 
 ## Materials & Methods
 ### Experiment Design
-Each scene of the film is designated DAY/NIGHT and INTERIOR/EXTERIOR.
-Individual BOLD frames are assigned *soft labels* by taking a weighted average of the labels assigned to relevant stimuli.
-
-Any `N` contiguous BOLD frames are assigned the indoor (0) or outdoor (1) label corresponding to the scene in the film. The label is then predicted by feeding the fMRI frames through a 4D convolutional network. Training/validation split is by scene, with 70% of scenes randomly selected for training and the remaining 30% used for validation.
+Each scene of the film is given DAY/NIGHT and INTERIOR/EXTERIOR labels. Individual BOLD frames (two seconds in duration) are assigned *soft labels* by taking a weighted average of the scenes' labels. 
 
 BOLD has a "built-in" acquisition delay due to the biological processes underlying changes in the brain's blood flow. The apparent lag between the stimulus (audiofilm) and response (fMRI) is on the order of seconds ([Liao et al 2005](https://www.math.mcgill.ca/keith/delay/delay.pdf)). An ideal offset duration can be determined with a hyperparameter search.
 
