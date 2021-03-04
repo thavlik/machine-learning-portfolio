@@ -15,13 +15,18 @@ BOLD has a "built-in" acquisition delay due to the biological processes underlyi
 
 Input BOLD frames are fed to 3D convolutional layers with residual connections. A linear output layer then predicts the frame's soft labels. [Mean squared error](https://en.wikipedia.org/wiki/Mean_squared_error) is used to calculate multiclass loss.
 
-The dataset authors provided two alignment derivatives: linear and nonlinear. Raw scans are 160x160x36, nonlinear alignment is 48x132x175. TODO: measure linear, explain more
+The dataset authors provided two alignment derivatives: linear and nonlinear. Raw scans are 160x160x36, nonlinear alignment is 48x132x175. TODO: measure linear, explain morez
 
 ### Experiment Files
 | File                                                                       | Frame Dimensions       | Temporal Resolution | Notes
 | -------------------------------------------------------------------------- | ---------------------- | ------------------- | -----
 | [classification/conv3d.yaml](classification/conv3d.yaml)                    | 48x132x175             | 1 frame @ 0.5 Hz   | [conv3d](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html) kernel, input is a single BOLD frame, 
 | [classification/conv3d_hparams.yaml](classification/conv3d_hparams.yaml)    | 48x132x175             | 1 frame @ 0.5 Hz    | Hyperparameter search for `conv3d.yaml`
+
+### Source Files
+| File
+| ------------
+| [src/dataset/forrestgump.py](/src/dataset/forrestgump.py)
 
 ## Future Direction
 While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). This is sufficient when the model considers a single BOLD frame, but problematic when dealing with multiple. It is supposed that multi-frame input with a 4D (likely convolutional) kernel has potential to be outperform single-frame models built upon 3D convolutions, especially on more complex tasks. For example, instead of predicting class labels for a single BOLD frame, the model can predict class labels at a higher resolution: one BOLD frame (acquired in 2.0 seconds) is used to predict a sequence of eight 0.25s-long labels, corresponding to the scene labels.
