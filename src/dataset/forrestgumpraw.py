@@ -259,7 +259,7 @@ class ForrestGumpRawDataset(data.Dataset):
 
 if __name__ == '__main__':
     convert_forrest_gump(
-        '/data/openneuro/ds000113-download', alignment='linear')
+        '/data/openneuro/ds000113-download', alignment='nonlinear')
     ds = ForrestGumpDataset(
         root='/data/openneuro/ds000113-download', alignment='linear')
     #print(f'last: {ds[len(ds)-1][1]}')

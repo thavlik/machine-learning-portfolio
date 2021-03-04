@@ -172,7 +172,7 @@ class ForrestGumpDataset(data.Dataset):
 
 if __name__ == '__main__':
     ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download',
-                            alignment='linear',
+                            alignment='nonlinear',
                             squeeze=True)
     print(ds[0])
     print(ds[1])
