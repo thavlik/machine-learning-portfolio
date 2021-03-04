@@ -13,6 +13,8 @@ Each scene of the film is given DAY/NIGHT and INTERIOR/EXTERIOR labels. Individu
 
 BOLD has a "built-in" acquisition delay due to the biological processes underlying changes in the brain's blood flow. The apparent lag between the stimulus (audiofilm) and response (fMRI) is on the order of seconds ([Liao et al 2005](https://www.math.mcgill.ca/keith/delay/delay.pdf)). Model performance - the correlation between stimulus and apparent BOLD activity - can be improved by applying a constant delay between stimulus and response. An ideal offset duration can be determined with a hyperparameter search. TODO: hyperparameter search
 
+Input BOLD frames are fed to 3D convolutional layers with residual connections. A linear output layer then predicts the frame's soft labels. [Mean squared error](https://en.wikipedia.org/wiki/Mean_squared_error) is used to calculate multiclass loss.
+
 ### Experiment Files
 | File                                                                       | Frame Dimensions       | Temporal Resolution | Notes
 | -------------------------------------------------------------------------- | ---------------------- | ------------------- | -----
