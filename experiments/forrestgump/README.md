@@ -18,6 +18,6 @@ While deep learning and fMRI are a powerful combination, the high dimensionality
 ### Experiment Files
 | File                                                                       | Frame Dimensions       | Temporal Resolution | Notes
 | -------------------------------------------------------------------------- | ---------------------- | ------------------- | -----
-| [classification/conv3d.yaml](classification/basic.yaml)                    | 48x132x175             | 1 frame @ 0.5 Hz   | [conv3d](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html) kernel, input is a single BOLD frame, 
-| [classification/conv3d_hparams.yaml](classification/basic_hparams.yaml)    | 48x132x175             | 1 frame @ 0.5 Hz    | Hyperparameter search for `conv3d.yaml`
+| [classification/conv3d.yaml](classification/conv3d.yaml)                    | 48x132x175             | 1 frame @ 0.5 Hz   | [conv3d](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html) kernel, input is a single BOLD frame, 
+| [classification/conv3d_hparams.yaml](classification/conv3d_hparams.yaml)    | 48x132x175             | 1 frame @ 0.5 Hz    | Hyperparameter search for `conv3d.yaml`
 
