@@ -24,7 +24,7 @@ The dataset authors provided two alignment derivatives: linear and nonlinear. Ra
 | [classification/linear_hparams.yaml](classification/linear_hparams.yaml)          | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `linear.yaml`
 | [classification/nonlinear.yaml](classification/nonlinear.yaml)                    | 48x132x175       | 1 frame @ 0.5 Hz    | Nonlinear alignment 
 | [classification/nonlinear_hparams.yaml](classification/nonlinear_hparams.yaml)    | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `nonlinear.yaml`
-| [classification/unaligned.yaml](classification/unaligned.yaml)                    | 36x160x160       | 1 frame @ 0.5 Hz    | No alignment
+| [classification/unaligned.yaml](classification/unaligned.yaml)                    | 36x160x160       | 1 frame @ 0.5 Hz    | No alignment (raw)
 | [classification/unaligned_hparams.yaml](classification/unaligned_hparams.yaml)    | 36x160x160       | 1 frame @ 0.5 Hz    | Hyperparameter search for `unaligned.yaml`
 
 ### Source Files
