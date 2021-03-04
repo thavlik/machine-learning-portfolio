@@ -92,9 +92,6 @@ class ForrestGumpDataset(data.Dataset):
         alignment: Optional alignment transformation geometry. Valid values
             are "raw", "linear", and "nonlinear".
         
-        squeeze: Option to squeeze the data tensor, so as to make a single
-            example 3D instead of 4D.
-
     Labels:
         0: The scene takes place indoors
         1: The scene takes place outdoors
@@ -114,11 +111,9 @@ class ForrestGumpDataset(data.Dataset):
     def __init__(self,
                  root: str,
                  offset: float = 0.0,
-                 alignment: Optional[str] = 'raw',
-                 squeeze: Optional[bool] = False):
+                 alignment: Optional[str] = 'raw'):
         super(ForrestGumpDataset, self).__init__()
         self.root = root
-        self.squeeze = squeeze
         self.scenes = load_scenes(os.path.join(
             root, "stimuli", "annotations", "scenes.csv"))
         self.labels = convert_labels(self.scenes, offset=offset, frame_dur=2.0)
@@ -162,8 +157,6 @@ class ForrestGumpDataset(data.Dataset):
         chunk = np.load(os.path.join(self.data_dir, key, f'{key}_{chunk_no}.npy'))
         img = chunk[index:index+1, ...]
         img = Tensor(img)
-        if self.squeeze:
-            img = img.squeeze()
         return (img, labels)
 
     def __len__(self):
@@ -172,7 +165,6 @@ class ForrestGumpDataset(data.Dataset):
 
 if __name__ == '__main__':
     ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download',
-                            alignment='nonlinear',
-                            squeeze=True)
+                            alignment='nonlinear')
     print(ds[0])
     print(ds[1])

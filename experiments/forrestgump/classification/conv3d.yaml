@@ -24,7 +24,6 @@ exp_params:
       root: /data/openneuro/ds000113-download
       alignment: nonlinear
       offset: 4.0
-      squeeze: true
   warmup_steps: 256
 
 trainer_params:
@@ -34,5 +33,5 @@ trainer_params:
 manual_seed: 1498
 
 logging_params:
-  name: "ForrestGump_Frame"
+  name: "ForrestGump_Conv3d"
 
