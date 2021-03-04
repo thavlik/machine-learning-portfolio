@@ -1,0 +1,10 @@
+include: experiments/forrestgump/classification/conv3d_unaligned.yaml
+
+exp_params:
+  data:
+    training:
+      alignment: nonlinear
+
+logging_params:
+  name: "ForrestGump_Conv3d_Nonlinear"
+

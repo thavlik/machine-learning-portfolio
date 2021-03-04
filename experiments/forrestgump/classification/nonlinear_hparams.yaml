@@ -1,0 +1,5 @@
+include: experiments/forrestgump/classification/unaligned_hparams.yaml
+
+experiment:
+  - experiments/forrestgump/classification/nonlinear.yaml
+  - experiments/forrestgump/include/hparams.yaml

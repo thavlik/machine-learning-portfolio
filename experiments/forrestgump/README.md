@@ -18,10 +18,14 @@ Input BOLD frames are fed to 3D convolutional layers with residual connections. 
 The dataset authors provided two alignment derivatives: linear and nonlinear. Raw scans are 160x160x36, nonlinear alignment is 48x132x175. TODO: measure linear, explain morez
 
 ### Experiment Files
-| File                                                                       | Frame Dimensions       | Temporal Resolution | Notes
-| -------------------------------------------------------------------------- | ---------------------- | ------------------- | -----
-| [classification/conv3d.yaml](classification/conv3d.yaml)                    | 48x132x175             | 1 frame @ 0.5 Hz   | [conv3d](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html) kernel, input is a single BOLD frame, 
-| [classification/conv3d_hparams.yaml](classification/conv3d_hparams.yaml)    | 48x132x175             | 1 frame @ 0.5 Hz    | Hyperparameter search for `conv3d.yaml`
+| File                                                                              | Frame Dimensions | Temporal Resolution | Notes
+| --------------------------------------------------------------------------------- | ---------------- | ------------------- | -----
+| [classification/linear.yaml](classification/linear.yaml)                          | 48x132x175       | 1 frame @ 0.5 Hz    | Linear alignment 
+| [classification/linear_hparams.yaml](classification/linear_hparams.yaml)          | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `linear.yaml`
+| [classification/nonlinear.yaml](classification/nonlinear.yaml)                    | 48x132x175       | 1 frame @ 0.5 Hz    | Nonlinear alignment 
+| [classification/nonlinear_hparams.yaml](classification/nonlinear_hparams.yaml)    | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `nonlinear.yaml`
+| [classification/unaligned.yaml](classification/unaligned.yaml)                    | 36x160x160       | 1 frame @ 0.5 Hz    | No alignment
+| [classification/unaligned_hparams.yaml](classification/unaligned_hparams.yaml)    | 36x160x160       | 1 frame @ 0.5 Hz    | Hyperparameter search for `unaligned.yaml`
 
 ### Source Files
 | File                                                                     | Notes

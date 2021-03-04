@@ -9,5 +9,5 @@ num_val_steps: 2_000
 randomize_seed: true
 
 experiment:
-  - experiments/forrestgump/classification/conv3d.yaml
+  - experiments/forrestgump/classification/unaligned.yaml
   - experiments/forrestgump/include/hparams.yaml
