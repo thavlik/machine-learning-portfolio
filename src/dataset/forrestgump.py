@@ -115,10 +115,12 @@ class ForrestGumpDataset(data.Dataset):
                  root: str,
                  num_frames: int = 8,
                  offset: float = 0.0,
-                 alignment: Optional[str] = 'raw'):
+                 alignment: Optional[str] = 'raw',
+                 squeeze: Optional[bool] = False):
         super(ForrestGumpDataset, self).__init__()
         self.root = root
         self.num_frames = num_frames
+        self.squeeze = squeeze
         self.scenes = load_scenes(os.path.join(
             root, "stimuli", "annotations", "scenes.csv"))
         self.labels = convert_labels(self.scenes, offset=offset, frame_dur=2.0)
@@ -162,6 +164,8 @@ class ForrestGumpDataset(data.Dataset):
         chunk = np.load(os.path.join(self.data_dir, key, f'{key}_{chunk_no}.npy'))
         img = chunk[index:index+1, ...]
         img = Tensor(img)
+        if self.squeeze:
+            img = img.squeeze()
         return (img, labels)
 
     def __len__(self):
@@ -170,6 +174,7 @@ class ForrestGumpDataset(data.Dataset):
 
 if __name__ == '__main__':
     ds = ForrestGumpDataset(root='/data/openneuro/ds000113-download',
-                            alignment='linear')
+                            alignment='linear',
+                            squeeze=True)
     print(ds[0])
     print(ds[1])
