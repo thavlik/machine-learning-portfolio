@@ -11,9 +11,7 @@ TODO
 ### Experiment Design
 Each scene of the film is given DAY/NIGHT and INTERIOR/EXTERIOR labels. Individual BOLD frames (two seconds in duration) are assigned *soft labels* by taking a weighted average of the scenes' labels. 
 
-BOLD has a "built-in" acquisition delay due to the biological processes underlying changes in the brain's blood flow. The apparent lag between the stimulus (audiofilm) and response (fMRI) is on the order of seconds ([Liao et al 2005](https://www.math.mcgill.ca/keith/delay/delay.pdf)). An ideal offset duration can be determined with a hyperparameter search.
-
-While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). This is sufficient when the model considers a single BOLD frame, but problematic when dealing with multiple. TODO: explain how this problem was overcome
+BOLD has a "built-in" acquisition delay due to the biological processes underlying changes in the brain's blood flow. The apparent lag between the stimulus (audiofilm) and response (fMRI) is on the order of seconds ([Liao et al 2005](https://www.math.mcgill.ca/keith/delay/delay.pdf)). Model performance - the correlation between stimulus and apparent BOLD activity - can be improved by applying a constant delay between stimulus and response. An ideal offset duration can be determined with a hyperparameter search. TODO: hyperparameter search
 
 ### Experiment Files
 | File                                                                       | Frame Dimensions       | Temporal Resolution | Notes
@@ -21,3 +19,7 @@ While deep learning and fMRI are a powerful combination, the high dimensionality
 | [classification/conv3d.yaml](classification/conv3d.yaml)                    | 48x132x175             | 1 frame @ 0.5 Hz   | [conv3d](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html) kernel, input is a single BOLD frame, 
 | [classification/conv3d_hparams.yaml](classification/conv3d_hparams.yaml)    | 48x132x175             | 1 frame @ 0.5 Hz    | Hyperparameter search for `conv3d.yaml`
 
+## Future Direction
+While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). This is sufficient when the model considers a single BOLD frame, but problematic when dealing with multiple. It is supposed that multi-frame input with a 4D (likely convolutional) kernel has potential to be outperform single-frame models built upon 3D convolutions, especially on more complex tasks. For example, instead of predicting class labels for a single BOLD frame, the model can predict class labels at a higher resolution: one BOLD frame (acquired in 2.0 seconds) is used to predict a sequence of eight 0.25s-long labels, corresponding to the scene labels.
+
+The authors of the data included several additional experiment results with many of the participants. These experiments present an opportunity to train a model on more than one task - a technique that can improve generalization on a single task. 
