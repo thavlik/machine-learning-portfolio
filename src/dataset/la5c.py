@@ -29,8 +29,8 @@ class LA5cDataset(data.Dataset):
                  exclude_na: bool = True):
         super(LA5cDataset, self).__init__()
         self.root = root
-        self.files = [f for f in os.listdir(root)
-                      if f.startswith('sub-')]
+        self.subjects = [f for f in os.listdir(root)
+                         if f.startswith('sub-')]
         labels = {}
         for phenotype in phenotypes:
             parts = phenotype.split('/')
@@ -45,15 +45,16 @@ class LA5cDataset(data.Dataset):
                 if col_no is None:
                     raise ValueError(
                         f'unable to find metric {parts[1]} in {tsv_path}')
-                values = [line.strip().split('\t') for line in f]
-                for line in values:
-                    sub = line[0]
-                    label = line[col_no]
-                    if label == 'n/a' and exclude_na:
-                        i = self.files.index(sub)
-                        self.files = self.files[:i] + self.files[i+1:]
+                cols = [line.strip().split('\t') for line in f]
+                for col in cols:
+                    sub = col[0]
+                    if sub not in self.subjects:
                         continue
-                    if label == 'N':
+                    label = col[col_no]
+                    if label == 'n/a' and exclude_na:
+                        self.subjects.remove(sub)
+                        continue
+                    elif label == 'N':
                         label = 0
                     elif label == 'Y':
                         label = 1
@@ -69,7 +70,7 @@ class LA5cDataset(data.Dataset):
         self.labels = labels
 
     def __getitem__(self, index):
-        sub = self.files[index]
+        sub = self.subjects[index]
         labels = Tensor(self.labels[sub])
         path = os.path.join(self.root, sub, 'anat', f'{sub}_T1w.nii.gz')
         img = nl.image.load_img(path)
@@ -78,7 +79,7 @@ class LA5cDataset(data.Dataset):
         return (img, labels)
 
     def __len__(self):
-        return len(self.files)
+        return len(self.subjects)
 
 
 if __name__ == '__main__':
