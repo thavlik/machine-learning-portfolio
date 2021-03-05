@@ -4,9 +4,6 @@ These experiments utilize the Forrest Gump fMRI dataset ([paper](https://www.nat
 ## Results
 TODO
 
-### Discussion
-TODO
-
 ## Materials & Methods
 ### Experiment Design
 Each scene of the film is given DAY/NIGHT and INTERIOR/EXTERIOR labels. Individual BOLD frames (two seconds in duration) are assigned *soft labels* by taking a weighted average of the scenes' labels. 
