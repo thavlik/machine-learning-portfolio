@@ -10,7 +10,7 @@ These experiments make use of ground truth provided with the data. Ground truth 
 
 Works in progress:
 - [Forrest Gump](experiments/forrestgump/README.md) (WIP): infer features of an audio-only film with fMRI
-- [LA5c](experiments/la5c/README.md) (WIP): predict participants' questionnaire answers from their MRI scans
+- [LA5c Study](experiments/la5c/README.md) (WIP): predict participants' questionnaire answers from their MRI scans
 - [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 
 ## Datasets
