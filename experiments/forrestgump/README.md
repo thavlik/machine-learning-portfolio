@@ -30,11 +30,11 @@ The dataset authors provided two alignment derivatives: linear and nonlinear.
 ### Source Files
 | File                                                                          | Notes
 | ----------------------------------------------------------------------------- | ----- 
+| [src/classification.py](/src/classification.py)                               | Classification experiment
 | [src/dataset/forrestgump.py](/src/dataset/forrestgump.py)                     | Dataset class for converted data (fast)
 | [src/dataset/forrestgumpraw.py](/src/dataset/forrestgumpraw.py)               | Dataset class for raw BIDS data (very slow)
 | [src/dataset/forrestgump_converter.py](/src/dataset/forrestgump_converter.py) | Data converting utilities
 | [src/models/resnet_classifier3d.py](/src/models/resnet_classifier3d.py)       | 3D ResNet classifier model
-| [src/classification.py](/src/classification.py)                               | Classification experiment
 
 ## Future Direction
 While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). This is sufficient when the model considers a single BOLD frame, but problematic when dealing with multiple. It is supposed that multi-frame input with a 4D (likely convolutional) kernel has potential to be outperform single-frame models built upon 3D convolutions, especially on more complex tasks. For example, instead of predicting class labels for a single BOLD frame, the model can predict class labels at a higher resolution: one BOLD frame (acquired in 2.0 seconds) is used to predict a sequence of eight 0.25s-long labels, corresponding to the scene labels.
