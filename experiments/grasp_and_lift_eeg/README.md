@@ -3,12 +3,10 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 
 ![](images/data_example.png)
 
-There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. 
-
 ## Results
-The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned splitting method.
+The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each splitting method.
 
-Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy. Subject and trial splits exhibit unfavorable training dynamics.
+Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy while subject and trial splits exhibit unfavorable training dynamics.
 
 The following depicts >80% relative accuracy* achieved within two days of training - a trend observed with all splitting methods:
 
@@ -22,6 +20,9 @@ This trend reflects immediate overfitting on the training data. Further work is 
 
 ### *Relative Accuracy
 Because >97% of all the dataset's samples are not associated with any class label, the model's overall accuracy does not intuitively reflect how well it performs above baseline performance. The model quickly learns the optimal strategy of outputting mostly zeros - achieving accuracy over 97% - then slowly learns to selectively predict class labels based on features of the input data. Normalizing accuracy above the baseline to [0, 1] in a quantity termed *relative accuracy* elegantly represents model performance after it learns the approximate frequencies of the labels.
+
+## Materials & Methods
+There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. Each method was attempted.
 
 ### Experiment Files
 | File                                                                     | Input Resolution      | Notes
@@ -40,4 +41,3 @@ Because >97% of all the dataset's samples are not associated with any class labe
 
 ## Future Direction
 The random splitting method almost trains with the same data as it uses for validation, so it is unsurprising that it yields high validation accuracy. Because there does not appear to be enough data to generalize across subject or trial splits, further efforts could examine the effect of the random split's proportion. It is estimated that relatively few training examples (<50% of the dataset) would be necessary to maintain high validation accuracy.
-
