@@ -3,6 +3,7 @@ These experiments utilize the [LA5c Study](https://openneuro.org/datasets/ds0000
 
 ## Results
 TODO: pick interesting questions we want to model with T1w
+
 TODO: show a case where overtly visible differences in brain structure were exploited to infer correct answers 
 
 ## Materials & Methods
