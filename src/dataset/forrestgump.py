@@ -2,14 +2,11 @@ import json
 import os
 import numpy as np
 import nilearn as nl
-import nilearn.plotting as nlplt
+import nilearn.plotting
 from math import ceil, floor
-import matplotlib.pyplot as plt
-import nibabel as nib
 import numpy as np
 import torch
 import torch.utils.data as data
-import h5py
 from torch import Tensor
 from typing import Optional
 

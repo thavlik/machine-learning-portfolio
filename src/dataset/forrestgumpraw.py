@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import nilearn as nl
+import nilearn.plotting
 from math import floor
 import numpy as np
 import torch

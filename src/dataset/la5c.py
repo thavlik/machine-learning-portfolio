@@ -1,11 +1,13 @@
 import os
 import numpy as np
 import nilearn as nl
+import nilearn.plotting
 import numpy as np
 import torch
 import torch.utils.data as data
 from torch import Tensor
 from typing import Optional
+
 
 class LA5cDataset(data.Dataset):
     """ UCLA Consortium for Neuropsychiatric Phenomics LA5c Study
@@ -24,15 +26,24 @@ class LA5cDataset(data.Dataset):
     def __init__(self,
                  root: str):
         super(LA5cDataset, self).__init__()
-        
+        self.root = root
+        self.files = [f for f in os.listdir(root)
+                      if f.startswith('sub-')]
+
     def __getitem__(self, index):
-        raise NotImplementedError
+        sub = self.files[index]
+        path = os.path.join(self.root, sub, 'anat', f'{sub}_T1w.nii.gz')
+        img = nl.image.load_img(path)
+        img = Tensor(np.asanyarray(img.dataobj))
+        img = img.unsqueeze(0)
+        return (img, [])
 
     def __len__(self):
-        raise NotImplementedError
+        return len(self.files)
 
 
 if __name__ == '__main__':
     ds = LA5cDataset(
         root='/data/openneuro/ds000030-download')
-    
+    print(ds[0][0].shape)
+    print(ds[len(ds)-1][0].shape)
