@@ -2,7 +2,7 @@
 This is a repository of my personal deep learning projects.
 
 ## Experiments
-These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes the judgment of one or more attending physicians.
+These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes either empirical measurement or the judgment of attending physicians.
 
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
