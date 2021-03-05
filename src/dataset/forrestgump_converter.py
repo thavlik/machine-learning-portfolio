@@ -2,6 +2,7 @@ import json
 import os
 import numpy as np
 import nilearn as nl
+import nilearn.plotting
 from math import ceil
 import numpy as np
 
