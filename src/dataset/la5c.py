@@ -43,7 +43,8 @@ class LA5cDataset(data.Dataset):
                         col_no = i
                         break
                 if col_no is None:
-                    raise ValueError(f'unable to find metric {parts[1]} in {tsv_path}')
+                    raise ValueError(
+                        f'unable to find metric {parts[1]} in {tsv_path}')
                 values = [line.strip().split('\t') for line in f]
                 for line in values:
                     sub = line[0]
@@ -66,7 +67,7 @@ class LA5cDataset(data.Dataset):
                     else:
                         labels[sub] = [label]
         self.labels = labels
-    
+
     def __getitem__(self, index):
         sub = self.files[index]
         labels = Tensor(self.labels[sub])
