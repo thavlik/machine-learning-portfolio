@@ -15,8 +15,8 @@ Works in progress:
 ## Datasets
 These are datasets that I have authored/compiled personally.
 
-- [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset)
-- [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset)
+- [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset): 170+ hours of unlabeled Doom I/II gameplay
+- [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 180+ hours of unlabeled Quake I gameplay
 
 ## Running Code
 Configurations are defined in yaml files, which can be composed via the `include` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
