@@ -76,5 +76,4 @@ def convert_forrest_gump(root: str,
 
 if __name__ == '__main__':
     convert_forrest_gump(
-        '/data/openneuro/ds000113-download', alignment='nonlinear')
-    
+        '/data/openneuro/ds000113-download', alignment='linear')
