@@ -42,9 +42,7 @@ Many of the ideas implemented in this repository were first detailed in the foll
 10. [Instance Normalization: The Missing Ingredient for Fast Stylization](https://arxiv.org/abs/1607.08022)
  
 ## Contributing
-This repository was intended to be repurposed. As part of the open source community, I do not share the perception that minor contributions from others dilutes the claim that this repository is fully representative of my research capabilities. On the contrary, publishing software good enough for others to justify spending their time and effort improving is a nontrivial achievement.
-
-Please open an issue or pull request if you would like to contribute.
+This repository was intended to be repurposed. As part of the open source community, I do not share the perception that minor contributions from others dilutes the claim that this repository is fully representative of my research capabilities. Issues and pull requests are welcome.
 
 ## License
 Everything is released under MIT / Apache 2.0 dual license, which is extremely permissive. Open an issue if somehow neither is sufficient.
