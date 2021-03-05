@@ -79,12 +79,12 @@ The current results reflect full-resolution training, but all future results wil
 A hyperparameter search was carried out to determine the effect of batch normalization on the output layer, which indicated superior performance in its absence. This is likely due to small batch sizes, which are necessary even when halving the input resolution because of memory limits. The efficacy of batch normalization depends on many factors, including batch size and features of training data ([Ioffe & Szegedy 2015](https://arxiv.org/abs/1502.03167v3)).
 
 ### Experiment Files
-| File                                                                 | Input Resolution | Notes
-| -------------------------------------------------------------------- | ---------------- | ------
-| [localization/basic.yaml](localization/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
-| [localization/basic_hparams.yaml](localization/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
-| [localization/halfres.yaml](localization/halfres.yaml)               | 256x256          | Half-resolution input slices
-| [localization/halfres_hparams.yaml](localization/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
+| File                                                                 | Input Size (CxHxW) | Notes
+| -------------------------------------------------------------------- | ------------------ | ------
+| [localization/basic.yaml](localization/basic.yaml)                   | 1x512x512          | "Vanilla" experiment setup
+| [localization/basic_hparams.yaml](localization/basic_hparams.yaml)   | 1x512x512          | Hyperparameter search for `basic.yaml`
+| [localization/halfres.yaml](localization/halfres.yaml)               | 1x256x256          | Half-resolution input slices
+| [localization/halfres_hparams.yaml](localization/basic_hparams.yaml) | 1x256x256          | Hyperparameter search for `halfres.yaml`
 
 ### Source Files
 | File                                                                     | Notes

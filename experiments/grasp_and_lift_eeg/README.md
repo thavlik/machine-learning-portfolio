@@ -25,12 +25,10 @@ Because >97% of all the dataset's samples are not associated with any class labe
 There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. Each method was attempted.
 
 ### Experiment Files
-| File                                                                     | Input Resolution      | Notes
-| ------------------------------------------------------------------------ | --------------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                   | 2048 samples @ 500 Hz | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 2048 samples @ 500 Hz | Hyperparameter search for `basic.yaml`
-| [classification/halfres.yaml](classification/halfres.yaml)               | 1024 samples @ 250 Hz | Half-resolution input
-| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 1024 samples @ 250 Hz | Hyperparameter search for `halfres.yaml`
+| File                                                                     | Input Size (CxW)      | Sample Rate | Notes
+| ------------------------------------------------------------------------ | --------------------- | ----------- | -----
+| [classification/halfres.yaml](classification/halfres.yaml)               | 32x1024               | 250 Hz      | Half-resolution input
+| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 32x1024               | 250 Hz      | Hyperparameter search for `halfres.yaml`
 
 ### Source Files
 | File                                                                     | Notes

@@ -53,6 +53,7 @@ def get_dataset(name: str,
 
 dataset_dims = {
     'trends-fmri': (53, 63, 52, 53),
+    'la5c': (1, 176, 256, 256),
 }
 
 

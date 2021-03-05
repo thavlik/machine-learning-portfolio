@@ -31,12 +31,12 @@ The weights from any fully convolutional network are able to be applied to image
 Training at half the input resolution (256x256) can be seen as analagous to doubling the dimensions of the kernel (up to 6x6) and enabling the model to more easily capture detail at those larger scales. Reduced memory overhead and larger batch sizes can be appreciated with this single change, leading to dramatically higher training performance.
 
 ### Experiment Files
-| File                                                                     | Input Resolution | Notes
-| ------------------------------------------------------------------------ | ---------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                   | 512x512          | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 512x512          | Hyperparameter search for `basic.yaml`
-| [classification/halfres.yaml](classification/halfres.yaml)               | 256x256          | Half-resolution input slices
-| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 256x256          | Hyperparameter search for `halfres.yaml`
+| File                                                                     | Input Size (CxHxW) | Notes
+| ------------------------------------------------------------------------ | ------------------ | ------
+| [classification/basic.yaml](classification/basic.yaml)                   | 1x512x512          | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 1x512x512          | Hyperparameter search for `basic.yaml`
+| [classification/halfres.yaml](classification/halfres.yaml)               | 1x256x256          | Half-resolution input slices
+| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 1x256x256          | Hyperparameter search for `halfres.yaml`
 
 ### Source Files
 | File                                                                     | Notes

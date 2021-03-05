@@ -8,10 +8,10 @@ TODO: show a case where overtly visible differences in brain structure were expl
 
 ## Materials & Methods
 ### Experiment Files
-| File                                                                     | Input Resolution      | Notes
+| File                                                                     | Input Size (CxDxHxW)  | Notes
 | ------------------------------------------------------------------------ | --------------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                   | TODO                  | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | TODO                  | Hyperparameter search for `basic.yaml`
+| [classification/basic.yaml](classification/basic.yaml)                   | 1x176x256x256         | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 1x176x256x256         | Hyperparameter search for `basic.yaml`
 
 ### Source Files
 | File                                                                     | Notes
