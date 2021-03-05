@@ -3,12 +3,12 @@ entrypoint: classification
 model_params:
   arch: 'ResNetClassifier3d'
   name: 'ResNetClassifier3d'
-  num_classes: 4
+  num_classes: 1
   hidden_dims: [128, 128, 128, 128]
 
 exp_params:
   loss_params:
-    objective: mse
+    objective: bce
   batch_size: 2
   optimizer:
     lr: 0.0002
