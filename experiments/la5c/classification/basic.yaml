@@ -22,6 +22,9 @@ exp_params:
       drop_last: true
     training:
       root: /data/openneuro/ds000030-download
+      phenotypes:
+        - language/bilingual
+      exclude_na: true
   warmup_steps: 256
 
 trainer_params:
