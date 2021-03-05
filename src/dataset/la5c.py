@@ -68,6 +68,11 @@ class LA5cDataset(data.Dataset):
                     else:
                         labels[sub] = [label]
         self.labels = labels
+        
+        # Sanity check, make sure all examples have labels
+        for sub in self.subjects:
+            if sub not in self.labels:
+                raise ValueError(f'subject {sub} has data but no labels')
 
     def __getitem__(self, index):
         sub = self.subjects[index]
