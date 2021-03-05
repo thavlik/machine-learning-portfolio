@@ -17,6 +17,13 @@ class LA5cDataset(data.Dataset):
     Args:
         root: Path to download directory, e.g. /data/ds000030-download
 
+        phenotypes: List of phenotype paths for labels. The file composes the
+            first part of the path, and the column name of the tsv file is the
+            second part. e.g. 'saps/saps17' loads the first data column from
+            phenotype/saps.tsv
+        
+        exclude_na: Exclude subjects with any answers listed as N/A
+
     Reference:
         Gorgolewski KJ, Durnez J and Poldrack RA. Preprocessed Consortium for
         Neuropsychiatric Phenomics dataset [version 2; peer review: 2 approved].
@@ -68,7 +75,7 @@ class LA5cDataset(data.Dataset):
                     else:
                         labels[sub] = [label]
         self.labels = labels
-        
+
         # Sanity check, make sure all examples have labels
         for sub in self.subjects:
             if sub not in self.labels:
