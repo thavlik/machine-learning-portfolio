@@ -41,7 +41,7 @@ Training at half the input resolution (256x256) can be seen as analagous to doub
 ### Source Files
 | File                                                                     | Notes
 | ------------------------------------------------------------------------ | ----- 
-| [src/classification.py](/src/classification.py)                          | Classification experiment
+| [src/classification.py](/src/classification.py)                          | Base classification experiment
 | [src/dataset/rsna_intracranial.py](/src/dataset/rsna_intracranial.py)    | RSNA Intracranial Hemorrhage dataset
 | [src/models/resnet_classifier2d.py](/src/models/resnet_classifier2d.py)  | 2D ResNet classifier model
 

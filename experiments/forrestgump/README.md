@@ -30,7 +30,7 @@ The dataset authors provided two alignment derivatives: linear and nonlinear.
 ### Source Files
 | File                                                                          | Notes
 | ----------------------------------------------------------------------------- | ----- 
-| [src/classification.py](/src/classification.py)                               | Classification experiment
+| [src/classification.py](/src/classification.py)                               | Base classification experiment
 | [src/dataset/forrestgump.py](/src/dataset/forrestgump.py)                     | Dataset class for converted data (fast)
 | [src/dataset/forrestgumpraw.py](/src/dataset/forrestgumpraw.py)               | Dataset class for raw BIDS data (very slow)
 | [src/dataset/forrestgump_converter.py](/src/dataset/forrestgump_converter.py) | Data converting utilities

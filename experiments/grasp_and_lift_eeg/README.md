@@ -34,7 +34,7 @@ Because >97% of all the dataset's samples are not associated with any class labe
 ### Source Files
 | File                                                                     | Notes
 | ------------------------------------------------------------------------ | ----- 
-| [src/classification.py](/src/classification.py)                          | Classification experiment
+| [src/classification.py](/src/classification.py)                          | Base classification experiment
 | [src/dataset/grasp_and_lift_eeg.py](/src/dataset/grasp_and_lift_eeg.py)  | Grasp-and-Lift EEG dataset
 | [src/models/resnet_classifier1d.py](/src/models/resnet_classifier1d.py)  | 1D ResNet classifier model
 
