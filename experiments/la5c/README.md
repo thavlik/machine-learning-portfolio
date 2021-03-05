@@ -17,5 +17,5 @@ TODO: show a case where overtly visible differences in brain structure were expl
 | File                                                                     | Notes
 | ------------------------------------------------------------------------ | ----- 
 | [src/classification.py](/src/classification.py)                          | Base classification experiment
-| [src/dataset/la5c.py](/src/dataset/la5c.py)                              | LA5c dataset
+| [src/dataset/la5c.py](/src/dataset/la5c.py)                              | LA5c dataset class
 | [src/models/resnet_classifier3d.py](/src/models/resnet_classifier3d.py)  | 3D ResNet classifier model
