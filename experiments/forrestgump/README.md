@@ -31,7 +31,7 @@ The dataset authors provided two alignment derivatives: linear and nonlinear.
 | File                                                                          | Notes
 | ----------------------------------------------------------------------------- | ----- 
 | [src/dataset/forrestgump.py](/src/dataset/forrestgump.py)                     | Dataset class for converted data (fast)
-| [src/dataset/forrestgumpraw.py](/src/dataset/forrestgumpraw.py)               | Dataset class for raw data (very slow)
+| [src/dataset/forrestgumpraw.py](/src/dataset/forrestgumpraw.py)               | Dataset class for raw BIDS data (very slow)
 | [src/dataset/forrestgump_converter.py](/src/dataset/forrestgump_converter.py) | Data converting utilities
 | [src/models/resnet_classifier3d.py](/src/models/resnet_classifier3d.py)       | 3D ResNet classifier model
 
