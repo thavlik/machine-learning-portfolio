@@ -6,7 +6,7 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. 
 
 ## Results
-The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned method.
+The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each aforementioned splitting method.
 
 Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy. Subject and trial splits exhibit unfavorable training dynamics.
 
