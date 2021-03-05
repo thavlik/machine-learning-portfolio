@@ -18,7 +18,7 @@ class LA5cDataset(data.Dataset):
         root: Path to download directory, e.g. /data/ds000030-download
 
         phenotypes: List of phenotype paths for labels. The file composes the
-            first part of the path, and the column name of the tsv file is the
+            first part of the path, and the column name from the tsv file is the
             second part. e.g. 'saps/saps17' loads the first data column from
             phenotype/saps.tsv
         
