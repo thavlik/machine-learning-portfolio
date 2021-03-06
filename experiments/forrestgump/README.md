@@ -12,7 +12,7 @@ BOLD has a "built-in" acquisition delay due to the biological processes underlyi
 
 Input BOLD frames are fed to 3D convolutional layers with residual connections. A linear output layer then predicts the frame's soft labels. [Mean squared error](https://en.wikipedia.org/wiki/Mean_squared_error) is used to calculate multiclass loss.
 
-The dataset authors provided two alignment derivatives: linear and nonlinear. 
+In addition to the unaligned (raw) scans, the dataset authors provided two alignment derivatives: linear and nonlinear. 
 
 ### Experiment Files
 | File                                                                              | Frame Dimensions | Temporal Resolution | Notes
