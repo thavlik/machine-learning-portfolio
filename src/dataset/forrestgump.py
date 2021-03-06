@@ -66,7 +66,7 @@ def convert_labels(scenes: list,
     return Tensor(labels)
 
 
-def load_metadata(path: str):
+def load_metadata(path: str) -> dict:
     with open(path, "r") as f:
         return json.loads(f.read())
 
