@@ -7,6 +7,11 @@ TODO: pick interesting questions we want to model with T1w
 TODO: show a case where overtly visible differences in brain structure were exploited to infer correct answers 
 
 ## Materials & Methods
+### Choice of Questions
+The dataset comes with hundreds of self-report answers for an amalgam of questionnaires. Participants' answers are modeled by the structural T1-weighted MRI of each participant. TODO: explain process behind selecting questions
+
+TODO: show which questions were selected
+
 ### Experiment Files
 | File                                                                     | Input Size (CxDxHxW)  | Notes
 | ------------------------------------------------------------------------ | --------------------- | ------
