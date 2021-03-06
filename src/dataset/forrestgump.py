@@ -54,7 +54,7 @@ def soft_label(scenes: list, t0: float, t1: float) -> tuple:
 
 def convert_labels(scenes: list,
                    offset: float,
-                   frame_dur: float) -> list:
+                   frame_dur: float) -> Tensor:
     labels = []
     for i in range(3599):
         t0 = i * frame_dur - offset
