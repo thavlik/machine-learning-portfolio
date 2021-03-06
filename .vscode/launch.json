@@ -252,6 +252,21 @@
             ]
         },
         {
+            "name": "Python: train LA5c",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            },
+            "args": [
+                "--config",
+                "experiments/la5c/classification/basic.yaml"
+            ]
+        },
+        {
             "name": "Python: train MNIST Comparison",
             "type": "python",
             "request": "launch",

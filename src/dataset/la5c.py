@@ -87,6 +87,8 @@ class LA5cDataset(data.Dataset):
         path = os.path.join(self.root, sub, 'anat', f'{sub}_T1w.nii.gz')
         img = nl.image.load_img(path)
         img = Tensor(np.asanyarray(img.dataobj))
+        if img.shape != (176, 256, 256):
+            raise ValueError(f'invalid shape {img.shape}')
         img = img.unsqueeze(0)
         return (img, labels)
 

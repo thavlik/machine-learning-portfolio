@@ -2,6 +2,7 @@ from .cq500 import *
 from .deeplesion import DeepLesionDataset, get_output_features as deeplesion_get_output_features
 from .dicom_util import *
 from .forrestgump import ForrestGumpDataset
+from .la5c import LA5cDataset
 from .grasp_and_lift_eeg import *
 from .reference import *
 from .rsna_intracranial import *
@@ -28,6 +29,7 @@ datasets = {
     'cq500': CQ500Dataset,
     'deeplesion': DeepLesionDataset,
     'forrestgump': ForrestGumpDataset,
+    'la5c': LA5cDataset,
     'reference': ReferenceDataset,
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,

@@ -4,7 +4,8 @@ model_params:
   arch: 'ResNetClassifier3d'
   name: 'ResNetClassifier3d'
   num_classes: 1
-  hidden_dims: [128, 128, 128, 128]
+  pooling: max
+  hidden_dims: [10, 18, 18, 10]
 
 exp_params:
   loss_params:
