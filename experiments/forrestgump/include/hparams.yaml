@@ -1,7 +1,7 @@
 exp_params:
   optimizer:
     lr:
-      grid_search: [0.001, 0.005, 0.01]
+      grid_search: [0.08, 0.01, 0.02, 0.025]
   data:
     training:
       offset:

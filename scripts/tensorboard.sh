@@ -8,7 +8,7 @@ docker run \
     -d \
     --name hometb \
     -p 6007:6006 \
-    -v $(wslpath -w logs)/ForrestGump_Conv3d_Nonlinear:/logs \
+    -v $(wslpath -w logs)/classification:/logs \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \
