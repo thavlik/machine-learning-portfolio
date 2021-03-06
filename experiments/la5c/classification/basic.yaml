@@ -10,6 +10,7 @@ model_params:
 exp_params:
   loss_params:
     objective: bce
+    baseline_accuracy: 0.5
   batch_size: 2
   optimizer:
     lr: 0.0002

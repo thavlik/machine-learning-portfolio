@@ -24,7 +24,7 @@ def load_scenes(path: str) -> list:
         return result
 
 
-def soft_label(scenes: list, t0: float, t1: float) -> float:
+def soft_label(scenes: list, t0: float, t1: float) -> tuple:
     """ Calculate soft labels, defined as the weighted average
     of labels across all involved scenes.
     """
