@@ -22,6 +22,7 @@ class ResNetClassifier3d(Classifier):
         self.height = input_shape[2]
         self.depth = input_shape[1]
         self.channels = input_shape[0]
+        self.dropout = dropout
         self.hidden_dims = hidden_dims.copy()
         if pooling is not None:
             pool_fn = get_pooling3d(pooling)
@@ -32,11 +33,7 @@ class ResNetClassifier3d(Classifier):
             if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
-        self.layers = nn.Sequential(
-            *modules,
-            nn.Flatten(),
-            nn.Dropout(p=dropout),
-        )
+        self.layers = nn.Sequential(*modules)
         in_features = hidden_dims[-1] * self.width * self.height * self.depth
         if pooling is not None:
             in_features /= 8**len(hidden_dims)
@@ -52,5 +49,7 @@ class ResNetClassifier3d(Classifier):
 
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         y = self.layers(input)
+        y = y.reshape((input.shape[0], -1))
+        y = F.dropout(y, p=self.dropout)
         y = self.output(y)
         return y

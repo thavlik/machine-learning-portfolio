@@ -1,4 +1,4 @@
-include: experiments/forrestgump/classification/conv3d_unaligned.yaml
+include: experiments/forrestgump/classification/unaligned.yaml
 
 exp_params:
   data:

@@ -225,6 +225,21 @@
             ]
         },
         {
+            "name": "Python: train ForrestGump",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            },
+            "args": [
+                "--config",
+                "experiments/forrestgump/classification/nonlinear.yaml"
+            ]
+        },
+        {
             "name": "Python: train FFHQ VAE",
             "type": "python",
             "request": "launch",
