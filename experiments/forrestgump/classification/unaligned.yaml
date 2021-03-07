@@ -13,7 +13,7 @@ exp_params:
     baseline_accuracy: 0.5
   batch_size: 2
   optimizer:
-    lr: 0.0002
+    lr: 0.02
     weight_decay: 0.00001
   data:
     name: forrestgump
