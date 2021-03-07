@@ -19,6 +19,8 @@ RUN apt-get update \
         npm \
         nano \
         htop \
+        libdbus-1-dev \
+        mesa-common-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && npm install -g \
@@ -34,7 +36,16 @@ RUN pip install https://download.pytorch.org/whl/cu101/torchvision-0.7.0%2Bcu101
 RUN pip install awscli
 RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
 RUN pip install -r requirements.txt
+
 WORKDIR /
+RUN git clone https://github.com/ethereum-mining/ethminer.git@release/0.17 \
+    && cd ethminer \
+    && git submodule update --init --recursive \
+    && mkdir build \
+    && cd build \
+    && cmake ..
+RUN make install
 RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
+
 WORKDIR /machine-learning-portfolio
 CMD ["./docker_entrypoint.sh"]
