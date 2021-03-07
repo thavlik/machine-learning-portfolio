@@ -51,6 +51,7 @@ RUN cd /tmp \
     && cd .. \
     && rm -rf ethminer
 
+RUN ls
 RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
 
 WORKDIR /machine-learning-portfolio
