@@ -6,12 +6,13 @@ model_params:
   num_classes: 1
   pooling: max
   hidden_dims: [10, 18, 18, 10]
+  dropout: 0.2
 
 exp_params:
   loss_params:
     objective: bce
     baseline_accuracy: 0.6212121212121212
-  batch_size: 2
+  batch_size: 4
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
