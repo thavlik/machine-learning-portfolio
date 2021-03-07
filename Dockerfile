@@ -20,8 +20,6 @@ RUN apt-get update \
         npm \
         nano \
         htop \
-        libdbus-1-dev \
-        mesa-common-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && npm install -g \
@@ -51,11 +49,9 @@ RUN cd /tmp \
     && cd .. \
     && rm -rf ethminer
 
-RUN ls
+COPY scripts/mine-eth /usr/local/bin/mine-eth
+RUN chmod +x /usr/local/bin/mine-eth
+
 RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
-
 WORKDIR /machine-learning-portfolio
-
-RUN chmod +x scripts/mine.sh
-
 CMD ["./docker_entrypoint.sh"]
