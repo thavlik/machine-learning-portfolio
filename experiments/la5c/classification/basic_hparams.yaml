@@ -2,7 +2,7 @@ entrypoint: hparam_search
 
 num_samples: 3
 
-num_train_steps: 5_000
+num_train_steps: 3_000
 
 num_val_steps: 50
 
