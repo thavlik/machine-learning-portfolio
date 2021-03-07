@@ -171,7 +171,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         local_dir=run_args['save_dir'],
         num_samples=config['num_samples'],
         resources_per_trial=deep_merge({
-            'cpu': 4,
+            'cpu': 8,
             'gpu': 0.5,
         }, config.get('resources_per_trial', {})),
     )
