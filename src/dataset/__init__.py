@@ -8,7 +8,7 @@ from .reference import *
 from .rsna_intracranial import *
 from .trends_fmri import *
 from .batch_video import *
-from .toy_neural_graphics import *
+#from .toy_neural_graphics import *
 from torch import Size
 from torch.utils.data import Dataset
 import nonechucks as nc
@@ -34,7 +34,7 @@ datasets = {
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,
     'grasp-and-lift-eeg': GraspAndLiftEEGDataset,
-    'toy-neural-graphics': ToyNeuralGraphicsDataset,
+    #'toy-neural-graphics': ToyNeuralGraphicsDataset,
 }
 
 
