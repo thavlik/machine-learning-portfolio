@@ -155,7 +155,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         #'val_check_interval': config['num_train_steps'],
         'limit_val_batches': config['num_val_steps'],
         #'log_every_n_steps': 1,
-        'max_epochs': config.get('num_epochs', 1),
+        #'max_epochs': config.get('num_epochs', 1),
     })
     if config.get('randomize_seed', False):
         print('Warning: randomizing seed for each trial')
