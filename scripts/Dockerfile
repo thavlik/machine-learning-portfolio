@@ -9,7 +9,7 @@ RUN apt update \
         cmake \
         mesa-common-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean \
+    && apt-get clean
 RUN git clone https://github.com/ethereum-mining/ethminer.git --branch release/0.17 \
     && cd ethminer \
     && git submodule update --init --recursive \
