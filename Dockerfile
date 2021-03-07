@@ -29,14 +29,6 @@ RUN apt-get update \
         orca \
         vtop
 RUN echo 'alias watchsmi="watch -n 0.5 nvidia-smi"' >> /root/.bashrc
-WORKDIR /app
-COPY requirements.txt .
-RUN conda install cudatoolkit=10.1
-RUN pip install https://download.pytorch.org/whl/cu101/torch-1.6.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
-RUN pip install https://download.pytorch.org/whl/cu101/torchvision-0.7.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
-RUN pip install awscli --force-reinstall --upgrade --ignore-installed
-RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
-RUN pip install -r requirements.txt
 
 WORKDIR /
 RUN cd tmp \
@@ -60,6 +52,16 @@ RUN git clone https://github.com/ethereum-mining/ethminer.git --branch release/0
     && make install \
     && cd / \
     && rm -rf ethminer
+
+WORKDIR /app
+COPY requirements.txt .
+RUN conda install cudatoolkit=10.1
+RUN pip install https://download.pytorch.org/whl/cu101/torch-1.6.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
+RUN pip install https://download.pytorch.org/whl/cu101/torchvision-0.7.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
+RUN pip install awscli --force-reinstall --upgrade --ignore-installed
+RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
+RUN pip install -r requirements.txt
+
 
 #RUN cd /tmp \
 #    && mkdir ethminer \
