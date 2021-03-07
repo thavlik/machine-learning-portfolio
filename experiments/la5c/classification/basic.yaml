@@ -12,7 +12,7 @@ exp_params:
   loss_params:
     objective: bce
     baseline_accuracy: 0.6212121212121212
-  batch_size: 4
+  batch_size: 2
   optimizer:
     lr: 0.0002
     weight_decay: 0.00001
