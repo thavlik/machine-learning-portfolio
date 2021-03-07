@@ -172,7 +172,7 @@ def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
         num_samples=config['num_samples'],
         resources_per_trial=deep_merge({
             'cpu': 4,
-            'gpu': 1,
+            'gpu': 0.5,
         }, config.get('resources_per_trial', {})),
     )
     metric = config.get('metric', 'val/loss')
