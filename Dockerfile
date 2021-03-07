@@ -1,5 +1,4 @@
 # Build ethminer from source so I can save money in between experiments.
-FROM thavlik/ethminer:latest AS ethminer
 FROM rayproject/ray-ml:latest-gpu
 USER root
 RUN apt-get update \
@@ -29,17 +28,16 @@ RUN apt-get update \
         orca \
         vtop
 RUN echo 'alias watchsmi="watch -n 0.5 nvidia-smi"' >> /root/.bashrc
-COPY --from=ethminer /usr/local/bin/ethminer /usr/local/bin/ethminer
 WORKDIR /app
 COPY requirements.txt .
-RUN conda install cudatoolkit=10.1
-RUN pip install https://download.pytorch.org/whl/cu101/torch-1.6.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
-RUN pip install https://download.pytorch.org/whl/cu101/torchvision-0.7.0%2Bcu101-cp37-cp37m-linux_x86_64.whl
+#RUN conda install cudatoolkit=10.1
+RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+#RUN pip install https://download.pytorch.org/whl/cu111/torch-1.7.1%2Bcu101-cp37-cp37m-linux_x86_64.whl
+#RUN pip install https://download.pytorch.org/whl/cu111/torchvision-0.8.1%2Bcu101-cp37-cp37m-linux_x86_64.whl
 RUN pip install awscli --force-reinstall --upgrade --ignore-installed
 RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
 RUN pip install -r requirements.txt
-COPY scripts/mine-eth /usr/local/bin/mine-eth
-RUN chmod +x /usr/local/bin/mine-eth
 RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
 WORKDIR /machine-learning-portfolio
 CMD ["./docker_entrypoint.sh"]
+

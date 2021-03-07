@@ -9,5 +9,5 @@ num_val_steps: 50
 randomize_seed: true
 
 experiment:
-  - experiments/la5c/classification/basic.yaml
+  - experiments/la5c/classification/bilingual.yaml
   - experiments/la5c/include/hparams.yaml

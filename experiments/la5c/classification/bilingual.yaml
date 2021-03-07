@@ -38,5 +38,5 @@ trainer_params:
 manual_seed: 1498
 
 logging_params:
-  name: "LA5c_Basic"
+  name: "LA5c_Bilingual"
 
