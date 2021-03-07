@@ -1,4 +1,5 @@
 FROM rayproject/ray-ml:latest-gpu
+USER root
 RUN apt-get update \
     && apt-get install -y \
         chromium-browser \
@@ -38,14 +39,22 @@ RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
 RUN pip install -r requirements.txt
 
 WORKDIR /
-RUN git clone https://github.com/ethereum-mining/ethminer.git@release/0.17 \
+
+# Build ethminer from source so I can save money
+# in between running experiments.
+RUN cd /tmp \
+    && mkdir ethminer \
     && cd ethminer \
-    && git submodule update --init --recursive \
-    && mkdir build \
-    && cd build \
-    && cmake ..
-RUN make install
+    && wget https://github.com/ethereum-mining/ethminer/releases/download/v0.18.0/ethminer-0.18.0-cuda-8-linux-x86_64.tar.gz \
+    && tar -xzvf ethminer-0.18.0-cuda-8-linux-x86_64.tar.gz \
+    && mv bin/ethminer /usr/local/bin/ethminer \
+    && cd .. \
+    && rm -rf ethminer
+
 RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
 
 WORKDIR /machine-learning-portfolio
+
+RUN chmod +x scripts/mine.sh
+
 CMD ["./docker_entrypoint.sh"]
