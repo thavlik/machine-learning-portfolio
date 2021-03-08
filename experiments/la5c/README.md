@@ -13,10 +13,10 @@ The dataset comes with hundreds of self-report answers for an amalgam of questio
 TODO: show which questions were selected
 
 ### Experiment Files
-| File                                                                     | Input Size (CxDxHxW)  | Notes
-| ------------------------------------------------------------------------ | --------------------- | ------
-| [classification/basic.yaml](classification/basic.yaml)                   | 1x176x256x256         | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 1x176x256x256         | Hyperparameter search for `basic.yaml`
+| File                                                                             | Input Size (CxDxHxW)  | Notes
+| -------------------------------------------------------------------------------- | --------------------- | ------
+| [classification/bilingual.yaml](classification/bilingual.yaml)                   | 1x176x256x256         | Model bilingual Y/N in terms of T1w
+| [classification/bilingual_hparams.yaml](classification/bilingual_hparams.yaml)   | 1x176x256x256         | Hyperparameter search for `bilingual.yaml`
 
 ### Source Files
 | File                                                                     | Notes
