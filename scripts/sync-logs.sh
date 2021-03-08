@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"/..
-scp -r -P 34759 root@ssh5.vast.ai:/machine-learning-portfolio/logs/GraspLift_HalfRes logs/remote/GraspLift_HalfRes
+scp -r -P 34968 root@ssh5.vast.ai:/machine-learning-portfolio/logs logs_remote

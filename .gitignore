@@ -3,4 +3,5 @@ __pycache__/
 *.mp4
 *.part
 logs/
+logs_remote/
 ray_results/
