@@ -20,7 +20,7 @@ These are datasets that I have authored/compiled personally.
 - [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 200+ hours of unlabeled Quake I gameplay
 
 ## Running Code
-Configurations are defined in yaml files, which can be composed via the `include` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
+Configurations are defined in yaml files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
 
 `python3 src/main.py --config experiments/mnist/vae/fid.yaml`
 

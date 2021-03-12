@@ -14,7 +14,7 @@ exp_params:
     baseline_accuracy: 0.6212121212121212
   batch_size: 2
   optimizer:
-    lr: 0.0002
+    lr: 0.03
     weight_decay: 0.00001
   data:
     name: la5c
@@ -28,7 +28,7 @@ exp_params:
       phenotypes:
         - language/bilingual
       exclude_na: true
-  warmup_steps: 256
+  warmup_steps: 32
 
 trainer_params:
   log_every_n_steps: 20
