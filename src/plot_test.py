@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 
 img = Image.open('experiments/rsna-intracranial/images/img.png')
-font_path = os.path.join('fonts', 'arial.ttf')
+font_path = os.path.join('data', 'fonts', 'arial.ttf')
 font = ImageFont.truetype(font_path, 24)
 draw = ImageDraw.Draw(img)
 draw.text((0, 0), "Sample Text", (255, 255, 255), font=font)

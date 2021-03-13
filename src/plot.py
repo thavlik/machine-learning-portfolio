@@ -637,7 +637,7 @@ def add_label(img: Tensor,
               fill=(0, 0, 0),
               margin: int = 6):
     img = ToPILImage()(img)
-    font_path = os.path.join('fonts', 'arial.ttf')
+    font_path = os.path.join('data', 'fonts', 'arial.ttf')
     font = ImageFont.truetype(font_path, size)
     draw = ImageDraw.Draw(img)
     w, _ = draw.textsize(label, font=font)
