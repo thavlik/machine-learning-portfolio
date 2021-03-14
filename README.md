@@ -55,3 +55,6 @@ This repository was intended to be repurposed. As part of the open source commun
 
 ## License
 Everything is released under [MIT](LICENSE-MIT) / [Apache 2.0](LICENSE-Apache) dual license, which is extremely permissive. Open an issue if somehow neither is sufficient.
+
+## Contact
+thavlik at protonmail dot com
