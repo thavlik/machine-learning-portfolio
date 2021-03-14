@@ -1,7 +1,7 @@
 # thavlik machine learning portfolio
 I am deep learning researcher that is applying for medical school in 2021 and thought it necessary to offer concrete examples of how I work with medical data.
 
-As this portfolio is entirely self-funded (and GPUs are notoriously expensive!) not all projects yielded positive results. Nonetheless, I believe showing where I stopped accomplishes the goal just as well. After spending in excess of $1,000 running these experiments, I firmly believe additional progress can be made anywhere. However, my limited budget necessitates that only the most promising experiments see a GPU.
+As this portfolio is entirely self-funded (and GPUs are notoriously expensive!) not all projects yielded positive results. Nonetheless, showing where I stopped accomplishes the goal just as well. After spending in excess of $1,000 running these experiments, I think additional progress can be made anywhere. However, my limited budget necessitates that only the most promising experiments see a GPU.
 
 For obvious reasons, none of my professional work is featured here.
 
