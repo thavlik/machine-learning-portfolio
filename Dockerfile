@@ -1,4 +1,3 @@
-# Build ethminer from source so I can save money in between experiments.
 FROM rayproject/ray-ml:latest-gpu
 USER root
 RUN apt-get update \
