@@ -162,6 +162,7 @@ class BaseExperiment(pl.LightningModule):
         dataset = get_dataset(self.params['data']['name'],
                               ds_params,
                               split=self.params['data'].get('split', None),
+                              safe=self.params['data'].get('safe', True),
                               train=True)
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
@@ -176,6 +177,7 @@ class BaseExperiment(pl.LightningModule):
         dataset = get_dataset(self.params['data']['name'],
                               ds_params,
                               split=self.params['data'].get('split', None),
+                              safe=self.params['data'].get('safe', True),
                               train=False)
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
