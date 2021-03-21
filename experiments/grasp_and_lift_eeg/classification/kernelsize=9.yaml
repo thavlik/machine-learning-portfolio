@@ -1,0 +1,7 @@
+include: experiments/grasp_and_lift_eeg/classification/basic.yaml
+
+model_params:
+  kernel_size: 9
+
+logging_params:
+  name: "GraspLift_KernelSize=9"

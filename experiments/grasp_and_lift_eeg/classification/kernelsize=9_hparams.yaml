@@ -1,0 +1,6 @@
+include: experiments/grasp_and_lift_eeg/classification/basic_hparams.yaml
+
+experiment:
+  - experiments/grasp_and_lift_eeg/classification/kernelsize=9.yaml
+  - experiments/grasp_and_lift_eeg/include/hparams.yaml
+
