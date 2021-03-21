@@ -16,7 +16,9 @@ class ResNetClassifier1d(Classifier):
                  num_classes: int,
                  load_weights: str = None,
                  dropout: float = 0.0,
-                 pooling: str = None) -> None:
+                 pooling: str = None,
+                 kernel_size: int = 3,
+                 padding: int = 1) -> None:
         super().__init__(name=name,
                          num_classes=num_classes)
         self.num_samples = input_shape[1]
@@ -29,7 +31,9 @@ class ResNetClassifier1d(Classifier):
         in_features = self.channels
         for h_dim in hidden_dims:
             modules.append(BasicBlock1d(in_features,
-                                        h_dim))
+                                        h_dim,
+                                        kernel_size=kernel_size,
+                                        padding=padding))
             if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
