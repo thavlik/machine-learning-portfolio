@@ -1,6 +1,7 @@
 include: experiments/grasp_and_lift_eeg/classification/basic.yaml
 
 model_params:
+  name: 'ResNetClassifier1d_KernelSize=9'
   kernel_size: 9
   padding: 4
 
