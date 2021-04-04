@@ -17,12 +17,12 @@ In addition to the unaligned (raw) scans, the dataset authors provided two align
 ### Experiment Files
 | File                                                                              | Frame Dimensions | Temporal Resolution | Notes
 | --------------------------------------------------------------------------------- | ---------------- | ------------------- | -----
-| [classification/linear.yaml](classification/linear.yaml)                          | 48x132x175       | 1 frame @ 0.5 Hz    | Linear alignment
-| [classification/linear_hparams.yaml](classification/linear_hparams.yaml)          | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `linear.yaml`
-| [classification/nonlinear.yaml](classification/nonlinear.yaml)                    | 48x132x175       | 1 frame @ 0.5 Hz    | Nonlinear alignment
-| [classification/nonlinear_hparams.yaml](classification/nonlinear_hparams.yaml)    | 48x132x175       | 1 frame @ 0.5 Hz    | Hyperparameter search for `nonlinear.yaml`
-| [classification/unaligned.yaml](classification/unaligned.yaml)                    | 36x160x160       | 1 frame @ 0.5 Hz    | No alignment (raw), base experiment
-| [classification/unaligned_hparams.yaml](classification/unaligned_hparams.yaml)    | 36x160x160       | 1 frame @ 0.5 Hz    | Hyperparameter search for `unaligned.yaml`
+| [classification/linear.yaml](classification/linear.yaml)                          | 48x132x175       | 0.5 Hz              | Linear alignment
+| [classification/linear_hparams.yaml](classification/linear_hparams.yaml)          | 48x132x175       | 0.5 Hz              | Hyperparameter search for `linear.yaml`
+| [classification/nonlinear.yaml](classification/nonlinear.yaml)                    | 48x132x175       | 0.5 Hz              | Nonlinear alignment
+| [classification/nonlinear_hparams.yaml](classification/nonlinear_hparams.yaml)    | 48x132x175       | 0.5 Hz              | Hyperparameter search for `nonlinear.yaml`
+| [classification/unaligned.yaml](classification/unaligned.yaml)                    | 36x160x160       | 0.5 Hz              | No alignment (raw), base experiment
+| [classification/unaligned_hparams.yaml](classification/unaligned_hparams.yaml)    | 36x160x160       | 0.5 Hz              | Hyperparameter search for `unaligned.yaml`
 
 ### Source Files
 | File                                                                          | Notes
