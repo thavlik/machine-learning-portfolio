@@ -145,7 +145,7 @@ def get_best_config(analysis, metric: str, scope: str) -> dict:
     return best_config
 
 
-def hparam_search(config: dict, run_args: dict) -> VAEExperiment:
+def hparam_search(config: dict, run_args: dict):
     import ray
     from ray import tune
     run_config = load_config(config['experiment'])

@@ -41,3 +41,6 @@ There are three ways to approach this supervised experiment: by splitting train/
 
 ## Future Direction
 The random splitting method almost trains with the same data as it uses for validation, so it is unsurprising that it yields high validation accuracy. Because there does not appear to be enough data to generalize across subject or trial splits, further efforts could examine the effect of the random split's proportion. It is estimated that relatively few training examples (<50% of the dataset) would be necessary to maintain high validation accuracy.
+
+
+

@@ -1,12 +1,14 @@
 # thavlik machine learning portfolio
 I am deep learning researcher that is applying for medical school in 2021 and thought it necessary to offer concrete examples of how I work with medical data.
 
-As this portfolio is entirely self-funded (and GPUs are notoriously expensive!) not all projects yielded positive results. Nonetheless, showing where I stopped accomplishes the goal. After spending in excess of $2,000 running these experiments, I believe additional progress can be made anywhere. However, my limited budget necessitates that only the most promising experiments see a GPU.
-
 For obvious reasons, none of my professional work is featured here.
 
 ## Experiments
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes either empirical measurement or the judgment of attending physicians.
+
+After spending in excess of $2,000 running these experiments, I believe additional progress can be made anywhere. However, my limited budget necessitates that only the most promising experiments see a GPU.
+
+[Mikolić et al 2020](https://doi.org/10.1089/neu.2020.7074) made me realize how justifiable publishing negative results can be. Research is convoluted (pun intended); large amounts of time and effort are often necessary to observe any results at all - even bad results. Additional work is then invested out of faith to one's techniques, frequently to no avail. When this happens, it seems to me the appropriate course of action is to humbly publish one's theoretical and empirical findings, so that others may benefit. Even though the structure of medical data is highly amenable to deep learning, it is important to not underestimate the difficulty of achieving performance on par with attending physicians.
 
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
