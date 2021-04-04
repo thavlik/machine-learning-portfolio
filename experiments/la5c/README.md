@@ -20,7 +20,7 @@ TODO: show which questions were selected
 
 ### Source Files
 | File                                                                     | Notes
-| ------------------------------------------------------------------------ | ----- 
+| ------------------------------------------------------------------------ | ------------------------------
 | [src/classification.py](/src/classification.py)                          | Base classification experiment
 | [src/dataset/la5c.py](/src/dataset/la5c.py)                              | LA5c dataset class
 | [src/models/resnet_classifier3d.py](/src/models/resnet_classifier3d.py)  | 3D ResNet classifier model
