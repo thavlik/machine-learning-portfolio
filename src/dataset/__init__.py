@@ -11,6 +11,7 @@ from .batch_video import *
 #from .toy_neural_graphics import *
 from torch import Size
 from torch.utils.data import Dataset
+from torch.utils.data.sampler import WeightedRandomSampler
 import nonechucks as nc
 
 
@@ -23,6 +24,15 @@ def split_dataset(dataset, split):
                                           [n_train_imgs, n_val_imgs])
     torch.set_rng_state(cur_state)
     return parts
+
+def balanced_sampler(ds: Dataset) -> WeightedRandomSampler:
+    labels = np.array([y for _, y in ds])
+    unique_labels = np.unique(labels)
+    counts = [(labels == label).sum() for label in unique_labels]
+    proportions = [1.0 / float(count) for count in counts]
+    samples_weight = [proportions[int(label)] for label in labels]
+    samples_weight = torch.Tensor(samples_weight)
+    return WeightedRandomSampler(samples_weight, len(samples_weight))
 
 
 datasets = {

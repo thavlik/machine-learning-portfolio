@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader, Dataset
 from torch import nn
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 import pytorch_lightning as pl
-from dataset import get_dataset
+from dataset import get_dataset, balanced_sampler
 from abc import abstractmethod
 from plotly.subplots import make_subplots
 from plotly.graph_objects import Figure
@@ -164,11 +164,14 @@ class BaseExperiment(pl.LightningModule):
                               split=self.params['data'].get('split', None),
                               safe=self.params['data'].get('safe', True),
                               train=True)
+        params = self.params['data'].get('loader', {}).copy()
+        if self.params['data'].get('balanced', False) == True:
+            params['sampler'] = balanced_sampler(dataset)
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
                           batch_size=self.params['batch_size'],
                           shuffle=True,
-                          **self.params['data'].get('loader', {}))
+                          **params)
 
     def val_dataloader(self):
         ds_params = deep_merge(
@@ -179,10 +182,13 @@ class BaseExperiment(pl.LightningModule):
                               split=self.params['data'].get('split', None),
                               safe=self.params['data'].get('safe', True),
                               train=False)
+        params = self.params['data'].get('loader', {}).copy()
+        if self.params['data'].get('balanced', False) == True:
+            params['sampler'] = balanced_sampler(dataset)
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,
-                                            **self.params['data'].get('loader', {}))
+                                            **params)
         self.num_val_imgs = len(self.sample_dataloader)
         self.val_batches = self.get_val_batches(dataset)
         return self.sample_dataloader

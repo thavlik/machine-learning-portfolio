@@ -3,4 +3,4 @@ exp_params:
     every_n_steps: 0
   optimizer:
     lr:
-      grid_search: [0.0001, 0.001, 0.005, 0.01, 0.02, 0.05]
+      grid_search: [0.0001, 0.001, 0.005, 0.01, 0.025, 0.05]

@@ -1,0 +1,8 @@
+include: experiments/grasp_and_lift_eeg/classification/basic.yaml
+
+exp_params:
+  data:
+    balanced: true
+
+logging_params:
+  name: "GraspLift_Balanced"

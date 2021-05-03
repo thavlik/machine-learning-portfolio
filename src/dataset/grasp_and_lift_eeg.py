@@ -253,10 +253,14 @@ class GraspAndLiftEEGDataset(data.Dataset):
     def __getitem__(self, index):
         if self.num_samples is None:
             # Return the entire example (e.g. reinforcement learning)
+            if index >= len(self.X):
+                raise StopIteration
             x = self.X[index]
             x = self._pool_lod(x)
             y = self.Y[index] if self.Y is not None else []
             return (x, y)
+        if index >= self.total_examples:
+            raise StopIteration
         # Find the example and offset for the index
         ofs = 0
         for i, x in enumerate(self.X):

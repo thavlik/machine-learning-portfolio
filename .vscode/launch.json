@@ -186,6 +186,18 @@
             ]
         },
         {
+            "name": "Python: train EEG Balanced",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/grasp_and_lift_eeg/classification/balanced.yaml"
+            ]
+        },
+        {
             "name": "Python: train EEG KernelSize=9",
             "type": "python",
             "request": "launch",
