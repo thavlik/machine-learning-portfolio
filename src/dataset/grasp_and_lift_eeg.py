@@ -3,8 +3,10 @@ import time
 from typing import Optional, List
 import zipfile
 
+import numpy as np
 import requests
 import torch
+from torch import Tensor
 import torch.nn.functional as F
 import torch.utils.data as data
 
@@ -243,6 +245,18 @@ class GraspAndLiftEEGDataset(data.Dataset):
                 torch.save(samples, series + '_events.csv.bin')
                 Y.append(y)
         return X, Y if len(Y) > 0 else None
+
+    def get_labels(self):
+        labels = None
+        for i, y in enumerate(self.Y):
+            num_examples = y.shape[1] - self.num_samples + 1
+            y = y[:, self.num_samples-1:].numpy()
+            if labels is None:
+                labels = y
+            else:
+                labels = np.concatenate((labels, y), axis=1)
+        labels = np.transpose(labels)
+        return Tensor(labels)
 
     def _pool_lod(self, x):
         if self.lod > 0:

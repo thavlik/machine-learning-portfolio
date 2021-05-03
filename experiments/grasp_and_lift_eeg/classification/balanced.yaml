@@ -2,7 +2,15 @@ include: experiments/grasp_and_lift_eeg/classification/basic.yaml
 
 exp_params:
   data:
-    balanced: true
+    balanced: {}
+    #  labels:
+    #    - [0, 0, 0, 0, 0, 0]
+    #    - [1, 0, 0, 0, 0, 0]
+    #    - [0, 1, 0, 0, 0, 0]
+    #    - [0, 0, 1, 0, 0, 0]
+    #    - [0, 0, 0, 1, 0, 0]
+    #    - [0, 0, 0, 0, 1, 0]
+    #    - [0, 0, 0, 0, 0, 1]
 
 logging_params:
   name: "GraspLift_Balanced"

@@ -183,8 +183,8 @@ class BaseExperiment(pl.LightningModule):
                               safe=self.params['data'].get('safe', True),
                               train=False)
         params = self.params['data'].get('loader', {}).copy()
-        if self.params['data'].get('balanced', False) == True:
-            params['sampler'] = balanced_sampler(dataset)
+        if 'balanced' in self.params['data']:
+            params['sampler'] = balanced_sampler(dataset, **self.params['data']['balanced'])
         self.sample_dataloader = DataLoader(dataset,
                                             batch_size=self.params['batch_size'],
                                             shuffle=False,

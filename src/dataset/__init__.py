@@ -13,6 +13,7 @@ from torch import Size
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import WeightedRandomSampler
 import nonechucks as nc
+from typing import Optional
 
 
 def split_dataset(dataset, split):
@@ -25,12 +26,28 @@ def split_dataset(dataset, split):
     torch.set_rng_state(cur_state)
     return parts
 
-def balanced_sampler(ds: Dataset) -> WeightedRandomSampler:
-    labels = np.array([y for _, y in ds])
-    unique_labels = np.unique(labels)
-    counts = [(labels == label).sum() for label in unique_labels]
+def balanced_sampler(ds: Dataset, labels: Optional[List[List[int]]] = None) -> WeightedRandomSampler:
+    if hasattr(ds, 'get_labels'):
+        y = ds.get_labels().numpy()
+    else:
+        y = np.array([y for i, (_, y) in enumerate(ds)])
+    if labels is not None:
+        labels = np.array(labels)
+    else:
+        labels = np.unique(y, axis=0)
+    counts = np.zeros(labels.shape[0])
+    for item in y:
+        for i, label in enumerate(labels):
+            if (item == label).all():
+                counts[i] += 1
+                break
     proportions = [1.0 / float(count) for count in counts]
-    samples_weight = [proportions[int(label)] for label in labels]
+    samples_weight = np.zeros(y.shape[0])
+    for i, item in enumerate(y):
+        for j, label in enumerate(labels):
+            if (item == label).all():
+                samples_weight[i] = proportions[j]
+                break
     samples_weight = torch.Tensor(samples_weight)
     return WeightedRandomSampler(samples_weight, len(samples_weight))
 
