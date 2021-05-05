@@ -1,16 +1,30 @@
 include: experiments/grasp_and_lift_eeg/classification/basic.yaml
 
+model_params:
+  hidden_dims: [512, 1024, 1024, 512]
+
 exp_params:
+  optimizer:
+    lr: 0.025
+  batch_size: 16
   data:
-    balanced: {}
-    #  labels:
-    #    - [0, 0, 0, 0, 0, 0]
-    #    - [1, 0, 0, 0, 0, 0]
-    #    - [0, 1, 0, 0, 0, 0]
-    #    - [0, 0, 1, 0, 0, 0]
-    #    - [0, 0, 0, 1, 0, 0]
-    #    - [0, 0, 0, 0, 1, 0]
-    #    - [0, 0, 0, 0, 0, 1]
+    training:
+      lod: 1
+    balanced:
+      labels:
+        - [0, 0, 0, 0, 0, 0]
+        - [1, 0, 0, 0, 0, 0]
+        - [0, 1, 0, 0, 0, 0]
+        - [0, 0, 1, 0, 0, 0]
+        - [0, 0, 0, 1, 0, 0]
+        - [0, 0, 0, 0, 1, 0]
+        - [0, 0, 0, 0, 0, 1]
+
+trainer_params:
+  max_epochs: 1000000
+  log_every_n_steps: 25
+  val_check_interval: 200
+  limit_val_batches: 200
 
 logging_params:
   name: "GraspLift_Balanced"

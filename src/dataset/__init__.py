@@ -29,6 +29,7 @@ def split_dataset(dataset, split):
 def balanced_sampler(ds: Dataset, labels: Optional[List[List[int]]] = None) -> WeightedRandomSampler:
     if hasattr(ds, 'get_labels'):
         y = ds.get_labels().numpy()
+        # y.shape == (num_examples, num_classes)
     else:
         y = np.array([y for i, (_, y) in enumerate(ds)])
     if labels is not None:
@@ -41,6 +42,9 @@ def balanced_sampler(ds: Dataset, labels: Optional[List[List[int]]] = None) -> W
             if (item == label).all():
                 counts[i] += 1
                 break
+    omitted = int(y.shape[0] - counts.sum())
+    if omitted > 0:
+        print(f'Warning: {omitted} examples ({omitted/counts.sum()*100}% of the dataset) were omitted because the labels were not included in exp_params.data.balance.labels')
     proportions = [1.0 / float(count) for count in counts]
     samples_weight = np.zeros(y.shape[0])
     for i, item in enumerate(y):

@@ -161,7 +161,8 @@ def hparam_search(config: dict, run_args: dict):
         print('Warning: randomizing seed for each trial')
         run_config['manual_seed'] = tune.sample_from(
             lambda spec: np.random.randint(0, 64_000))
-    ray.init()
+    ray.init(num_gpus=1)
+    print("ray.get_gpu_ids(): {}".format(ray.get_gpu_ids()))
     analysis = tune.run(
         tune.with_parameters(experiment_main,
                              run_args=dict(**run_args,
@@ -327,6 +328,7 @@ def create_experiment(config: dict, run_args: dict) -> pl.LightningModule:
 
 
 def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
+    print(f'torch.cuda.device_count()={torch.cuda.device_count()}')
     # torch.set_num_threads(run_args['num_threads'])
     manual_seed = config.get('manual_seed', 100)
     torch.manual_seed(manual_seed)
@@ -334,7 +336,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     experiment = create_experiment(config, run_args)
     if experiment is None:
         return
-    experiment = experiment.cuda()
+    experiment = experiment.cuda(0)
     tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
                                name=config['logging_params']['name'],
                                debug=False,

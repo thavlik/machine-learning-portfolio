@@ -21,6 +21,8 @@ This trend reflects immediate overfitting on the training data. Further work is 
 ### *Relative Accuracy
 Because >97% of all the dataset's samples are not associated with any class label, the model's overall accuracy does not intuitively reflect how well it performs above baseline performance. The model quickly learns the optimal strategy of outputting mostly zeros - achieving accuracy over 97% - then slowly learns to selectively predict class labels based on features of the input data. Normalizing accuracy above the baseline to [0, 1] in a quantity termed *relative accuracy* elegantly represents model performance after it learns the approximate frequencies of the labels.
 
+Label imbalance is a common issue with real-world datasets. The current results train with imbalanced batches of examples. Training on balanced batches has been implemented but the experiments have not yet been performed.
+
 ## Materials & Methods
 There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. Each method was attempted.
 

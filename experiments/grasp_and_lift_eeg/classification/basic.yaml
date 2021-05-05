@@ -22,11 +22,11 @@ exp_params:
       root: /data/grasp-and-lift-eeg-detection
       num_samples: 2048
       last_label_only: true
-      #subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-      series: [1, 2, 3, 4, 5, 6]
+      subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      #series: [1, 2, 3, 4, 5, 6]
     validation:
-      #subjects: [10, 11, 12]
-      series: [7, 8]
+      subjects: [10, 11, 12]
+      #series: [7, 8]
     loader:
       pin_memory: false
       num_workers: 0
@@ -40,8 +40,8 @@ exp_params:
 
 trainer_params:
   max_epochs: 1000000
-  log_every_n_steps: 250
-  val_check_interval: 15000
+  log_every_n_steps: 500
+  val_check_interval: 20000
   limit_val_batches: 5000
 
 logging_params:
