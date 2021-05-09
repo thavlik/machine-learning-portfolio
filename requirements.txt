@@ -23,3 +23,4 @@ decord
 requests
 pytorch3d
 visdom
+seaborn
