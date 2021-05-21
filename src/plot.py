@@ -156,7 +156,9 @@ def eeg(orig: Tensor,
                 ),
             ), row=channel+1, col=col+1)
         i += 1
-    fig.write_image(out_path + '.png',
+    if not out_path.endswith('.png'):
+        out_path += '.png'
+    fig.write_image(out_path,
                     width=width,
                     height=height)
 
