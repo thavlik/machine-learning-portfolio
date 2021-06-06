@@ -3,7 +3,7 @@
 These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://www.rsna.org/education/ai-resources-and-training/ai-image-challenge/rsna-intracranial-hemorrhage-detection-challenge-2019) dataset released by the Radiological Society of North America in 2019. It proposes a relatively simple task where one or more classes of ICH are assigned to individual CT slices. 
 
 ## Results
-~95% validation accuracy was achieved with <12 hours of training on a single 1080 Ti. For the uninitiated, this is quite good and suggests near-100% accuracy could be achieved with additional work.
+~95% validation accuracy was achieved with <12 hours of training on a single 1080 Ti. I believe near-100% accuracy could be achieved with additional work.
 
 ![](images/RSNA_HalfRes_classifier2d_20000.jpg)
 
