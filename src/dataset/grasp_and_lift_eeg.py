@@ -176,7 +176,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
     def download(self, root: str):
         zip_path = os.path.join(root, 'grasp-and-lift-eeg-detection.zip')
         if not os.path.exists(zip_path) or os.path.getsize(zip_path) != self.ZIP_SIZE_BYTES:
-            print(f'Downloading from {self.ZIP_URL}')
+            print(f'\nDownloading from {self.ZIP_URL}')
             start = time.time()
             r = requests.get(self.ZIP_URL)
             if r.status_code != 200:
