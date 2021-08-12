@@ -18,8 +18,8 @@ from .resnet_vae3d import ResNetVAE3d
 from .resnet_vae4d import ResNetVAE4d
 from ray.rllib.models import ModelCatalog
 
-ModelCatalog.register_custom_model("ResNetRL1d", ResNetRL1d)
-ModelCatalog.register_custom_model("ResNetRL2d", ResNetRL2d)
+# ModelCatalog.register_custom_model("ResNetRL1d", ResNetRL1d)
+# ModelCatalog.register_custom_model("ResNetRL2d", ResNetRL2d)
 
 models = {
     'ResNetClassifier1d': ResNetClassifier1d,
