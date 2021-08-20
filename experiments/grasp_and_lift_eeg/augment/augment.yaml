@@ -1,0 +1,58 @@
+entrypoint: augment
+
+constraint_params:
+  arch: 'ResNetClassifier1d'
+  name: 'ResNetClassifier1d'
+  hidden_dims: [512, 1024, 1024, 512]
+  num_classes: 6
+  dropout: 0.4
+  kernel_size: 9
+  padding: 4
+  load_weights: /Users/tlhavlik/Repositories/machine-learning-portfolio
+
+model_params:
+  arch: 'ResNetAugmenter1d'
+  name: 'ResNetAugmenter1d'
+  hidden_dims: [512, 1024, 1024, 512]
+  num_classes: 6
+  dropout: 0.4
+  kernel_size: 9
+  padding: 4
+
+exp_params:
+  manual_seed: 6602
+  save_weights:
+    every_n_steps: 10_000
+    delete_old: true
+    local: {}
+  data:
+    name: grasp-and-lift-eeg
+    training:
+      root: /data/grasp-and-lift-eeg-detection
+      num_samples: 2048
+      last_label_only: true
+      subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    validation:
+      subjects: [10, 11, 12]
+    loader:
+      pin_memory: false
+      num_workers: 0
+  batch_size: 32
+  warmup_steps: 512
+  loss_params:
+    baseline_accuracy: 0.9739857316017151
+  optimizer:
+    lr: 0.00005
+    weight_decay: 0.000005
+
+trainer_params:
+  max_epochs: 1000000
+  log_every_n_steps: 500
+  val_check_interval: 20000
+  limit_val_batches: 5000
+
+logging_params:
+  save_dir: "logs/"
+  name: "GraspLift_Basic"
+
+manual_seed: 6602
