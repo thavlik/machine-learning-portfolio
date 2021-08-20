@@ -349,6 +349,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
                      num_sanity_val_steps=5,
                      logger=tt_logger,
                      checkpoint_callback=True,
+                     gpus=1,
                      callbacks=[
                          OnCheckpointHparams(),
                          ModelCheckpoint(

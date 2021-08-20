@@ -197,7 +197,7 @@
                 "experiments/grasp_and_lift_eeg/classification/balanced.yaml"
             ],
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0"   
+                "CUDA_VISIBLE_DEVICES": "0"
             }
         },
         {

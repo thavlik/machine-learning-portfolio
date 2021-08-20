@@ -4,11 +4,13 @@ cd "$(dirname "$0")"/..
 dir=$(pwd)
 docker container stop hometb || true
 docker container rm hometb || true
+logdir=$(wslpath -a logs)
+echo "logdir=$logdir"
 docker run \
     -d \
     --name hometb \
     -p 6007:6006 \
-    -v $(wslpath -w logs)/:/logs \
+    -v $logdir:/logs \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \
         --logdir /logs \
