@@ -3,7 +3,8 @@ entrypoint: augment
 model_params:
   arch: 'ResNetAugmenter1d'
   name: 'ResNetAugmenter1d'
-  hidden_dims: [512, 1024, 1024, 512]
+  hidden_dims: [512, 1024, 512]
+  
 
 constraint_params:
   arch: 'ResNetClassifier1d'
@@ -11,7 +12,7 @@ constraint_params:
   hidden_dims: [512, 1024, 1024, 512]
   num_classes: 6
   logits_only: true
-  load_weights: /data/eeg/version_7/last.ckpt
+  load_weights: /data/eeg/version_7/checkpoints/last.ckpt
 
 exp_params:
   save_weights:
@@ -30,7 +31,9 @@ exp_params:
     loader:
       pin_memory: false
       num_workers: 0
-  batch_size: 32
+  loss_params:
+    alpha: 0.000001
+  batch_size: 16
   warmup_steps: 512
   optimizer:
     lr: 0.00005

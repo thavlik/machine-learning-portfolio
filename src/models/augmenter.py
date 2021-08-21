@@ -16,10 +16,14 @@ class Augmenter(nn.Module):
 
     def loss_function(self,
                       x: Tensor,
-                      constraint: nn.Module) -> dict:
-        co = constraint(x)
+                      constraint: nn.Module,
+                      alpha: float = 1.0) -> dict:
         t = self.forward(x)
+        co = constraint(x)
         ct = constraint(t)
-        ud = torch.pow(x - t, 2) # higher is better
-        td = torch.pow(ct - co, 2) # lower is better
-        return td - ud
+        td = torch.pow(ct - co, 2).mean()  # lower is better
+        ud = torch.pow(x - t, 2).mean()  # higher is better
+        loss = td - ud * alpha
+        return {'loss': loss,
+                'TransformedDelta': td.detach().cpu(),
+                'UntransformedDelta': ud.detach().cpu()}

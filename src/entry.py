@@ -5,22 +5,19 @@ from vae import VAEExperiment
 from augmentation import AugmentationExperiment
 from classification import ClassificationExperiment
 from localization import LocalizationExperiment
-from dataset import ReferenceDataset, get_example_shape, get_output_features
+from dataset import get_example_shape
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback
-from pytorch_lightning.loggers import TestTubeLogger, TensorBoardLogger
+from pytorch_lightning.loggers import TestTubeLogger
 import numpy as np
 from pytorch_lightning import Trainer
 from load_config import load_config
 from ray import tune
 from ray.tune.logger import TBXLogger
-from ray.rllib.models import ModelCatalog
 from env import get_env
 from plot import plot_comparison
-import pandas as pd
 from merge_strategy import deep_merge
 from neural_gbuffer import neural_gbuffer
-from visdom import Visdom
 from pytorch_lightning.core.saving import save_hparams_to_yaml
 
 

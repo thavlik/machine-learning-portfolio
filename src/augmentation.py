@@ -1,4 +1,6 @@
-from torch import optim
+import torch
+from torch import optim, Tensor
+from torch.utils.data import Dataset
 from models import create_model
 from base_experiment import BaseExperiment
 from models import create_model
@@ -16,8 +18,23 @@ class AugmentationExperiment(BaseExperiment):
         input_shape = get_example_shape(config['exp_params']['data'])
         self.constraint = create_model(**config['constraint_params'],
                                        input_shape=input_shape)
+        self.constraint.requires_grad = False
         self.model = create_model(**config['model_params'],
                                   input_shape=input_shape)
+
+    def sample_images(self, plot: dict, batch: Tensor):
+        print('TODO: sample_images')
+
+    def get_val_batches(self, dataset: Dataset) -> list:
+        val_batches = []
+        n = len(dataset)
+        for plot in self.plots:
+            indices = torch.randint(low=0,
+                                    high=n,
+                                    size=(plot['batch_size'], 1)).squeeze()
+            batch = [dataset[i][0] for i in indices]
+            val_batches.append(batch)
+        return val_batches
 
     def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, _ = batch
