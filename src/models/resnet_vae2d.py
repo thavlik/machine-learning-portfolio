@@ -4,8 +4,7 @@ from torch.nn import functional as F
 from .base import BaseVAE
 from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
 from torch import nn, Tensor
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
+from typing import List
 from math import ceil
 from .inception import InceptionV3
 from .util import get_pooling2d, get_activation

@@ -2,6 +2,7 @@ from .base import BaseVAE
 from .classifier import Classifier
 from .localizer import Localizer
 from .renderer import BaseRenderer
+from .resnet_augmenter1d import ResNetAugmenter1d
 from .resnet_classifier1d import ResNetClassifier1d
 from .resnet_classifier2d import ResNetClassifier2d
 from .resnet_classifier3d import ResNetClassifier3d
@@ -22,6 +23,7 @@ from ray.rllib.models import ModelCatalog
 # ModelCatalog.register_custom_model("ResNetRL2d", ResNetRL2d)
 
 models = {
+    'ResNetAugmenter1d': ResNetAugmenter1d,
     'ResNetClassifier1d': ResNetClassifier1d,
     'ResNetClassifier2d': ResNetClassifier2d,
     'ResNetClassifier3d': ResNetClassifier3d,

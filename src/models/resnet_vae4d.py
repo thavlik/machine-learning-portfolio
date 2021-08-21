@@ -1,14 +1,12 @@
 import torch
 from torch import nn
-from torch.nn import functional as F
 from .conv4d import Conv4d
 from .base import BaseVAE
 from .util import get_pooling4d, get_activation
 from .resnet4d import BasicBlock4d
 from torch import nn, Tensor
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
+from typing import List
+from math import ceil
 
 
 class ResNetVAE4d(BaseVAE):

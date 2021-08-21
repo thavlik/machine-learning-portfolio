@@ -2,6 +2,7 @@ import os
 import torch
 from models import create_model
 from vae import VAEExperiment
+from augmentation import AugmentationExperiment
 from classification import ClassificationExperiment
 from localization import LocalizationExperiment
 from dataset import ReferenceDataset, get_example_shape, get_output_features
@@ -34,6 +35,8 @@ class OnCheckpointHparams(Callback):
             save_hparams_to_yaml(config_yaml=file_path,
                                  hparams=pl_module.hparams)
 
+def augment(config: dict, run_args: dict):
+    return AugmentationExperiment(config, **run_args)
 
 def localization2d(config: dict, run_args: dict):
     return LocalizationExperiment(config, **run_args)
@@ -302,6 +305,7 @@ def comparison(config: dict, run_args: dict) -> None:
 
 
 entrypoints = {
+    'augment': augment,
     'classification': classification,
     'classification_embed2d': classification_embed2d,
     'classification_sandwich2d': classification_sandwich2d,

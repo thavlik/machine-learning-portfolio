@@ -1,26 +1,19 @@
 entrypoint: augment
 
+model_params:
+  arch: 'ResNetAugmenter1d'
+  name: 'ResNetAugmenter1d'
+  hidden_dims: [512, 1024, 1024, 512]
+
 constraint_params:
   arch: 'ResNetClassifier1d'
   name: 'ResNetClassifier1d'
   hidden_dims: [512, 1024, 1024, 512]
   num_classes: 6
-  dropout: 0.4
-  kernel_size: 9
-  padding: 4
-  load_weights: /Users/tlhavlik/Repositories/machine-learning-portfolio
-
-model_params:
-  arch: 'ResNetAugmenter1d'
-  name: 'ResNetAugmenter1d'
-  hidden_dims: [512, 1024, 1024, 512]
-  num_classes: 6
-  dropout: 0.4
-  kernel_size: 9
-  padding: 4
+  logits_only: true
+  load_weights: /data/eeg/version_7/last.ckpt
 
 exp_params:
-  manual_seed: 6602
   save_weights:
     every_n_steps: 10_000
     delete_old: true
@@ -39,8 +32,6 @@ exp_params:
       num_workers: 0
   batch_size: 32
   warmup_steps: 512
-  loss_params:
-    baseline_accuracy: 0.9739857316017151
   optimizer:
     lr: 0.00005
     weight_decay: 0.000005
@@ -53,6 +44,5 @@ trainer_params:
 
 logging_params:
   save_dir: "logs/"
-  name: "GraspLift_Basic"
+  name: "GraspLift_Augment"
 
-manual_seed: 6602

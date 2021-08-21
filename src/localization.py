@@ -1,31 +1,8 @@
-import gc
 import os
-import math
 import torch
-import io
-import numpy as np
 from torch import optim, Tensor
-from torchvision import transforms
-from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader, Dataset
-from torch import nn
-from torchvision.transforms import Resize, ToPILImage, ToTensor
-import pytorch_lightning as pl
-from dataset import get_dataset
-from abc import abstractmethod
-from plotly.subplots import make_subplots
-from plotly.graph_objects import Figure
-import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import ImageGrid
-from typing import Callable, Optional
+from torch.utils.data import Dataset
 from plot import get_plot_fn
-from models import Classifier, Localizer
-from merge_strategy import strategy
-from typing import List
-from plot import get_labels
-from linear_warmup import LinearWarmup
-import boto3
-from visdom import Visdom
 from base_experiment import BaseExperiment
 from models import create_model
 from dataset import get_example_shape

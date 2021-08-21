@@ -1,7 +1,6 @@
 import argparse
 import gc
 import time
-import torch
 import torch.backends.cudnn as cudnn
 from models import create_model
 from entry import experiment_main

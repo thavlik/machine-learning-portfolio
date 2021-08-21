@@ -18,13 +18,15 @@ class ResNetClassifier1d(Classifier):
                  dropout: float = 0.0,
                  pooling: str = None,
                  kernel_size: int = 3,
-                 padding: int = 1) -> None:
+                 padding: int = 1,
+                 logits_only: bool = False) -> None:
         super().__init__(name=name,
                          num_classes=num_classes)
         self.num_samples = input_shape[1]
         self.channels = input_shape[0]
         self.dropout = nn.Dropout(dropout)
         self.hidden_dims = hidden_dims.copy()
+        self.logits_only = logits_only
         if pooling is not None:
             pool_fn = get_pooling1d(pooling)
         modules = []
@@ -58,6 +60,8 @@ class ResNetClassifier1d(Classifier):
 
     def forward(self, x: Tensor) -> Tensor:
         x = self.layers(x)
+        if self.logits_only:
+            return x
         x = x.reshape(x.shape[0], -1)
         x = self.dropout(x)
         x = self.output(x)

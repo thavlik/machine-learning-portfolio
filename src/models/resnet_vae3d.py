@@ -1,13 +1,9 @@
-import torch
 from torch import nn
-from torch.nn import functional as F
 from .base import BaseVAE
 from .resnet3d import BasicBlock3d, TransposeBasicBlock3d
 from torch import nn, Tensor
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
-from .inception import InceptionV3
+from typing import List
+from math import ceil
 from .util import get_pooling3d, get_activation
 
 
