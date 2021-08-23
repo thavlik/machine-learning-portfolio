@@ -1,7 +1,9 @@
+import os
 import torch
 from torch import optim, Tensor
 from torch.utils.data import Dataset
 from models import create_model
+from plot import get_plot_fn
 from base_experiment import BaseExperiment
 from models import create_model
 from dataset import get_example_shape
@@ -23,7 +25,17 @@ class AugmentationExperiment(BaseExperiment):
                                   input_shape=input_shape)
 
     def sample_images(self, plot: dict, batch: Tensor):
-        print('TODO: sample_images')
+        transformed = self.model(batch)
+        out_path = os.path.join(self.logger.save_dir,
+                                self.logger.name,
+                                f"version_{self.logger.version}",
+                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        fn = get_plot_fn(plot['fn'])
+        fn(x=batch,
+           y=transformed,
+           out_path=out_path,
+           vis=self.visdom(),
+           **plot['params'])
 
     def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []
