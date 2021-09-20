@@ -4,7 +4,7 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 ![](images/data_example.png)
 
 ## Results
-The classification task was solved across a split of subjects (1-8 for training, 10-12 for validation) with clear evidence of generalization. This performance was achieved by training a 4.4 million parameter ResNet-style model for about three hours:
+This classification task was solved across a split of subjects with clear evidence of generalization. In other words, the model was trained on eight subjects and generalized almost perfectly to three novel subjects. This performance was achieved by training a 4.4 million parameter ResNet-style architecture for about three hours:
 
 ![](images/balanced_val_accuracy_small.png)
 
