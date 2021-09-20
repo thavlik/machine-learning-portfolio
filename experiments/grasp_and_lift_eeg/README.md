@@ -46,8 +46,8 @@ Right now my goal is to contribute this dataset to [Lightning Bolts](https://git
 | [classification/basic_hparams.yaml](classification/basic_hparams.yaml)       | 32x2048          | 500 Hz      | Hyperparameter search for `basic.yaml`
 | [classification/halfres.yaml](classification/halfres.yaml)                   | 32x1024          | 250 Hz      | Half-resolution input
 | [classification/halfres_hparams.yaml](classification/basic_hparams.yaml)     | 32x1024          | 250 Hz      | Hyperparameter search for `halfres.yaml`
-| [classification/balanced.yaml](classification/balanced.yaml)                 | 32x2048          | 500 Hz      | Minibatches have equal label distribution
-| [classification/balanced_hparams.yaml](classification/balanced_hparams.yaml) | 32x2048          | 500 Hz      | Hyperparameter search for `balanced.yaml`
+| [classification/balanced.yaml](classification/balanced.yaml)                 | 32x1024          | 250 Hz      | Minibatches have equal label distribution
+| [classification/balanced_hparams.yaml](classification/balanced_hparams.yaml) | 32x1024          | 250 Hz      | Hyperparameter search for `balanced.yaml`
 
 ### Source Files
 | File                                                                     | Notes

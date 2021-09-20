@@ -18,6 +18,11 @@ def recursive_listdir(path: str, suffix: str) -> list:
             if f.endswith(suffix)]
 
 
+def normalize(x: Tensor) -> Tensor:
+    min_ = x.min()
+    return ((x - min_) / (x.max() - min_)) * 2.0 - 1.0
+
+
 class GraspAndLiftEEGDataset(data.Dataset):
     """ 32-channel, 500Hz EEG dataset of subjects performing a various
     grasp-and-lift motor tasks, with per-sample class labels.
@@ -46,6 +51,15 @@ class GraspAndLiftEEGDataset(data.Dataset):
         last_label_only: If true, return only the last sample's labels.
             Must be used with num_samples.
 
+        subjects: Optional list of integers between 1 and 12 limiting
+            which subjects' trials to load. Default is None, which loads
+            all subjects.
+
+        series: Optional list of integers between 1 and either 8 (train)
+            or 2 (test) limiting which series for each subject to load.
+            Default is None, which loads all series for the subjects.
+
+        normalize: Normalize examples to [-1, 1]
     Examples:
         >>> dataset = GraspAndLiftEEGDataset('/data', train=True, download=True, num_samples=1024)
         Downloading from https://grasplifteeg.nyc3.digitaloceanspaces.com/grasp-and-lift-eeg-detection.zip
@@ -97,7 +111,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
                  last_label_only: bool = False,
                  lod: int = 0,
                  subjects: Optional[List[int]] = None,
-                 series: Optional[List[int]] = None):
+                 series: Optional[List[int]] = None,
+                 normalize: bool = False):
         super(GraspAndLiftEEGDataset, self).__init__()
         if num_samples is None and last_label_only:
             raise ValueError(
@@ -105,6 +120,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
         self.num_samples = num_samples
         self.last_label_only = last_label_only
         self.lod = lod
+        self.normalize = normalize
         data_dir = os.path.join(root, 'train' if train else 'test')
         if not os.path.exists(data_dir):
             if not download:
@@ -249,7 +265,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
     def get_labels(self):
         labels = None
         for i, y in enumerate(self.Y):
-            num_examples = y.shape[1] - self.num_samples + 1
+            #num_examples = y.shape[1] - self.num_samples + 1
             y = y[:, self.num_samples-1:].numpy()
             if labels is None:
                 labels = y
@@ -272,6 +288,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
             x = self.X[index]
             x = self._pool_lod(x)
             y = self.Y[index] if self.Y is not None else []
+            if self.normalize:
+                x = normalize(x)
             return (x, y)
         if index >= self.total_examples:
             raise StopIteration
@@ -295,6 +313,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     y = self._pool_lod(y)
             else:
                 y = []
+            if self.normalize:
+                x = normalize(x)
             return x, y
         raise ValueError(f'unable to seek {index}')
 
