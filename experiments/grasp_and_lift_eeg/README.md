@@ -6,11 +6,11 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 ## Results
 The classification task was solved across a split of subjects (1-8 for training, 10-12 for validation) with clear evidence of generalization. This performance was achieved by training a 4.4 million parameter ResNet-style model for about three hours:
 
-![](images/balanced_val_accuracy.png)
+![](images/balanced_val_accuracy_small.png)
 
 For reference, here is the training accuracy:
 
-![](images/balanced_train_accuracy.png)
+![](images/balanced_train_accuracy_small.png)
 
 ## Discussion
 ### Balanced Labels
