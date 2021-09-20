@@ -1,8 +1,5 @@
 include: experiments/grasp_and_lift_eeg/classification/basic.yaml
 
-model_params:
-  hidden_dims: [512, 1024, 1024, 512]
-
 exp_params:
   optimizer:
     lr: 0.008

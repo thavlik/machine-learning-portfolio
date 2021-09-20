@@ -3,12 +3,8 @@ entrypoint: classification
 model_params:
   arch: 'ResNetClassifier1d'
   name: 'ResNetClassifier1d'
-  hidden_dims: [512, 1024, 1024, 512]
+  hidden_dims: [256, 512, 256]
   num_classes: 6
-  dropout: 0.4
-  kernel_size: 9
-  padding: 4
-  #load_weights: /Users/tlhavlik/Repositories/midcon-ml/logs/Classification/version_18/checkpoints/epoch=0.ckpt
 
 exp_params:
   manual_seed: 6602
@@ -32,17 +28,15 @@ exp_params:
       num_workers: 0
   batch_size: 32
   warmup_steps: 512
-  loss_params:
-    baseline_accuracy: 0.9739857316017151
   optimizer:
-    lr: 0.00005
+    lr: 0.0005
     weight_decay: 0.000005
 
 trainer_params:
   max_epochs: 1000000
-  log_every_n_steps: 500
-  val_check_interval: 20000
-  limit_val_batches: 5000
+  log_every_n_steps: 100
+  val_check_interval: 20_000
+  limit_val_batches: 2_000
 
 logging_params:
   save_dir: "logs/"
