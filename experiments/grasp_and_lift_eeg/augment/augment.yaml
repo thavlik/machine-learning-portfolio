@@ -11,6 +11,8 @@ constraint_params:
   name: 'ResNetClassifier1d'
   hidden_dims: [512, 1024, 1024, 512]
   num_classes: 6
+  kernel_size: 9
+  padding: 4
   logits_only: true
   load_weights: /data/eeg/version_7/checkpoints/last.ckpt
 

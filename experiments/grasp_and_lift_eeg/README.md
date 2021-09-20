@@ -4,35 +4,45 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 ![](images/data_example.png)
 
 ## Results
-The classification task was easily solved when training on a random split, but failed to show any degree generalization when trained on a split of subjects or trials - as indicated by strictly decreasing validation accuracy. This outcome reflects disparate levels of difficulty for each splitting method.
+The classification task was solved across a split of subjects (1-8 for training, 10-12 for validation) with clear evidence of generalization. This performance was achieved by training a 4.4 million parameter ResNet-style model for about three hours:
 
-Regardless of the split method, training accuracy increases logarithmically. Near-100% training accuracy is achievable after a week of training on a single 1080 Ti. Random split achieves high validation accuracy while subject and trial splits exhibit unfavorable training dynamics.
+![](images/balanced_val_accuracy.png)
 
-The following depicts >80% relative accuracy* achieved within two days of training - a trend observed with all splitting methods:
+For reference, here is the training accuracy:
+
+![](images/balanced_train_accuracy.png)
+
+## Discussion
+### Balanced Labels
+I was only able to achieve generalization across subjects after balancing each minibatch's distribution of labels. With unbalanced labels, the network would converge to ~99% accuracy very quickly, making it necessary to compute a *relative accuracy* metric that normalizes performance above baseline accuracy. This presented issues with precision, as the optimizer would be forced to work on numbers within a very small range - differences of <2% accuracy in this case. There were issues with optimization more broadly, as batches often lacked labeled examples entirely. ResNet's extensive use of batch normalization is reported to perform poorly with unbalanced labels, so the balancing appears critical to this experiment's success.
+
+## Materials & Methods
+There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. Each method was investigated.
+
+### Random Split
+Randomly assigning examples from the dataset to be withheld for validation is the simplest and least sophisticated way to create a training split. It has the distinct advantage of ensuring the validation examples are substantially similar (but not identical) to training examples. This reliably induces overfitting, which can be leveraged in the early stages of an experiment to ensure a working implementation. The following training dynamics serve as evidence that various aspects of the experiment function as expected:
 
 ![](images/training_acc.jpg)
 
-However, when splitting the data by subject or trial, the validation accuracy (measured here at around 6 and 12 hours of training) is strictly decreasing:
+### Subject/Series Split
+The holy grail of this EEG classification task is the ability to generalize across novel subjects. Though this was one of the first medical AI projects I started working on, such results proved elusive for nearly a year. Most of time, training accuracy would improve as shown above, but validation accuracy would decrease over time:
 
 ![](images/validation_acc.jpg)
 
-This trend reflects immediate overfitting on the training data. Further work is justified to determine if the trial split can be solved with alternative methods.
+Determining whether this was due to the data - i.e. training/validation data being too different - or my own code wasn't straightforward. The solution of balancing labels occured to me when I inquired about the practice in my professional work.
 
-### *Relative Accuracy
-Because >97% of all the dataset's samples are not associated with any class label, the model's overall accuracy does not intuitively reflect how well it performs above baseline performance. The model quickly learns the optimal strategy of outputting mostly zeros - achieving accuracy over 97% - then slowly learns to selectively predict class labels based on features of the input data. Normalizing accuracy above the baseline to [0, 1] in a quantity termed *relative accuracy* elegantly represents model performance after it learns the approximate frequencies of the labels.
+### Future Direction
+GraspAndLiftEEG has grown to be a sort of stock dataset for me. Because my familiarity with it is so high, I find it ideal for multi-dataset experiments. It's a practical guarantee that a model from this experiment will appear in a future experiment.
 
-Label imbalance is a common issue with real-world datasets. The current results train with imbalanced batches of examples. Training on balanced batches has been implemented but the experiments have not yet been performed, but is suspected to improve performance.
-
-## Materials & Methods
-There are three ways to approach this supervised experiment: by splitting train/test examples randomly, by splitting the subjects into train/test groups, and by splitting the trials into train/test groups. EEG is notorious for its sensitivity to electrode placement, making generalization across subjects (and even trials) nontrivial. Each method was attempted.
+Right now my goal is to contribute this dataset to [Lightning Bolts](https://github.com/PyTorchLightning/lightning-bolts/pull/742). While the authors [greenlit its inclusion in late 2020](https://github.com/PyTorchLightning/lightning-bolts/pull/446), I opted to hold off until I could confirm cross-subject generalization was feasible.
 
 ### Experiment Files
-| File                                                                     | Input Size (CxW) | Sample Rate | Notes
-| ------------------------------------------------------------------------ | ---------------- | ----------- | -----
-| [classification/basic.yaml](classification/basic.yaml)                   | 32x2048          | 500 Hz      | "Vanilla" experiment setup
-| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)   | 32x2048          | 500 Hz      | Hyperparameter search for `basic.yaml`
-| [classification/halfres.yaml](classification/halfres.yaml)               | 32x1024          | 250 Hz      | Half-resolution input
-| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml) | 32x1024          | 250 Hz      | Hyperparameter search for `halfres.yaml`
+| File                                                                         | Input Size (CxW) | Sample Rate | Notes
+| ---------------------------------------------------------------------------- | ---------------- | ----------- | -----
+| [classification/basic.yaml](classification/basic.yaml)                       | 32x2048          | 500 Hz      | "Vanilla" experiment setup
+| [classification/basic_hparams.yaml](classification/basic_hparams.yaml)       | 32x2048          | 500 Hz      | Hyperparameter search for `basic.yaml`
+| [classification/halfres.yaml](classification/halfres.yaml)                   | 32x1024          | 250 Hz      | Half-resolution input
+| [classification/halfres_hparams.yaml](classification/basic_hparams.yaml)     | 32x1024          | 250 Hz      | Hyperparameter search for `halfres.yaml`
 | [classification/balanced.yaml](classification/balanced.yaml)                 | 32x2048          | 500 Hz      | Minibatches have equal label distribution
 | [classification/balanced_hparams.yaml](classification/balanced_hparams.yaml) | 32x2048          | 500 Hz      | Hyperparameter search for `balanced.yaml`
 
@@ -42,9 +52,4 @@ There are three ways to approach this supervised experiment: by splitting train/
 | [src/classification.py](/src/classification.py)                          | Base classification experiment
 | [src/dataset/grasp_and_lift_eeg.py](/src/dataset/grasp_and_lift_eeg.py)  | Grasp-and-Lift EEG dataset
 | [src/models/resnet_classifier1d.py](/src/models/resnet_classifier1d.py)  | 1D ResNet classifier model
-
-## Future Direction
-The random splitting method almost trains with the same data as it uses for validation, so it is unsurprising that it yields high validation accuracy. Because there does not appear to be enough data to generalize across subject or trial splits, further efforts could examine the effect of the random split's proportion. It is estimated that relatively few training examples (<50% of the dataset) would be necessary to maintain high validation accuracy.
-
-
 

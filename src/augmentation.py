@@ -21,6 +21,7 @@ class AugmentationExperiment(BaseExperiment):
         self.constraint = create_model(**config['constraint_params'],
                                        input_shape=input_shape)
         self.constraint.requires_grad = False
+        self.constraint.eval()
         self.model = create_model(**config['model_params'],
                                   input_shape=input_shape)
 
