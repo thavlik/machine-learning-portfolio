@@ -12,6 +12,7 @@ For reference, here is the training accuracy:
 
 ![](images/balanced_train_accuracy.png)
 
+
 ## Discussion
 ### Balanced Labels
 I was only able to achieve generalization across subjects after balancing each minibatch's distribution of labels. With unbalanced labels, the network would converge to ~99% accuracy very quickly, making it necessary to compute a *relative accuracy* metric that normalizes performance above baseline accuracy. This presented issues with precision, as the optimizer would be forced to work on numbers within a very small range - differences of <2% accuracy in this case. There were issues with optimization more broadly, as batches often lacked labeled examples entirely. ResNet's extensive use of batch normalization is reported to perform poorly with unbalanced labels, so the balancing appears critical to this experiment's success.
