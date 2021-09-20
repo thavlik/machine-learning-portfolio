@@ -1,5 +1,5 @@
 # thavlik machine learning portfolio
-I am deep learning researcher that is applying for medical school in 2021 and thought it necessary to offer concrete examples of how I work with medical data.
+I am deep learning researcher that is applying for the 2022 medical school admission cycle and thought it necessary to offer concrete examples of how I work with medical data.
 
 For obvious reasons, none of my professional work is featured here.
 
