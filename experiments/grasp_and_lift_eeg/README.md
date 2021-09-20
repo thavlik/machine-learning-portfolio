@@ -11,7 +11,7 @@ The classification task was solved across a split of subjects (1-8 for training,
 For reference, here is the training accuracy and loss, respectively:
 
 ![](images/balanced_train_accuracy_small.png)
-![](images/balanced_train_loss_small.png)
+![](images/balanced_train_loss.png)
 
 ## Discussion
 ### Balanced Labels
