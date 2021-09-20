@@ -13,7 +13,7 @@ For reference, here is the training accuracy and loss, respectively:
 ![](images/balanced_train_accuracy_small.png)
 ![](images/balanced_train_loss.png)
 
-This performance was achieved by training a 4.4 million parameter ResNet-style architecture for about three hours (1x 1080 Ti).
+This performance was achieved by training a 4.4 million parameter ResNet-style architecture for about three hours on a single 1080 Ti.
 
 ## Discussion
 ### Balanced Labels
