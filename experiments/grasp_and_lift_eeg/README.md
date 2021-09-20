@@ -4,7 +4,7 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 ![](images/data_example.png)
 
 ## Results
-This classification task was solved across a split of subjects with clear evidence of generalization. In other words, the model was trained on eight subjects and generalized almost perfectly to three novel subjects.
+The classification task was solved across a split of subjects with clear evidence of generalization. In other words, a model was trained on eight subjects and generalized almost perfectly to three novel subjects.
 
 ![](images/balanced_val_accuracy_small.png)
 
