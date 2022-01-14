@@ -1,5 +1,5 @@
 # Thomas Havlik's Machine Learning Portfolio
-I am deep learning researcher that is applying for the 2022 medical school admission cycle and thought it necessary to offer concrete examples of how I work with medical data.
+I am deep learning researcher that is applying for the 2023 medical school admission cycle and thought it necessary to offer concrete examples of how I work with medical data.
 
 For obvious reasons, none of my professional work is featured here.
 
