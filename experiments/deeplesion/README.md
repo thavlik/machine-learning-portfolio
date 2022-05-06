@@ -27,7 +27,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-This design produced ***Figure 1*** after 96+ hours of training.
+This design produced ***Figure 1*** (above) after 96+ hours of training.
 
 ### Multivariate Guassian
 To add sophistication, the next iteration attempts to model the lesion's bounding box as a multivariate gaussian. This means that instead of the model directly predicting the class labels, it predicts mean and standard deviation parameters that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use in was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unlike with variational autoencoders - which use a log normal distribution - this implementation uses the classic normal distribution:
