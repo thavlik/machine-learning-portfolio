@@ -56,3 +56,10 @@ Right now my goal is to contribute this dataset to [Lightning Bolts](https://git
 | [src/dataset/grasp_and_lift_eeg.py](/src/dataset/grasp_and_lift_eeg.py)  | Grasp-and-Lift EEG dataset
 | [src/models/resnet_classifier1d.py](/src/models/resnet_classifier1d.py)  | 1D ResNet classifier model
 
+## License
+### Data
+Attribution 4.0 International Creative Commons License.
+
+### Code
+Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
+

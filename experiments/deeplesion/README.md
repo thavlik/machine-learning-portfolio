@@ -96,3 +96,10 @@ A hyperparameter search was carried out to determine the effect of batch normali
 ## Future Direction
 DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (unsupervised pre-training) are critical for nontrivial deep learning problems. Incidentally, their use is widespread (refer to the *Relevant Literature* section of the repository root).
 
+## License
+### Data
+DeepLesion is property of the National Institute of Health's Clinical Center and is publicly available at no cost.
+
+### Code
+Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
+
