@@ -25,7 +25,7 @@ These are tasks that I haven't solved yet, mostly because training on fMRI scans
 - [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 
 ## Datasets
-These are datasets that I have authored/compiled personally.
+These are datasets that I have authored/compiled personally. My interest in the modeling of visual manifolds was first inspired by [recurrent dreams of mine that assume the form of video games](https://en.wikipedia.org/wiki/Tetris_effect), particularly those from my childhood. I have always found such media of dreaming to be both visually intuitive and semantically potent - attributes critical for unsupervised learning.
 
 - [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset): 170+ hours of unlabeled Doom I/II gameplay
 - [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 200+ hours of unlabeled Quake I gameplay
