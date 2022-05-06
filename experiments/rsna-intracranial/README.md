@@ -15,7 +15,7 @@ Because model accuracy is high, all indicators bars are green. However, the `Con
 
 ## Materials & Methods
 ### Training Dynamics
-Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function, which likely only worked so well because of the dataset's relatively even distribution of class labels.
+Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function. Label balancing was not necessary, likely because of the dataset's relatively even distribution of class labels.
 
 ![training tensorboard](images/training-dynamics.jpg)
 
