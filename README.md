@@ -56,7 +56,8 @@ Many of the ideas implemented in this repository were first detailed in the foll
 This repository was intended to be repurposed. As part of the open source community, I do not have the perception that a minor contribution or bug fix from someone else dilutes the claim that this repository is representative of my capabilities. Issues and pull requests are welcome.
 
 ## License
-Everything is released under [MIT](LICENSE-MIT) / [Apache 2.0](LICENSE-Apache) dual license, which is extremely permissive. Open an issue if somehow neither is sufficient.
+Everything in this repository is released under [MIT](LICENSE-MIT) / [Apache 2.0](LICENSE-Apache) dual license, which is extremely permissive. Open an issue if somehow these terms are insufficient.
 
 ## Contact
 thavlik at protonmail dot com
+

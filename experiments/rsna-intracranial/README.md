@@ -47,3 +47,7 @@ Training at half the input resolution (256x256) can be seen as analagous to doub
 
 ## Download Results
 The weights, configs, and logs for two runs are available for download: [Link](https://nyc3.digitaloceanspaces.com/rsna-ich/results/RSNA_HalfRes.zip)
+
+## License
+Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissible enough and we'll add whatever free license is necessary for your project.
+
