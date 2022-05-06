@@ -4,6 +4,7 @@ These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesio
 ## Results
 After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split (prediction is yellow, ground truth is green):
 
+***Figure 1***
 ![](images/initial_localization.png)
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left) suggest these examples may be "harder" than those in the training split.
@@ -25,8 +26,7 @@ class MyLocalizationModel(nn.Module):
         return bbox
 ```
 
-This design produced the 3x2 grid of validation examples under the *Results* section (above) after 96+ hours of training.
-
+This design produced ***Figure 1*** after 96+ hours of training.
 
 ### Multivariate Guassian
 To add sophistication, the next iteration attempts to model the lesion's bounding box as a multivariate gaussian. This means that instead of the model directly predicting the class labels, it predicts mean and standard deviation parameters that are then used to sample a normal distribution. This is also known as the *reparametrization trick*, and its use in was heavily inspired by [Kingma & Welling 2013](https://arxiv.org/abs/1312.6114). Unlike with variational autoencoders - which use a log normal distribution - this implementation uses the classic normal distribution:
