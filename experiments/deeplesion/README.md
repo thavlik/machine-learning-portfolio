@@ -69,7 +69,7 @@ class MyLocalizationModel(nn.Module):
 
 This effectively limits the influence of the distribution and favors the central value with lower values of `kappa`, allowing this technique to be blended with the direct approach.
 
-Unsurprisingly, the multivariate gaussian architecture performs comparably to the direct approach. Visualization of lesion margins has not yet been performed.
+The multivariate gaussian architecture performs comparably to the direct approach, with the latter yielding the best results. Gaussian models tend to require more aggressive regularization, resulting in increased training, though with higher performance. Under ideal conditions, it is strongly suspected that multivariate gaussian would outperform direct prediction.
 
 ### Half-Resolution Training
 Due to perceptual limitations with the 3x3 convolutional kernel, a large number of filters for each layer must be used to extract details from full resolution inputs. Halving the input resolution results in an effective doubling of kernel dimensions with no effect on parameter count. By increasing the model's receptive field, large / low frequency details can be detected with fewer parameters, conferring larger batch sizes and improved training performance.
