@@ -1,5 +1,5 @@
 # Neural Rendering (work in progress)
-Graphics rendering pipelines are becoming exponentially more complicated. Generative adversarial networks (GANs) are able to produce realistic imagery ([Goodfellow 2014](https://papers.nips.cc/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf), [Karras et al 2019](https://arxiv.org/abs/1912.04958)), providing an alternative means of achieving hyper-realistic computer graphics.
+Graphics rendering pipelines are becoming exponentially more complicated. Generative adversarial networks (GANs) are able to produce realistic imagery ([Goodfellow 2014](https://papers.nips.cc/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf), [Karras et al 2019](https://arxiv.org/abs/1912.04958)), providing an alternative means of achieving computer graphics indistinguishable from reality.
 
 My interest in AI graphics is motivated by the goal of seeing the technology put to use in surgical training tools. While the applications are innumerable, surgery simulators with differentiable patient models - allowing the educator to gradually increase the difficulty of a case - are particularly interesting to me.
 
