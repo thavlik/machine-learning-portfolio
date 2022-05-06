@@ -94,7 +94,7 @@ A hyperparameter search was carried out to determine the effect of batch normali
 | [src/models/resnet_localizer2d.py](/src/models/resnet_localizer2d.py)    | 2D ResNet localizer model
 
 ## Future Direction
-DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (unsupervised pre-training) are critical for nontrivial deep learning problems. Incidentally, their use is widespread (refer to the *Relevant Literature* section of the repository root).
+DeepLesion appears to be a "hard" problem, manifesting as poor convergence and data efficiency. [Browatzki & Wallraven 2019](https://arxiv.org/abs/1911.10448) addresses similar problems with facial landmark prediction by sandwiching freshly initialized, trainable layers with frozen layers pre-trained on an unsupervised task, increasing data efficiency by several orders of magnitude, furthermore leading to convergence - even in cases where before it was not possible. Different flavors of this technique (unsupervised pre-training) are critical for nontrivial deep learning problems. Incidentally, their use is widespread. [1](https://arxiv.org/abs/1911.10448) [2](https://arxiv.org/abs/1707.08475)
 
 ## License
 ### Data
