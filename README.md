@@ -1,7 +1,7 @@
 # Thomas Havlik's Machine Learning Portfolio
 I am deep learning researcher that is applying for the 2023 medical school admission cycle and thought it necessary to offer concrete examples of how I work with medical data.
 
-For obvious reasons, none of my professional work is featured here.
+For obvious reasons, none of my professional medical AI work is featured here.
 
 ## Experiments
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes either empirical measurement or the judgment of attending physicians.
