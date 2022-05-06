@@ -10,6 +10,7 @@ After spending over $2,000 of my wages running these experiments, I believe addi
 
 Research is convoluted (pun intended); large amounts of time and effort are often necessary to observe any results at all - even bad results. Additional work is then invested out of faith in one's techniques, frequently to no avail. When this happens, it seems to me the appropriate course of action is to humbly publish one's theoretical and empirical findings, so that others may benefit, al la [Mikolić et al 2020](https://doi.org/10.1089/neu.2020.7074). Even though the structure of medical data is highly amenable to deep learning, it is important not to underestimate the difficulty of achieving performance on par with physicians.
 
+Completed projects:
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
