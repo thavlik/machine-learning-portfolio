@@ -5,6 +5,7 @@ These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesio
 After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split (prediction is yellow, ground truth is green):
 
 ***Figure 1***
+
 ![](images/initial_localization.png)
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. Instances where the model fails to localize to anything remotely lesion-like (top left) suggest these examples may be "harder" than those in the training split.
