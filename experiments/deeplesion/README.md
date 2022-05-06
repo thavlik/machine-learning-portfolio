@@ -4,7 +4,7 @@ These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesio
 ## Results
 After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split (prediction is yellow, ground truth is green):
 
-![](images/initial_localization.png)
+![Figure 1](images/initial_localization.png)
 
 ***Figure 1***
 
