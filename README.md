@@ -1,3 +1,5 @@
+![](images/banner.png)
+
 # Thomas Havlik's Machine Learning Portfolio
 I am deep learning researcher that is applying for the 2023 medical school admission cycle and thought it necessary to offer concrete examples of how I work with medical data.
 
