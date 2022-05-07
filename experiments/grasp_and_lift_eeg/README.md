@@ -58,7 +58,7 @@ Right now my goal is to contribute this dataset to [Lightning Bolts](https://git
 
 ## License
 ### Data
-Attribution 4.0 International Creative Commons License.
+EEG data is released under [Attribution 4.0 International Creative Commons License](https://creativecommons.org/licenses/by/4.0/).
 
 ### Code
 Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
