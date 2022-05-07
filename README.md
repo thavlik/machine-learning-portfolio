@@ -20,7 +20,7 @@ I have solved all of these tasks, so I get to be proud of them!
 
 ### Works in progress
 These are tasks that I haven't solved yet, mostly because training on fMRI scans is nontrivial and requires way more video memory than I have at my disposal. As the potential for machine interpretation of fMRI data is enormous, I am determined to deliver on a project with this modality.
-- [Forrest Gump](experiments/forrestgump/README.md) (WIP): infer features of an audio-only film with fMRI
+- [StudyForrest](experiments/forrestgump/README.md) (WIP): infer features of an audio-only film with fMRI
 - [LA5c Study](experiments/la5c/README.md) (WIP): predict participants' questionnaire answers from their MRI scans
 - [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 

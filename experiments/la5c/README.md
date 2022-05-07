@@ -24,3 +24,10 @@ TODO: show which questions were selected
 | [src/classification.py](/src/classification.py)                          | Base classification experiment
 | [src/dataset/la5c.py](/src/dataset/la5c.py)                              | LA5c dataset class
 | [src/models/resnet_classifier3d.py](/src/models/resnet_classifier3d.py)  | 3D ResNet classifier model
+
+## License
+### Data
+LA5c is released under the [Creative Commons Zero (CC0)](https://creativecommons.org/choose/zero/) license.
+
+### Code
+Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.

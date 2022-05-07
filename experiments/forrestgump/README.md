@@ -1,5 +1,5 @@
-# Forrest Gump fMRI (work in progress)
-These experiments utilize the Forrest Gump fMRI dataset ([paper](https://www.nature.com/articles/sdata20143), [data](https://openneuro.org/datasets/ds000113/versions/1.3.0)). 20 participants were stimulated by the audio feature film *Forrest Gump* and brain activity was recorded with [BOLD imaging](https://en.wikipedia.org/wiki/Blood-oxygen-level-dependent_imaging) on a 7-tesla MRI, yielding a 3D image (36x160x160) every two seconds for the duration of the film. The dataset includes start/end times and class labels for each of the film's 198 scenes. Researchers attempt to correlate features of the fMRI scans with each scene's class labels.
+# StudyForrest fMRI (work in progress)
+These experiments utilize the [StudyForrest](https://www.studyforrest.org/) fMRI dataset ([paper](https://www.nature.com/articles/sdata20143), [data](https://openneuro.org/datasets/ds000113/versions/1.3.0)). 20 participants were stimulated by the audio feature film *Forrest Gump* and brain activity was recorded with [BOLD imaging](https://en.wikipedia.org/wiki/Blood-oxygen-level-dependent_imaging) on a 7-tesla MRI, yielding a 3D image (36x160x160) every two seconds for the duration of the film. The dataset includes start/end times and class labels for each of the film's 198 scenes. Researchers attempt to correlate features of the fMRI scans with each scene's class labels.
 
 ## Results
 TODO
@@ -37,3 +37,10 @@ In addition to the unaligned (raw) scans, the dataset authors provided two align
 While deep learning and fMRI are a powerful combination, the high dimensionality of fMRI complicates the practice. fMRI input tensors are 4D, and [pytorch](https://pytorch.org/) only implements up to [3D convolutions](https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html). This is sufficient when the model considers a single BOLD frame, but problematic when dealing with multiple. It is supposed that multi-frame input with a 4D (likely convolutional) kernel has potential to be outperform single-frame models built upon 3D convolutions, especially on more complex tasks. For example, instead of predicting class labels for a single BOLD frame, the model can predict class labels at a higher resolution: one BOLD frame (acquired in 2.0 seconds) is used to predict a sequence of eight 0.25s-long labels, corresponding to the scene labels.
 
 The authors of the data included several additional experiment results with many of the participants. These experiments present an opportunity to train a model on more than one task - a technique that can improve generalization on a single task. 
+
+## License
+### Data
+The StudyForrest data is released under [CC-by-SA](https://creativecommons.org/licenses/by-sa/4.0/).
+
+### Code
+Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
