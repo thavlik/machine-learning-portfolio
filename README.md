@@ -49,7 +49,7 @@ docker run -it \
     python src/main.py --config path/to/experiment/config.yaml
 ```
 
-If you must run your experiments outside of a container, refer to the [`Dockerfile`](Dockerfile) for notes on dependency installation. It's not possible to install the correct versions of some libraries using only `pip install -r requirements.txt`, hence those dependencies' versions are unconstrained. 
+If you must run your experiments outside of a container, refer to the [`Dockerfile`](Dockerfile) for notes on dependency installation. It's not possible to install the correct versions of some libraries using only `pip install -r requirements.txt`, hence those dependencies' versions are unconstrained.
 
 ### Hardware Requirements
 Almost all of these experiments are optimized to run on 11 GiB video cards and use as much memory as possible, either by increasing batch size or parameter count. Most experiments will not run on an 11 GiB card that is also driving a display, as the display itself typically requires at least a few hundred MiB. 
