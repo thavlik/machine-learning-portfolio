@@ -1,6 +1,7 @@
 FROM rayproject/ray-ml:latest-gpu
 USER root
-RUN apt-get update \
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub \
+    && apt-get update \
     && apt-get install -y \
         chromium-browser \
         fonts-liberation \
