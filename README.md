@@ -29,6 +29,12 @@ These are datasets that I have authored/compiled personally. My interest in the 
 
 - [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset): 170+ hours of unlabeled Doom I/II gameplay
 - [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 200+ hours of unlabeled Quake I gameplay
+- [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): a collection of per-pixel labels for neurosurgery videos (WIP)
+
+## Tools
+- [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative open source platform for easily creating labeled datasets from YouTube videos
+- [kindest](https://github.com/midcontinentcontrols/kindest): my custom toolchain used across all of my cloud-native projects, including deep learning
+- [Midas Download Tool](https://github.com/thavlik/midas-download-tool)
 
 ## Running Code
 Configurations are defined in yaml files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
