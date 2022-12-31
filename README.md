@@ -34,7 +34,7 @@ These are datasets that I have authored/compiled personally. My interest in the 
 ## Tools
 - [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative open source platform for easily creating labeled datasets from YouTube videos
 - [kindest](https://github.com/midcontinentcontrols/kindest): my custom toolchain used across all of my cloud-native projects, including deep learning
-- [Midas Download Tool](https://github.com/thavlik/midas-download-tool)
+- [Midas Download Tool](https://github.com/thavlik/midas-download-tool): scripts that automate a headless web browser to bulk download data
 
 ## Running Code
 Configurations are defined in yaml files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
