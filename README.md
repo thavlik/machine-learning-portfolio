@@ -34,7 +34,7 @@ These are datasets that I have compiled. My interest in the modeling of visual m
 ## Tools
 - [kindest](https://github.com/midcontinentcontrols/kindest): my custom toolchain used across all of my cloud-native projects
 - [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative open source platform for easily creating labeled datasets from YouTube videos
-- [MIDAS Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
+- [Midas Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
 
 ## Running Code
 Configurations are defined in yaml files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
