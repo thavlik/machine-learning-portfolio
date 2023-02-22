@@ -13,7 +13,7 @@ After spending over $3,000 of my wages running these experiments, I believe addi
 Research is convoluted (pun intended); large amounts of time and effort are often necessary to observe any results at all - even bad results. Additional work is then invested out of faith in one's techniques, frequently to no avail. When this happens, it seems to me the appropriate course of action is to humbly publish one's theoretical and empirical findings, so that others may benefit, al la [Mikolić et al 2020](https://doi.org/10.1089/neu.2020.7074). Even though the structure of medical data is highly amenable to deep learning, it is important not to underestimate the difficulty of achieving performance on par with physicians.
 
 ### Completed projects
-I have solved all of these tasks, so I get to be proud of them!
+This is a list of tasks that I have "solved", meaning that I've trained a model capable of doing the task with respectable accuracy. While better performance is always achievable given more resources, I opt to consider a solved task completed and I move onto new tasks.
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
@@ -25,16 +25,16 @@ These are tasks that I haven't solved yet, mostly because training on fMRI scans
 - [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 
 ## Datasets
-These are datasets that I have authored/compiled personally. My interest in the modeling of visual manifolds was first inspired by [recurrent dreams of mine that assume the form of video games](https://en.wikipedia.org/wiki/Tetris_effect), particularly those from my childhood. I have always found such media of dreaming to be both visually intuitive and semantically potent - attributes critical for unsupervised learning.
+These are datasets that I have compiled. My interest in the modeling of visual manifolds was first inspired by [recurrent dreams of mine that assume the form of video games](https://en.wikipedia.org/wiki/Tetris_effect), particularly those from my childhood. I have always found such media of dreaming to be both visually intuitive and semantically potent - attributes critical for unsupervised learning. 
 
-- [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset): 170+ hours of unlabeled Doom I/II gameplay
-- [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 200+ hours of unlabeled Quake I gameplay
-- [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): a collection of per-pixel labels for neurosurgery videos (WIP)
+- [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset): 170+ hours of unlabeled Doom 1/2 gameplay
+- [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 200+ hours of unlabeled Quake 1 gameplay
+- [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing (WIP)
 
 ## Tools
+- [kindest](https://github.com/midcontinentcontrols/kindest): my custom toolchain used across all of my cloud-native projects
 - [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative open source platform for easily creating labeled datasets from YouTube videos
-- [kindest](https://github.com/midcontinentcontrols/kindest): my custom toolchain used across all of my cloud-native projects, including deep learning
-- [Midas Download Tool](https://github.com/thavlik/midas-download-tool): scripts that automate a headless web browser to bulk download data
+- [MIDAS Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
 
 ## Running Code
 Configurations are defined in yaml files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
