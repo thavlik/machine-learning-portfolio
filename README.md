@@ -32,7 +32,6 @@ These are datasets that I have compiled. My interest in the modeling of visual m
 - [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing (WIP)
 
 ## Tools
-- [kindest](https://github.com/midcontinentcontrols/kindest): my custom toolchain used across all of my cloud-native projects
 - [vpn-operator](https://github.com/thavlik/vpn-operator): a Kubernetes operator for VPN sidecars written in pure Rust.
 - [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative open source platform for easily creating labeled datasets from YouTube videos
 - [Midas Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
