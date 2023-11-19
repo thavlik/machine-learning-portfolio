@@ -1,7 +1,7 @@
 ![banner](images/banner.png)
 
 # Thomas Havlik's Machine Learning Portfolio
-I am deep learning researcher that is applying for the 2023 medical school admission cycle and thought it necessary to offer concrete examples of how I work with medical data.
+I am deep learning researcher that is applying for the 2024 medical school admission cycle. It seems benficial to offer concrete examples of how I work with medical data. These projects are enumerated here, and each has its own page that details the challenges faced and the results achieved.
 
 For obvious reasons, none of my professional medical AI work is featured here.
 
@@ -10,10 +10,10 @@ These experiments make use of ground truth provided with the data. Ground truth 
 
 After spending over $3,000 of my wages running these experiments, I believe additional progress can be made anywhere. However, my limited budget necessitates that only the most promising experiments see a GPU.
 
-Research is convoluted (pun intended); large amounts of time and effort are often necessary to observe any results at all - even bad results. Additional work is then invested out of faith in one's techniques, frequently to no avail. When this happens, it seems to me the appropriate course of action is to humbly publish one's theoretical and empirical findings, so that others may benefit, al la [Mikolić et al 2020](https://doi.org/10.1089/neu.2020.7074). Even though the structure of medical data is highly amenable to deep learning, it is important not to underestimate the difficulty of achieving performance on par with physicians.
+Research is convoluted (pun intended); large amounts of time and effort are often necessary to observe any results at all - even bad results. Additional work is then invested out of faith in one's techniques, frequently to no avail. When this happens, it seems to me the appropriate course of action is to humbly publish one's theoretical and empirical findings, so that others may benefit. Even though the structure of medical data is highly amenable to deep learning, it is important not to underestimate the difficulty of achieving performance on par with physicians.
 
 ### Completed projects
-This is a list of tasks that I have "solved", meaning that I've trained a model capable of doing the task with respectable accuracy. While better performance is always achievable given more resources, I opt to consider a solved task completed and I move onto new tasks.
+This is a list of tasks that I have "solved", meaning that I've trained a model capable of performing the task with respectable accuracy.
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
 - [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
@@ -32,12 +32,12 @@ These are datasets that I have compiled. My interest in the modeling of visual m
 - [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing (WIP)
 
 ## Tools
-- [vpn-operator](https://github.com/thavlik/vpn-operator): a Kubernetes operator for VPN sidecars written in pure Rust.
-- [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative open source platform for easily creating labeled datasets from YouTube videos
+- [vpn-operator](https://github.com/thavlik/vpn-operator): a Kubernetes controller for VPN sidecars written in pure Rust.
+- [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative, open source platform for easily creating labeled datasets from YouTube videos
 - [Midas Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
 
 ## Running Code
-Configurations are defined in yaml files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
+Configurations are defined in `.yaml` files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
 
 `python3 src/main.py --config experiments/mnist/vae/fid.yaml`
 
