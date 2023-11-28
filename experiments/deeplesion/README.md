@@ -10,7 +10,7 @@ After several days of training on a single 2080 Ti, there was some evidence of g
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. This may be due to the erroneous inclusion of labeled lymph nodes, which are said by the dataset authors to comprise only a "small proportion" of the examples. Instances where the model fails to localize to anything remotely lesion-like (top left) suggest these examples may be more challenging than those in the training split.
 
-Because validation data is never exposed to the model during training, partial overlaps reflect weak generalization. This is hypothesized to be caused by the model granting excess saliency to the features of nearby tissue, as opposed to focusing more on the actual tumor pixels. This could be caused by discrepancies in surrounding tissue deformation between training and validation splits.
+Because validation data is never exposed to the model during training, partial overlaps reflect weak generalization. This is hypothesized to be caused by the model granting excess saliency to the features of nearby tissue, as opposed to focusing more on the actual tumor pixels. This could be the result of discrepancies in surrounding tissue deformation between training and validation splits.
 
 ## Materials & Methods
 ### Direct Prediction
