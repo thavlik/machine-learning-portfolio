@@ -42,11 +42,11 @@ Right now my goal is to contribute this dataset to [Lightning Bolts](https://git
 ### Experiment Files
 | File                                                                         | Input Size (CxW) | Sample Rate | Notes
 | ---------------------------------------------------------------------------- | ---------------- | ----------- | -----
-| [classification/basic.yaml](classification/basic.yaml)                       | 32x2048          | 500 Hz      | "Vanilla" experiment setup
+| [classification/basic.yaml](classification/basic.yaml)                       | 32x2048          | 500 Hz      | "Vanilla" experiment setup (performs poorly)
 | [classification/basic_hparams.yaml](classification/basic_hparams.yaml)       | 32x2048          | 500 Hz      | Hyperparameter search for `basic.yaml`
 | [classification/halfres.yaml](classification/halfres.yaml)                   | 32x1024          | 250 Hz      | Half-resolution input
 | [classification/halfres_hparams.yaml](classification/basic_hparams.yaml)     | 32x1024          | 250 Hz      | Hyperparameter search for `halfres.yaml`
-| [classification/balanced.yaml](classification/balanced.yaml)                 | 32x1024          | 250 Hz      | Minibatches have equal label distribution
+| [classification/balanced.yaml](classification/balanced.yaml)                 | 32x1024          | 250 Hz      | Minibatches have equal label distribution (performs well)
 | [classification/balanced_hparams.yaml](classification/balanced_hparams.yaml) | 32x1024          | 250 Hz      | Hyperparameter search for `balanced.yaml`
 
 ### Source Files
