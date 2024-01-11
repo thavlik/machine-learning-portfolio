@@ -1,6 +1,6 @@
 ![banner](images/banner.png)
 
-# Thomas Havlik's Machine Learning Portfolio
+# Thomas Havlik's Medical AI Portfolio
 I am deep learning researcher that is applying for the 2024 medical school admission cycle. It seems beneficial to offer concrete examples of how I work with medical data. These projects are enumerated here, and each has its own page that details the challenges faced and the results achieved.
 
 For obvious reasons, none of my professional medical AI work is featured here.
