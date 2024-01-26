@@ -32,7 +32,9 @@ These are datasets that I have compiled. My interest in the modeling of visual m
 - [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing (WIP)
 
 ## Tools
-- [e-Shadowing Transcriber](https://github.com/thavlik/transcriber): a cloud-native tool for streamlining the medical e-Shadowing experience
+These are various pieces of software I have written that pertain to deep learning research and medical education. Especially when coupled with machine learning, I think the potential for software to enhance medical education is substantial.
+
+- [e-Shadowing Transcriber](https://github.com/thavlik/transcriber): an application for streamlining the medical e-Shadowing experience
 - [vpn-operator](https://github.com/thavlik/vpn-operator): a Kubernetes controller for VPN sidecars written in pure Rust.
 - [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative, open source platform for easily creating labeled datasets from YouTube videos
 - [Midas Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
