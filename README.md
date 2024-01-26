@@ -4,7 +4,7 @@
 [<img src="https://img.shields.io/badge/maintenance%20status-actively%20developed-brightgreen">](https://github.com/thavlik/machine-learning-portfolio)
 [<img src="https://img.shields.io/badge/License-Apache_2.0-orange.svg">](./LICENSE-Apache)
 [<img src="https://img.shields.io/badge/License-MIT-brightblue.svg">](./LICENSE-MIT)
-[<img src="https://img.shields.io/badge/Language-python-yellow.svg">](https://www.python.org/)
+[<img src="https://img.shields.io/badge/Language-python-FFD43B.svg">](https://www.python.org/)
 
 I am deep learning researcher that is applying for the 2024 medical school admission cycle. It seems beneficial to offer concrete examples of how I work with medical data. These projects are enumerated here, and each has its own page that details the challenges faced and the results achieved.
 
