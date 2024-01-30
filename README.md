@@ -1,6 +1,11 @@
 ![banner](images/banner.png)
 
 # Thomas Havlik's Medical AI Portfolio
+[<img src="https://img.shields.io/badge/maintenance%20status-actively%20developed-brightgreen">](https://github.com/thavlik/machine-learning-portfolio)
+[<img src="https://img.shields.io/badge/License-Apache_2.0-orange.svg">](./LICENSE-Apache)
+[<img src="https://img.shields.io/badge/License-MIT-lightblue.svg">](./LICENSE-MIT)
+[<img src="https://img.shields.io/badge/Language-python-FFD43B.svg">](https://www.python.org/)
+
 I am deep learning researcher that is applying for the 2024 medical school admission cycle. It seems beneficial to offer concrete examples of how I work with medical data. These projects are enumerated here, and each has its own page that details the challenges faced and the results achieved.
 
 For obvious reasons, none of my professional medical AI work is featured here.
@@ -28,7 +33,9 @@ These are datasets that I have compiled. My interest in the modeling of visual m
 - [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing (WIP)
 
 ## Tools
-- [e-Shadowing Transcriber](https://github.com/thavlik/transcriber): a cloud-native tool for streamlining the medical e-Shadowing experience
+These are various pieces of software I have written that pertain to deep learning research and medical education. Especially when coupled with machine learning, I think the potential for software to enhance medical education is substantial.
+
+- [e-Shadowing Transcriber](https://github.com/thavlik/transcriber): an application for streamlining the medical e-Shadowing experience
 - [vpn-operator](https://github.com/thavlik/vpn-operator): a Kubernetes controller for VPN sidecars written in pure Rust.
 - [t4vd (Tool for Video Data)](https://github.com/thavlik/t4vd): a collaborative, open source platform for easily creating labeled datasets from YouTube videos
 - [Midas Download Tool](https://github.com/thavlik/midas-download-tool): a collection of scripts that bulk downloads MRIs made public by Kitware on their MIDAS platform using a headless web browser
