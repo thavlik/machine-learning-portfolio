@@ -35,7 +35,7 @@ The holy grail of this EEG classification task is the ability to generalize acro
 Determining whether this was due to the data - i.e. training/validation data being too different - or my own code wasn't straightforward. The solution of balancing labels occured to me when I inquired about the practice in my professional work.
 
 ### Future Direction
-GraspAndLiftEEGDetection has grown to be a "stock" dataset for me. Because my familiarity with it is so high, I find it ideal for multi-dataset experiments. It's a practical guarantee that a model from this experiment will appear in a future experiment.
+This experiment was a massive success and `GraspAndLiftEEGDetection` has since become a "stock" dataset for me. Because my familiarity with it is so high, I find it ideal for multi-dataset experiments. I fully intend to use the trained model from this experiment in future projects.
 
 Right now my goal is to contribute this dataset to [Lightning Bolts](https://github.com/PyTorchLightning/lightning-bolts/pull/742). While the authors [greenlit its inclusion in late 2020](https://github.com/PyTorchLightning/lightning-bolts/pull/446), I opted to hold off until I could confirm cross-subject generalization was feasible.
 
