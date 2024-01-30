@@ -8,7 +8,7 @@
 
 I am deep learning researcher that is applying for the 2024 medical school admission cycle. It seems beneficial to offer concrete examples of how I work with medical data. These projects are enumerated here, and each has its own page that details the challenges faced and the results achieved.
 
-For obvious reasons, none of my professional medical AI work is featured here.
+In accordance with non-disclosure, none of my professional medical AI work is featured here.
 
 ## Experiments
 These experiments make use of ground truth provided with the data. Ground truth for medical data typically constitutes either empirical measurement or the judgment of attending physicians.
