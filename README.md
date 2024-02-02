@@ -43,7 +43,9 @@ These are various pieces of software I have written that pertain to either medic
 ## Running Code
 Configurations are defined in `.yaml` files, which can be composed via the `include:` directive to conveniently form derivative experiments with minimal boilerplate. An experiment can be run by passing the path to the input yaml as the `--config` flag to `src/main.py`:
 
-`python3 src/main.py --config experiments/mnist/vae/fid.yaml`
+```bash
+python3 src/main.py --config experiments/mnist/vae/fid.yaml
+```
 
 **Note: the script assumes the current working directory is the root of this repository**. By convention, all file and directory paths in yaml files are given relative to the repository root.
 
