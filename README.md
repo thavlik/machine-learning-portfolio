@@ -30,7 +30,7 @@ These are datasets that I have compiled. My interest in the modeling of visual m
 
 - [Doom Gameplay Dataset](https://github.com/thavlik/doom-gameplay-dataset): 170+ hours of unlabeled [Doom 1/2](https://en.wikipedia.org/wiki/Doom_(1993_video_game)) gameplay
 - [Quake Gameplay Dataset](https://github.com/thavlik/quake-gameplay-dataset): 200+ hours of unlabeled [Quake 1](https://en.wikipedia.org/wiki/Quake_(video_game)) gameplay
-- [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing (WIP)
+- [Neurosurgery Video Dataset](https://github.com/thavlik/neurosurgery-video-dataset) (WIP): brain & spine surgery videos curated with the intent of enhancing neurosurgical e-Shadowing
 
 ## Tools
 These are various pieces of software I have written that pertain to deep learning research and medical education. I think the potential for software to enhance medical education is substantial, especially given the promises of machine learning.
