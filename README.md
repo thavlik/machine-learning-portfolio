@@ -16,8 +16,8 @@ These experiments make use of ground truth provided with the data. Ground truth 
 ### Completed projects
 This is a list of tasks that I have "solved", meaning that I've trained a model capable of performing the task with respectable accuracy.
 - [RSNA Intracranial Hemorrhage Prediction](experiments/rsna-intracranial/README.md): classification of brain CT scans by hemorrhage type
-- [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
 - [Grasp-and-Lift EEG Detection](experiments/grasp_and_lift_eeg/README.md): fine-grain detection of motor activity using EEG
+- [DeepLesion](experiments/deeplesion/README.md): localization of tumors on abdominal CT scans
 
 ### Works in progress
 These are tasks that I haven't solved yet, mostly because training on fMRI scans is nontrivial and requires way more video memory than I have at my disposal. As the potential for machine interpretation of fMRI data is enormous, I am determined to deliver on a project with this modality.
