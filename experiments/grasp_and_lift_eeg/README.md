@@ -5,10 +5,9 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 Note: only 8 of the 24 channels are depicted here.
 
 ## Results
-The classification task was solved across a split of subjects with clear evidence of generalization. In other words, a model was trained on eight subjects and generalized almost perfectly to three novel subjects.
+The classification task was solved across a split of subjects with clear evidence of generalization. In other words, a model was trained on eight subjects and generalized almost perfectly to three novel subjects. Validation accuracy observed stable dynamics and attenuated at ~50k epochs:
 
-> ![](images/balanced_val_accuracy_small.png)
-Epoch vs validation accuracy
+![](images/balanced_val_accuracy_small.png)
 
 For reference, here is the training accuracy and loss, respectively:
 
