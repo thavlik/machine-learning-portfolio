@@ -2,10 +2,10 @@
 These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesion) dataset released by the [National Institute of Health](https://www.nih.gov/news-events/news-releases/nih-clinical-center-releases-dataset-32000-ct-images) in 2018. The modeling task entails detecting and localizing the bounding boxes of abdominal lesions for individually labeled CT slices.
 
 ## Results
-After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split (prediction is yellow, ground truth is green):
+After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split:
 
 > ![Figure 1](images/initial_localization.png)  
-***Figure 1***
+***Figure 1. The ground truth (physician's judgment) is in yellow, and the model's prediction is in green.***
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. This may be due to the erroneous inclusion of labeled lymph nodes, which are said by the dataset authors to comprise only a "small proportion" of the examples. Instances where the model fails to localize to anything remotely lesion-like (top left) suggest these examples may be more challenging than those in the training split.
 
