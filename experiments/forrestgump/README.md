@@ -43,4 +43,4 @@ The authors of the data included several additional experiment results with many
 The StudyForrest data is released under [CC-by-SA](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ### Code
-Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
+[Apache 2.0](../../LICENSE-Apache) / [MIT](../../LICENSE-MIT) dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.

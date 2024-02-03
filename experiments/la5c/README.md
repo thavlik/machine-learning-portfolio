@@ -30,4 +30,4 @@ TODO: show which questions were selected
 LA5c is released under the [Creative Commons Zero (CC0)](https://creativecommons.org/choose/zero/) license.
 
 ### Code
-Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
+[Apache 2.0](../../LICENSE-Apache) / [MIT](../../LICENSE-MIT) dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.

@@ -23,4 +23,4 @@ Unsurprisingly, use of MSE without a progressive growing strategy yields only bl
 Cow model is part of [PyTorch3D](https://github.com/facebookresearch/pytorch3d) and is [licensed under BSD](https://raw.githubusercontent.com/facebookresearch/pytorch3d/main/LICENSE).
 
 ### Code
-Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
+[Apache 2.0](../../LICENSE-Apache) / [MIT](../../LICENSE-MIT) dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
