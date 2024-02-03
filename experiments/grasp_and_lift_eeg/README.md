@@ -2,7 +2,7 @@
 These experiments utilize the dataset from [Luciw et al 2014](https://www.nature.com/articles/sdata201447). The subjects wore a 32-channel, 500 Hz EEG cap and performed a task involving grasping and lifting an object ([video 1](https://grasplifteeg.nyc3.digitaloceanspaces.com/41597_2014_BFsdata201447_MOESM69_ESM.avi), [video 2](https://grasplifteeg.nyc3.digitaloceanspaces.com/41597_2014_BFsdata201447_MOESM70_ESM.avi)). The model is trained to classify the last observed sample according to its associated part of the motor task. That is, the model is fed EEG data "as it is made", and can therefore be used in real time. Each of the twelve participants performed eight trials.
 
 > ![](images/data_example.png)
-Note: only 8 of the 24 channels are depicted here.
+***Note: only 8 of the 24 channels are depicted here.***
 
 ## Results
 The classification task was solved (>99% accuracy) across a split of subjects with clear evidence of generalization. A model was trained on eight subjects and generalized almost perfectly to three novel subjects. In other words, the best possible outcome was achieved. Validation accuracy observed stable dynamics and efficient convergence:
