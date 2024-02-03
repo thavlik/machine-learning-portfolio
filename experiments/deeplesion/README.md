@@ -5,7 +5,7 @@ These experiments utilize the [DeepLesion](https://nihcc.app.box.com/v/DeepLesio
 After several days of training on a single 2080 Ti, there was some evidence of generalization to the validation split:
 
 > ![Figure 1](images/initial_localization.png)  
-***Figure 1: a visualization of model performance on the validation data. This is how well the model could reasonably be expected to perform in practice. The ground truth (physician's judgment) is in yellow, and the model's prediction is in green.***
+***Figure 1: a visualization of model performance on the validation data. This is how well the model could reasonably be expected to perform in practice. The ground truth (physician's judgment) is green, and the model's prediction is yellow.***
 
 The model appears to be making mistakes characteristic of non-experts by inaccurately localizing the lesion to any "lesion-like" blob, such as a cross section of intestine or aorta. This may be due to the erroneous inclusion of labeled lymph nodes, which are said by the dataset authors to comprise only a "small proportion" of the examples. Instances where the model fails to localize to anything remotely lesion-like (top left) suggest these examples may be more challenging than those in the training split.
 
