@@ -12,7 +12,7 @@ Columns include examples with at least the designated class label, and may have 
 
 The left indicator bar represents per-class accuracy and the right represents accuracy across all classes. Visualizing these metrics separately helps gauge performance on a per-class basis. Low (baseline) performance is mapped to red, and 100% accuracy is signified in bright green.
 
-Because model accuracy is high, all indicators bars are green. However, the `Control` column's per-class indicators are all a perceivably lighter shade of green than those of other columns, suggesting the model is biased in favor of [type 1 error](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors). This is considered desirable for such medical technology because *type 2 errors* - false negative - are far more likely to be fatal; human attention should *always* be directed in edge cases.
+Because model accuracy is high, all indicators bars are green. However, the `Control` column's per-class indicators are all a perceivably lighter shade of green than those of other columns, suggesting the model is biased in favor of [type 1 error](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors). This is considered desirable for such medical technology because *type 2 errors*—false negative—are far more likely to be fatal; human attention should *always* be directed in edge cases.
 
 ## Materials & Methods
 ### Training Dynamics
@@ -21,7 +21,7 @@ Stable training dynamics were exhibited with the [mean-squared error](https://en
 > ![training tensorboard](images/training-dynamics.jpg)  
 ***Training accuracy and loss, respectively. Aggressive smoothing is applied.***
 
-Training beyond one epoch did not increase validation accuracy. Optimal performance was achieved around step 19,000 - prior to the end of the first epoch - suggesting further training at this learning rate results in overfitting.
+Training beyond one epoch did not increase validation accuracy. Optimal performance was achieved around step 19,000—prior to the end of the first epoch—suggesting further training at this learning rate results in overfitting.
 
 > ![overfitting tensorboard](images/overfitting.jpg)  
 ***Validation accuracy does not improve with more training when the model is excessively biased towards the training data. This is the clearest sign of overfitting.***
@@ -29,7 +29,7 @@ Training beyond one epoch did not increase validation accuracy. Optimal performa
 Because such high validation accuracy was observed so early into training, it is possible that the validation set is composed of categorically easier examples. It is difficult to make this qualitative judgment without the ability to interpret CTs.
 
 ### Half-Resolution Training
-The weights from any fully convolutional network are able to be applied to images of arbitrary dimensions - even dimensions differing from those used for training. While larger convolutional kernel sizes are able to more easily capture large-scale details, they come with a significant increase in compute overhead. For simplicity, the 3x3 and 1x1 kernels are used exclusively, and other aspects of the experiment (model architecture, input resolution, etc.) are optimized against this small kernel size.
+The weights from any fully convolutional network are able to be applied to images of arbitrary dimensions—even dimensions differing from those used for training. While larger convolutional kernel sizes are able to more easily capture large-scale details, they come with a significant increase in compute overhead. For simplicity, the 3x3 and 1x1 kernels are used exclusively, and other aspects of the experiment (model architecture, input resolution, etc.) are optimized against this small kernel size.
 
 Training at half the input resolution (256x256) can be seen as comparable to doubling the dimensions of the kernel (up to 6x6) and enabling the model to more easily capture detail at larger scales. Reduced memory overhead and increased batch sizes can be appreciated with this single change, leading to considerable performance gains. The resultant weights can then be used to improve training at higher resolutions.
 
