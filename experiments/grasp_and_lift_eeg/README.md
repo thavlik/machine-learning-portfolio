@@ -39,7 +39,7 @@ The holy grail of this EEG classification task is the ability to generalize acro
 > ![](images/validation_acc.jpg)  
 ***One of this experiment's most common failure modes: unexpected worsening of validation performance with more training. This image was sourced from an early run, before label balancing was added.***
 
-Determining whether this was due to the data - i.e. training/validation data being too different - or my own code wasn't straightforward. The solution of balancing labels occured to me when I inquired about the practice in my professional work.
+Determining whether this was due to the data - i.e. training/validation data being too different - or my own code wasn't straightforward. The solution of balancing labels occured to me when I inquired about the practice in my professional work. Now every experiment of mine uses label balancing by default.
 
 ### Future Direction
 This experiment was a massive success and `GraspAndLiftEEGDetection` has since become a "stock" dataset for me. Because my familiarity with it is so high, I find it ideal for multi-dataset experiments. I fully intend to use the trained model from this experiment in future projects.
