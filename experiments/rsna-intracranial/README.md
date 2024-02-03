@@ -56,5 +56,4 @@ The weights, configs, and logs for two runs are available for download: [Link](h
 RSNA Intracranial Hemorrhage Detection Challenge is property of the Radiological Society of North America and is publicly available at no cost.  
 
 ### Code
-Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
-
+[Apache 2.0](../../LICENSE-Apache) / [MIT](../../LICENSE-MIT) dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.

@@ -101,5 +101,5 @@ DeepLesion appears to be a "hard" problem, manifesting as poor convergence and d
 DeepLesion is property of the National Institute of Health's Clinical Center and is publicly available at no cost.
 
 ### Code
-Apache 2.0 / MIT dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
+[Apache 2.0](../../LICENSE-Apache) / [MIT](../../LICENSE-MIT) dual-license. Please contact me if this is somehow not permissive enough and we'll add whatever free license is necessary for your project.
 
