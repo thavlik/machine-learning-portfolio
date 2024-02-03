@@ -5,7 +5,8 @@ These experiments utilize the [RSNA Intracranial Hemorrhage Detection](https://w
 ## Results
 ~95% validation accuracy was achieved with <12 hours of training on a single 1080 Ti. I believe near-100% accuracy could be achieved with additional work.
 
-![](images/RSNA_HalfRes_classifier2d_20000.jpg)
+> ![](images/RSNA_HalfRes_classifier2d_20000.jpg)  
+***Visualization for data and model performance.***
 
 Columns include examples with at least the designated class label, and may have more labels (meaning some examples could have been displayed in multiple columns). This was done because some classes of hemorrhage do not occur in isolation within the dataset. Concretely, the "Epidural" column includes any examples positive for epidural hemhorrage, some of which are also positive for intraparenchymal, subarachnoid, etc. The "Control" column features exclusively healthy subjects.
 
@@ -17,11 +18,13 @@ Because model accuracy is high, all indicators bars are green. However, the `Con
 ### Training Dynamics
 Stable training dynamics were exhibited with the [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error) loss function. Label balancing was not necessary, likely because of the dataset's relatively even distribution of class labels.
 
-![training tensorboard](images/training-dynamics.jpg)
+> ![training tensorboard](images/training-dynamics.jpg)  
+***Training accuracy and loss, respectively. Aggressive smoothing is applied.***
 
 Training beyond one epoch did not increase validation accuracy. Optimal performance was achieved around step 19,000 - prior to the end of the first epoch - suggesting further training at this learning rate results in overfitting.
 
-![overfitting tensorboard](images/overfitting.jpg)
+> ![overfitting tensorboard](images/overfitting.jpg)  
+***Validation accuracy does not improve with more training when the model is excessively biased towards the training data. This is the clearest sign of overfitting.***
 
 Because such high validation accuracy was observed so early into training, it is possible that the validation set is composed of categorically easier examples. It is difficult to make this qualitative judgment without the ability to interpret CTs.
 
