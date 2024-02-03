@@ -20,7 +20,7 @@ Stable training dynamics were exhibited with the [mean-squared error](https://en
 Training beyond one epoch did not increase validation accuracy. Optimal performance was achieved around step 19,000—prior to the end of the first epoch—suggesting further training at this learning rate results in overfitting.
 
 > ![overfitting tensorboard](images/overfitting.jpg)  
-***Validation accuracy does not improve with more training when the model is excessively biased towards the training data. This is the clearest sign of overfitting.***
+***Validation accuracy does not improve with more training when the model is excessively biased towards the training data. This is a sign of overfitting.***
 
 Because such high validation accuracy was observed so early into training, it is possible that the validation set is composed of categorically easier examples. It is difficult to make this qualitative judgment without the ability to interpret CTs.
 
