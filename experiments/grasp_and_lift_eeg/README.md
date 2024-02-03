@@ -5,18 +5,18 @@ These experiments utilize the dataset from [Luciw et al 2014](https://www.nature
 Note: only 8 of the 24 channels are depicted here.
 
 ## Results
-The classification task was solved across a split of subjects with clear evidence of generalization. A model was trained on eight subjects and generalized almost perfectly to three novel subjects. In other words, the best possible outcome was achieved. Validation accuracy observed stable dynamics and attenuated at roughly 50,000 steps:
+The classification task was solved (>99% accuracy) across a split of subjects with clear evidence of generalization. A model was trained on eight subjects and generalized almost perfectly to three novel subjects. In other words, the best possible outcome was achieved. Validation accuracy observed stable dynamics and efficient convergence:
 
 > ![](images/balanced_val_accuracy_small.png)  
-***Validation accuracy by step.***
+***Validation accuracy by step. Converges to >99% at roughly 60,000 steps.***
 
 For reference, here is the training accuracy and loss, respectively:
 
 > ![](images/balanced_train_accuracy_small.png)  
-***Training accuracy by step***
+***Training accuracy by step, with aggressive smoothing applied.***
 
 > ![](images/balanced_train_loss.png)  
-***Training loss by step***
+***Training loss by step, with aggressive smoothing applied.***
 
 This performance was achieved by training a 4.4 million parameter ResNet-style architecture for about three hours on a single 1080 Ti.
 
