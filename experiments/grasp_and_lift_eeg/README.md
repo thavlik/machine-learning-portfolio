@@ -7,12 +7,16 @@ Note: only 8 of the 24 channels are depicted here.
 ## Results
 The classification task was solved across a split of subjects with clear evidence of generalization. A model was trained on eight subjects and generalized almost perfectly to three novel subjects. In other words, the best possible outcome was achieved. Validation accuracy observed stable dynamics and attenuated at roughly 50,000 steps:
 
-![](images/balanced_val_accuracy_small.png)
+> ![](images/balanced_val_accuracy_small.png)  
+***Validation accuracy by step.***
 
 For reference, here is the training accuracy and loss, respectively:
 
-![](images/balanced_train_accuracy_small.png)
-![](images/balanced_train_loss.png)
+> ![](images/balanced_train_accuracy_small.png)  
+***Training accuracy by step***
+
+> ![](images/balanced_train_loss.png)  
+***Training loss by step***
 
 This performance was achieved by training a 4.4 million parameter ResNet-style architecture for about three hours on a single 1080 Ti.
 
@@ -26,12 +30,14 @@ There are three ways to approach this supervised experiment: by splitting train/
 ### Random Split
 Randomly assigning examples from the dataset to be withheld for validation is the simplest and least sophisticated way to create a training split. It has the distinct advantage of ensuring the validation examples are substantially similar (but not identical) to training examples. This reliably induces overfitting, which can be leveraged in the early stages of an experiment to ensure a working implementation. The following training dynamics serve as evidence that various aspects of the experiment function as expected:
 
-![](images/training_acc.jpg)
+> ![](images/training_acc.jpg)  
+***Optimizing vanishingly small differences in accuracy yields similarly noisy dynamics, characteristic of a floating point precision bottleneck.***
 
 ### Subject/Series Split
-The holy grail of this EEG classification task is the ability to generalize across novel subjects. Though this was one of the first medical AI projects I started working on, such results proved elusive for nearly a year. Most of time, training accuracy would improve as shown above, but validation accuracy would decrease over time:
+The holy grail of this EEG classification task is the ability to generalize across novel subjects. Though this was one of the first medical AI projects I started working on, such results proved elusive for nearly a year. Most of time, training accuracy would improve (as shown above) but validation performance would decrease over time:
 
-![](images/validation_acc.jpg)
+> ![](images/validation_acc.jpg)  
+***One of this experiment's most common failure modes: unexpected worsening of validation performance with more training. This image was sourced from an early run, before label balancing was added.***
 
 Determining whether this was due to the data - i.e. training/validation data being too different - or my own code wasn't straightforward. The solution of balancing labels occured to me when I inquired about the practice in my professional work.
 
