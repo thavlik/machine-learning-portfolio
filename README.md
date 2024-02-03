@@ -89,5 +89,5 @@ This repository was intended to be repurposed. As part of the open source commun
 All code in this repository is released under [MIT](LICENSE-MIT) / [Apache 2.0](LICENSE-Apache) dual license, which is extremely permissive. Please open an issue if somehow these terms are insufficient.
 
 ## Contact
-thavlik at protonmail dot com
+thavlik (at) protonmail [dot] com
 
