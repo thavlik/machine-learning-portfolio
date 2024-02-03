@@ -58,7 +58,8 @@ Whenever possible, it is recommended to use [Docker](https://www.docker.com/) to
 $ docker build -t thavlik/machine-learning-portfolio:latest .
 $ docker run -it \
     thavlik/machine-learning-portfolio:latest \
-    python src/main.py --config path/to/experiment/config.yaml
+    python src/main.py \
+        --config path/to/experiment/config.yaml
 ```
 
 If you must run your experiments outside of a container, refer to the [`Dockerfile`](Dockerfile) for notes on dependency installation. It's not possible to install the correct versions of some libraries using only `pip install -r requirements.txt`, hence those dependencies' versions are unconstrained.
