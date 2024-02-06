@@ -6,7 +6,7 @@ model_params:
   pooling: max
   batch_normalize: false
   dropout: 0.1
-  hidden_dims: [256, 256, 256, 256]
+  hidden_dims: [128, 128, 128, 128]
 
 exp_params:
   warmup_steps: 256
@@ -32,7 +32,7 @@ exp_params:
       num_workers: 0
       drop_last: true
     training:
-      root: /data/deeplesion
+      root: /opt/data/deeplesion
       only_positives: true
       #limit: 128
       components:

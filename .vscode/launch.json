@@ -105,6 +105,18 @@
             ]
         },
         {
+            "name": "Python: train DeepLesion",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/deeplesion/localization/basic.yaml"
+            ]
+        },
+        {
             "name": "Python: train DeepLesion HalfRes",
             "type": "python",
             "request": "launch",
@@ -114,10 +126,7 @@
             "args": [
                 "--config",
                 "experiments/deeplesion/localization/halfres.yaml"
-            ],
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
-            }
+            ]
         },
         {
             "name": "Python: train DeepLesion HParams",
@@ -126,9 +135,6 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "-1"
-            },
             "args": [
                 "--config",
                 "experiments/deeplesion/localization/basic_hparams.yaml"
@@ -156,10 +162,7 @@
             "args": [
                 "--config",
                 "experiments/deeplesion/vae/halfres_mse.yaml"
-            ],
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
-            }
+            ]
         },
         {
             "name": "Python: train EEG RL PPO",
@@ -183,10 +186,7 @@
             "args": [
                 "--config",
                 "experiments/grasp_and_lift_eeg/augment/augment.yaml"
-            ],
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
-            }
+            ]
         },
         {
             "name": "Python: train EEG Classification",
@@ -210,10 +210,7 @@
             "args": [
                 "--config",
                 "experiments/grasp_and_lift_eeg/classification/balanced.yaml"
-            ],
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "0"
-            }
+            ]
         },
         {
             "name": "Python: train EEG KernelSize=9",
@@ -237,10 +234,7 @@
             "args": [
                 "--config",
                 "experiments/grasp_and_lift_eeg/classification/halfres.yaml"
-            ],
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "0"
-            }
+            ]
         },
         {
             "name": "Python: train EEG VAE",
@@ -273,9 +267,6 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "0"
-            },
             "args": [
                 "--config",
                 "experiments/forrestgump/classification/nonlinear.yaml"
@@ -300,9 +291,6 @@
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "0"
-            },
             "args": [
                 "--config",
                 "experiments/la5c/classification/basic.yaml"
@@ -433,10 +421,7 @@
                 "--config",
                 "experiments/rsna-intracranial/classification/halfres.yaml"
             ],
-            "justMyCode": false,
-            "env": {
-                "CUDA_VISIBLE_DEVICES": "1"
-            }
+            "justMyCode": false
         },
         {
             "name": "Python: train RSNA VAE",

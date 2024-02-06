@@ -8,7 +8,7 @@ from localization import LocalizationExperiment
 from dataset import get_example_shape
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback
-from pytorch_lightning.loggers import TestTubeLogger
+from pytorch_lightning.loggers import CSVLogger
 import numpy as np
 from pytorch_lightning import Trainer
 from load_config import load_config
@@ -338,19 +338,16 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     if experiment is None:
         return
     experiment = experiment.cuda(0)
-    tt_logger = TestTubeLogger(save_dir=run_args['save_dir'],
-                               name=config['logging_params']['name'],
-                               debug=False,
-                               create_git_tag=False)
-    tt_logger.log_hyperparams(config)
-
+    logger = CSVLogger(save_dir=run_args['save_dir'],
+                       name=config['logging_params']['name'])
+    logger.log_hyperparams(config)
     if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5
-    runner = Trainer(default_root_dir=f"{tt_logger.save_dir}",
+    runner = Trainer(default_root_dir=f"{logger.save_dir}",
                      num_sanity_val_steps=5,
-                     logger=tt_logger,
-                     checkpoint_callback=True,
-                     gpus=1,
+                     logger=logger,
+                     #checkpoint_callback=True,
+                     #gpus=1,
                      callbacks=[
                          OnCheckpointHparams(),
                          ModelCheckpoint(
@@ -360,7 +357,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
                              monitor='val/loss',
                              mode='min'
                          )],
-                     log_gpu_memory='all',
+                     #log_gpu_memory='all',
                      **config['trainer_params'])
 
     if run_args.get('validate', False):

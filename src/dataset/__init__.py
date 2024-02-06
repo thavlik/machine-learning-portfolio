@@ -12,7 +12,7 @@ from .batch_video import *
 from torch import Size
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import WeightedRandomSampler
-import nonechucks as nc
+#import nonechucks as nc
 from typing import Optional
 
 
@@ -79,8 +79,8 @@ def get_dataset(name: str,
     ds = datasets[name](**params)
     if split is not None:
         ds = split_dataset(ds, split)[1 if train else 0]
-    if safe:
-        ds = nc.SafeDataset(ds)
+    #if safe:
+    #    ds = nc.SafeDataset(ds)
     return ds
 
 

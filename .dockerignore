@@ -9,3 +9,4 @@ logs_remote/
 *.mp4
 *.part
 *.gif
+.venv/

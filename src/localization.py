@@ -50,24 +50,24 @@ class LocalizationExperiment(BaseExperiment):
            vis=self.visdom(),
            **plot['params'])
 
-    def training_step(self, batch, batch_idx, optimizer_idx=0):
+    def training_step(self, batch, batch_idx):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         pred_params = self.localizer(real_img).cpu()
         train_loss = self.localizer.loss_function(pred_params,
-                                                  targ_params,
+                                                  targ_params.cpu(),
                                                   **self.params.get('loss_params', {}))
         self.log_train_step(train_loss)
         return train_loss
 
-    def validation_step(self, batch, batch_idx, optimizer_idx=0):
+    def validation_step(self, batch, batch_idx):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         pred_params = self.localizer(real_img).cpu()
         val_loss = self.localizer.loss_function(pred_params,
-                                                targ_params,
+                                                targ_params.cpu(),
                                                 **self.params.get('loss_params', {}))
         self.log_val_step(val_loss)
         return val_loss

@@ -97,7 +97,7 @@ class BaseExperiment(pl.LightningModule):
                     pass
 
     def log_train_step(self, train_loss: dict):
-        self.logger.experiment.log({'train/' + key: val.item()
+        self.logger.experiment.log_metrics({'train/' + key: val.item()
                                     for key, val in train_loss.items()})
         revert = self.training
         if revert:
@@ -117,25 +117,27 @@ class BaseExperiment(pl.LightningModule):
         return self.validation_step(*args, **kwargs)
 
     def test_epoch_end(self, *args, **kwargs):
-        return self.validation_epoch_end(*args, **kwargs)
+        return self.on_validation_epoch_end(*args, **kwargs)
     
     def log_val_step(self, val_loss: dict):
         pass
 
-    def validation_epoch_end(self, outputs: list):
-        avg = {}
-        for output in outputs:
-            for k, v in output.items():
-                items = avg.get(k, [])
-                items.append(v)
-                avg[k] = items
-        for metric, values in avg.items():
-            key = 'val/' + metric
-            mean = torch.Tensor(values).mean()
-            self.log(key, mean)
-            if self.enable_tune:
-                from ray import tune
-                tune.report(**{key: mean})
+    def on_validation_epoch_end(self):
+        pass
+        # FIXME
+        #avg = {}
+        #for output in outputs:
+        #    for k, v in output.items():
+        #        items = avg.get(k, [])
+        #        items.append(v)
+        #        avg[k] = items
+        #for metric, values in avg.items():
+        #    key = 'val/' + metric
+        #    mean = torch.Tensor(values).mean()
+        #    self.log(key, mean)
+        #    if self.enable_tune:
+        #        from ray import tune
+        #        tune.report(**{key: mean})
 
     def configure_schedulers(self, optims: List[Optimizer]) -> list:
         scheds = []
