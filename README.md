@@ -52,14 +52,17 @@ $ python3 src/main.py --config experiments/mnist/vae/fid.yaml
 If an experiment hangs during the initial validation pass, it is likely because [nonechucks](https://github.com/msamogh/nonechucks) is suppressing exceptions thrown by the dataset. This behavior improves fault tolerance, but can complicate debugging. To disable, set `exp_params.data.safe: false` in the experiment yaml.
 
 ### Docker
-Whenever possible, it is recommended to use [Docker](https://www.docker.com/) to ensure a reproduceable execution environment:
+Whenever possible, it is recommended to use [Docker](https://www.docker.com/) to ensure a reproduceable execution environment. Refer to [Nvidia's guide on utilizing a GPU with Docker](https://docs.nvidia.com/ai-enterprise/deployment-guide-vmware/0.1.0/docker.html) to enable the `--gpus all` flag:
 
 ```bash
 $ docker build -t thavlik/machine-learning-portfolio:latest .
-$ docker run -it \
+$ docker run \
+    -it \
+    --gpus all \
+    -v /opt/data/mydataset:/data/mydataset \
     thavlik/machine-learning-portfolio:latest \
     python src/main.py \
-        --config path/to/experiment/config.yaml
+        --config experiments/experiment_name/task_name/config_name.yaml
 ```
 
 If you must run your experiments outside of a container, refer to the [`Dockerfile`](Dockerfile) for notes on dependency installation. It's not possible to install the correct versions of some libraries using only `pip install -r requirements.txt`, hence those dependencies' versions are unconstrained.

@@ -24,7 +24,6 @@ RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/r
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && npm install -g \
-        electron@6.1.4 \
         orca \
         vtop
 RUN echo 'alias watchsmi="watch -n 0.5 nvidia-smi"' >> /root/.bashrc
@@ -37,7 +36,6 @@ RUN pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f
 RUN pip install awscli --force-reinstall --upgrade --ignore-installed
 RUN pip install 'git+https://github.com/thavlik/nonechucks.git'
 RUN pip install -r requirements.txt
-RUN git clone https://github.com/thavlik/machine-learning-portfolio.git
 WORKDIR /machine-learning-portfolio
+COPY . .
 CMD ["./docker_entrypoint.sh"]
-
