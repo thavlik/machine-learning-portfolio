@@ -1,3 +1,0 @@
-# https://github.com/containous/traefik-helm-chart/blob/master/traefik/values.yaml
-additionalArguments:
-- --providers.kubernetesIngress.ingressClass=traefik-cert-manager
