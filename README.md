@@ -59,7 +59,7 @@ $ docker build -t thavlik/machine-learning-portfolio:latest .
 $ docker run \
     -it \
     --gpus all \
-    -v /opt/data/mydataset:/data/mydataset \
+    -v /opt/data/dataset_name:/data/dataset_name \
     thavlik/machine-learning-portfolio:latest \
     python src/main.py \
         --config experiments/experiment_name/task_name/config_name.yaml
