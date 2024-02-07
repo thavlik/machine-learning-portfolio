@@ -65,6 +65,7 @@ class BaseExperiment(pl.LightningModule):
                                           self.logger.name,
                                           f"version_{self.logger.version}",
                                           "checkpoints")
+            os.makedirs(checkpoint_dir, exist_ok=True)
             path = os.path.join(checkpoint_dir, f'step{self.global_step}.pt')
             torch.save(self.state_dict(), path)
             if params.get('delete_old', True):
