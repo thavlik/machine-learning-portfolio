@@ -1,13 +1,9 @@
 include: experiments/deeplesion/localization/basic.yaml
 
-model_params:
-  dropout: 0.2
-  hidden_dims: [256, 192, 128, 64]
-
 exp_params:
-  batch_size: 8
+  batch_size: 16
   optimizer:
-    lr: 0.02
+    lr: 0.0001
   data:
     training:
       lod: 1

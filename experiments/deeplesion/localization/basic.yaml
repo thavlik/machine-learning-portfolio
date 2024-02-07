@@ -5,7 +5,6 @@ model_params:
   name: ResNetLocalizer2d
   pooling: max
   batch_normalize: false
-  dropout: 0.1
   hidden_dims: [128, 128, 128, 128]
 
 exp_params:
@@ -18,7 +17,7 @@ exp_params:
     objective: mse
   batch_size: 4
   optimizer:
-    lr: 0.0005
+    lr: 1.0e-05
     weight_decay: 0.00001
   data:
     name: deeplesion

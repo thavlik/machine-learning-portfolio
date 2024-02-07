@@ -2,6 +2,7 @@ import gc
 import os
 import torch
 import io
+import numpy as np
 from torch import Tensor
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, Dataset
@@ -126,15 +127,15 @@ class BaseExperiment(pl.LightningModule):
         for output in outputs:
             for k, v in output.items():
                 items = avg.get(k, [])
-                items.append(v)
+                items.append(v.numpy())
                 avg[k] = items
         for metric, values in avg.items():
             key = 'val/' + metric
-            mean = torch.Tensor(values).mean()
+            mean = np.array(values).mean()
             self.log(key, mean)
             if self.enable_tune:
-                from ray import tune
-                tune.report(**{key: mean})
+                from ray import train
+                train.report({key: mean})
 
     def configure_schedulers(self, optims: List[Optimizer]) -> list:
         scheds = []

@@ -7,6 +7,7 @@ from entry import experiment_main
 from load_config import load_config
 from typing import List, Union
 import numpy as np
+import os
 import decord
 
 
@@ -20,8 +21,9 @@ def count_experiments(series: Union[dict, List[dict]]) -> int:
             n += count_experiments(item)
         elif 'series' in item:
             # Composite experiment with explicit series
-            n += 1 + sum(count_experiments(load_config(path))
-                         for path in item['series'])
+            n += 1 + sum(
+                count_experiments(load_config(path))
+                for path in item['series'])
         else:
             # Single experiment
             n += 1
@@ -30,9 +32,7 @@ def count_experiments(series: Union[dict, List[dict]]) -> int:
     return n
 
 
-def run_series(series: Union[dict, List[dict]],
-               exp_no: int,
-               **kwargs) -> int:
+def run_series(series: Union[dict, List[dict]], exp_no: int, **kwargs) -> int:
     if type(series) != list:
         series = [series]
     for config in series:
@@ -48,7 +48,8 @@ def run_series(series: Union[dict, List[dict]],
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='thavlik portfolio entrypoint')
-    parser.add_argument('--config',  '-c',
+    parser.add_argument('--config',
+                        '-c',
                         dest="config",
                         metavar='FILE',
                         help='path to the experiment config file',
@@ -57,13 +58,15 @@ if __name__ == '__main__':
                         dest="save_dir",
                         metavar='SAVE_DIR',
                         help='save directory for logs and screenshots',
-                        default='logs')
-    parser.add_argument('--num-samples',
-                        dest="num_samples",
-                        metavar='NUM_SAMPLES',
-                        type=int,
-                        help='number of times to repeat the experiment (default to experiment config num_samples)',
-                        default=None)
+                        default=os.path.join(os.getcwd(), 'logs'))
+    parser.add_argument(
+        '--num-samples',
+        dest="num_samples",
+        metavar='NUM_SAMPLES',
+        type=int,
+        help=
+        'number of times to repeat the experiment (default to experiment config num_samples)',
+        default=None)
     parser.add_argument('--num-threads',
                         dest="num_threads",
                         metavar='NUM_THREADS',
@@ -100,7 +103,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.smoke_test:
-        print('Executing smoke test - training will stop after a couple steps.')
+        print(
+            'Executing smoke test - training will stop after a couple steps.')
 
     cudnn.deterministic = True
     cudnn.benchmark = True

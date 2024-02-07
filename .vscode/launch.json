@@ -138,7 +138,21 @@
             "args": [
                 "--config",
                 "experiments/deeplesion/localization/basic_hparams.yaml"
-            ]
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Python: train DeepLesion HalfRes HParams",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/deeplesion/localization/halfres_hparams.yaml"
+            ],
+            "justMyCode": false
         },
         {
             "name": "Python: train DeepLesion VAE",

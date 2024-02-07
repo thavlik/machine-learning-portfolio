@@ -187,8 +187,7 @@ def hparam_search(config: dict, run_args: dict):
 
     print('Best config:')
     print(best_config)
-
-    experiment_main(best_config, run_args)
+    #experiment_main(best_config, run_args)
 
 
 def vae2d(config: dict, run_args: dict) -> VAEExperiment:
@@ -353,7 +352,6 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
         ],
         #log_gpu_memory='all',
         **config['trainer_params'])
-
     if run_args.get('validate', False):
         print(
             f"======= Validating {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) ======="
@@ -365,14 +363,13 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
                               test_dataloaders=experiment.val_dataloader())
         print(results)
         # eval_loop_results, deprecated_eval_results = runner.run_evaluation(max_batches=1024) # max_batches=run_args.get('max_batches', None)
-        return experiment, results
-
+        #return experiment, results
     print(
         f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) ======="
     )
     print(config)
     results = runner.fit(experiment)
-    return experiment, results
+    #return experiment, results
 
 
 def flatten(S):

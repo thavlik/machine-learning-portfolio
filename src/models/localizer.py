@@ -2,8 +2,7 @@ import torch
 from torch import nn, Tensor
 from torch.nn import functional as F
 from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from .iou import giou
+from torchvision.ops import complete_box_iou_loss, distance_box_iou_loss
 
 
 class Localizer(nn.Module):
@@ -23,19 +22,27 @@ class Localizer(nn.Module):
                       targ_params: Tensor,
                       objective: str = 'iou',
                       iou_weight: float = 1.0) -> dict:
-        localization_loss = F.mse_loss(pred_params, targ_params)
-        iou_loss = -torch.Tensor(
-            giou(pred_params.detach().numpy(),
-                 targ_params.detach().numpy())).mean()
+        mse_loss = F.mse_loss(pred_params, targ_params)
+        dbiou_loss = distance_box_iou_loss(pred_params,
+                                           targ_params,
+                                           reduction='sum')
+        cbiou_loss = complete_box_iou_loss(pred_params,
+                                           targ_params,
+                                           reduction='sum')
+        loss = dbiou_loss + cbiou_loss  # only use iou for now
+        #iou_loss = -torch.Tensor(
+        #    giou(pred_params.detach().numpy(),
+        #         targ_params.detach().numpy())).mean()
         #eps = 1e-7
         #localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
         #localization_loss = -torch.log(localization_loss)
         #localization_loss = 1.0 / localization_loss
-        loss = localization_loss + iou_loss * iou_weight
+        #loss = localization_loss + iou_loss * iou_weight
         return {
             'loss': loss,
-            'IOU_Loss': iou_loss,
-            'Localization_Loss': localization_loss
+            'cbiou_Loss': cbiou_loss,
+            'dbiou_Loss': dbiou_loss,
+            'mse_Loss': mse_loss,
         }
 
 
