@@ -11,7 +11,9 @@ import tempfile
 from typing import List
 from torch.nn import functional as F
 
-def read_hu(x): return resize(imread(x).astype(np.float32)-32768, (512, 512))
+
+def read_hu(x):
+    return resize(imread(x).astype(np.float32) - 32768, (512, 512))
 
 
 HEADER = "File_name,Patient_index,Study_index,Series_ID,Key_slice_index,Measurement_coordinates,Bounding_boxes,Lesion_diameters_Pixel_,Normalized_lesion_location,Coarse_lesion_type,Possibly_noisy,Slice_range,Spacing_mm_px_,Image_size,DICOM_windows,Patient_gender,Patient_age,Train_Val_Test\n"
@@ -33,8 +35,7 @@ COMPONENT_LENGTHS = {
 
 
 def get_output_features(components: List[str]) -> int:
-    return sum([COMPONENT_LENGTHS[k]
-                for k in components])
+    return sum([COMPONENT_LENGTHS[k] for k in components])
 
 
 def flatten(test_list):
@@ -49,8 +50,7 @@ def flatten(test_list):
         return flatten(test_list[1:])
 
 
-def load_labels_csv(path: str,
-                    components: List[str],
+def load_labels_csv(path: str, components: List[str],
                     flatten_components: bool) -> dict:
     labels = {}
     with open(path, 'r') as f:
@@ -59,27 +59,31 @@ def load_labels_csv(path: str,
             raise ValueError('bad header')
         for line in f:
             parts = line.strip().split('"')
-            parts = [part for part in parts
-                     if part != ',']
+            parts = [part for part in parts if part != ',']
             # filename, patient_index, study_index, series_id, key_slice_index = [p
             #                                                                    for p in parts[0].split(',')
             #                                                                    if len(p) > 0]
             filename = parts[0].split(',')[0]
             parts = parts[1:]
-            measurement_coordinates, bounding_boxes, lesion_diameters_pixel, normalized_lesion_location = parts[
-                :4]
+            measurement_coordinates, bounding_boxes, lesion_diameters_pixel, normalized_lesion_location = parts[:
+                                                                                                                4]
             parts = parts[4:]
             measurement_coordinates = [
-                float(s.strip()) for s in measurement_coordinates.split(',')]
-            bounding_boxes = [float(s.strip())
-                              for s in bounding_boxes.split(',')]
+                float(s.strip()) for s in measurement_coordinates.split(',')
+            ]
+            bounding_boxes = [
+                float(s.strip()) for s in bounding_boxes.split(',')
+            ]
             lesion_diameters_pixel = [
-                float(s.strip()) for s in lesion_diameters_pixel.split(',')]
+                float(s.strip()) for s in lesion_diameters_pixel.split(',')
+            ]
             normalized_lesion_location = [
-                float(s.strip()) for s in normalized_lesion_location.split(',')]
+                float(s.strip()) for s in normalized_lesion_location.split(',')
+            ]
 
             coarse_lesion_type, possibly_noisy = [
-                int(s.strip()) for s in parts[0][1:-1].split(',')]
+                int(s.strip()) for s in parts[0][1:-1].split(',')
+            ]
             parts = parts[1:]
             slice_range = [int(s.strip()) for s in parts[0].split(',')]
             parts = parts[1:]
@@ -127,6 +131,7 @@ def ensure_downloaded(key, path, bucket):
 
 
 class DeepLesionDataset(data.Dataset):
+
     def __init__(self,
                  root: str,
                  download: bool = True,
@@ -169,8 +174,7 @@ class DeepLesionDataset(data.Dataset):
             inventory_path = os.path.join(root, 'inventory.txt')
             ensure_downloaded('inventory.txt', inventory_path, bucket)
             with open(inventory_path, 'r') as f:
-                self.files = [tuple(line.strip().split(','))
-                              for line in f]
+                self.files = [tuple(line.strip().split(',')) for line in f]
             ensure_downloaded('DL_info.csv', labels_csv_path, bucket)
         else:
             images_dir = os.path.join(root, 'Images_png')
@@ -180,13 +184,12 @@ class DeepLesionDataset(data.Dataset):
                 for f in os.listdir(df):
                     files.append((d, f))
             self.files = files
-        self.labels = load_labels_csv(
-            labels_csv_path, components, flatten_labels)
-        self.zeros = torch.zeros(
-            self.labels[list(self.labels.keys())[0]].shape[0])
+        self.labels = load_labels_csv(labels_csv_path, components,
+                                      flatten_labels)
+        self.zeros = torch.zeros(self.labels[list(
+            self.labels.keys())[0]].shape[0])
         if only_positives:
-            self.files = [(d, f)
-                          for d, f in self.files
+            self.files = [(d, f) for d, f in self.files
                           if f'{d}_{f}' in self.labels]
         if limit is not None:
             self.files = self.files[:limit]
@@ -247,10 +250,3 @@ class DeepLesionDataset(data.Dataset):
 
     def __len__(self):
         return len(self.files)
-
-
-if __name__ == '__main__':
-    os.environ['AWS_PROFILE'] = 'wasabi'
-    ds = DeepLesionDataset('E:/deeplesion/')
-    print(ds[0][0].shape)
-    print(ds[1][0].shape)
