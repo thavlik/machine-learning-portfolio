@@ -1,15 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"/..
-dir=$(pwd)
-docker container stop hometb || true
-docker container rm hometb || true
-logdir=$(wslpath -a logs)
+name=hometb
+docker kill $name || true &2>/dev/null
+docker container stop $name || true &2>/dev/null
+docker container rm $name || true &2>/dev/null
+logdir=$(pwd)/logs
 echo "logdir=$logdir"
 docker run \
     -d \
-    --name hometb \
-    -p 6007:6006 \
+    --rm \
+    --name $name \
+    -p 6006:6006 \
     -v $logdir:/logs \
     tensorflow/tensorflow:latest-jupyter \
     tensorboard \

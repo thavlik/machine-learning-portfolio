@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
@@ -14,7 +14,7 @@
         },
         {
             "name": "Python: neural gbuffer smoke test",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -28,7 +28,7 @@
         },
         {
             "name": "Python: neural gbuffer",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -40,7 +40,7 @@
         },
         {
             "name": "Python: doom smoke test",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -54,7 +54,7 @@
         },
         {
             "name": "Python: smoke test",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -70,7 +70,7 @@
         },
         {
             "name": "Python: train all",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -82,7 +82,7 @@
         },
         {
             "name": "Python: train CelebA VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -94,7 +94,7 @@
         },
         {
             "name": "Python: train CQ500 VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -106,7 +106,7 @@
         },
         {
             "name": "Python: train DeepLesion",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -118,7 +118,7 @@
         },
         {
             "name": "Python: train DeepLesion HalfRes",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -130,7 +130,7 @@
         },
         {
             "name": "Python: train DeepLesion HParams",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -142,7 +142,7 @@
         },
         {
             "name": "Python: train DeepLesion VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -154,7 +154,7 @@
         },
         {
             "name": "Python: train DeepLesion VAE HalfRes",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -166,7 +166,7 @@
         },
         {
             "name": "Python: train EEG RL PPO",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -178,7 +178,7 @@
         },
         {
             "name": "Python: train EEG Augmentation",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -190,7 +190,7 @@
         },
         {
             "name": "Python: train EEG Classification",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -202,7 +202,7 @@
         },
         {
             "name": "Python: train EEG Balanced",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -214,7 +214,7 @@
         },
         {
             "name": "Python: train EEG KernelSize=9",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -226,7 +226,7 @@
         },
         {
             "name": "Python: train EEG HalfRes",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -238,7 +238,7 @@
         },
         {
             "name": "Python: train EEG VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -250,7 +250,7 @@
         },
         {
             "name": "Python: train EEG VAE HParams",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -262,7 +262,7 @@
         },
         {
             "name": "Python: train ForrestGump",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -274,7 +274,7 @@
         },
         {
             "name": "Python: train FFHQ VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -286,7 +286,7 @@
         },
         {
             "name": "Python: train LA5c",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -298,7 +298,7 @@
         },
         {
             "name": "Python: train MNIST Comparison",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -310,7 +310,7 @@
         },
         {
             "name": "Python: train MNIST Comparison Smoke",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -324,7 +324,7 @@
         },
         {
             "name": "Python: train MNIST VAE FID",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -336,7 +336,7 @@
         },
         {
             "name": "Python: train MNIST VAE MSE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -348,7 +348,7 @@
         },
         {
             "name": "Python: train MNIST VAE PG FID",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -360,7 +360,7 @@
         },
         {
             "name": "Python: train MNIST VAE PG MSE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -372,7 +372,7 @@
         },
         {
             "name": "Python: train MNIST Classification",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -384,7 +384,7 @@
         },
         {
             "name": "Python: train MNIST EmbedFID",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -398,7 +398,7 @@
         },
         {
             "name": "Python: train MNIST SandwichFID",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -412,7 +412,7 @@
         },
         {
             "name": "Python: train RSNA HalfRes",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -425,7 +425,7 @@
         },
         {
             "name": "Python: train RSNA VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -437,7 +437,7 @@
         },
         {
             "name": "Python: train TReNDS fMRI VAE",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
@@ -449,7 +449,7 @@
         },
         {
             "name": "Python: compiler.py",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/compiler.py",
             "console": "integratedTerminal",
@@ -457,7 +457,7 @@
         },
         {
             "name": "Python: compiler.py clean",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/compiler.py",
             "console": "integratedTerminal",

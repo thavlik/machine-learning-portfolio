@@ -17,10 +17,8 @@ from visdom import Visdom
 
 
 class BaseExperiment(pl.LightningModule):
-    def __init__(self,
-                 config: dict,
-                 enable_tune: bool = False,
-                 **kwargs):
+
+    def __init__(self, config: dict, enable_tune: bool = False, **kwargs):
         super().__init__()
 
         self.save_hyperparameters(config)
@@ -83,11 +81,8 @@ class BaseExperiment(pl.LightningModule):
             key = prefix + \
                 f"{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step}.pt"
             bucket = s3_params['bucket']
-            s3 = boto3.client('s3',
-                              endpoint_url=s3_params['endpoint'])
-            s3.put_object(Body=buf,
-                          Bucket=bucket,
-                          Key=key)
+            s3 = boto3.client('s3', endpoint_url=s3_params['endpoint'])
+            s3.put_object(Body=buf, Bucket=bucket, Key=key)
             if params.get('delete_old', True):
                 old_key = prefix + \
                     f"{self.logger.name}/version_{self.logger.version}/checkpoints/step{self.global_step - params['every_n_steps']}.pt"
@@ -97,8 +92,8 @@ class BaseExperiment(pl.LightningModule):
                     pass
 
     def log_train_step(self, train_loss: dict):
-        self.logger.experiment.log_metrics({'train/' + key: val.item()
-                                    for key, val in train_loss.items()})
+        for key, val in train_loss.items():
+            self.log('train/' + key, val)
         revert = self.training
         if revert:
             self.eval()
@@ -118,33 +113,36 @@ class BaseExperiment(pl.LightningModule):
 
     def test_epoch_end(self, *args, **kwargs):
         return self.on_validation_epoch_end(*args, **kwargs)
-    
+
     def log_val_step(self, val_loss: dict):
-        pass
+        self.val_outputs += [val_loss]
+
+    def on_validation_epoch_start(self) -> None:
+        self.val_outputs = []
 
     def on_validation_epoch_end(self):
-        pass
-        # FIXME
-        #avg = {}
-        #for output in outputs:
-        #    for k, v in output.items():
-        #        items = avg.get(k, [])
-        #        items.append(v)
-        #        avg[k] = items
-        #for metric, values in avg.items():
-        #    key = 'val/' + metric
-        #    mean = torch.Tensor(values).mean()
-        #    self.log(key, mean)
-        #    if self.enable_tune:
-        #        from ray import tune
-        #        tune.report(**{key: mean})
+        avg = {}
+        outputs = self.val_outputs
+        for output in outputs:
+            for k, v in output.items():
+                items = avg.get(k, [])
+                items.append(v)
+                avg[k] = items
+        for metric, values in avg.items():
+            key = 'val/' + metric
+            mean = torch.Tensor(values).mean()
+            self.log(key, mean)
+            if self.enable_tune:
+                from ray import tune
+                tune.report(**{key: mean})
 
     def configure_schedulers(self, optims: List[Optimizer]) -> list:
         scheds = []
         if 'warmup_steps' in self.params:
-            scheds.append(LinearWarmup(optims[0],
-                                       lr=self.params['optimizer']['lr'],
-                                       num_steps=self.params['warmup_steps']))
+            scheds.append(
+                LinearWarmup(optims[0],
+                             lr=self.params['optimizer']['lr'],
+                             num_steps=self.params['warmup_steps']))
         return scheds
 
     def train_dataloader(self):
@@ -164,9 +162,8 @@ class BaseExperiment(pl.LightningModule):
                           **params)
 
     def val_dataloader(self):
-        ds_params = deep_merge(
-            self.params['data'].get('training', {}).copy(),
-            self.params['data'].get('validation', {}))
+        ds_params = deep_merge(self.params['data'].get('training', {}).copy(),
+                               self.params['data'].get('validation', {}))
         dataset = get_dataset(self.params['data']['name'],
                               ds_params,
                               split=self.params['data'].get('split', None),
@@ -174,11 +171,13 @@ class BaseExperiment(pl.LightningModule):
                               train=False)
         params = self.params['data'].get('loader', {}).copy()
         if 'balanced' in self.params['data']:
-            params['sampler'] = balanced_sampler(dataset, **self.params['data']['balanced'])
-        self.sample_dataloader = DataLoader(dataset,
-                                            batch_size=self.params['batch_size'],
-                                            shuffle=False,
-                                            **params)
+            params['sampler'] = balanced_sampler(
+                dataset, **self.params['data']['balanced'])
+        self.sample_dataloader = DataLoader(
+            dataset,
+            batch_size=self.params['batch_size'],
+            shuffle=False,
+            **params)
         self.num_val_imgs = len(self.sample_dataloader)
         self.val_batches = self.get_val_batches(dataset)
         return self.sample_dataloader

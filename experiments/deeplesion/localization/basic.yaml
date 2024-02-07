@@ -9,21 +9,17 @@ model_params:
   hidden_dims: [128, 128, 128, 128]
 
 exp_params:
-  warmup_steps: 256
+  warmup_steps: 2
   save_weights:
     every_n_steps: 10_000
     delete_old: true
     local: {}
-    #s3:
-    #  endpoint: https://nyc3.digitaloceanspaces.com
-    #  bucket: deeplesion
   loss_params:
     objective: mse
-  batch_size: 5
+  batch_size: 4
   optimizer:
-    lr: 0.01
+    lr: 0.0005
     weight_decay: 0.00001
-  save_weights_every_n_steps: 10_000
   data:
     name: deeplesion
     split: 0.7
@@ -34,21 +30,19 @@ exp_params:
     training:
       root: /opt/data/deeplesion
       only_positives: true
-      #limit: 128
+      limit: 256
       components:
         - bounding_boxes
   plot:
     fn: localize_lesions
-    sample_every_n_steps: 10_000
+    sample_every_n_steps: 1_000
     batch_size: 8
     params: {}
   
 trainer_params:
   max_epochs: 10_000_000
-  log_every_n_steps: 20
-  #limit_train_batches: 10
-  #limit_val_batches: 5
-  check_val_every_n_epoch: 100
+  log_every_n_steps: 8
+  check_val_every_n_epoch: 2
 
 logging_params:
   name: "DeepLesion_Basic"

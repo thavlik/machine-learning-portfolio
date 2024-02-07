@@ -10,8 +10,7 @@ class Localizer(nn.Module):
     """ Base class for a model that carries out localization.
     """
 
-    def __init__(self,
-                 name: str) -> None:
+    def __init__(self, name: str) -> None:
         super().__init__()
         self.name = name
 
@@ -25,15 +24,19 @@ class Localizer(nn.Module):
                       objective: str = 'iou',
                       iou_weight: float = 1.0) -> dict:
         localization_loss = F.mse_loss(pred_params, targ_params)
-        iou_loss = -torch.Tensor(giou(pred_params.detach().numpy(), targ_params.detach().numpy())).mean()
+        iou_loss = -torch.Tensor(
+            giou(pred_params.detach().numpy(),
+                 targ_params.detach().numpy())).mean()
         #eps = 1e-7
         #localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
         #localization_loss = -torch.log(localization_loss)
         #localization_loss = 1.0 / localization_loss
         loss = localization_loss + iou_loss * iou_weight
-        return {'loss': loss,
-                'IOU_Loss': iou_loss,
-                'Localization_Loss': localization_loss}
+        return {
+            'loss': loss,
+            'IOU_Loss': iou_loss,
+            'Localization_Loss': localization_loss
+        }
 
 
 def bb_intersection_over_union(boxA, boxB):

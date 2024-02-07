@@ -8,7 +8,7 @@ from localization import LocalizationExperiment
 from dataset import get_example_shape
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, Callback
-from pytorch_lightning.loggers import CSVLogger
+from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 import numpy as np
 from pytorch_lightning import Trainer
 from load_config import load_config
@@ -22,7 +22,8 @@ from pytorch_lightning.core.saving import save_hparams_to_yaml
 
 
 class OnCheckpointHparams(Callback):
-    def on_save_checkpoint(self, trainer, pl_module):
+
+    def on_save_checkpoint(self, trainer, pl_module, *args, **kwargs):
         if trainer.current_epoch == 0:
             file_path = os.path.join(trainer.logger.save_dir,
                                      trainer.logger.name,
@@ -32,8 +33,10 @@ class OnCheckpointHparams(Callback):
             save_hparams_to_yaml(config_yaml=file_path,
                                  hparams=pl_module.hparams)
 
+
 def augment(config: dict, run_args: dict):
     return AugmentationExperiment(config, **run_args)
+
 
 def localization2d(config: dict, run_args: dict):
     return LocalizationExperiment(config, **run_args)
@@ -55,11 +58,11 @@ def classification_embed2d(config: dict, run_args: dict):
                          height=h,
                          channels=c,
                          encoder=encoder)
-    return ClassificationExperiment(model,
-                                    params=exp_params)
+    return ClassificationExperiment(model, params=exp_params)
 
 
-def classification_sandwich2d(config: dict, run_args: dict) -> ClassificationExperiment:
+def classification_sandwich2d(config: dict,
+                              run_args: dict) -> ClassificationExperiment:
     base_experiment, _ = experiment_main(
         load_config(config['base_experiment']), run_args)
     encoder = base_experiment.model.get_encoder()
@@ -75,16 +78,13 @@ def classification_sandwich2d(config: dict, run_args: dict) -> ClassificationExp
                          channels=c,
                          encoder=encoder,
                          sandwich_layers=sandwich_layers)
-    return ClassificationExperiment(model,
-                                    params=exp_params)
+    return ClassificationExperiment(model, params=exp_params)
 
 
 def vae1d(config: dict, run_args: dict) -> VAEExperiment:
     exp_params = config['exp_params']
     c, l = get_example_shape(exp_params['data'])
-    model = create_model(**config['model_params'],
-                         num_samples=l,
-                         channels=c)
+    model = create_model(**config['model_params'], num_samples=l, channels=c)
     return VAEExperiment(model,
                          params=exp_params,
                          enable_tune=run_args.get('enable_tune', False))
@@ -139,8 +139,7 @@ def get_best_config(analysis, metric: str, scope: str) -> dict:
                 break
         if not found:
             options.append((trial.config, [loss]))
-    i = np.argmin([np.mean(losses)
-                   for _, losses in options])
+    i = np.argmin([np.mean(losses) for _, losses in options])
     best_config = options[i][0]
     return best_config
 
@@ -150,13 +149,15 @@ def hparam_search(config: dict, run_args: dict):
     from ray import tune
     run_config = load_config(config['experiment'])
     run_config = generate_run_config(run_config)
-    run_config['trainer_params'] = deep_merge(run_config['trainer_params'].copy(), {
-        'max_steps': config['num_train_steps'],
-        #'val_check_interval': config['num_train_steps'],
-        'limit_val_batches': config['num_val_steps'],
-        #'log_every_n_steps': 1,
-        #'max_epochs': config.get('num_epochs', 1),
-    })
+    run_config['trainer_params'] = deep_merge(
+        run_config['trainer_params'].copy(),
+        {
+            'max_steps': config['num_train_steps'],
+            #'val_check_interval': config['num_train_steps'],
+            'limit_val_batches': config['num_val_steps'],
+            #'log_every_n_steps': 1,
+            #'max_epochs': config.get('num_epochs', 1),
+        })
     if config.get('randomize_seed', False):
         print('Warning: randomizing seed for each trial')
         run_config['manual_seed'] = tune.sample_from(
@@ -165,8 +166,7 @@ def hparam_search(config: dict, run_args: dict):
     print("ray.get_gpu_ids(): {}".format(ray.get_gpu_ids()))
     analysis = tune.run(
         tune.with_parameters(experiment_main,
-                             run_args=dict(**run_args,
-                                           enable_tune=True)),
+                             run_args=dict(**run_args, enable_tune=True)),
         name=run_config['entrypoint'],
         config=run_config,
         local_dir=run_args['save_dir'],
@@ -203,8 +203,7 @@ def vae3d(config: dict, run_args: dict) -> VAEExperiment:
                          height=h,
                          depth=d,
                          channels=c)
-    return VAEExperiment(model,
-                         params=exp_params)
+    return VAEExperiment(model, params=exp_params)
 
 
 def vae4d(config: dict, run_args: dict) -> VAEExperiment:
@@ -216,20 +215,15 @@ def vae4d(config: dict, run_args: dict) -> VAEExperiment:
                          depth=d,
                          channels=c,
                          frames=f)
-    return VAEExperiment(model,
-                         params=exp_params)
+    return VAEExperiment(model, params=exp_params)
 
 
 def rl2d(config: dict, run_args: dict) -> VAEExperiment:
     run_config = config['run_params']['config']
     env = get_env(run_config['env_config']['name'])
-    run_config = {**run_config,
-                  'framework': 'torch',
-                  'env': env}
+    run_config = {**run_config, 'framework': 'torch', 'env': env}
     config['run_params']['config'] = run_config
-    tune.run(config['algorithm'],
-             loggers=[TBXLogger],
-             **config['run_params'])
+    tune.run(config['algorithm'], loggers=[TBXLogger], **config['run_params'])
 
 
 def comparison(config: dict, run_args: dict) -> None:
@@ -272,8 +266,8 @@ def comparison(config: dict, run_args: dict) -> None:
                     results[metric] = [(experiment.logger.name, metric_data)]
     dir = os.path.join(run_args['save_dir'], config['name'])
     if os.path.exists(dir):
-        version_no = len([f for f in os.listdir(dir)
-                          if f.startswith('version_')])
+        version_no = len(
+            [f for f in os.listdir(dir) if f.startswith('version_')])
     else:
         os.makedirs(dir)
         version_no = 0
@@ -338,31 +332,32 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     if experiment is None:
         return
     experiment = experiment.cuda(0)
-    logger = CSVLogger(save_dir=run_args['save_dir'],
-                       name=config['logging_params']['name'])
+    logger = TensorBoardLogger(save_dir=run_args['save_dir'],
+                               name=config['logging_params']['name'])
     logger.log_hyperparams(config)
     if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5
-    runner = Trainer(default_root_dir=f"{logger.save_dir}",
-                     num_sanity_val_steps=5,
-                     logger=logger,
-                     #checkpoint_callback=True,
-                     #gpus=1,
-                     callbacks=[
-                         OnCheckpointHparams(),
-                         ModelCheckpoint(
-                             save_top_k=1,
-                             save_last=True,
-                             verbose=True,
-                             monitor='val/loss',
-                             mode='min'
-                         )],
-                     #log_gpu_memory='all',
-                     **config['trainer_params'])
+    runner = Trainer(
+        default_root_dir=f"{logger.save_dir}",
+        num_sanity_val_steps=5,
+        logger=logger,
+        #checkpoint_callback=True,
+        #gpus=1,
+        callbacks=[
+            OnCheckpointHparams(),
+            ModelCheckpoint(save_top_k=1,
+                            save_last=True,
+                            verbose=True,
+                            monitor='val/loss',
+                            mode='min')
+        ],
+        #log_gpu_memory='all',
+        **config['trainer_params'])
 
     if run_args.get('validate', False):
         print(
-            f"======= Validating {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")
+            f"======= Validating {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) ======="
+        )
         #runner.model = experiment
         #results = runner.run_evaluation()
         results = runner.test(experiment,
@@ -373,7 +368,8 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
         return experiment, results
 
     print(
-        f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) =======")
+        f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) ======="
+    )
     print(config)
     results = runner.fit(experiment)
     return experiment, results
