@@ -1,6 +1,7 @@
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.nn import functional as F
+
 from abc import abstractmethod
 from torchvision.ops import complete_box_iou_loss, distance_box_iou_loss
 

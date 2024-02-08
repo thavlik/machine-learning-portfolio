@@ -1,11 +1,15 @@
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.nn import functional as F
+
 from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
+from typing import List
+
 from .inception import InceptionV3
 
+
 class BaseRenderer(nn.Module):
+
     def __init__(self,
                  name: str,
                  enable_fid: bool,
@@ -17,9 +21,7 @@ class BaseRenderer(nn.Module):
             self.inception = InceptionV3(fid_blocks, use_fid_inception=True)
 
     @abstractmethod
-    def decode(self,
-               world_matrix: Tensor,
-               **kwargs) -> Tensor:
+    def decode(self, world_matrix: Tensor, **kwargs) -> Tensor:
         raise NotImplementedError
 
     def forward(self, world_matrix: Tensor, **kwargs) -> List[Tensor]:
@@ -33,8 +35,7 @@ class BaseRenderer(nn.Module):
 
         loss = recons_loss
 
-        result = {'loss': loss,
-                  'Reconstruction_Loss': recons_loss}
+        result = {'loss': loss, 'Reconstruction_Loss': recons_loss}
 
         if self.enable_fid:
             fid_loss = self.fid(orig, recons).sum()
@@ -46,7 +47,6 @@ class BaseRenderer(nn.Module):
     def fid(self, a: Tensor, b: Tensor) -> Tensor:
         a = self.inception(a)
         b = self.inception(b)
-        fid = [torch.mean((x - y) ** 2).unsqueeze(0)
-               for x, y in zip(a, b)]
+        fid = [torch.mean((x - y)**2).unsqueeze(0) for x, y in zip(a, b)]
         fid = torch.cat(fid, dim=0)
         return fid

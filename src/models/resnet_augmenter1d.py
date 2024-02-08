@@ -1,11 +1,14 @@
 import torch
-from torch import nn, Tensor, Size
+from torch import Size, Tensor, nn
+
 from typing import List
-from .resnet1d import BasicBlock1d
+
 from .augmenter import Augmenter
+from .resnet1d import BasicBlock1d
 
 
 class ResNetAugmenter1d(Augmenter):
+
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],
@@ -20,15 +23,17 @@ class ResNetAugmenter1d(Augmenter):
         modules = []
         in_features = self.channels
         for h_dim in hidden_dims:
-            modules.append(BasicBlock1d(in_features,
-                                        h_dim,
-                                        kernel_size=kernel_size,
-                                        padding=padding))
+            modules.append(
+                BasicBlock1d(in_features,
+                             h_dim,
+                             kernel_size=kernel_size,
+                             padding=padding))
             in_features = h_dim
-        modules.append(BasicBlock1d(in_features,
-                                    self.channels,
-                                    kernel_size=kernel_size,
-                                    padding=padding))
+        modules.append(
+            BasicBlock1d(in_features,
+                         self.channels,
+                         kernel_size=kernel_size,
+                         padding=padding))
         self.layers = nn.Sequential(*modules)
         if load_weights is not None:
             new = self.state_dict()

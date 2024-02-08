@@ -1,13 +1,16 @@
 # Thank you funkey and timothygebhard for this code.
 # Source: https://github.com/timothygebhard/pytorch-conv4d/blob/master/conv4d.py
 from __future__ import division
-from typing import Tuple, Callable, Union
+
 import torch
 from torch import nn
+
 import numpy as np
+from typing import Callable, Tuple, Union
 
 
 class Conv4d(nn.Module):
+
     def __init__(self,
                  in_channels: int,
                  out_channels: int,
@@ -150,24 +153,29 @@ if __name__ == "__main__":
     output = conv4d_layer.forward(input_torch).data.numpy()
 
     # Select the 3D kernels for the manual computation and comparison
-    kernels = [conv4d_layer.conv3d_layers[i].weight.data.numpy().flatten()
-               for i in range(3)]
+    kernels = [
+        conv4d_layer.conv3d_layers[i].weight.data.numpy().flatten()
+        for i in range(3)
+    ]
 
     # Compare the conv4d_layer result and the manual convolution computation
     # at 3 randomly chosen locations
     for i in range(3):
 
         # Randomly choose a location and select the conv4d_layer output
-        loc = [np.random.randint(0, output.shape[2] - 2),
-               np.random.randint(0, output.shape[3] - 2),
-               np.random.randint(0, output.shape[4] - 2),
-               np.random.randint(0, output.shape[5] - 2)]
+        loc = [
+            np.random.randint(0, output.shape[2] - 2),
+            np.random.randint(0, output.shape[3] - 2),
+            np.random.randint(0, output.shape[4] - 2),
+            np.random.randint(0, output.shape[5] - 2)
+        ]
         conv4d = output[0, 0, loc[0], loc[1], loc[2], loc[3]]
 
         # Select slices from the input tensor and compute manual convolution
-        slices = [input_numpy[0, 0, loc[0] + j, loc[1]:loc[1] + 3,
-                              loc[2]:loc[2] + 3, loc[3]:loc[3] + 3].flatten()
-                  for j in range(3)]
+        slices = [
+            input_numpy[0, 0, loc[0] + j, loc[1]:loc[1] + 3, loc[2]:loc[2] + 3,
+                        loc[3]:loc[3] + 3].flatten() for j in range(3)
+        ]
         manual = np.sum([slices[j] * kernels[j] for j in range(3)])
 
         # Print comparison
@@ -201,10 +209,12 @@ if __name__ == "__main__":
     for i in range(3):
 
         # Randomly choose a location and select the conv4d_layer output
-        loc = [np.random.randint(0, output.shape[2] - 2),
-               np.random.randint(0, output.shape[3] - 2),
-               np.random.randint(0, output.shape[4] - 2),
-               np.random.randint(0, output.shape[5] - 2)]
+        loc = [
+            np.random.randint(0, output.shape[2] - 2),
+            np.random.randint(0, output.shape[3] - 2),
+            np.random.randint(0, output.shape[4] - 2),
+            np.random.randint(0, output.shape[5] - 2)
+        ]
         conv4d = output[0, 0, loc[0], loc[1], loc[2], loc[3]]
 
         # For a kernel that is all 1s, we only need to sum up the elements of

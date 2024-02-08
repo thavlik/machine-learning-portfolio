@@ -1,12 +1,11 @@
 from torch import Tensor, nn
+
 from typing import List
 
 
 class EncoderWrapper(nn.Module):
-    def __init__(self,
-                 latent_dim: int,
-                 layers: nn.Module,
-                 mu: nn.Module,
+
+    def __init__(self, latent_dim: int, layers: nn.Module, mu: nn.Module,
                  var: nn.Module):
         super(EncoderWrapper, self).__init__()
         self.latent_dim = latent_dim

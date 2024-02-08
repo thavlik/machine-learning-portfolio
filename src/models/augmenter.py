@@ -1,12 +1,13 @@
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
+
 from abc import abstractmethod
 from typing import List
 
 
 class Augmenter(nn.Module):
-    def __init__(self,
-                 name: str) -> None:
+
+    def __init__(self, name: str) -> None:
         super(Augmenter, self).__init__()
         self.name = name
 
@@ -24,6 +25,8 @@ class Augmenter(nn.Module):
         td = torch.pow(ct - co, 2).mean()  # lower is better
         ud = torch.pow(x - t, 2).mean()  # higher is better
         loss = td - ud * alpha
-        return {'loss': loss,
-                'TransformedDelta': td.detach().cpu(),
-                'UntransformedDelta': ud.detach().cpu()}
+        return {
+            'loss': loss,
+            'TransformedDelta': td.detach().cpu(),
+            'UntransformedDelta': ud.detach().cpu()
+        }

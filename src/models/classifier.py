@@ -1,14 +1,14 @@
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.nn import functional as F
+
 from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
+from typing import List
 
 
 class Classifier(nn.Module):
-    def __init__(self,
-                 name: str,
-                 num_classes: int) -> None:
+
+    def __init__(self, name: str, num_classes: int) -> None:
         super(Classifier, self).__init__()
         self.name = name
         self.num_classes = num_classes
@@ -32,7 +32,8 @@ class Classifier(nn.Module):
         else:
             raise ValueError(f'Objective "{objective}" not implemented')
 
-        any_acc = torch.sum(torch.round(prediction), dim=1).clamp(0, 1).int() == torch.sum(target, dim=1).clamp(0, 1).int()
+        any_acc = torch.sum(torch.round(prediction), dim=1).clamp(
+            0, 1).int() == torch.sum(target, dim=1).clamp(0, 1).int()
         any_acc = any_acc.float().mean()
         result['accuracy/any'] = any_acc
 
@@ -41,8 +42,10 @@ class Classifier(nn.Module):
         result['accuracy/avg'] = avg_acc
 
         if baseline_accuracy is not None:
-            result['rel_acc/avg'] = (avg_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
-            result['rel_acc/any'] = (any_acc - baseline_accuracy) / (1.0 - baseline_accuracy)
+            result['rel_acc/avg'] = (avg_acc - baseline_accuracy) / (
+                1.0 - baseline_accuracy)
+            result['rel_acc/any'] = (any_acc - baseline_accuracy) / (
+                1.0 - baseline_accuracy)
 
         num_classes = target.shape[1]
 
@@ -51,6 +54,7 @@ class Classifier(nn.Module):
             acc = acc.float().mean()
             result[f'accuracy/class_{i}'] = acc
             if baseline_accuracy is not None:
-                result[f'rel_acc/class_{i}'] = (acc - baseline_accuracy) / (1.0 - baseline_accuracy)
-        
+                result[f'rel_acc/class_{i}'] = (acc - baseline_accuracy) / (
+                    1.0 - baseline_accuracy)
+
         return result
