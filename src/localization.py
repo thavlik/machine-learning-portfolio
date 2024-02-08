@@ -9,13 +9,9 @@ from dataset import get_example_shape
 
 
 class LocalizationExperiment(BaseExperiment):
-    def __init__(self,
-                 config: dict,
-                 enable_tune: bool = False,
-                 **kwargs):
-        super().__init__(config=config,
-                         enable_tune=enable_tune,
-                         **kwargs)
+
+    def __init__(self, config: dict, enable_tune: bool = False, **kwargs):
+        super().__init__(config=config, enable_tune=enable_tune, **kwargs)
         exp_params = config['exp_params']
         input_shape = get_example_shape(exp_params['data'])
         localizer = create_model(**config['model_params'],
@@ -38,26 +34,29 @@ class LocalizationExperiment(BaseExperiment):
         target_params = torch.cat(target_params, dim=0)
 
         # Extensionless output path (let plotting function choose extension)
-        out_path = os.path.join(self.logger.save_dir,
-                                self.logger.name,
-                                f"version_{self.logger.version}",
-                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        out_path = os.path.join(
+            self.logger.save_dir, self.logger.name,
+            f"version_{self.logger.version}",
+            f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         fn = get_plot_fn(plot['fn'])
-        fn(test_input=test_input,
-           pred_params=pred_params,
-           target_params=target_params,
-           out_path=out_path,
-           vis=self.visdom(),
-           **plot['params'])
+        image = fn(test_input=test_input,
+                   pred_params=pred_params,
+                   target_params=target_params,
+                   out_path=out_path,
+                   **plot['params'])
+        self.logger.experiment.add_image(plot['fn'], image, self.global_step)
+        vis = self.visdom()
+        if vis is not None:
+            vis.image(image, win=plot['fn'])
 
     def training_step(self, batch, batch_idx):
         real_img, targ_labels, targ_params = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         pred_params = self.localizer(real_img).cpu()
-        train_loss = self.localizer.loss_function(pred_params,
-                                                  targ_params.cpu(),
-                                                  **self.params.get('loss_params', {}))
+        train_loss = self.localizer.loss_function(
+            pred_params, targ_params.cpu(),
+            **self.params.get('loss_params', {}))
         self.log_train_step(train_loss)
         return train_loss
 
@@ -66,23 +65,26 @@ class LocalizationExperiment(BaseExperiment):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         pred_params = self.localizer(real_img).cpu()
-        val_loss = self.localizer.loss_function(pred_params,
-                                                targ_params.cpu(),
-                                                **self.params.get('loss_params', {}))
+        val_loss = self.localizer.loss_function(
+            pred_params, targ_params.cpu(),
+            **self.params.get('loss_params', {}))
         self.log_val_step(val_loss)
         return val_loss
 
     def configure_optimizers(self):
-        optims = [optim.Adam(self.localizer.parameters(),
-                             **self.params['optimizer'])]
+        optims = [
+            optim.Adam(self.localizer.parameters(), **self.params['optimizer'])
+        ]
         scheds = self.configure_schedulers(optims)
         return optims, scheds
 
     def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []
         for plot in self.plots:
-            batch = [get_positive_example(dataset)
-                     for _ in range(plot['batch_size'])]
+            batch = [
+                get_positive_example(dataset)
+                for _ in range(plot['batch_size'])
+            ]
             for _, label, _ in batch:
                 assert torch.is_nonzero(label)
             val_batches.append(batch)

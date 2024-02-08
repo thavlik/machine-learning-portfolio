@@ -28,9 +28,7 @@ from skimage.segmentation import mark_boundaries
 from skimage.transform import resize
 
 
-def plot_title(template: str,
-               model: str,
-               epoch: int):
+def plot_title(template: str, model: str, epoch: int):
     replacements = {
         '${model}': model,
         '${epoch}': epoch,
@@ -53,8 +51,9 @@ def create_segmentation(mask_shape, bbox):
     return np.clip(out_seg, 0, 1).astype(np.float32)
 
 
-def apply_softwindow(x): return (
-    255*plt.cm.gray(0.5*np.clip((x-50)/350, -1, 1)+0.5)[:, :, :3]).astype(np.uint8)
+def apply_softwindow(x):
+    return (255 * plt.cm.gray(0.5 * np.clip((x - 50) / 350, -1, 1) +
+                              0.5)[:, :, :3]).astype(np.uint8)
 
 
 def localize_lesions(test_input: Tensor,
@@ -62,15 +61,15 @@ def localize_lesions(test_input: Tensor,
                      target_params: Tensor,
                      out_path: str,
                      figsize: Optional[List[float]] = None,
-                     indicator_thickness: Optional[int] = 16,
-                     vis: Optional[Visdom] = None):
+                     indicator_thickness: Optional[int] = 16):
     rows = test_input.shape[0]
     cols = 1
     h, w = test_input.shape[2:]
     if figsize is None:
         figsize = [5, rows * 6]
     fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
-    for (ax, x, pred_param, targ_param) in zip(axs, test_input, pred_params, target_params):
+    for (ax, x, pred_param, targ_param) in zip(axs, test_input, pred_params,
+                                               target_params):
         pred_param[0] *= w
         pred_param[1] *= h
         pred_param[2] *= w
@@ -82,8 +81,10 @@ def localize_lesions(test_input: Tensor,
         x = x.numpy().squeeze()
         mask_shape = x.shape
         x = apply_softwindow(x)
-        targ_segs = create_segmentation(mask_shape, [targ_param.numpy()]).astype(int)
-        pred_segs = create_segmentation(mask_shape, [pred_param.numpy()]).astype(int)
+        targ_segs = create_segmentation(mask_shape,
+                                        [targ_param.numpy()]).astype(int)
+        pred_segs = create_segmentation(mask_shape,
+                                        [pred_param.numpy()]).astype(int)
         x = mark_boundaries(image=x,
                             label_img=pred_segs,
                             color=(1, 1, 0),
@@ -97,13 +98,17 @@ def localize_lesions(test_input: Tensor,
     fig.savefig(out_path, bbox_inches='tight')
     plt.close(fig)
     plt.close('all')
-    if vis is not None:
-        img = imread(out_path)
-        img = img[:, :, :3]
-        img = np.transpose(img, axes=(2, 0, 1))
-        vis.image(img,
-                  win='localize',
-                  opts=dict(caption='Lesion Localization'))
+    img = imread(out_path)
+    img = img[:, :, :3]
+    img = np.transpose(img, axes=(2, 0, 1))
+    return img
+    #if vis is not None:
+    #    img = imread(out_path)
+    #    img = img[:, :, :3]
+    #    img = np.transpose(img, axes=(2, 0, 1))
+    #    vis.image(img,
+    #              win='localize',
+    #              opts=dict(caption='Lesion Localization'))
 
 
 def eeg(orig: Tensor,
@@ -120,9 +125,8 @@ def eeg(orig: Tensor,
     fig = make_subplots(rows=num_channels, cols=cols)
     if layout_params is not None:
         if 'title' in layout_params:
-            layout_params['title'] = plot_title(template=layout_params['title'],
-                                                model=model_name,
-                                                epoch=epoch)
+            layout_params['title'] = plot_title(
+                template=layout_params['title'], model=model_name, epoch=epoch)
         fig.update_layout(**layout_params)
     i = 0
     n = min(cols, batch_size)
@@ -143,7 +147,9 @@ def eeg(orig: Tensor,
                     color='red',
                     width=2,
                 ),
-            ), row=channel+1, col=col+1)
+            ),
+                          row=channel + 1,
+                          col=col + 1)
             fig.add_trace(go.Scatter(
                 x=x,
                 y=yr,
@@ -154,13 +160,13 @@ def eeg(orig: Tensor,
                     color='blue',
                     width=2,
                 ),
-            ), row=channel+1, col=col+1)
+            ),
+                          row=channel + 1,
+                          col=col + 1)
         i += 1
     if not out_path.endswith('.png'):
         out_path += '.png'
-    fig.write_image(out_path,
-                    width=width,
-                    height=height)
+    fig.write_image(out_path, width=width, height=height)
 
 
 def plot2d(orig: Tensor,
@@ -177,12 +183,12 @@ def plot2d(orig: Tensor,
            suptitle: dict = {},
            img_filter: str = None,
            imshow_args: dict = {}):
-    fig = figure.Figure(figsize=(cols * scaling, rows * scaling),
-                        dpi=dpi)
-    grid = ImageGrid(fig,
-                     111,  # similar to subplot(111)
-                     nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
-                     axes_pad=0.1)  # pad between axes in inch.
+    fig = figure.Figure(figsize=(cols * scaling, rows * scaling), dpi=dpi)
+    grid = ImageGrid(
+        fig,
+        111,  # similar to subplot(111)
+        nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
+        axes_pad=0.1)  # pad between axes in inch.
     i = 0
     n = min(rows * cols, orig.shape[0])
     to_pil = ToPILImage()
@@ -215,9 +221,7 @@ def plot2d(orig: Tensor,
         if done:
             break
     if title is not None:
-        interpolated = plot_title(title,
-                                  model_name,
-                                  epoch)
+        interpolated = plot_title(title, model_name, epoch)
         fig.suptitle(interpolated, **suptitle)
     fig.tight_layout()
     fig.savefig(out_path + '.png', bbox_inches='tight')
@@ -226,9 +230,7 @@ def plot2d(orig: Tensor,
 
 
 def plot2d_dcm(*args, **kwargs):
-    return plot2d(*args,
-                  **kwargs,
-                  imshow_args=dict(cmap=plt.cm.bone))
+    return plot2d(*args, **kwargs, imshow_args=dict(cmap=plt.cm.bone))
 
 
 def plot_video(orig: Tensor,
@@ -252,9 +254,11 @@ def plot_video(orig: Tensor,
 
         def resize_batch(batch):
             return torch.cat([
-                torch.cat([transform(frame).unsqueeze(dim=0)
-                           for frame in video]).unsqueeze(dim=0)
-                for video in batch])
+                torch.cat(
+                    [transform(frame).unsqueeze(dim=0)
+                     for frame in video]).unsqueeze(dim=0) for video in batch
+            ])
+
         recons = resize_batch(recons)
         orig = resize_batch(orig)
 
@@ -443,7 +447,8 @@ def fmri_stat_map_video(orig: Tensor,
 
     def run(cmd):
         if os.name == 'nt':
-            return subprocess.run(['debian.exe', 'run', cmd], capture_output=True)
+            return subprocess.run(['debian.exe', 'run', cmd],
+                                  capture_output=True)
         proc = subprocess.run(['sh', '-c', cmd], capture_output=True)
         if proc.returncode != 0:
             msg = f'expected exit code 0 from ffmpeg, got exit code {proc.returncode}: {proc.stdout.decode("unicode_escape")}'
@@ -453,7 +458,8 @@ def fmri_stat_map_video(orig: Tensor,
 
     in_path = path(f'{out_path}_%d.tmp.png')
     webm_path = path(f'{out_path}.webm')
-    run(f'ffmpeg -y -framerate {fps} -i {in_path} -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {webm_path}')
+    run(f'ffmpeg -y -framerate {fps} -i {in_path} -c:v libvpx-vp9 -pix_fmt yuva420p -lossless 1 {webm_path}'
+        )
     if format == 'gif':
         gif_path = path(f'{out_path}.gif')
         run(f'ffmpeg -y -i {webm_path} {gif_path}')
@@ -477,18 +483,14 @@ def plot_comparison(result_dict: dict,
     for name, data in result_dict.items():
         x = data[:, 0]
         y = data[:, 1]
-        fig.add_trace(go.Scatter(x=x, y=y,
-                                 mode='lines',
-                                 name=name,
-                                 **p))
-    params = dict(title=f'{metric_name.title()} Comparison ({num_samples} samples)',
-                  width=width,
-                  height=height,
-                  xaxis_title="Epoch",
-                  yaxis_title=metric_name.title(),
-                  font=dict(
-                      size=18,
-                  ))
+        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name=name, **p))
+    params = dict(
+        title=f'{metric_name.title()} Comparison ({num_samples} samples)',
+        width=width,
+        height=height,
+        xaxis_title="Epoch",
+        yaxis_title=metric_name.title(),
+        font=dict(size=18, ))
     params = deep_merge(params, layout_params)
     fig.update_layout(**params)
     dir = os.path.dirname(out_path)
@@ -552,7 +554,8 @@ def classifier2d(test_input: Tensor,
     if padding is None:
         padding = int(np.clip(test_input[0][0].shape[-1] / 16, 1, 32))
     columns = []
-    for class_obj, examples, preds, targs in zip(classes, test_input, predictions, targets):
+    for class_obj, examples, preds, targs in zip(classes, test_input,
+                                                 predictions, targets):
         column = []
         labels = torch.Tensor(class_obj['labels']).int()
         for img, pred, targ in zip(examples, preds, targs):
@@ -563,14 +566,18 @@ def classifier2d(test_input: Tensor,
             if img_filter is not None:
                 img = run_img_filter(img, img_filter)
 
-            img = add_indicator_to_image(
-                img, class_rel_acc, indicator_thickness, after=False)
+            img = add_indicator_to_image(img,
+                                         class_rel_acc,
+                                         indicator_thickness,
+                                         after=False)
 
             # Average relative accuracy across all classes
             rel_acc = torch.round(pred).int() == targ.int()
             rel_acc = rel_acc.float().mean()
-            img = add_indicator_to_image(
-                img, rel_acc, indicator_thickness, after=True)
+            img = add_indicator_to_image(img,
+                                         rel_acc,
+                                         indicator_thickness,
+                                         after=True)
 
             img = pad_image(img, background, padding)
             column.append(img)
@@ -599,8 +606,8 @@ def add_indicator_to_image(img: Tensor,
     hue = np.clip(rel_acc * max_hue, 0.0, max_hue)
     color = hsv_to_rgb([hue, 1.0, 1.0])
     height = img.shape[1]
-    colorbar = torch.Tensor(color).unsqueeze(
-        1).unsqueeze(1).repeat(1, height, thickness)
+    colorbar = torch.Tensor(color).unsqueeze(1).unsqueeze(1).repeat(
+        1, height, thickness)
     img = torch.cat([img, colorbar] if after else [colorbar, img], dim=2)
     return img
 
@@ -643,7 +650,7 @@ def add_label(img: Tensor,
     font = ImageFont.truetype(font_path, size)
     draw = ImageDraw.Draw(img)
     w, _ = draw.textsize(label, font=font)
-    draw.text(xy=((img.width - w)/2, margin),
+    draw.text(xy=((img.width - w) / 2, margin),
               text=label,
               fill=fill,
               font=font)
@@ -713,8 +720,7 @@ if __name__ == '__main__':
     from time import time
     np.random.seed(int(time()))
 
-    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial',
-                                 download=False)
+    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial', download=False)
 
     #path = os.path.join(ds.dcm_path, ds.files[10000])
     #img = pydicom.dcmread(path, stop_before_pixels=False)
@@ -776,16 +782,15 @@ if __name__ == '__main__':
     # TODO: add class labels
     classifier2d(X, Y, Y.copy(), classes, out_path='img.png')
 
-    img = torch.Tensor([0.0, 1.0, 0.0]).unsqueeze(
-        1).unsqueeze(1).repeat(1, 16, 16)
+    img = torch.Tensor([0.0, 1.0,
+                        0.0]).unsqueeze(1).unsqueeze(1).repeat(1, 16, 16)
     img = add_indicator_to_image(img, 0.9)
     img = pad_image(img, [1.0, 0.0, 0.0], 4)
 
     base_path = 'E:\\trends-fmri'
     ds = TReNDSfMRIDataset(os.path.join(base_path, 'fMRI_test'),
                            mask_path=os.path.join(base_path, 'fMRI_mask.nii'))
-    x = torch.cat([ds[i].unsqueeze(0)
-                   for i in range(1)], dim=0)
+    x = torch.cat([ds[i].unsqueeze(0) for i in range(1)], dim=0)
     fmri_stat_map_video(
         orig=x,
         recons=x,
@@ -810,9 +815,9 @@ if __name__ == '__main__':
         scaling=3.0,
         dpi=330,
         suptitle=dict(y=0.91),
-        title='${model}, fMRI Original (top) vs. Reconstruction (bottom), Epoch ${epoch}',
+        title=
+        '${model}, fMRI Original (top) vs. Reconstruction (bottom), Epoch ${epoch}',
     )
-
     """
     ds = RSNAIntracranialDataset(dcm_path='E:/rsna-intracranial/stage_2_train',
                                  s3_path='s3://rsna-intracranial/stage_2_train',

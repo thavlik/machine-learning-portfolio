@@ -8,7 +8,7 @@ model_params:
   hidden_dims: [128, 128, 128, 128]
 
 exp_params:
-  warmup_steps: 2
+  warmup_steps: 64
   save_weights:
     every_n_steps: 10_000
     delete_old: true
@@ -17,7 +17,7 @@ exp_params:
     objective: mse
   batch_size: 4
   optimizer:
-    lr: 1.0e-07
+    lr: 1.0e-05
     weight_decay: 1.0e-05
   data:
     name: deeplesion
