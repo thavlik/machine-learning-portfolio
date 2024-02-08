@@ -1,14 +1,16 @@
-from math import ceil
 import torch
-from torch import nn, Tensor, Size
-from torch.nn import functional as F
+from torch import Size, Tensor, nn
+
+from math import ceil
 from typing import List
+
 from .classifier import Classifier
 from .resnet1d import BasicBlock1d
 from .util import get_pooling1d
 
 
 class ResNetClassifier1d(Classifier):
+
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],
@@ -20,8 +22,7 @@ class ResNetClassifier1d(Classifier):
                  kernel_size: int = 3,
                  padding: int = 1,
                  logits_only: bool = False) -> None:
-        super().__init__(name=name,
-                         num_classes=num_classes)
+        super().__init__(name=name, num_classes=num_classes)
         self.num_samples = input_shape[1]
         self.channels = input_shape[0]
         self.dropout = nn.Dropout(dropout)
@@ -32,10 +33,11 @@ class ResNetClassifier1d(Classifier):
         modules = []
         in_features = self.channels
         for h_dim in hidden_dims:
-            modules.append(BasicBlock1d(in_features,
-                                        h_dim,
-                                        kernel_size=kernel_size,
-                                        padding=padding))
+            modules.append(
+                BasicBlock1d(in_features,
+                             h_dim,
+                             kernel_size=kernel_size,
+                             padding=padding))
             if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
@@ -45,7 +47,8 @@ class ResNetClassifier1d(Classifier):
             in_features /= 2**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError(
-                    'noninteger number of features - perhaps there is too much pooling?')
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.output = nn.Linear(in_features, num_classes)
         if load_weights is not None:

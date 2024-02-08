@@ -1,15 +1,13 @@
-import torch
-from torch import nn, Size
-from torch.nn import functional as F
+from torch import Size, Tensor, nn
+
+from typing import List
+
 from .resnet4d import BasicBlock4d
-from torch import nn, Tensor
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
-from .util import get_pooling2d, get_activation
+from .util import get_activation
 
 
 class ResNetRegressor4d(nn.Module):
+
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],
@@ -36,11 +34,12 @@ class ResNetRegressor4d(nn.Module):
             nn.Flatten(),
             nn.Dropout(p=dropout),
         )
-        in_features = hidden_dims[-1] * self.width * self.height * self.depth * self.frames
+        in_features = hidden_dims[
+            -1] * self.width * self.height * self.depth * self.frames
         self.activation = get_activation(output_activation)
         self.prediction = nn.Linear(in_features, output_features)
         if batch_normalize:
-            self.output = nn.Sequential(    
+            self.output = nn.Sequential(
                 nn.BatchNorm1d(output_features),
                 self.activation,
             )

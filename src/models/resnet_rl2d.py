@@ -1,13 +1,15 @@
-import torch
 from torch import nn
+
 from math import ceil
 from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
+from typing import List
+
 from .resnet2d import BasicBlock2d
 from .util import get_pooling2d
-from typing import List
 
 
 class ResNetRL2d(TorchModelV2, nn.Module):
+
     def __init__(self,
                  obs_space,
                  action_space,
@@ -37,13 +39,14 @@ class ResNetRL2d(TorchModelV2, nn.Module):
         self.layers = nn.Sequential(
             *modules,
             nn.Flatten(),
-            nn.Dropout(p=dropout),   
+            nn.Dropout(p=dropout),
         )
         if pooling is not None:
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError(
-                    'noninteger number of features - perhaps there is too much pooling?')
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.output = nn.Linear(
             nn.Linear(in_features, action_space.num_actions),

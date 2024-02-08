@@ -1,17 +1,11 @@
-import os
-import numpy as np
 import torch
-import torch.utils.data as data
-from math import floor
-import youtube_dl
-import cv2
-from torchvision.transforms import Resize, ToPILImage, ToTensor
-import json
-import decord
-from decord import VideoLoader, VideoReader
-from decord import cpu, gpu
+
+import os
+from decord import VideoLoader, cpu
+
 
 class BatchVideoDataLoader(object):
+
     def __init__(self,
                  dir: str,
                  batch_size: int,
@@ -24,9 +18,9 @@ class BatchVideoDataLoader(object):
                  limit: int = None):
         super(BatchVideoDataLoader, self).__init__()
         self.batch_size = batch_size
-        videos = [os.path.join(dir, f)
-                  for f in os.listdir(dir)
-                  if f.endswith('.mp4')]
+        videos = [
+            os.path.join(dir, f) for f in os.listdir(dir) if f.endswith('.mp4')
+        ]
         if limit is not None:
             videos = videos[:limit]
         self.vl = VideoLoader(videos,
@@ -54,6 +48,7 @@ class BatchVideoDataLoader(object):
     def __iter__(self):
         self.vl.__iter__()
         return self
+
 
 if __name__ == '__main__':
     import time

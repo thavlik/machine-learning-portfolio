@@ -1,27 +1,29 @@
-from torch import nn
+from torch import Tensor, nn
+
+from math import ceil
+from typing import List
+
 from .base import BaseVAE
 from .resnet3d import BasicBlock3d, TransposeBasicBlock3d
-from torch import nn, Tensor
-from typing import List
-from math import ceil
-from .util import get_pooling3d, get_activation
+from .util import get_activation, get_pooling3d
 
 
 class ResNetVAE3d(BaseVAE):
-    def __init__(self,
-                 name: str,
-                 latent_dim: int,
-                 hidden_dims: List[int],
-                 width: int,
-                 height: int,
-                 depth: int,
-                 channels: int,
-                 dropout: float = 0.4,
-                 enable_fid: bool = False,  # per-frame FID, for video
-                 pooling: str = None,
-                 output_activation: str = 'sigmoid') -> None:
-        super(ResNetVAE3d, self).__init__(name=name,
-                                          latent_dim=latent_dim)
+
+    def __init__(
+            self,
+            name: str,
+            latent_dim: int,
+            hidden_dims: List[int],
+            width: int,
+            height: int,
+            depth: int,
+            channels: int,
+            dropout: float = 0.4,
+            enable_fid: bool = False,  # per-frame FID, for video
+            pooling: str = None,
+            output_activation: str = 'sigmoid') -> None:
+        super(ResNetVAE3d, self).__init__(name=name, latent_dim=latent_dim)
         self.width = width
         self.height = height
         self.depth = depth
@@ -48,7 +50,9 @@ class ResNetVAE3d(BaseVAE):
         if pooling is not None:
             in_features /= 8**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+                raise ValueError(
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
@@ -79,7 +83,8 @@ class ResNetVAE3d(BaseVAE):
         )
 
     def encode(self, input: Tensor) -> List[Tensor]:
-        if input.shape[-4:] != (self.channels, self.depth, self.height, self.width):
+        if input.shape[-4:] != (self.channels, self.depth, self.height,
+                                self.width):
             raise ValueError('wrong input shape')
         x = self.encoder(input)
         mu = self.mu(x)
@@ -90,6 +95,6 @@ class ResNetVAE3d(BaseVAE):
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[0], 2, 2, 2)
         x = self.decoder(x)
-        x = x.view(x.shape[0], self.channels,
-                   self.depth, self.height, self.width)
+        x = x.view(x.shape[0], self.channels, self.depth, self.height,
+                   self.width)
         return x

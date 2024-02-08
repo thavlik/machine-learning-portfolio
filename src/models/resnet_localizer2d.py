@@ -1,10 +1,11 @@
-from torch import nn, Size
-from .resnet2d import BasicBlock2d
-from torch import nn, Tensor
-from typing import List
+from torch import Size, Tensor, nn
+
 from math import ceil
+from typing import List
+
 from .localizer import Localizer
-from .util import get_pooling2d, get_activation
+from .resnet2d import BasicBlock2d
+from .util import get_activation, get_pooling2d
 
 
 class ResNetLocalizer2d(Localizer):

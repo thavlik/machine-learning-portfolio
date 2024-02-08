@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -28,9 +27,7 @@ class BasicBlock2d(nn.Module):
                           self.expansion * planes,
                           kernel_size=1,
                           stride=stride,
-                          bias=False),
-                nn.BatchNorm2d(self.expansion * planes)
-            )
+                          bias=False), nn.BatchNorm2d(self.expansion * planes))
         else:
             self.shortcut = None
 
@@ -69,9 +66,7 @@ class TransposeBasicBlock2d(nn.Module):
                                    self.expansion * planes,
                                    kernel_size=1,
                                    stride=stride,
-                                   bias=False),
-                nn.BatchNorm2d(planes)
-            )
+                                   bias=False), nn.BatchNorm2d(planes))
         else:
             self.shortcut = None
 

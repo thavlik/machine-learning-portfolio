@@ -1,15 +1,16 @@
-import torch
-from torch import nn
-from .conv4d import Conv4d
-from .base import BaseVAE
-from .util import get_pooling4d, get_activation
-from .resnet4d import BasicBlock4d
-from torch import nn, Tensor
-from typing import List
+from torch import Tensor, nn
+
 from math import ceil
+from typing import List
+
+from .base import BaseVAE
+from .conv4d import Conv4d
+from .resnet4d import BasicBlock4d
+from .util import get_activation, get_pooling4d
 
 
 class ResNetVAE4d(BaseVAE):
+
     def __init__(self,
                  name: str,
                  latent_dim: int,
@@ -22,8 +23,7 @@ class ResNetVAE4d(BaseVAE):
                  dropout: float = 0.4,
                  pooling: str = None,
                  output_activation: str = 'sigmoid') -> None:
-        super(ResNetVAE4d, self).__init__(name=name,
-                                          latent_dim=latent_dim)
+        super(ResNetVAE4d, self).__init__(name=name, latent_dim=latent_dim)
         self.width = width
         self.height = height
         self.depth = depth
@@ -51,7 +51,9 @@ class ResNetVAE4d(BaseVAE):
         if pooling is not None:
             in_features /= 16**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+                raise ValueError(
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),
@@ -82,7 +84,8 @@ class ResNetVAE4d(BaseVAE):
         )
 
     def encode(self, input: Tensor) -> List[Tensor]:
-        if input.shape[-5:] != (self.channels, self.frames, self.depth, self.height, self.width):
+        if input.shape[-5:] != (self.channels, self.frames, self.depth,
+                                self.height, self.width):
             raise ValueError('wrong input shape')
         x = self.encoder(input)
         mu = self.mu(x)
@@ -93,7 +96,6 @@ class ResNetVAE4d(BaseVAE):
         x = self.decoder_input(z)
         x = x.view(x.shape[0], self.hidden_dims[0], 2, 2, 2, 2)
         x = self.decoder(x)
-        x = x.view(x.shape[0], self.channels,
-                   self.frames, self.depth,
+        x = x.view(x.shape[0], self.channels, self.frames, self.depth,
                    self.height, self.width)
         return x

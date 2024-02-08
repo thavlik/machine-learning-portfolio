@@ -1,11 +1,9 @@
-import os
-import numpy as np
-import nilearn as nl
-import nilearn.plotting
-import numpy as np
-import torch
 import torch.utils.data as data
 from torch import Tensor
+
+import nilearn as nl
+import numpy as np
+import os
 from typing import List
 
 
@@ -36,8 +34,7 @@ class LA5cDataset(data.Dataset):
                  exclude_na: bool = True):
         super(LA5cDataset, self).__init__()
         self.root = root
-        self.subjects = [f for f in os.listdir(root)
-                         if f.startswith('sub-')]
+        self.subjects = [f for f in os.listdir(root) if f.startswith('sub-')]
         labels = {}
         for phenotype in phenotypes:
             parts = phenotype.split('/')
@@ -97,7 +94,6 @@ class LA5cDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    ds = LA5cDataset(
-        root='/data/openneuro/ds000030-download')
+    ds = LA5cDataset(root='/data/openneuro/ds000030-download')
     print(ds[0][1])
-    print(ds[len(ds)-1][0].shape)
+    print(ds[len(ds) - 1][0].shape)

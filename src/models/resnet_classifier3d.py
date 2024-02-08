@@ -1,14 +1,16 @@
-from math import ceil
-import torch
-from torch import nn, Tensor, Size
+from torch import Size, Tensor, nn
 from torch.nn import functional as F
+
+from math import ceil
 from typing import List
+
 from .classifier import Classifier
 from .resnet3d import BasicBlock3d
 from .util import get_pooling3d
 
 
 class ResNetClassifier3d(Classifier):
+
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],
@@ -16,8 +18,7 @@ class ResNetClassifier3d(Classifier):
                  num_classes: int,
                  dropout: float = 0.4,
                  pooling: str = None) -> None:
-        super().__init__(name=name,
-                         num_classes=num_classes)
+        super().__init__(name=name, num_classes=num_classes)
         self.width = input_shape[3]
         self.height = input_shape[2]
         self.depth = input_shape[1]
@@ -39,7 +40,8 @@ class ResNetClassifier3d(Classifier):
             in_features /= 8**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError(
-                    'noninteger number of features - perhaps there is too much pooling?')
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.output = nn.Sequential(
             nn.Linear(in_features, num_classes),

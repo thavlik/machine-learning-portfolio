@@ -1,13 +1,10 @@
-import json
-import os
-import numpy as np
-import nilearn as nl
-import nilearn.plotting
-from math import ceil, floor
-import numpy as np
 import torch
 import torch.utils.data as data
 from torch import Tensor
+
+import json
+import numpy as np
+import os
 from typing import Optional
 
 
@@ -36,12 +33,13 @@ def soft_label(scenes: list, t0: float, t1: float) -> tuple:
         if scene[0] > t1:
             break
         s0 = scene[0]
-        if i == len(scenes)-1:
+        if i == len(scenes) - 1:
             s1 = 7198.0
         else:
-            s1 = scenes[i+1][0]
+            s1 = scenes[i + 1][0]
         # t0 within s, t1 within s, s completely within t, t completely within s
-        if (s0 <= t0 and t0 <= s1) or (s0 <= t1 and t1 <= s1) or (t0 <= s0 and s1 <= t1) or (s0 <= t0 and t1 <= s1):
+        if (s0 <= t0 and t0 <= s1) or (s0 <= t1 and t1 <= s1) or (
+                t0 <= s0 and s1 <= t1) or (s0 <= t0 and t1 <= s1):
             i0 = max(s0, t0)
             i1 = min(s1, t1)
             dur = i1 - i0
@@ -52,9 +50,7 @@ def soft_label(scenes: list, t0: float, t1: float) -> tuple:
     return tuple(labels)
 
 
-def convert_labels(scenes: list,
-                   offset: float,
-                   frame_dur: float) -> Tensor:
+def convert_labels(scenes: list, offset: float, frame_dur: float) -> Tensor:
     labels = []
     for i in range(3599):
         t0 = i * frame_dur - offset
@@ -113,8 +109,8 @@ class ForrestGumpDataset(data.Dataset):
                  alignment: Optional[str] = 'raw'):
         super(ForrestGumpDataset, self).__init__()
         self.root = root
-        self.scenes = load_scenes(os.path.join(
-            root, "stimuli", "annotations", "scenes.csv"))
+        self.scenes = load_scenes(
+            os.path.join(root, "stimuli", "annotations", "scenes.csv"))
         self.labels = convert_labels(self.scenes, offset=offset, frame_dur=2.0)
         if alignment == 'raw':
             self.data_dir = os.path.join(root, 'converted', 'raw')
@@ -153,9 +149,10 @@ class ForrestGumpDataset(data.Dataset):
             offset += chunk
             chunk_no += 1
         index -= offset
-        chunk = np.load(os.path.join(self.data_dir, key, f'{key}_{chunk_no}.npy'))
+        chunk = np.load(
+            os.path.join(self.data_dir, key, f'{key}_{chunk_no}.npy'))
         chunk = chunk[-self.labels.shape[0]:, ...]
-        img = chunk[index:index+1, ...]
+        img = chunk[index:index + 1, ...]
         img = Tensor(img)
         return (img, labels)
 

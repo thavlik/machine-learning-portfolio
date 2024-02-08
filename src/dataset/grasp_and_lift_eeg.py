@@ -1,21 +1,21 @@
-import os
-import time
-from typing import Optional, List
-import zipfile
-
-import numpy as np
-import requests
 import torch
-from torch import Tensor
 import torch.nn.functional as F
 import torch.utils.data as data
+from torch import Tensor
+
+import numpy as np
+import os
+import requests
+import time
+import zipfile
+from typing import List, Optional
 
 
 def recursive_listdir(path: str, suffix: str) -> list:
-    return [os.path.join(dp, f)
-            for dp, dn, fn in os.walk(os.path.expanduser(path))
-            for f in fn
-            if f.endswith(suffix)]
+    return [
+        os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path))
+        for f in fn if f.endswith(suffix)
+    ]
 
 
 def normalize(x: Tensor) -> Tensor:
@@ -145,8 +145,9 @@ class GraspAndLiftEEGDataset(data.Dataset):
                       csv_files: List[str],
                       subjects: Optional[List[int]] = None,
                       series: Optional[List[int]] = None):
-        self.X, self.Y = self.compile_bin(
-            csv_files, subjects=subjects, series=series)
+        self.X, self.Y = self.compile_bin(csv_files,
+                                          subjects=subjects,
+                                          series=series)
         if self.num_samples is not None:
             # Divide each example up into windows
             self.total_examples = 0
@@ -167,13 +168,13 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     continue
             if series is not None:
                 ser = os.path.basename(file)
-                ser = ser[ser.index('_series')+7:]
+                ser = ser[ser.index('_series') + 7:]
                 ser = int(ser[:ser.index('_')])
                 if ser not in series:
                     continue
             is_data = file.endswith('_data.csv.bin')
-            key = file[:-len('_data.csv.bin')
-                       if is_data else -len('_events.csv.bin')]
+            key = file[:-len('_data.csv.bin'
+                             ) if is_data else -len('_events.csv.bin')]
             samples = torch.load(file)
             item = examples.get(key, [None, None])
             item[0 if is_data else 1] = samples
@@ -191,7 +192,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
 
     def download(self, root: str):
         zip_path = os.path.join(root, 'grasp-and-lift-eeg-detection.zip')
-        if not os.path.exists(zip_path) or os.path.getsize(zip_path) != self.ZIP_SIZE_BYTES:
+        if not os.path.exists(zip_path) or os.path.getsize(
+                zip_path) != self.ZIP_SIZE_BYTES:
             print(f'\nDownloading from {self.ZIP_URL}')
             start = time.time()
             r = requests.get(self.ZIP_URL)
@@ -223,7 +225,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     continue
             if series is not None:
                 ser = os.path.basename(file)
-                ser = ser[ser.index('_series')+7:]
+                ser = ser[ser.index('_series') + 7:]
                 ser = int(ser[:ser.index('_')])
                 if ser not in series:
                     continue
@@ -245,8 +247,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
                     channels = torch.Tensor(channels).unsqueeze(1)
                     samples.append(channels)
             samples = torch.cat(samples, dim=1)
-            series = file[:-len('_data.csv')
-                          if is_data else -len('_events.csv')]
+            series = file[:-len('_data.csv') if is_data else -len('_events.csv'
+                                                                  )]
             item = examples.get(series, [None, None])
             item[0 if is_data else 1] = samples
             examples[series] = item
@@ -266,7 +268,7 @@ class GraspAndLiftEEGDataset(data.Dataset):
         labels = None
         for i, y in enumerate(self.Y):
             #num_examples = y.shape[1] - self.num_samples + 1
-            y = y[:, self.num_samples-1:].numpy()
+            y = y[:, self.num_samples - 1:].numpy()
             if labels is None:
                 labels = y
             else:

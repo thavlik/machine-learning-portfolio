@@ -1,18 +1,15 @@
-import torch
-from torch import nn
-from torch.nn import functional as F
-from .classifier import Classifier
-from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
-from torch import nn, Tensor
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
-from .inception import InceptionV3
-from .util import get_pooling2d, get_activation
-from .encoder_wrapper import EncoderWrapper
+from torch import Tensor, nn
+
+from typing import List
+
 from .base import reparameterize
+from .classifier import Classifier
+from .encoder_wrapper import EncoderWrapper
+from .resnet2d import BasicBlock2d
+
 
 class ResNetSandwich2d(Classifier):
+
     def __init__(self,
                  name: str,
                  hidden_dims: List[int],

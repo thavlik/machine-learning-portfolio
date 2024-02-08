@@ -1,6 +1,6 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 from .batchnorm4d import BatchNorm4d
 from .conv4d import Conv4d
 
@@ -31,9 +31,7 @@ class BasicBlock4d(nn.Module):
                        self.expansion * planes,
                        kernel_size=1,
                        stride=stride,
-                       bias=False),
-                BatchNorm4d(self.expansion * planes)
-            )
+                       bias=False), BatchNorm4d(self.expansion * planes))
         else:
             self.shortcut = None
 

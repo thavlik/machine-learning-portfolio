@@ -1,23 +1,12 @@
-import torch
-from torch import nn, Size
-from torch.nn import functional as F
-from .classifier import Classifier
-from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.distributions import Normal
-from abc import abstractmethod
-from typing import List, Callable, Union, Any, TypeVar, Tuple
-from math import sqrt, ceil
-from .inception import InceptionV3
-from .localizer import Localizer
-from .util import get_pooling2d, get_activation
+
 from .resnet_localizer2d import ResNetLocalizer2d
 
 
 class ResNetGaussianLocalizer2d(ResNetLocalizer2d):
-    def __init__(self,
-                 kappa: float = 0.05,
-                 **kwargs) -> None:
+
+    def __init__(self, kappa: float = 0.05, **kwargs) -> None:
         super().__init__(**kwargs)
         self.kappa = kappa
         std_dev = [nn.Linear(self.prediction.in_features, 4)]

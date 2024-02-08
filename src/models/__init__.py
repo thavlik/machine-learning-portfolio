@@ -1,3 +1,5 @@
+from ray.rllib.models import ModelCatalog
+
 from .base import BaseVAE
 from .classifier import Classifier
 from .localizer import Localizer
@@ -8,16 +10,15 @@ from .resnet_classifier2d import ResNetClassifier2d
 from .resnet_classifier3d import ResNetClassifier3d
 from .resnet_embed2d import ResNetEmbed2d
 from .resnet_gaussian_localizer2d import ResNetGaussianLocalizer2d
-from .resnet_sandwich2d import ResNetSandwich2d
-from .resnet_renderer2d import ResNetRenderer2d
 from .resnet_localizer2d import ResNetLocalizer2d
+from .resnet_renderer2d import ResNetRenderer2d
 from .resnet_rl1d import ResNetRL1d
 from .resnet_rl2d import ResNetRL2d
+from .resnet_sandwich2d import ResNetSandwich2d
 from .resnet_vae1d import ResNetVAE1d
 from .resnet_vae2d import ResNetVAE2d
 from .resnet_vae3d import ResNetVAE3d
 from .resnet_vae4d import ResNetVAE4d
-from ray.rllib.models import ModelCatalog
 
 # ModelCatalog.register_custom_model("ResNetRL1d", ResNetRL1d)
 # ModelCatalog.register_custom_model("ResNetRL2d", ResNetRL2d)
@@ -39,6 +40,7 @@ models = {
     'ResNetVAE3d': ResNetVAE3d,
     'ResNetVAE4d': ResNetVAE4d,
 }
+
 
 def create_model(arch: str, **kwargs):
     if arch not in models:

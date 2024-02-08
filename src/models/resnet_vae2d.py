@@ -1,18 +1,20 @@
 import torch
-from torch import nn
+from torch import Tensor, nn
 from torch.nn import functional as F
-from .base import BaseVAE
-from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
-from torch import nn, Tensor
-from typing import List
+
 from math import ceil
-from .inception import InceptionV3
-from .util import get_pooling2d, get_activation
+from typing import List
+
+from .base import BaseVAE
 from .encoder_wrapper import EncoderWrapper
+from .inception import InceptionV3
+from .resnet2d import BasicBlock2d, TransposeBasicBlock2d
 from .upscale2d import Upscale2d
+from .util import get_activation, get_pooling2d
 
 
 class ResNetVAE2d(BaseVAE):
+
     def __init__(self,
                  name: str,
                  latent_dim: int,
@@ -26,8 +28,7 @@ class ResNetVAE2d(BaseVAE):
                  enable_fid: bool = False,
                  fid_blocks: List[int] = [3],
                  progressive_growing: int = 0) -> None:
-        super(ResNetVAE2d, self).__init__(name=name,
-                                          latent_dim=latent_dim)
+        super(ResNetVAE2d, self).__init__(name=name, latent_dim=latent_dim)
         self.width = width
         self.height = height
         self.channels = channels
@@ -44,8 +45,7 @@ class ResNetVAE2d(BaseVAE):
         modules = []
         in_features = channels
         for h_dim in hidden_dims:
-            modules.append(BasicBlock2d(in_features,
-                                        h_dim))
+            modules.append(BasicBlock2d(in_features, h_dim))
             if pooling is not None:
                 modules.append(pool_fn(2))
             in_features = h_dim
@@ -60,7 +60,8 @@ class ResNetVAE2d(BaseVAE):
             in_features /= 4**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
                 raise ValueError(
-                    'noninteger number of features - perhaps there is too much pooling?')
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.encoder = EncoderWrapper(
             latent_dim=latent_dim,
@@ -95,7 +96,7 @@ class ResNetVAE2d(BaseVAE):
             if width != height:
                 raise ValueError(
                     f'Progressive growing is only supported for square images')
-            res = width // 2**(progressive_growing-1)
+            res = width // 2**(progressive_growing - 1)
             output_layers = []
             for i in range(progressive_growing):
                 out_features = res * res * channels
@@ -140,8 +141,7 @@ class ResNetVAE2d(BaseVAE):
                 for layer in self.decoder_output:
                     x = layer(x)
                 x = F.max_pool2d(x, 2)
-                x = x.view(x.shape[0], self.channels,
-                           self.height, self.width)
+                x = x.view(x.shape[0], self.channels, self.height, self.width)
             else:
                 # Stop at the appropriate output resolution
                 # 3 - 0 = 3     28x28
@@ -151,19 +151,18 @@ class ResNetVAE2d(BaseVAE):
                 width = self.width // 2**lod
                 height = self.height // 2**lod
                 for i in range(layer_i):
-                    if i == layer_i-1:
+                    if i == layer_i - 1:
                         # Lower output layer
-                        x = self.decoder_output[i+0](x)
+                        x = self.decoder_output[i + 0](x)
                         a = F.max_pool2d(x, 2)
-                        a = a.view(a.shape[0], self.channels,
-                                   height, width)
+                        a = a.view(a.shape[0], self.channels, height, width)
                         a = Upscale2d()(a)
 
                         # Upper output layer
-                        b = self.decoder_output[i+1](x)
+                        b = self.decoder_output[i + 1](x)
                         b = F.max_pool2d(b, 2)
-                        b = b.view(b.shape[0], self.channels,
-                                   height*2, width*2)
+                        b = b.view(b.shape[0], self.channels, height * 2,
+                                   width * 2)
 
                         # Compute interpolated output
                         x = a * (1.0 - alpha) + b * alpha
@@ -184,11 +183,12 @@ class ResNetVAE2d(BaseVAE):
                       **kwargs) -> dict:
         if 'lod' in kwargs:
             raise NotImplementedError
-            n = kwargs['lod']-1
+            n = kwargs['lod'] - 1
             for _ in range(n):
                 orig = F.max_pool2d(orig, 2)
 
-        result = super(ResNetVAE2d, self).loss_function(recons, orig, *args, **kwargs)
+        result = super(ResNetVAE2d,
+                       self).loss_function(recons, orig, *args, **kwargs)
 
         if self.enable_fid:
             fid_loss = self.fid(orig, recons).sum()
@@ -204,7 +204,6 @@ class ResNetVAE2d(BaseVAE):
             b = b.repeat(1, 3, 1, 1)
         a = self.inception(a)
         b = self.inception(b)
-        fid = [torch.mean((x - y) ** 2)
-               for x, y in zip(a, b)]
+        fid = [torch.mean((x - y)**2) for x, y in zip(a, b)]
         fid = torch.Tensor(fid)
         return fid

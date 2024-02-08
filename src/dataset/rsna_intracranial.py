@@ -1,22 +1,17 @@
-import os
-import numpy as np
 import torch
 import torch.utils.data as data
 from torch import Tensor
-import pydicom
-from .dicom_util import normalized_dicom_pixels
-import boto3
-import tempfile
-from botocore import UNSIGNED
-from botocore.config import Config
-import subprocess
-import gzip
 from torch.nn import functional as F
 
-def get_inventory(bucket,
-                  root: str,
-                  prefix: str,
-                  download: bool,
+import boto3
+import gzip
+import os
+import pydicom
+
+from .dicom_util import normalized_dicom_pixels
+
+
+def get_inventory(bucket, root: str, prefix: str, download: bool,
                   use_gzip: bool):
     filename = 'inventory.txt'
     if use_gzip:
@@ -43,15 +38,12 @@ def get_inventory(bucket,
 
 def load_labels_csv(path: str) -> list:
     if not os.path.exists(path):
-        raise ValueError(
-            f'Labels file {path} does not exist')
+        raise ValueError(f'Labels file {path} does not exist')
     labels = {}
-    label_idx = ['epidural',
-                 'intraparenchymal',
-                 'intraventricular',
-                 'subarachnoid',
-                 'subdural',
-                 'any']
+    label_idx = [
+        'epidural', 'intraparenchymal', 'intraventricular', 'subarachnoid',
+        'subdural', 'any'
+    ]
     if path.endswith('.gz'):
         with gzip.open(path) as f:
             content = f.read().decode('utf-8')
@@ -100,6 +92,7 @@ def not_exist(path):
 
 
 class RSNAIntracranialDataset(data.Dataset):
+
     def __init__(self,
                  root: str,
                  train: bool = True,
@@ -122,11 +115,13 @@ class RSNAIntracranialDataset(data.Dataset):
         dcm_path = os.path.join(root, self.prefix)
         self.dcm_path = dcm_path
         if self.download:
-            s3 = boto3.resource('s3',
-                                endpoint_url=s3_endpoint_url)
+            s3 = boto3.resource('s3', endpoint_url=s3_endpoint_url)
             bucket = s3.Bucket(s3_bucket)
-            self.files = get_inventory(
-                bucket, root, self.prefix, download=download, use_gzip=use_gzip)
+            self.files = get_inventory(bucket,
+                                       root,
+                                       self.prefix,
+                                       download=download,
+                                       use_gzip=use_gzip)
             if train:
                 labels_csv_key = 'stage_2_train.csv'
                 if use_gzip:
@@ -149,8 +144,7 @@ class RSNAIntracranialDataset(data.Dataset):
             else:
                 ext = '.dcm'
                 labels_file = 'stage_2_train.csv'
-            self.files = [f for f in os.listdir(dcm_path)
-                          if f.endswith(ext)]
+            self.files = [f for f in os.listdir(dcm_path) if f.endswith(ext)]
             self.labels = process_labels(
                 self.files, os.path.join(root, labels_file)) if train else None
 
@@ -167,8 +161,7 @@ class RSNAIntracranialDataset(data.Dataset):
         return x
 
     def download_dcm(self, file: str, path: str):
-        s3 = boto3.resource('s3',
-                            endpoint_url=self.s3_endpoint_url)
+        s3 = boto3.resource('s3', endpoint_url=self.s3_endpoint_url)
         bucket = s3.Bucket(self.s3_bucket)
         dirname = os.path.dirname(path)
         if not os.path.exists(dirname):
@@ -203,12 +196,11 @@ class RSNAIntracranialDataset(data.Dataset):
 
 if __name__ == '__main__':
     import matplotlib.pylab as plt
-    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial',
-                                 download=False)
+    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial', download=False)
     fig = plt.figure(figsize=(15, 10))
     columns = 5
     rows = 4
-    for i in range(1, columns*rows + 1):
+    for i in range(1, columns * rows + 1):
         fig.add_subplot(rows, columns, i)
         plt.imshow(ds[i], cmap=plt.cm.bone)
     plt.show()

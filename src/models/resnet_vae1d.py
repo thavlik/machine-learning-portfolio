@@ -1,12 +1,15 @@
-from torch import nn
+from torch import Tensor, nn
+
+from math import ceil
+from typing import List
+
 from .base import BaseVAE
 from .resnet1d import BasicBlock1d, TransposeBasicBlock1d
-from torch import nn, Tensor
-from typing import List
-from math import ceil
-from .util import get_pooling1d, get_activation
+from .util import get_activation, get_pooling1d
+
 
 class ResNetVAE1d(BaseVAE):
+
     def __init__(self,
                  name: str,
                  latent_dim: int,
@@ -16,8 +19,7 @@ class ResNetVAE1d(BaseVAE):
                  dropout: float = 0.4,
                  pooling: str = None,
                  output_activation: str = 'tanh') -> None:
-        super(ResNetVAE1d, self).__init__(name=name,
-                                          latent_dim=latent_dim)
+        super(ResNetVAE1d, self).__init__(name=name, latent_dim=latent_dim)
         self.num_samples = num_samples
         self.channels = channels
         self.hidden_dims = hidden_dims.copy()
@@ -42,7 +44,9 @@ class ResNetVAE1d(BaseVAE):
         if pooling is not None:
             in_features /= 2**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+                raise ValueError(
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.mu = nn.Sequential(
             nn.Linear(in_features, latent_dim),

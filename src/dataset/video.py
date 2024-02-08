@@ -1,22 +1,13 @@
-import os
-import numpy as np
 import torch
 import torch.utils.data as data
-from math import floor
-import youtube_dl
-import cv2
-from torchvision.transforms import Resize, ToPILImage, ToTensor
-import json
-import decord
-from decord import VideoLoader, VideoReader
-from decord import cpu, gpu
+
+import os
+from decord import VideoReader, cpu
+
 
 class VideoDataset(data.Dataset):
-    def __init__(self,
-                 dir: str,
-                 width: int,
-                 height: int,
-                 limit: int = None):
+
+    def __init__(self, dir: str, width: int, height: int, limit: int = None):
         super(VideoDataset, self).__init__()
         videos = []
         for f in os.listdir(dir):
@@ -24,11 +15,12 @@ class VideoDataset(data.Dataset):
                 break
             if f.endswith('.mp4'):
                 videos.append(f)
-        self.vr = [VideoReader(os.path.join(dir, f),
-                               ctx=cpu(0),
-                               width=width,
-                               height=height)
-                   for f in videos]
+        self.vr = [
+            VideoReader(os.path.join(dir, f),
+                        ctx=cpu(0),
+                        width=width,
+                        height=height) for f in videos
+        ]
         n = 0
         for vr in self.vr:
             n += len(vr)
@@ -59,16 +51,13 @@ if __name__ == '__main__':
     num_frames = 1
     width = 320
     height = 240
-    ds = VideoDataset(dir='E:/doom',
-                      width=width,
-                      height=height,
-                      limit=10)
-    indices = torch.randint(low=0,
-                            high=len(ds),
+    ds = VideoDataset(dir='E:/doom', width=width, height=height, limit=10)
+    indices = torch.randint(low=0, high=len(ds),
                             size=(batch_size, 1)).squeeze()
     start = time.time()
     batch = [ds[int(i)] for i in indices]
     delta = time.time() - start
     print(
-        f'Loaded {batch_size} examples in {delta} seconds ({delta/batch_size}) seconds avg)')
+        f'Loaded {batch_size} examples in {delta} seconds ({delta/batch_size}) seconds avg)'
+    )
     print('ok')

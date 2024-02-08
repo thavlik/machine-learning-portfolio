@@ -1,9 +1,9 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
 class BasicBlock1d(nn.Module):
+
     def __init__(self, in_planes, planes, stride=1, kernel_size=3, padding=1):
         super(BasicBlock1d, self).__init__()
         self.conv1 = nn.Conv1d(in_planes,
@@ -27,9 +27,7 @@ class BasicBlock1d(nn.Module):
                           planes,
                           kernel_size=1,
                           stride=stride,
-                          bias=False),
-                nn.BatchNorm1d(planes)
-            )
+                          bias=False), nn.BatchNorm1d(planes))
         else:
             self.shortcut = None
 
@@ -43,6 +41,7 @@ class BasicBlock1d(nn.Module):
 
 
 class TransposeBasicBlock1d(nn.Module):
+
     def __init__(self, in_planes, planes, stride=1):
         super(TransposeBasicBlock1d, self).__init__()
         self.conv1 = nn.ConvTranspose1d(in_planes,
@@ -66,9 +65,7 @@ class TransposeBasicBlock1d(nn.Module):
                                    planes,
                                    kernel_size=1,
                                    stride=stride,
-                                   bias=False),
-                nn.BatchNorm1d(planes)
-            )
+                                   bias=False), nn.BatchNorm1d(planes))
         else:
             self.shortcut = None
 

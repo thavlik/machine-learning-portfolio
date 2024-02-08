@@ -1,15 +1,13 @@
-import os
-import boto3
-from botocore import UNSIGNED
-from botocore.config import Config
-import numpy as np
 import torch
 import torch.utils.data as data
+from torch.nn import functional as F
+
+import boto3
+import numpy as np
+import os
 from skimage.io import imread
 from skimage.transform import resize
-import tempfile
 from typing import List
-from torch.nn import functional as F
 
 
 def read_hu(x):

@@ -1,13 +1,13 @@
-import os
-import numpy as np
 import torch
 import torch.utils.data as data
+
 import h5py
 import nilearn as nl
+import numpy as np
+import os
 
 
-def load_subject(filename: str,
-                 mask_niimg):
+def load_subject(filename: str, mask_niimg):
     """
     Load a subject saved in .mat format with
         the version 7.3 flag. Return the subject
@@ -23,8 +23,10 @@ def load_subject(filename: str,
         subject_data = f['SM_feature'][()]
     # It's necessary to reorient the axes, since h5py flips axis order
     subject_data = np.moveaxis(subject_data, [0, 1, 2, 3], [3, 2, 1, 0])
-    subject_niimg = nl.image.new_img_like(
-        mask_niimg, subject_data, affine=mask_niimg.affine, copy_header=True)
+    subject_niimg = nl.image.new_img_like(mask_niimg,
+                                          subject_data,
+                                          affine=mask_niimg.affine,
+                                          copy_header=True)
     return subject_niimg
 
 
@@ -41,20 +43,17 @@ def load_scores(path: str):
             parts = line.strip().split(',')
             if len(parts) == 0:
                 continue
-            scores[parts[0]] = [float(p)
-                                for p in parts[1:]
-                                if len(p) > 0]
+            scores[parts[0]] = [float(p) for p in parts[1:] if len(p) > 0]
     return scores
 
 
 class TReNDSfMRIDataset(data.Dataset):
-    def __init__(self,
-                 root: str,
-                 train: bool = True):
+
+    def __init__(self, root: str, train: bool = True):
         super(TReNDSfMRIDataset, self).__init__()
         self.root = root
-        self.mat_dir = os.path.join(
-            root, 'fMRI_train' if train else 'fMRI_test')
+        self.mat_dir = os.path.join(root,
+                                    'fMRI_train' if train else 'fMRI_test')
         self.files = os.listdir(self.mat_dir)
         self.mask = nl.image.load_img(os.path.join(root, 'fMRI_mask.nii'))
         self.scores = load_scores(os.path.join(root, 'train_scores.csv'))
@@ -73,8 +72,8 @@ class TReNDSfMRIDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    import nilearn.plotting as nlplt
     import matplotlib.pyplot as plt
+    import nilearn.plotting as nlplt
     base_path = 'E:\\trends-fmri'
     ds = TReNDSfMRIDataset(base_path)
     print(ds[0][0].shape)
@@ -85,16 +84,21 @@ if __name__ == '__main__':
     subject_niimg = load_subject(subject_filename, mask_niimg)
 
     grid_size = int(np.ceil(np.sqrt(subject_niimg.shape[0])))
-    fig, axes = plt.subplots(grid_size, grid_size,
-                             figsize=(grid_size*10, grid_size*10))
+    fig, axes = plt.subplots(grid_size,
+                             grid_size,
+                             figsize=(grid_size * 10, grid_size * 10))
     [axi.set_axis_off() for axi in axes.ravel()]
     row = -1
     for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
         col = i % grid_size
         if col == 0:
             row += 1
-        nlplt.plot_stat_map(cur_img, bg_img=smri_filename, title="IC %d" %
-                            i, axes=axes[row, col], threshold=3, colorbar=False)
+        nlplt.plot_stat_map(cur_img,
+                            bg_img=smri_filename,
+                            title="IC %d" % i,
+                            axes=axes[row, col],
+                            threshold=3,
+                            colorbar=False)
     plt.show()
 
     print("Image shape is %s" % (str(subject_niimg.shape)))

@@ -1,19 +1,22 @@
-from .cq500 import *
-from .deeplesion import DeepLesionDataset, get_output_features as deeplesion_get_output_features
-from .dicom_util import *
-from .forrestgump import ForrestGumpDataset
-from .la5c import LA5cDataset
-from .grasp_and_lift_eeg import *
-from .reference import *
-from .rsna_intracranial import *
-from .trends_fmri import *
-from .batch_video import *
 #from .toy_neural_graphics import *
 from torch import Size
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import WeightedRandomSampler
+
 #import nonechucks as nc
 from typing import Optional
+
+from .batch_video import *
+from .cq500 import *
+from .deeplesion import DeepLesionDataset
+from .deeplesion import get_output_features as deeplesion_get_output_features
+from .dicom_util import *
+from .forrestgump import ForrestGumpDataset
+from .grasp_and_lift_eeg import *
+from .la5c import LA5cDataset
+from .reference import *
+from .rsna_intracranial import *
+from .trends_fmri import *
 
 
 def split_dataset(dataset, split):
@@ -21,12 +24,14 @@ def split_dataset(dataset, split):
     n_val_imgs = len(dataset) - n_train_imgs
     cur_state = torch.get_rng_state()
     torch.manual_seed(torch.initial_seed())
-    parts = torch.utils.data.random_split(dataset,
-                                          [n_train_imgs, n_val_imgs])
+    parts = torch.utils.data.random_split(dataset, [n_train_imgs, n_val_imgs])
     torch.set_rng_state(cur_state)
     return parts
 
-def balanced_sampler(ds: Dataset, labels: Optional[List[List[int]]] = None) -> WeightedRandomSampler:
+
+def balanced_sampler(
+        ds: Dataset,
+        labels: Optional[List[List[int]]] = None) -> WeightedRandomSampler:
     if hasattr(ds, 'get_labels'):
         y = ds.get_labels().numpy()
         # y.shape == (num_examples, num_classes)
@@ -44,7 +49,9 @@ def balanced_sampler(ds: Dataset, labels: Optional[List[List[int]]] = None) -> W
                 break
     omitted = int(y.shape[0] - counts.sum())
     if omitted > 0:
-        print(f'Warning: {omitted} examples ({omitted/counts.sum()*100}% of the dataset) were omitted because the labels were not included in exp_params.data.balance.labels')
+        print(
+            f'Warning: {omitted} examples ({omitted/counts.sum()*100}% of the dataset) were omitted because the labels were not included in exp_params.data.balance.labels'
+        )
     proportions = [1.0 / float(count) for count in counts]
     samples_weight = np.zeros(y.shape[0])
     for i, item in enumerate(y):
@@ -105,13 +112,13 @@ def get_example_shape(data: dict) -> Size:
     if name == 'grasp-and-lift-eeg':
         size = data['training']['num_samples']
         lod = data['training'].get('lod', 0)
-        divisor = 2 ** lod
+        divisor = 2**lod
         size = size // divisor
         size = (32, size)
         return Size(size)
     if name in ['rsna-intracranial', 'deeplesion', 'cq500']:
         lod = data['training'].get('lod', 0)
-        divisor = 2 ** lod
+        divisor = 2**lod
         size = 512 // divisor
         size = (1, size, size)
         return Size(size)

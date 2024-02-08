@@ -1,13 +1,15 @@
-import torch
 from torch import nn
+
 from math import ceil
 from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
+from typing import List
+
 from .resnet1d import BasicBlock1d
 from .util import get_pooling1d
-from typing import List
 
 
 class ResNetRL1d(TorchModelV2, nn.Module):
+
     def __init__(self,
                  obs_space,
                  action_space,
@@ -33,14 +35,16 @@ class ResNetRL1d(TorchModelV2, nn.Module):
             in_features = h_dim
         self.layers = nn.Sequential(
             *modules,
-            nn.Dropout(p=dropout),   
+            nn.Dropout(p=dropout),
             nn.Flatten(),
         )
         in_features = hidden_dims[-1] * num_samples
         if pooling is not None:
             in_features /= 2**len(hidden_dims)
             if abs(in_features - ceil(in_features)) > 0:
-                raise ValueError('noninteger number of features - perhaps there is too much pooling?')
+                raise ValueError(
+                    'noninteger number of features - perhaps there is too much pooling?'
+                )
             in_features = int(in_features)
         self.output = nn.Sequential(
             nn.Linear(in_features, action_space.n),
@@ -52,7 +56,7 @@ class ResNetRL1d(TorchModelV2, nn.Module):
         )
 
     def forward(self, input_dict, state, seq_lens):
-        obs = input_dict['obs'] #.to(self.layers.device)
+        obs = input_dict['obs']  #.to(self.layers.device)
         x = self.layers(obs)
         model_out = self.output(x)
         self._value_out = self.value_out(x)
