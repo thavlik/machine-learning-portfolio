@@ -17,8 +17,8 @@ exp_params:
     objective: mse
   batch_size: 4
   optimizer:
-    lr: 5.0e-06
-    weight_decay: 0.00001
+    lr: 1.0e-07
+    weight_decay: 1.0e-05
   data:
     name: deeplesion
     split: 0.7
