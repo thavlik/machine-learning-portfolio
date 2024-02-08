@@ -8,7 +8,7 @@ class VAEClassifierExperiment(VAEExperiment):
         super().__init__(**kwargs)
         self.classifier = classifier
 
-    def training_step(self, batch, batch_idx, optimizer_idx=0):
+    def training_step(self, batch, batch_idx):
         # First move to device so it doesn't happen twice
         real_img, labels = batch
         real_img = real_img.to(self.curr_device)
@@ -22,7 +22,7 @@ class VAEClassifierExperiment(VAEExperiment):
         loss['Classifier_Loss'] = classifier_loss
         return loss
 
-    def validation_step(self, batch, batch_idx, optimizer_idx=0):
+    def validation_step(self, batch, batch_idx):
         real_img, labels = batch
         real_img = real_img.to(self.curr_device)
         batch = (real_img, labels)

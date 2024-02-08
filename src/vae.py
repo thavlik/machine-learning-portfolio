@@ -46,7 +46,7 @@ class VAEExperiment(BaseExperiment):
                 return lod, alpha
         return (0, 0.0)
 
-    def training_step(self, batch, batch_idx, optimizer_idx=0):
+    def training_step(self, batch, batch_idx):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
@@ -61,7 +61,7 @@ class VAEExperiment(BaseExperiment):
         self.log_train_step(train_loss)
         return train_loss
 
-    def validation_step(self, batch, batch_idx, optimizer_idx=0):
+    def validation_step(self, batch, batch_idx):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)

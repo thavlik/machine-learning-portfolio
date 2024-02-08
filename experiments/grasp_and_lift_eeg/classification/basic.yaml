@@ -15,7 +15,7 @@ exp_params:
   data:
     name: grasp-and-lift-eeg
     training:
-      root: /data/grasp-and-lift-eeg-detection
+      root: "C:/data/grasp-and-lift-eeg-detection" #/data/grasp-and-lift-eeg-detection
       num_samples: 2048
       last_label_only: true
       subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]

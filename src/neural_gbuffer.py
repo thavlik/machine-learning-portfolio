@@ -26,7 +26,7 @@ class NeuralGBufferExperiment(pl.LightningModule):
             plots = [plots]
         self.plots = plots
 
-    def training_step(self, batch, batch_idx, optimizer_idx=0):
+    def training_step(self, batch, batch_idx):
         self.curr_device = self.device
         orig, labels = batch
         recons = self.model(*labels)
@@ -42,7 +42,7 @@ class NeuralGBufferExperiment(pl.LightningModule):
                     self.sample_images(plot, val_indices)
         return train_loss
 
-    def validation_step(self, batch, batch_idx, optimizer_idx=0):
+    def validation_step(self, batch, batch_idx):
         orig, labels = batch
         recons = self.model(*labels)
         val_loss = self.model.loss_function(
