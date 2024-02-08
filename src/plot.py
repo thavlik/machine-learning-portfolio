@@ -1,31 +1,32 @@
-import os
-import numpy as np
 import torch
 from torch import Tensor
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-from plotly.graph_objects import Figure
+
 import matplotlib.pyplot as plt
-from matplotlib import figure
-from mpl_toolkits.axes_grid1 import ImageGrid
-from torchvision.transforms import Resize, ToPILImage, ToTensor
-from torchvision.io import write_video
 import nilearn as nl
 import nilearn.plotting as nlplt
-from dataset.trends_fmri import load_subject
-from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+import os
+import plotly.graph_objects as go
 import subprocess
-from typing import List, Tuple, Optional
-from merge_strategy import deep_merge
-from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
-from torchvision.utils import save_image
-from torch.utils.data import Subset
-#import nonechucks as nc
-from visdom import Visdom
-from skimage.io import imread
+from matplotlib import figure
+from matplotlib.colors import hsv_to_rgb
+from mpl_toolkits.axes_grid1 import ImageGrid
+from PIL import Image, ImageDraw, ImageFont
+from plotly.subplots import make_subplots
 from skimage import exposure
+from skimage.io import imread
 from skimage.segmentation import mark_boundaries
 from skimage.transform import resize
+from torchvision.io import write_video
+from torchvision.transforms import Resize, ToPILImage, ToTensor
+from torchvision.utils import save_image
+from typing import List, Optional
+
+#import nonechucks as nc
+from visdom import Visdom
+
+from dataset.trends_fmri import load_subject
+from merge_strategy import deep_merge
 
 
 def plot_title(template: str, model: str, epoch: int):
@@ -715,9 +716,10 @@ if __name__ == '__main__':
     import pydicom
     from skimage import exposure
     from skimage.transform import resize
+    from time import time
+
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
     from dataset.dicom_util import normalized_dicom_pixels
-    from time import time
     np.random.seed(int(time()))
 
     ds = RSNAIntracranialDataset(root='E:/rsna-intracranial', download=False)

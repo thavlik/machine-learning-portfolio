@@ -1,19 +1,17 @@
 import argparse
-import json
-import youtube_dl
 import os
-import sys
 import subprocess
 import time
 
-parser = argparse.ArgumentParser(
-    description='resize videos')
-parser.add_argument('--input',  '-i',
+parser = argparse.ArgumentParser(description='resize videos')
+parser.add_argument('--input',
+                    '-i',
                     dest="input",
                     metavar='INPUT',
                     help='path to dir with mp4 files',
                     default='E:/doom')
-parser.add_argument('--output', '-o',
+parser.add_argument('--output',
+                    '-o',
                     dest="output",
                     metavar='OUTPUT',
                     help='output dir',
@@ -39,8 +37,7 @@ denom = args.skip_frames + 1
 if not os.path.exists(args.output):
     os.makedirs(args.output)
 
-files = sorted([f for f in os.listdir(args.input)
-                if f.endswith('.mp4')])
+files = sorted([f for f in os.listdir(args.input) if f.endswith('.mp4')])
 print(f'Processing {len(files)} files')
 total_in = 0
 total_out = 0
@@ -50,11 +47,10 @@ for i, file in enumerate(files):
     output = os.path.join(args.output, file).replace('\\', '/')
     in_size = os.path.getsize(input)
     total_in += in_size
-    in_size //= 1000*1000
+    in_size //= 1000 * 1000
     print(f'[{i+1}/{len(files)}] Processing {input} ({in_size} MiB)')
     cmd = f"ffmpeg -i $(wslpath {input}) -s {args.width}x{args.height} -y -c:a copy -an -vf select='not(mod(n\\,{denom})), setpts={1.0/denom}*PTS' $(wslpath {output})"
-    proc = subprocess.run(
-        ['bash', '-c', cmd], capture_output=True)
+    proc = subprocess.run(['bash', '-c', cmd], capture_output=True)
     if proc.returncode != 0:
         msg = 'expected exit code 0 from ffmpeg, got exit code {}: {}'.format(
             proc.returncode, proc.stdout.decode('unicode_escape'))
@@ -64,8 +60,10 @@ for i, file in enumerate(files):
     delta = time.time() - start
     out_size = os.path.getsize(output)
     total_out += out_size
-    out_size //= 1000*1000
+    out_size //= 1000 * 1000
     pct = (1.0 - out_size / in_size) * 100
-    print(f'[{i+1}/{len(files)}] Wrote {output} in {delta} seconds ({out_size} MiB, {int(pct)}% reduction)')
+    print(
+        f'[{i+1}/{len(files)}] Wrote {output} in {delta} seconds ({out_size} MiB, {int(pct)}% reduction)'
+    )
 reduction = int((1.0 - total_out / total_in) * 100)
 print(f'Success, total reduction of {reduction}%')

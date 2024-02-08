@@ -1,14 +1,15 @@
-import argparse
-import gc
-import time
 import torch.backends.cudnn as cudnn
-from models import create_model
-from entry import experiment_main
-from load_config import load_config
-from typing import List, Union
+
+import argparse
+import decord  # must be imported after torch
+import gc
 import numpy as np
 import os
-import decord
+import time
+from typing import List, Union
+
+from entry import experiment_main
+from load_config import load_config
 
 
 def count_experiments(series: Union[dict, List[dict]]) -> int:

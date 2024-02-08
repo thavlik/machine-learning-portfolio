@@ -1,14 +1,15 @@
-import os
 import torch
-from torch import optim, Tensor
+from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
-from typing import List, Iterator
-from plot import get_plot_fn
-from plot import get_random_example_with_label
+
+import os
+from typing import Iterator, List
+
 from base_experiment import BaseExperiment
-from models import create_model
 from dataset import get_example_shape
+from models import create_model
+from plot import get_plot_fn, get_random_example_with_label
 
 
 class ClassificationExperiment(BaseExperiment):

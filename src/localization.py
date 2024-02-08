@@ -1,13 +1,15 @@
-import os
 import torch
-from torch import optim, Tensor
+from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
+
+import os
 from typing import Iterator
-from plot import get_plot_fn
+
 from base_experiment import BaseExperiment
-from models import create_model
 from dataset import get_example_shape
+from models import create_model
+from plot import get_plot_fn
 
 
 class LocalizationExperiment(BaseExperiment):

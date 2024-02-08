@@ -1,0 +1,7 @@
+# We must configure isort to recognize torch as a standard library
+# so that it moves torch imports to the top of the import list, before
+# any third-party imports. This is necessary because decord doesn't import
+# torch properly.
+
+[tool.isort]
+extra_standard_library = ["torch"]

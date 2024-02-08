@@ -1,21 +1,23 @@
-import gc
-import os
 import torch
-import io
-import numpy as np
-from torch import optim, Tensor
+from torch import Tensor, optim
 from torch.nn.parameter import Parameter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, Dataset
-import pytorch_lightning as pl
-from dataset import get_dataset, balanced_sampler
-from abc import abstractmethod
-from merge_strategy import deep_merge
-from typing import Iterator, List
-from linear_warmup import LinearWarmup
+
 import boto3
+import gc
+import io
+import numpy as np
+import os
+import pytorch_lightning as pl
+from abc import abstractmethod
+from typing import Iterator, List
 from visdom import Visdom
+
+from dataset import balanced_sampler, get_dataset
+from linear_warmup import LinearWarmup
+from merge_strategy import deep_merge
 
 
 class BaseExperiment(pl.LightningModule):

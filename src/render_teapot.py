@@ -1,26 +1,27 @@
-import os
-import sys
-import matplotlib.pyplot as plt
 import torch
+
+import matplotlib.pyplot as plt
+import os
 import pytorch3d
-from pytorch3d.io import load_objs_as_meshes, load_obj
-from pytorch3d.structures import Meshes
-from pytorch3d.vis.plotly_vis import AxisArgs, plot_batch_individually, plot_scene
-from pytorch3d.vis.texture_vis import texturesuv_image_matplotlib
-from pytorch3d.transforms import random_rotations, Translate, Rotate, Transform3d
+import sys
+from pytorch3d.io import load_obj, load_objs_as_meshes
 from pytorch3d.renderer import (
-    look_at_view_transform,
-    FoVPerspectiveCameras,
-    PointLights,
     DirectionalLights,
+    FoVPerspectiveCameras,
     Materials,
-    RasterizationSettings,
-    MeshRenderer,
     MeshRasterizer,
+    MeshRenderer,
+    PointLights,
+    RasterizationSettings,
     SoftPhongShader,
     TexturesUV,
-    TexturesVertex
+    TexturesVertex,
+    look_at_view_transform,
 )
+from pytorch3d.structures import Meshes
+from pytorch3d.transforms import Rotate, Transform3d, Translate, random_rotations
+from pytorch3d.vis.plotly_vis import AxisArgs, plot_batch_individually, plot_scene
+from pytorch3d.vis.texture_vis import texturesuv_image_matplotlib
 
 device = torch.device("cuda")
 
@@ -52,10 +53,7 @@ for i in range(n):
     # With world coordinates +Y up, +X left and +Z in, the front of the cow is facing the -Z direction.
     # So we move the camera by 180 in the azimuth direction so it is facing the front of the cow.
     R, T = look_at_view_transform(0, 0, 0)
-    cameras = FoVPerspectiveCameras(device=device,
-                                    R=R,
-                                    T=T,
-                                    zfar=zfar)
+    cameras = FoVPerspectiveCameras(device=device, R=R, T=T, zfar=zfar)
     smin = 0.1
     smax = 2.0
     srange = smax - smin
@@ -75,22 +73,18 @@ for i in range(n):
         .scale(scale) \
         .compose(Rotate(rot)) \
         .translate(*trans)
-        
+
     # TODO: transform mesh
     # Create a phong renderer by composing a rasterizer and a shader. The textured phong shader will
     # interpolate the texture uv coordinates for each vertex, sample from a texture image and
     # apply the Phong lighting model
-    renderer = MeshRenderer(
-        rasterizer=MeshRasterizer(
-            cameras=cameras,
-            raster_settings=raster_settings
-        ),
-        shader=SoftPhongShader(
-            device=device,
-            cameras=cameras,
-            lights=lights,
-        )
-    )
+    renderer = MeshRenderer(rasterizer=MeshRasterizer(
+        cameras=cameras, raster_settings=raster_settings),
+                            shader=SoftPhongShader(
+                                device=device,
+                                cameras=cameras,
+                                lights=lights,
+                            ))
     images = renderer(mesh.scale_verts(scale),
                       R=rot.unsqueeze(0),
                       T=trans.unsqueeze(0))

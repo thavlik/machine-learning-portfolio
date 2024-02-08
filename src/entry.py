@@ -1,24 +1,26 @@
-import os
 import torch
-from models import create_model
-from vae import VAEExperiment
-from augmentation import AugmentationExperiment
-from classification import ClassificationExperiment
-from localization import LocalizationExperiment
-from dataset import get_example_shape
-import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint, Callback
-from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
+
 import numpy as np
+import os
+import pytorch_lightning as pl
 from pytorch_lightning import Trainer
-from load_config import load_config
+from pytorch_lightning.callbacks import Callback, ModelCheckpoint
+from pytorch_lightning.core.saving import save_hparams_to_yaml
+from pytorch_lightning.loggers import TensorBoardLogger
 from ray import tune
 from ray.tune.logger import TBXLogger
+
+from augmentation import AugmentationExperiment
+from classification import ClassificationExperiment
+from dataset import get_example_shape
 from env import get_env
-from plot import plot_comparison
+from load_config import load_config
+from localization import LocalizationExperiment
 from merge_strategy import deep_merge
+from models import create_model
 from neural_gbuffer import neural_gbuffer
-from pytorch_lightning.core.saving import save_hparams_to_yaml
+from plot import plot_comparison
+from vae import VAEExperiment
 
 
 class OnCheckpointHparams(Callback):

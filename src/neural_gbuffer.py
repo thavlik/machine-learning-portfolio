@@ -1,16 +1,17 @@
-import os
-import gc
 import torch
 from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import DataLoader
-from typing import Iterator
+
+import gc
+import os
 import pytorch_lightning as pl
+from typing import Iterator
+
 from dataset import get_dataset
-from plot import get_plot_fn
 from merge_strategy import deep_merge
-from models import create_model, BaseRenderer
-from linear_warmup import LinearWarmup
+from models import BaseRenderer, create_model
+from plot import get_plot_fn
 
 
 class NeuralGBufferExperiment(pl.LightningModule):

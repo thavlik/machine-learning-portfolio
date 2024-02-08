@@ -1,13 +1,14 @@
+from torch.utils.data import DataLoader
+
 import argparse
 import sys
-from tqdm import tqdm
-from dataset import get_dataset
-from torch.utils.data import DataLoader
 from multiprocessing import cpu_count
+from tqdm import tqdm
+
+from dataset import get_dataset
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='test dataset')
+    parser = argparse.ArgumentParser(description='test dataset')
     parser.add_argument('--dataset',
                         dest="dataset",
                         metavar='DATASET',

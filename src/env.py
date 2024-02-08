@@ -1,17 +1,17 @@
 import numpy as np
-from torch.nn import functional as F
 from gym import Env, spaces
+
 from dataset import get_dataset
-from merge_strategy import strategy
 
 
 class TimeSeriesDetector(Env):
+
     def __init__(self, config: dict):
         super(TimeSeriesDetector, self).__init__()
         self.observation_length = config['observation_length']
         self.num_channels = config['channels']
         self.action_stride = config.get('action_stride', 0)
-        num_actions = config['num_event_classes']+1  # abstain
+        num_actions = config['num_event_classes'] + 1  # abstain
         self.action_space = spaces.Discrete(num_actions)
         self.observation_space = spaces.Box(
             low=config['low'],
@@ -27,7 +27,7 @@ class TimeSeriesDetector(Env):
         y = self.y[:, self.current_step:self.current_step +
                    self.observation_length]
         #loss = F.nll_loss(prediction, target)
-            
+
         self.current_step += 1
         if action != 0:
             self.current_step += self.action_stride
@@ -41,8 +41,9 @@ class TimeSeriesDetector(Env):
         i = np.random.randint(0, len(self.ds))
         self.x, self.y = self.ds[i]
         if self.x.shape[1] < self.observation_length:
-            raise ValueError(f'Example {i} is shorter ({self.x.shape[1]}) '
-                             f'than the observation length ({self.observation_length})')
+            raise ValueError(
+                f'Example {i} is shorter ({self.x.shape[1]}) '
+                f'than the observation length ({self.observation_length})')
         return self.get_observation()
 
     def get_observation(self):

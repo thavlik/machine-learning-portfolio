@@ -5,9 +5,11 @@ from ray.util.sgd.torch import is_distributed_trainable
 
 ray.init()
 
+
 def my_trainable(config, checkpoint_dir=None):
     if is_distributed_trainable():
         pass
+
 
 trainable = DistributedTrainableCreator(
     my_trainable,

@@ -1,8 +1,10 @@
-from dataset import GraspAndLiftEEGDataset
-import numpy as np
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 from torch import Tensor
+
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+from dataset import GraspAndLiftEEGDataset
 
 
 def eeg(orig: Tensor,
@@ -33,21 +35,25 @@ def eeg(orig: Tensor,
                     color='red',
                     width=2,
                 ),
-            ), row=channel+1, col=col+1)
+            ),
+                          row=channel + 1,
+                          col=col + 1)
         i += 1
-    fig.write_image(out_path + '.png',
-                    width=width,
-                    height=height)
+    fig.write_image(out_path + '.png', width=width, height=height)
 
 
 ds = GraspAndLiftEEGDataset('/data/grasp-and-lift-eeg-detection')
-eeg(ds[0][0][:8].unsqueeze(0), 'out', 2048, 1024, layout_params=dict(
-    xaxis=go.layout.XAxis(
-        visible=False,
-        showticklabels=False,
-    ),
-    yaxis=go.layout.YAxis(
-        visible=False,
-        showticklabels=False,
-    ),
-))
+eeg(ds[0][0][:8].unsqueeze(0),
+    'out',
+    2048,
+    1024,
+    layout_params=dict(
+        xaxis=go.layout.XAxis(
+            visible=False,
+            showticklabels=False,
+        ),
+        yaxis=go.layout.YAxis(
+            visible=False,
+            showticklabels=False,
+        ),
+    ))

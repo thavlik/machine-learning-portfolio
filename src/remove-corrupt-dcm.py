@@ -1,13 +1,14 @@
-import os
-import sys
 import argparse
-import time
-from dataset import RSNAIntracranialDataset, normalized_dicom_pixels
+import os
 import pydicom
+import sys
+import time
 
-parser = argparse.ArgumentParser(
-    description='Remove corrupted DICOM')
-parser.add_argument('--dir',  '-d',
+from dataset import normalized_dicom_pixels
+
+parser = argparse.ArgumentParser(description='Remove corrupted DICOM')
+parser.add_argument('--dir',
+                    '-d',
                     dest="dir",
                     metavar='DIR',
                     help='path to directory containing dcm files',
@@ -23,10 +24,10 @@ print(f'Removing corrupted DICOM files at {args.dir}')
 
 start = time.time()
 
-files = [os.path.join(dp, f)
-         for dp, dn, fn in os.walk(os.path.expanduser(args.dir))
-         for f in fn
-         if f.endswith('.dcm')]
+files = [
+    os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(args.dir))
+    for f in fn if f.endswith('.dcm')
+]
 
 print(f'Processing {len(files)} files...')
 
