@@ -1,9 +1,10 @@
 import os
 import gc
 import torch
-from torch import optim, Tensor
+from torch import Tensor
+from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
-from typing import Tuple
+from typing import Tuple, Iterator
 from plot import get_plot_fn
 from base_experiment import BaseExperiment
 from models import create_model
@@ -26,7 +27,9 @@ class VAEExperiment(BaseExperiment):
                                   height=h,
                                   channels=c,
                                   enable_fid='fid_weight' in params,
-                                  progressive_growing=len(params['progressive_growing']) if 'progressive_growing' in params else 0)
+                                  progressive_growing=len(
+                                      params['progressive_growing'])
+                                  if 'progressive_growing' in params else 0)
 
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
@@ -36,15 +39,12 @@ class VAEExperiment(BaseExperiment):
         for i, step in enumerate(schedule):
             if self.trainer.global_step >= step:
                 lod = len(schedule) - i - 1
-                next_step = schedule[i+1]
+                next_step = schedule[i + 1]
                 alpha = (self.trainer.global_step - step) / (next_step - step)
                 return lod, alpha
         return (0, 0.0)
 
-    def training_step(self,
-                      batch,
-                      batch_idx,
-                      optimizer_idx=0):
+    def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
@@ -52,7 +52,7 @@ class VAEExperiment(BaseExperiment):
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
                       kld_weight=self.params.get('kld_weight', 0.0) *
-                      self.params['batch_size']/self.num_train_imgs)
+                      self.params['batch_size'] / self.num_train_imgs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
         train_loss = self.model.loss_function(*results, **kwargs)
@@ -70,7 +70,7 @@ class VAEExperiment(BaseExperiment):
         kwargs = dict(optimizer_idx=optimizer_idx,
                       batch_idx=batch_idx,
                       kld_weight=self.params.get('kld_weight', 0.0) *
-                      self.params['batch_size']/self.num_val_imgs,
+                      self.params['batch_size'] / self.num_val_imgs,
                       **kwargs)
         if 'fid_weight' in self.params:
             kwargs['fid_weight'] = self.params['fid_weight']
@@ -87,15 +87,16 @@ class VAEExperiment(BaseExperiment):
         for x in batch:
             x = x.unsqueeze(0)
             test_input.append(x)
-            x = self.model.generate(x.to(self.curr_device), labels=[]).detach().cpu()
+            x = self.model.generate(x.to(self.curr_device),
+                                    labels=[]).detach().cpu()
             recons.append(x)
         test_input = torch.cat(test_input, dim=0)
         recons = torch.cat(recons, dim=0)
         # Extensionless output path (let plotting function choose extension)
-        out_path = os.path.join(self.logger.save_dir,
-                                self.logger.name,
-                                f"version_{self.logger.version}",
-                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        out_path = os.path.join(
+            self.logger.save_dir, self.logger.name,
+            f"version_{self.logger.version}",
+            f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         orig = test_input.data.cpu()
         recons = recons.data.cpu()
         fn = get_plot_fn(plot['fn'])
@@ -109,11 +110,8 @@ class VAEExperiment(BaseExperiment):
         if revert:
             self.train()
 
-    def configure_optimizers(self):
-        optims = [optim.Adam(self.model.parameters(),
-                             **self.params['optimizer'])]
-        scheds = self.configure_schedulers(optims)
-        return optims, scheds
+    def trainable_parameters(self) -> Iterator[Parameter]:
+        return self.model.parameters()
 
     def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []

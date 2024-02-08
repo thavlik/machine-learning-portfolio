@@ -1,6 +1,8 @@
 import os
 import torch
-from torch import optim, Tensor
+from torch import Tensor
+from torch.nn.parameter import Parameter
+from typing import Iterator
 from torch.utils.data import Dataset
 from models import create_model
 from plot import get_plot_fn
@@ -10,13 +12,9 @@ from dataset import get_example_shape
 
 
 class AugmentationExperiment(BaseExperiment):
-    def __init__(self,
-                 config: dict,
-                 enable_tune: bool = False,
-                 **kwargs):
-        super().__init__(config=config,
-                         enable_tune=enable_tune,
-                         **kwargs)
+
+    def __init__(self, config: dict, enable_tune: bool = False, **kwargs):
+        super().__init__(config=config, enable_tune=enable_tune, **kwargs)
         input_shape = get_example_shape(config['exp_params']['data'])
         self.constraint = create_model(**config['constraint_params'],
                                        input_shape=input_shape)
@@ -27,10 +25,10 @@ class AugmentationExperiment(BaseExperiment):
 
     def sample_images(self, plot: dict, batch: Tensor):
         transformed = self.model(batch)
-        out_path = os.path.join(self.logger.save_dir,
-                                self.logger.name,
-                                f"version_{self.logger.version}",
-                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        out_path = os.path.join(
+            self.logger.save_dir, self.logger.name,
+            f"version_{self.logger.version}",
+            f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         fn = get_plot_fn(plot['fn'])
         fn(x=batch,
            y=transformed,
@@ -55,7 +53,8 @@ class AugmentationExperiment(BaseExperiment):
         real_img = real_img.to(self.curr_device)
         train_loss = self.model.loss_function(real_img,
                                               constraint=self.constraint,
-                                              **self.params.get('loss_params', {}))
+                                              **self.params.get(
+                                                  'loss_params', {}))
         self.log_train_step(train_loss)
         return train_loss
 
@@ -65,12 +64,10 @@ class AugmentationExperiment(BaseExperiment):
         real_img = real_img.to(self.curr_device)
         val_loss = self.model.loss_function(real_img,
                                             constraint=self.constraint,
-                                            **self.params.get('loss_params', {}))
+                                            **self.params.get(
+                                                'loss_params', {}))
         self.log_val_step(val_loss)
         return val_loss
 
-    def configure_optimizers(self):
-        optims = [optim.Adam(self.model.parameters(),
-                             **self.params['optimizer'])]
-        scheds = self.configure_schedulers(optims)
-        return optims, scheds
+    def trainable_parameters(self) -> Iterator[Parameter]:
+        return self.model.parameters()

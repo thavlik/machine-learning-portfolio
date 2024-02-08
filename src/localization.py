@@ -1,7 +1,9 @@
 import os
 import torch
 from torch import optim, Tensor
+from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
+from typing import Iterator
 from plot import get_plot_fn
 from base_experiment import BaseExperiment
 from models import create_model
@@ -17,6 +19,9 @@ class LocalizationExperiment(BaseExperiment):
         localizer = create_model(**config['model_params'],
                                  input_shape=input_shape)
         self.localizer = localizer
+
+    def trainable_parameters(self) -> Iterator[Parameter]:
+        return self.localizer.parameters()
 
     def sample_images(self, plot: dict, batch: Tensor):
         test_input = []
@@ -70,13 +75,6 @@ class LocalizationExperiment(BaseExperiment):
             **self.params.get('loss_params', {}))
         self.log_val_step(val_loss)
         return val_loss
-
-    def configure_optimizers(self):
-        optims = [
-            optim.Adam(self.localizer.parameters(), **self.params['optimizer'])
-        ]
-        scheds = self.configure_schedulers(optims)
-        return optims, scheds
 
     def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []

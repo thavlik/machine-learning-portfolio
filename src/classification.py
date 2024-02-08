@@ -1,10 +1,10 @@
 import os
 import torch
 from torch import optim, Tensor
+from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
-from typing import List
+from typing import List, Iterator
 from plot import get_plot_fn
-from typing import List
 from plot import get_random_example_with_label
 from base_experiment import BaseExperiment
 from models import create_model
@@ -13,15 +13,11 @@ from dataset import get_example_shape
 
 class ClassificationExperiment(BaseExperiment):
 
-    def __init__(self,
-                 config: dict,
-                 enable_tune: bool = False,
-                 **kwargs):
-        super().__init__(config=config,
-                         enable_tune=enable_tune,
-                         **kwargs)
+    def __init__(self, config: dict, enable_tune: bool = False, **kwargs):
+        super().__init__(config=config, enable_tune=enable_tune, **kwargs)
         self.classifier = create_model(**config['model_params'],
-                                       input_shape=get_example_shape(config['exp_params']['data']))
+                                       input_shape=get_example_shape(
+                                           config['exp_params']['data']))
 
     def sample_images(self, plot: dict, batches: List[Tensor]):
         test_input = []
@@ -48,10 +44,10 @@ class ClassificationExperiment(BaseExperiment):
         predictions = torch.cat(predictions, dim=0)
 
         # Extensionless output path (let plotting function choose extension)
-        out_path = os.path.join(self.logger.save_dir,
-                                self.logger.name,
-                                f"version_{self.logger.version}",
-                                f"{self.logger.name}_{plot['fn']}_{self.global_step}")
+        out_path = os.path.join(
+            self.logger.save_dir, self.logger.name,
+            f"version_{self.logger.version}",
+            f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         fn = get_plot_fn(plot['fn'])
         fn(test_input=test_input,
            targets=targets,
@@ -66,8 +62,8 @@ class ClassificationExperiment(BaseExperiment):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.classifier(real_img)
-        train_loss = self.classifier.loss_function(y.cpu(), labels.cpu(),
-                                                   **self.params.get('loss_params', {}))
+        train_loss = self.classifier.loss_function(
+            y.cpu(), labels.cpu(), **self.params.get('loss_params', {}))
         self.log_train_step(train_loss)
         return train_loss
 
@@ -76,16 +72,13 @@ class ClassificationExperiment(BaseExperiment):
         self.curr_device = self.device
         real_img = real_img.to(self.curr_device)
         y = self.classifier(real_img)
-        val_loss = self.classifier.loss_function(y.cpu(), labels.cpu(),
-                                                 **self.params.get('loss_params', {}))
+        val_loss = self.classifier.loss_function(
+            y.cpu(), labels.cpu(), **self.params.get('loss_params', {}))
         self.log_val_step(val_loss)
         return val_loss
 
-    def configure_optimizers(self):
-        optims = [optim.Adam(self.classifier.parameters(),
-                             **self.params['optimizer'])]
-        scheds = self.configure_schedulers(optims)
-        return optims, scheds
+    def trainable_parameters(self) -> Iterator[Parameter]:
+        return self.classifier.parameters()
 
     def get_val_batches(self, dataset: Dataset) -> list:
         val_batches = []

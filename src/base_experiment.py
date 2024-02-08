@@ -3,15 +3,16 @@ import os
 import torch
 import io
 import numpy as np
-from torch import Tensor
+from torch import optim, Tensor
+from torch.nn.parameter import Parameter
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, Dataset
 import pytorch_lightning as pl
 from dataset import get_dataset, balanced_sampler
 from abc import abstractmethod
-from typing import List
 from merge_strategy import deep_merge
-from typing import List
+from typing import Iterator, List
 from linear_warmup import LinearWarmup
 import boto3
 from visdom import Visdom
@@ -56,6 +57,10 @@ class BaseExperiment(pl.LightningModule):
 
     @abstractmethod
     def get_val_batches(self, dataset: Dataset) -> list:
+        raise NotImplementedError
+
+    @abstractmethod
+    def trainable_parameters(self) -> Iterator[Parameter]:
         raise NotImplementedError
 
     def save_weights(self):
@@ -138,13 +143,27 @@ class BaseExperiment(pl.LightningModule):
                 from ray import train
                 train.report({key: mean})
 
-    def configure_schedulers(self, optims: List[Optimizer]) -> list:
+    def configure_optimizers(self):
+        optimizer = optim.Adam(self.trainable_parameters(),
+                               **self.params['optimizer'])
+        scheds = self.configure_schedulers(optimizer)
+        return {
+            'optimizer': optimizer,
+            'scheduler': scheds,
+            'monitor': 'train/loss',
+        }
+
+    def configure_schedulers(self, optimizer: Optimizer) -> list:
         scheds = []
         if 'warmup_steps' in self.params:
             scheds.append(
-                LinearWarmup(optims[0],
+                LinearWarmup(optimizer,
                              lr=self.params['optimizer']['lr'],
                              num_steps=self.params['warmup_steps']))
+        if 'reduce_lr_on_plateau' in self.params:
+            scheds.append(
+                ReduceLROnPlateau(optimizer,
+                                  **self.params['reduce_lr_on_plateau']))
         return scheds
 
     def train_dataloader(self):

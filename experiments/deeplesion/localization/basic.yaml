@@ -9,6 +9,10 @@ model_params:
 
 exp_params:
   warmup_steps: 64
+  reduce_lr_on_plateau:
+    factor: 0.5 # half the learning rate
+    patience: 10 # wait for 10 epochs before reducing the learning rate
+    threshold: 1.0e-04 # if the loss is not reduced by this threshold, reduce the learning rate
   save_weights:
     every_n_steps: 10_000
     delete_old: true
