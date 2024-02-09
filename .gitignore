@@ -6,4 +6,3 @@ logs/
 logs_remote/
 ray_results/
 .venv/
-./*.png
