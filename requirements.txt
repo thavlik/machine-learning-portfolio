@@ -23,3 +23,5 @@ decord
 requests
 visdom
 seaborn
+grpcio
+grpcio-tools

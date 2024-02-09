@@ -269,10 +269,8 @@ class GraspAndLiftEEGDataset(data.Dataset):
         for i, y in enumerate(self.Y):
             #num_examples = y.shape[1] - self.num_samples + 1
             y = y[:, self.num_samples - 1:].numpy()
-            if labels is None:
-                labels = y
-            else:
-                labels = np.concatenate((labels, y), axis=1)
+            labels = np.concatenate(
+                (labels, y), axis=1) if labels is not None else y
         labels = np.transpose(labels)
         return Tensor(labels)
 

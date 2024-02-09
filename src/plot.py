@@ -22,10 +22,6 @@ from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.utils import save_image
 from typing import List, Optional
 
-#import nonechucks as nc
-from visdom import Visdom
-
-from dataset.trends_fmri import load_subject
 from merge_strategy import deep_merge
 
 
@@ -99,17 +95,14 @@ def localize_lesions(test_input: Tensor,
     fig.savefig(out_path, bbox_inches='tight')
     plt.close(fig)
     plt.close('all')
-    img = imread(out_path)
+    return read_image(out_path)
+
+
+def read_image(path: str):
+    img = imread(path)
     img = img[:, :, :3]
     img = np.transpose(img, axes=(2, 0, 1))
-    return img
-    #if vis is not None:
-    #    img = imread(out_path)
-    #    img = img[:, :, :3]
-    #    img = np.transpose(img, axes=(2, 0, 1))
-    #    vis.image(img,
-    #              win='localize',
-    #              opts=dict(caption='Lesion Localization'))
+    return img / 255.0
 
 
 def eeg(orig: Tensor,
@@ -168,6 +161,7 @@ def eeg(orig: Tensor,
     if not out_path.endswith('.png'):
         out_path += '.png'
     fig.write_image(out_path, width=width, height=height)
+    return read_image(out_path)
 
 
 def plot2d(orig: Tensor,
@@ -225,9 +219,12 @@ def plot2d(orig: Tensor,
         interpolated = plot_title(title, model_name, epoch)
         fig.suptitle(interpolated, **suptitle)
     fig.tight_layout()
-    fig.savefig(out_path + '.png', bbox_inches='tight')
+    if not out_path.endswith('.png'):
+        out_path += '.png'
+    fig.savefig(out_path, bbox_inches='tight')
     plt.close(fig)
     plt.close('all')
+    return read_image(out_path)
 
 
 def plot2d_dcm(*args, **kwargs):
@@ -498,6 +495,7 @@ def plot_comparison(result_dict: dict,
     if not os.path.exists(dir):
         os.makedirs(dir)
     fig.write_image(out_path)
+    return read_image(out_path)
 
 
 def ct_filter(x):
@@ -531,6 +529,230 @@ def run_img_filter(x, img_filter: str):
     raise NotImplementedError
 
 
+""" A list of colors that are used to color the lines in the classifier1d plot. 
+    The list is long enough to ensure that there are enough colors for all possible 
+    channels in the EEG dataset, and more. Redundant and similar shades have been
+    removed in order to improve the visual appearance of the plot.
+"""
+colors = [
+    'blue',
+    'blueviolet',
+    'brown',
+    'burlywood',
+    'cadetblue',
+    'chartreuse',
+    'chocolate',
+    'coral',
+    'crimson',
+    'darkblue',
+    'darkcyan',
+    'darkgoldenrod',
+    'darkgrey',
+    'darkgreen',
+    'darkkhaki',
+    'darkmagenta',
+    'darkolivegreen',
+    'darkorange',
+    'darkorchid',
+    'darkred',
+    'darksalmon',
+    'darkseagreen',
+    'darkslateblue',
+    'darkturquoise',
+    'darkviolet',
+    'deeppink',
+    'deepskyblue',
+    'dodgerblue',
+    'firebrick',
+    'forestgreen',
+    'fuchsia',
+    'gainsboro',
+    'gold',
+    'goldenrod',
+    'green',
+    'greenyellow',
+    'honeydew',
+    'hotpink',
+    'indianred',
+    'indigo',
+    'ivory',
+    'khaki',
+    'lavender',
+    'lavenderblush',
+    'lawngreen',
+    'lemonchiffon',
+    'lightblue',
+    'lightcoral',
+    'lightcyan',
+    'lightgoldenrodyellow',
+    'lightgray',
+    'lightgreen',
+    'lightpink',
+    'lightsalmon',
+    'lightseagreen',
+    'lightskyblue',
+    'lightslategrey',
+    'lightsteelblue',
+    'lightyellow',
+    'lime',
+    'limegreen',
+    'linen',
+    'magenta',
+    'maroon',
+    'mediumaquamarine',
+    'mediumblue',
+    'mediumorchid',
+    'mediumpurple',
+    'mediumseagreen',
+    'mediumslateblue',
+    'mediumspringgreen',
+    'mediumturquoise',
+    'mediumvioletred',
+    'midnightblue',
+    'mintcream',
+    'mistyrose',
+    'moccasin',
+    'navy',
+    'oldlace',
+    'olive',
+    'olivedrab',
+    'orange',
+    'orangered',
+    'orchid',
+    'palegoldenrod',
+    'palegreen',
+    'paleturquoise',
+    'palevioletred',
+    'papayawhip',
+    'peachpuff',
+    'peru',
+    'pink',
+    'plum',
+    'powderblue',
+    'purple',
+    'red',
+    'rosybrown',
+    'royalblue',
+    'saddlebrown',
+    'salmon',
+    'sandybrown',
+    'seagreen',
+    'seashell',
+    'sienna',
+    'silver',
+    'skyblue',
+    'slateblue',
+    'slategrey',
+    'snow',
+    'springgreen',
+    'steelblue',
+    'tan',
+    'teal',
+    'thistle',
+    'tomato',
+    'turquoise',
+    'violet',
+    'wheat',
+    'yellow',
+    'yellowgreen',
+]
+
+
+def classifier1d(test_input: Tensor,
+                 targets: Tensor,
+                 predictions: Tensor,
+                 classes: list,
+                 out_path: str,
+                 width: int = 8192,
+                 height: int = 8192,
+                 line_opacity: float = 0.3,
+                 layout_params: dict = {}):
+    batch_size, num_channels, num_samples = test_input.shape
+    fig = make_subplots(rows=batch_size, cols=1)
+    if layout_params is not None:
+        #if 'title' in layout_params:
+        #    layout_params['title'] = plot_title(
+        #        template=layout_params['title'], model=model_name, epoch=epoch)
+        fig.update_layout(**layout_params)
+    x = np.array([i / num_samples for i in range(num_samples)])
+    i = 0
+    for row in range(batch_size):
+        for channel in range(num_channels):
+            yo = test_input[i, channel, :]
+            fig.add_trace(go.Scatter(x=x,
+                                     y=yo,
+                                     mode='lines',
+                                     name=f'Ch. {channel}',
+                                     opacity=line_opacity,
+                                     line=dict(
+                                         color=colors[channel % len(colors)],
+                                         width=2,
+                                     )),
+                          row=row + 1,
+                          col=1)
+        i += 1
+    if not out_path.endswith('.png'):
+        out_path += '.png'
+    fig.write_image(out_path, width=width, height=height)
+    return read_image(out_path)
+
+
+def classifier1d_multicolumn(test_input: Tensor,
+                             targets: Tensor,
+                             predictions: Tensor,
+                             classes: List[dict],
+                             out_path: str,
+                             width: int = 2048,
+                             height: int = 512,
+                             indicator_thickness: Optional[int] = None,
+                             line_opacity: float = 0.3,
+                             padding: int = 16,
+                             layout_params: dict = {}):
+    if not out_path.endswith('.png'):
+        out_path += '.png'
+    cols, batch_size, num_channels, num_samples = test_input.shape
+    x = np.array([i / num_samples for i in range(num_samples)])
+    output = None
+    for col, klass in enumerate(classes):
+        col_output = None
+        for row in range(batch_size):
+            fig = make_subplots(rows=1, cols=1)
+            fig.update_layout(**layout_params)
+            if row == 0:
+                title = klass['name'] + '      ' + str(klass['labels'])
+                fig.update_layout(title=dict(text=title, font=dict(size=35)),
+                                  margin={'t': 64})
+            for channel in range(num_channels):
+                y = test_input[col, row, channel, :]
+                fig.add_trace(go.Scatter(x=x,
+                                         y=y,
+                                         mode='lines',
+                                         name=f'Ch. {channel}',
+                                         opacity=line_opacity,
+                                         line=dict(
+                                             color=colors[channel %
+                                                          len(colors)],
+                                             width=2,
+                                         )),
+                              row=1,
+                              col=1)
+            fig.write_image('tmp.png', width=width, height=height)
+            img = torch.Tensor(read_image('tmp.png'))
+            os.remove('tmp.png')
+            if indicator_thickness is not None:
+                img = add_indicator_to_image(
+                    img, (predictions - targets).pow(2).float().mean(),
+                    indicator_thickness,
+                    after=True)
+            img = pad_image(img, [1.0, 1.0, 1.0], padding)
+            col_output = torch.cat([col_output, img],
+                                   dim=1) if col_output is not None else img
+        output = torch.cat([output, col_output],
+                           dim=2) if output is not None else col_output
+    save_image(output, out_path, format='png')
+    return output
+
+
 def classifier2d(test_input: Tensor,
                  predictions: Tensor,
                  targets: Tensor,
@@ -540,8 +762,7 @@ def classifier2d(test_input: Tensor,
                  background: List[float] = [0.7, 0.7, 0.7],
                  indicator_thickness: Optional[int] = None,
                  padding: Optional[int] = None,
-                 font_size: int = 28,
-                 vis: Optional[Visdom] = None):
+                 font_size: int = 28):
     background = torch.Tensor(background)
     if test_input.shape[1] == 1:
         test_input = test_input.repeat(1, 3, 1, 1)
@@ -590,13 +811,7 @@ def classifier2d(test_input: Tensor,
     if not out_path.endswith('.png'):
         out_path += '.png'
     save_image(img, out_path)
-    if vis is not None:
-        img = imread(out_path)
-        img = img[:, :, :3]
-        img = np.transpose(img, axes=(2, 0, 1))
-        vis.image(img,
-                  win='class_preds',
-                  opts=dict(caption='Class Predictions'))
+    return read_image(out_path)
 
 
 def add_indicator_to_image(img: Tensor,
@@ -662,6 +877,8 @@ def add_label(img: Tensor,
 plot_fn = {
     'eeg': eeg,
     'plot2d': plot2d,
+    'classifier1d': classifier1d,
+    'classifier1d_multicolumn': classifier1d_multicolumn,
     'classifier2d': classifier2d,
     'dcm': plot2d_dcm,
     'localize_lesions': localize_lesions,
@@ -678,29 +895,37 @@ def get_plot_fn(name: str):
     return plot_fn[name]
 
 
-def get_labels(ds, index):
-    try:
-        return ds.get_labels(index)
-    except:
-        return get_labels(ds.dataset, index)
+def get_random_batch_with_label(ds,
+                                labels: Tensor,
+                                all_: bool,
+                                batch_size: int,
+                                end_idx: Optional[int] = None) -> List[int]:
+    result = []
+    for _ in range(batch_size):
+        idx = get_random_example_with_label(ds,
+                                            labels,
+                                            all_=all_,
+                                            exclude=result,
+                                            end_idx=end_idx)
+        result.append(idx)
+    return result
 
 
 def get_random_example_with_label(ds,
                                   labels: Tensor,
                                   all_: bool,
                                   exclude: List[int],
-                                  end_idx: int = None) -> int:
+                                  end_idx: Optional[int] = None) -> int:
     labels = labels.int()
     n = len(ds)
     start_idx = 0 if end_idx is not None else np.random.randint(0, n)
     for i in range(n - start_idx):
         index = i + start_idx
-        y = get_labels(ds, index).int()
-        eq = y == labels
+        if index in exclude:
+            continue
+        eq = ds[index][1].int() == labels
         eq = eq.all() if all_ else eq.any()
         if eq:
-            if index in exclude:
-                continue
             return index
     if end_idx is not None:
         raise ValueError(f'Unable to find example with labels {labels}')
@@ -718,11 +943,60 @@ if __name__ == '__main__':
     from skimage.transform import resize
     from time import time
 
-    from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
+    from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset, GraspAndLiftEEGDataset
     from dataset.dicom_util import normalized_dicom_pixels
     np.random.seed(int(time()))
 
-    ds = RSNAIntracranialDataset(root='E:/rsna-intracranial', download=False)
+    batch_size = 6
+    ds = GraspAndLiftEEGDataset('C:/data/grasp-and-lift-eeg',
+                                num_samples=32,
+                                last_label_only=True)
+    classes = [
+        dict(name='Control', labels=[0, 0, 0, 0, 0, 0], all=True),
+        dict(name='HandStart', labels=[1, 0, 0, 0, 0, 0], all=True),
+        dict(name='FirstDigitTouch', labels=[0, 1, 0, 0, 0, 0], all=True),
+        dict(name='BothStartLoadPhase', labels=[0, 0, 1, 0, 0, 0], all=True),
+        dict(name='LiftOff', labels=[0, 0, 0, 1, 0, 0], all=True),
+        dict(name='Replace', labels=[0, 0, 0, 0, 1, 0], all=True),
+        dict(name='BothReleased', labels=[0, 0, 0, 0, 0, 1], all=True),
+    ]
+    example_indices = [
+        get_random_batch_with_label(ds,
+                                    torch.Tensor(klass['labels']),
+                                    all_=klass['all'],
+                                    batch_size=batch_size) for klass in classes
+    ]
+    test_input = torch.Tensor(
+        np.array([[ds[i][0].numpy() for i in batch_indices]
+                  for batch_indices in example_indices]))
+    targets = torch.Tensor(
+        np.array([[ds[i][1].numpy() for i in batch_indices]
+                  for batch_indices in example_indices]))
+    predictions = torch.Tensor(
+        np.array(
+            [[torch.rand(len(classes)).numpy() for _ in range(batch_size)]
+             for _ in classes]))
+    image = classifier1d_multicolumn(
+        test_input=test_input,
+        targets=targets,
+        predictions=predictions,
+        classes=classes,
+        out_path='output.png',
+        width=1024,
+        height=256,
+        indicator_thickness=12,
+        line_opacity=0.3,
+        layout_params=dict(showlegend=False,
+                           margin={
+                               't': 0,
+                               'l': 0,
+                               'b': 0,
+                               'r': 0
+                           }),
+    )
+    print('wrote image to output.png')
+
+    #ds = RSNAIntracranialDataset(root='E:/rsna-intracranial', download=False)
 
     #path = os.path.join(ds.dcm_path, ds.files[10000])
     #img = pydicom.dcmread(path, stop_before_pixels=False)

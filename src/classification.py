@@ -50,13 +50,16 @@ class ClassificationExperiment(BaseExperiment):
             f"version_{self.logger.version}",
             f"{self.logger.name}_{plot['fn']}_{self.global_step}")
         fn = get_plot_fn(plot['fn'])
-        fn(test_input=test_input,
-           targets=targets,
-           predictions=predictions,
-           classes=plot['classes'],
-           out_path=out_path,
-           vis=self.visdom(),
-           **plot['params'])
+        image = fn(test_input=test_input,
+                   targets=targets,
+                   predictions=predictions,
+                   classes=plot['classes'],
+                   out_path=out_path,
+                   **plot['params'])
+        self.logger.experiment.add_image(plot['fn'], image, self.global_step)
+        vis = self.visdom()
+        if vis is not None:
+            vis.image(image, win=plot['fn'])
 
     def training_step(self, batch, batch_idx):
         real_img, labels = batch

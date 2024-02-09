@@ -1,6 +1,7 @@
 import torch.backends.cudnn as cudnn
 
 import argparse
+import cv2
 import decord  # must be imported after torch
 import gc
 import numpy as np
