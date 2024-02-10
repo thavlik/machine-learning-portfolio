@@ -1,7 +1,7 @@
+import os
 import torch
 
 import numpy as np
-import os
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint

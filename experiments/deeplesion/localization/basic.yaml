@@ -21,7 +21,7 @@ exp_params:
     objective: cbiou+dbiou
   batch_size: 4
   optimizer:
-    lr: 1.0e-07
+    lr: 1.0e-05
     weight_decay: 1.0e-05
   data:
     name: deeplesion
