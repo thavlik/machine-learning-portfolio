@@ -8,7 +8,7 @@ model_params:
 
 exp_params:
   manual_seed: 6602
-  warmup_steps: 128
+  warmup_steps: 512
   reduce_lr_on_plateau:
     factor: 0.1
     patience: 3
@@ -32,7 +32,6 @@ exp_params:
       pin_memory: false
       num_workers: 0
   batch_size: 32
-  warmup_steps: 512
   optimizer:
     lr: 0.0005
     weight_decay: 0.000005
