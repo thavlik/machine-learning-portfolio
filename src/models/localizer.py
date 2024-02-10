@@ -24,10 +24,10 @@ class Localizer(nn.Module):
                       targ_params: Tensor,
                       objective: Optional[str] = 'cbiou+dbiou') -> dict:
         # Sanity check to ensure that the parameters are valid BBs.
-        assert (pred_params[:, 0] < pred_params[:, 2]).all()
-        assert (pred_params[:, 1] < pred_params[:, 3]).all()
-        assert (targ_params[:, 0] < targ_params[:, 2]).all()
-        assert (targ_params[:, 1] < targ_params[:, 3]).all()
+        assert (pred_params[:, 0] <= pred_params[:, 2]).all()
+        assert (pred_params[:, 1] <= pred_params[:, 3]).all()
+        assert (targ_params[:, 0] <= targ_params[:, 2]).all()
+        assert (targ_params[:, 1] <= targ_params[:, 3]).all()
 
         if objective != 'cbiou+dbiou':
             raise NotImplementedError

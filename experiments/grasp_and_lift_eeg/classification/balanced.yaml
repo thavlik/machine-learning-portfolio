@@ -2,11 +2,9 @@ include: experiments/grasp_and_lift_eeg/classification/basic.yaml
 
 exp_params:
   optimizer:
-    lr: 0.008
+    lr: 0.00005
   batch_size: 16
   data:
-    #training:
-    #  lod: 1
     balanced:
       labels:
         - [0, 0, 0, 0, 0, 0]
