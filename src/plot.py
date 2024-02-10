@@ -1,5 +1,8 @@
 import os
 import subprocess
+import torch
+from math import ceil, sqrt
+from torch import Tensor
 from typing import List, Optional
 
 import matplotlib.pyplot as plt
@@ -7,10 +10,8 @@ import nilearn as nl
 import nilearn.plotting as nlplt
 import numpy as np
 import plotly.graph_objects as go
-import torch
 from matplotlib import figure
 from matplotlib.colors import hsv_to_rgb
-from merge_strategy import deep_merge
 from mpl_toolkits.axes_grid1 import ImageGrid
 from PIL import Image, ImageDraw, ImageFont
 from plotly.subplots import make_subplots
@@ -18,10 +19,11 @@ from skimage import exposure
 from skimage.io import imread
 from skimage.segmentation import mark_boundaries
 from skimage.transform import resize
-from torch import Tensor
 from torchvision.io import write_video
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.utils import save_image
+
+from merge_strategy import deep_merge
 
 
 def plot_title(template: str, model: str, epoch: int):
@@ -57,25 +59,26 @@ def localize_lesions(test_input: Tensor,
                      target_params: Tensor,
                      out_path: str,
                      figsize: Optional[List[float]] = None):
-    rows = 1
-    cols = test_input.shape[0]
+    n = int(ceil(sqrt(test_input.shape[0])))
+    rows = n
+    cols = n  #test_input.shape[0]
     h, w = test_input.shape[2:]
     if figsize is None:
-        figsize = [cols * 5, rows * 6]  # inches
+        figsize = [cols * 5, rows * 5]  # inches
     fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
-    for (ax, x, pred_param, targ_param) in zip(axs, test_input, pred_params,
-                                               target_params):
-        pred_param[0] *= w
-        pred_param[1] *= h
-        pred_param[2] *= w
-        pred_param[3] *= h
-        targ_param[0] *= w
-        targ_param[1] *= h
-        targ_param[2] *= w
-        targ_param[3] *= h
+    row = 0
+    col = 0
+    scaling = torch.Tensor([w, h, w, h])
+    for (x, pred_param, targ_param) in zip(test_input, pred_params,
+                                           target_params):
+        # Convert the bounding box coordinates to pixel coordinates.
+        pred_param *= scaling
+        targ_param *= scaling
         x = x.numpy().squeeze()
         mask_shape = x.shape
+        # Make the CT slice look more like a CT slice.
         x = apply_softwindow(x)
+        # Draw the bounding boxes on the image.
         targ_segs = create_segmentation(mask_shape,
                                         [targ_param.numpy()]).astype(int)
         pred_segs = create_segmentation(mask_shape,
@@ -88,7 +91,11 @@ def localize_lesions(test_input: Tensor,
                             label_img=targ_segs,
                             color=(0, 1, 0),
                             mode='thick')
-        ax.imshow(x)
+        axs[row][col].imshow(x)
+        col += 1
+        if col >= cols:
+            col = 0
+            row += 1
     out_path += '.png'
     fig.savefig(out_path, bbox_inches='tight')
     plt.close(fig)
@@ -939,14 +946,15 @@ if __name__ == '__main__':
     from time import time
 
     import pydicom
+    from skimage import exposure
+    from skimage.transform import resize
+
     from dataset import (
         GraspAndLiftEEGDataset,
         RSNAIntracranialDataset,
         TReNDSfMRIDataset,
     )
     from dataset.dicom_util import normalized_dicom_pixels
-    from skimage import exposure
-    from skimage.transform import resize
     np.random.seed(int(time()))
 
     batch_size = 6

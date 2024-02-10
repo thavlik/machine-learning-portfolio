@@ -1,9 +1,8 @@
+import os
 import torch
 from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
-
-import os
 from typing import Iterator
 
 from base_experiment import BaseExperiment
@@ -25,7 +24,7 @@ class LocalizationExperiment(BaseExperiment):
     def trainable_parameters(self) -> Iterator[Parameter]:
         return self.localizer.parameters()
 
-    def sample_images(self, plot: dict, batch: Tensor):
+    def sample_images(self, plot: dict, batch: list):
         test_input = []
         pred_params = []
         target_params = []
@@ -50,7 +49,7 @@ class LocalizationExperiment(BaseExperiment):
                    pred_params=pred_params,
                    target_params=target_params,
                    out_path=out_path,
-                    **plot['params'])
+                   **plot['params'])
         self.logger.experiment.add_image(plot['fn'], image, self.global_step)
         vis = self.visdom()
         if vis is not None:

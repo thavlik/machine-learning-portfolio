@@ -8,6 +8,11 @@ model_params:
 
 exp_params:
   manual_seed: 6602
+  warmup_steps: 128
+  reduce_lr_on_plateau:
+    factor: 0.1
+    patience: 3
+    threshold: 1.0e-04
   save_weights:
     every_n_steps: 10_000
     delete_old: true
