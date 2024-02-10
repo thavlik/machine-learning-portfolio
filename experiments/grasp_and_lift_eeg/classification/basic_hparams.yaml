@@ -4,9 +4,9 @@ metric: train/loss
 
 num_samples: 3
 
-num_train_steps: 20_000
+num_train_steps: 100_000
 
-num_val_steps: 1000
+num_val_steps: 5_000
 
 randomize_seed: true
 

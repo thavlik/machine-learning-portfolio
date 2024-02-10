@@ -1,6 +1,5 @@
-from torch import Size, Tensor, nn
-
 from math import ceil
+from torch import Size, Tensor, nn
 from typing import List
 
 from .localizer import Localizer
@@ -58,4 +57,11 @@ class ResNetLocalizer2d(Localizer):
         x = self.layers(x)
         x = self.prediction(x)
         x = self.output(x)
+        # We are going to enforce the variant x1 < x2 and y1 < y2 by
+        # predicting the width and height instead of x2 and y2 directly.
+        # Here we change it back to the original format.
+        # We have to do this without modifying anything in-place
+        x = x.clone()
+        x[:, 2] = x[:, 0] + x[:, 2]
+        x[:, 3] = x[:, 1] + x[:, 3]
         return x

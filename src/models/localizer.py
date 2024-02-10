@@ -1,8 +1,9 @@
 import torch
+from abc import abstractmethod
 from torch import Tensor, nn
 from torch.nn import functional as F
+from typing import Optional
 
-from abc import abstractmethod
 from torchvision.ops import complete_box_iou_loss, distance_box_iou_loss
 
 
@@ -21,8 +22,16 @@ class Localizer(nn.Module):
     def loss_function(self,
                       pred_params: Tensor,
                       targ_params: Tensor,
-                      objective: str = 'iou',
-                      iou_weight: float = 1.0) -> dict:
+                      objective: Optional[str] = 'cbiou+dbiou') -> dict:
+        # Sanity check to ensure that the parameters are valid BBs.
+        assert (pred_params[:, 0] < pred_params[:, 2]).all()
+        assert (pred_params[:, 1] < pred_params[:, 3]).all()
+        assert (targ_params[:, 0] < targ_params[:, 2]).all()
+        assert (targ_params[:, 1] < targ_params[:, 3]).all()
+
+        if objective != 'cbiou+dbiou':
+            raise NotImplementedError
+
         mse_loss = F.mse_loss(pred_params, targ_params)
         dbiou_loss = distance_box_iou_loss(pred_params,
                                            targ_params,
@@ -30,15 +39,8 @@ class Localizer(nn.Module):
         cbiou_loss = complete_box_iou_loss(pred_params,
                                            targ_params,
                                            reduction='sum')
-        loss = dbiou_loss + cbiou_loss  # only use iou for now
-        #iou_loss = -torch.Tensor(
-        #    giou(pred_params.detach().numpy(),
-        #         targ_params.detach().numpy())).mean()
-        #eps = 1e-7
-        #localization_loss = bb_intersection_over_union(pred_params, targ_params).mean() + eps
-        #localization_loss = -torch.log(localization_loss)
-        #localization_loss = 1.0 / localization_loss
-        #loss = localization_loss + iou_loss * iou_weight
+        loss = dbiou_loss + cbiou_loss + mse_loss
+
         return {
             'loss': loss,
             'cbiou_Loss': cbiou_loss,

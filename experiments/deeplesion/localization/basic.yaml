@@ -18,10 +18,10 @@ exp_params:
     delete_old: true
     local: {}
   loss_params:
-    objective: mse
+    objective: cbiou+dbiou
   batch_size: 4
   optimizer:
-    lr: 1.0e-05
+    lr: 1.0e-07
     weight_decay: 1.0e-05
   data:
     name: deeplesion

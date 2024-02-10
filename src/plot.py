@@ -1,13 +1,14 @@
+import os
+import subprocess
 import torch
 from torch import Tensor
+from typing import List, Optional
 
 import matplotlib.pyplot as plt
 import nilearn as nl
 import nilearn.plotting as nlplt
 import numpy as np
-import os
 import plotly.graph_objects as go
-import subprocess
 from matplotlib import figure
 from matplotlib.colors import hsv_to_rgb
 from mpl_toolkits.axes_grid1 import ImageGrid
@@ -20,7 +21,6 @@ from skimage.transform import resize
 from torchvision.io import write_video
 from torchvision.transforms import Resize, ToPILImage, ToTensor
 from torchvision.utils import save_image
-from typing import List, Optional
 
 #import nonechucks as nc
 from visdom import Visdom
@@ -61,13 +61,12 @@ def localize_lesions(test_input: Tensor,
                      pred_params: Tensor,
                      target_params: Tensor,
                      out_path: str,
-                     figsize: Optional[List[float]] = None,
-                     indicator_thickness: Optional[int] = 16):
-    rows = test_input.shape[0]
-    cols = 1
+                     figsize: Optional[List[float]] = None):
+    rows = 1
+    cols = test_input.shape[0]
     h, w = test_input.shape[2:]
     if figsize is None:
-        figsize = [5, rows * 6]
+        figsize = [cols * 5, rows * 6]  # inches
     fig, axs = plt.subplots(rows, cols, figsize=tuple(figsize))
     for (ax, x, pred_param, targ_param) in zip(axs, test_input, pred_params,
                                                target_params):
@@ -713,10 +712,11 @@ def get_random_example_with_label(ds,
 
 if __name__ == '__main__':
     import os
+    from time import time
+
     import pydicom
     from skimage import exposure
     from skimage.transform import resize
-    from time import time
 
     from dataset import RSNAIntracranialDataset, TReNDSfMRIDataset
     from dataset.dicom_util import normalized_dicom_pixels
