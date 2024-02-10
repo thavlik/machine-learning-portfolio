@@ -15,7 +15,7 @@ exp_params:
   data:
     name: grasp-and-lift-eeg
     training:
-      root: "C:/data/grasp-and-lift-eeg-detection" #/data/grasp-and-lift-eeg-detection
+      root: "C:/data/grasp-and-lift-eeg" #/data/grasp-and-lift-eeg-detection
       num_samples: 2048
       last_label_only: true
       subjects: [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -31,9 +31,49 @@ exp_params:
   optimizer:
     lr: 0.0005
     weight_decay: 0.000005
+  plot:
+    fn: classifier1d_multicolumn
+    sample_every_n_steps: 20_000
+    examples_per_class: 6
+    classes:
+    - name: Control
+      labels: [0, 0, 0, 0, 0, 0]
+      all: true
+    - name: HandStart
+      labels: [1, 0, 0, 0, 0, 0]
+      all: true
+    - name: FirstDigitTouch
+      labels: [0, 1, 0, 0, 0, 0]
+      all: true
+    - name: BothStartLoadPhase
+      labels: [0, 0, 1, 0, 0, 0]
+      all: true
+    - name: LiftOff
+      labels: [0, 0, 0, 1, 0, 0]
+      all: true
+    - name: Replace
+      labels: [0, 0, 0, 0, 1, 0]
+      all: true
+    - name: BothReleased
+      labels: [0, 0, 0, 0, 0, 1]
+      all: true
+    params:
+      width: 1024
+      height: 256
+      indicator_thickness: 12
+      line_opacity: 0.3
+      layout_params:
+        showlegend: false
+        margin:
+          l: 0
+          r: 0
+          b: 0
+          t: 0
+    layout_params:
+      showlegend: false
 
 trainer_params:
-  max_epochs: 1000000
+  max_epochs: 1_000_000
   log_every_n_steps: 100
   val_check_interval: 20_000
   limit_val_batches: 2_000

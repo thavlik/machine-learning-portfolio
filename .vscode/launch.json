@@ -227,6 +227,18 @@
             ]
         },
         {
+            "name": "Python: train EEG Balanced HParams",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/grasp_and_lift_eeg/classification/balanced_hparams.yaml"
+            ]
+        },
+        {
             "name": "Python: train EEG KernelSize=9",
             "type": "debugpy",
             "request": "launch",

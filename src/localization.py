@@ -50,7 +50,7 @@ class LocalizationExperiment(BaseExperiment):
                    pred_params=pred_params,
                    target_params=target_params,
                    out_path=out_path,
-                   **plot['params'])
+                    **plot['params'])
         self.logger.experiment.add_image(plot['fn'], image, self.global_step)
         vis = self.visdom()
         if vis is not None:
