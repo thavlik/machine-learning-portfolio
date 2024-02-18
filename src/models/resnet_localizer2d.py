@@ -57,7 +57,7 @@ class ResNetLocalizer2d(Localizer):
         x = self.layers(x)
         x = self.prediction(x)
         x = self.output(x)
-        # We are going to enforce the invariant x1 < x2 and y1 < y2 by
+        # We are going to enforce the invariant x1 <= x2 && y1 <= y2 by
         # predicting the width and height instead of x2 and y2 directly.
         # Here we change it back to the original format.
         # We have to do this without modifying anything in-place
