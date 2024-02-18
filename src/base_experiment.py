@@ -1,18 +1,18 @@
-import torch
-from torch import Tensor, optim
-from torch.nn.parameter import Parameter
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader, Dataset
-
-import boto3
 import gc
 import io
-import numpy as np
 import os
-import pytorch_lightning as pl
+import torch
 from abc import abstractmethod
+from torch import Tensor, optim
+from torch.nn.parameter import Parameter
+from torch.optim.lr_scheduler import ChainedScheduler, ReduceLROnPlateau
+from torch.optim.optimizer import Optimizer
+from torch.utils.data import DataLoader, Dataset
 from typing import Iterator, List
+
+import boto3
+import numpy as np
+import pytorch_lightning as pl
 from visdom import Visdom
 
 from dataset import balanced_sampler, get_dataset
@@ -151,7 +151,7 @@ class BaseExperiment(pl.LightningModule):
         scheds = self.configure_schedulers(optimizer)
         return {
             'optimizer': optimizer,
-            'scheduler': scheds,
+            'lr_scheduler': scheds,
             'monitor': 'train/loss',
         }
 
@@ -166,7 +166,7 @@ class BaseExperiment(pl.LightningModule):
             scheds.append(
                 ReduceLROnPlateau(optimizer,
                                   **self.params['reduce_lr_on_plateau']))
-        return scheds
+        return ChainedScheduler(scheds)
 
     def train_dataloader(self):
         ds_params = self.params['data'].get('training', {})

@@ -60,8 +60,7 @@ class ResNetLocalizer2d(Localizer):
         # We are going to enforce the invariant x1 <= x2 && y1 <= y2 by
         # predicting the width and height instead of x2 and y2 directly.
         # Here we change it back to the original format.
-        # We have to do this without modifying anything in-place
-        x = x.clone()
-        x[:, 2] = x[:, 0] + x[:, 2]
-        x[:, 3] = x[:, 1] + x[:, 3]
-        return x
+        ax = x.clone()
+        ax[:, 2] = x[:, 0] + x[:, 2]
+        ax[:, 3] = x[:, 1] + x[:, 3]
+        return ax

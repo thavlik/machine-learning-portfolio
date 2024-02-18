@@ -20,10 +20,9 @@ exp_params:
     local: {}
   loss_params:
     objective: cbiou+dbiou+gbiou
-  batch_size: 8
+  batch_size: 2
   optimizer:
-    # 1.0e-04 is way too high, leads to loss explosion
-    lr: 1.0e-05
+    lr: 1.0e-06
     weight_decay: 1.0e-07
   data:
     name: deeplesion
@@ -40,14 +39,14 @@ exp_params:
         - bounding_boxes
   plot:
     fn: localize_lesions
-    sample_every_n_steps: 1_000
+    sample_every_n_steps: 2_000
     batch_size: 9
     params: {}
-  
+
 trainer_params:
   max_epochs: 10_000_000
   log_every_n_steps: 8
-  check_val_every_n_epoch: 10
+  check_val_every_n_epoch: 1
 
 logging_params:
   name: "DeepLesion_Basic"
