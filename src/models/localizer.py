@@ -28,7 +28,6 @@ class Localizer(nn.Module):
                       targ_params: Tensor,
                       objective: Optional[str] = 'cbiou+dbiou') -> dict:
         # Sanity check to ensure that the parameters are valid BBs.
-<<<<<<< HEAD
         assert (pred_params[:, 0] <= pred_params[:, 2]).all(), \
             "Predicted BBs are invalid."
         assert (pred_params[:, 1] <= pred_params[:, 3]).all(), \
@@ -54,31 +53,6 @@ class Localizer(nn.Module):
             assert obj in losses, f"Objective '{obj}' not recognized."
             loss += losses[obj]
         return {'loss': loss, **{f'{k}_Loss': v for k, v in losses.items()}}
-=======
-        assert (pred_params[:, 0] <= pred_params[:, 2]).all()
-        assert (pred_params[:, 1] <= pred_params[:, 3]).all()
-        assert (targ_params[:, 0] <= targ_params[:, 2]).all()
-        assert (targ_params[:, 1] <= targ_params[:, 3]).all()
-
-        if objective != 'cbiou+dbiou':
-            raise NotImplementedError
-
-        mse_loss = F.mse_loss(pred_params, targ_params)
-        dbiou_loss = distance_box_iou_loss(pred_params,
-                                           targ_params,
-                                           reduction='sum')
-        cbiou_loss = complete_box_iou_loss(pred_params,
-                                           targ_params,
-                                           reduction='sum')
-        loss = dbiou_loss + cbiou_loss + mse_loss
-
-        return {
-            'loss': loss,
-            'cbiou_Loss': cbiou_loss,
-            'dbiou_Loss': dbiou_loss,
-            'mse_Loss': mse_loss,
-        }
->>>>>>> 3cc61b3ba71673d49c1cf82fdc11c882461b94f9
 
 
 def bb_intersection_over_union(boxA, boxB):
