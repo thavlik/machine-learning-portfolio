@@ -3,6 +3,8 @@ __pycache__/
 *.mp4
 *.part
 logs/
+logs2/
 logs_remote/
 ray_results/
+saves/
 .venv/

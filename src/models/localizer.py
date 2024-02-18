@@ -4,7 +4,11 @@ from torch import Tensor, nn
 from torch.nn import functional as F
 from typing import Optional
 
-from torchvision.ops import complete_box_iou_loss, distance_box_iou_loss
+from torchvision.ops import (
+    complete_box_iou_loss,
+    distance_box_iou_loss,
+    generalized_box_iou_loss,
+)
 
 
 class Localizer(nn.Module):
@@ -24,29 +28,31 @@ class Localizer(nn.Module):
                       targ_params: Tensor,
                       objective: Optional[str] = 'cbiou+dbiou') -> dict:
         # Sanity check to ensure that the parameters are valid BBs.
-        assert (pred_params[:, 0] < pred_params[:, 2]).all()
-        assert (pred_params[:, 1] < pred_params[:, 3]).all()
-        assert (targ_params[:, 0] < targ_params[:, 2]).all()
-        assert (targ_params[:, 1] < targ_params[:, 3]).all()
-
-        if objective != 'cbiou+dbiou':
-            raise NotImplementedError
-
-        mse_loss = F.mse_loss(pred_params, targ_params)
-        dbiou_loss = distance_box_iou_loss(pred_params,
-                                           targ_params,
-                                           reduction='sum')
-        cbiou_loss = complete_box_iou_loss(pred_params,
-                                           targ_params,
-                                           reduction='sum')
-        loss = dbiou_loss + cbiou_loss + mse_loss
-
-        return {
-            'loss': loss,
-            'cbiou_Loss': cbiou_loss,
-            'dbiou_Loss': dbiou_loss,
-            'mse_Loss': mse_loss,
-        }
+        assert (pred_params[:, 0] <= pred_params[:, 2]).all(), \
+            "Predicted BBs are invalid."
+        assert (pred_params[:, 1] <= pred_params[:, 3]).all(), \
+            "Predicted BBs are invalid."
+        assert (targ_params[:, 0] <= targ_params[:, 2]).all(), \
+            "Target BBs are invalid."
+        assert (targ_params[:, 1] <= targ_params[:, 3]).all(), \
+            "Target BBs are invalid."
+        # Calculate various loss metrics. Some may go unused.
+        losses = dict(mse=F.mse_loss(pred_params, targ_params),
+                      dbiou=distance_box_iou_loss(pred_params,
+                                                  targ_params,
+                                                  reduction='sum'),
+                      cbiou=complete_box_iou_loss(pred_params,
+                                                  targ_params,
+                                                  reduction='sum'),
+                      gbiou=generalized_box_iou_loss(pred_params,
+                                                     targ_params,
+                                                     reduction='sum'))
+        # Calculate the total loss based on the objectives.
+        loss = torch.zeros(1)
+        for obj in objective.split('+'):
+            assert obj in losses, f"Objective '{obj}' not recognized."
+            loss += losses[obj]
+        return {'loss': loss, **{f'{k}_Loss': v for k, v in losses.items()}}
 
 
 def bb_intersection_over_union(boxA, boxB):

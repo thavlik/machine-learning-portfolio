@@ -1,10 +1,10 @@
 entrypoint: hparam_search
 
-num_samples: 3
+num_samples: 1
 
-num_train_steps: 15_001
+num_train_steps: 3_001
 
-num_val_steps: 1000
+num_val_steps: 500
 
 randomize_seed: true
 

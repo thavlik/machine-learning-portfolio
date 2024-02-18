@@ -5,7 +5,7 @@ model_params:
   name: ResNetLocalizer2d
   pooling: max
   batch_normalize: false
-  hidden_dims: [64, 128, 64]
+  hidden_dims: [64, 128, 256, 512, 512, 512]
   output_activation: sigmoid
 
 exp_params:
@@ -19,8 +19,8 @@ exp_params:
     delete_old: true
     local: {}
   loss_params:
-    objective: cbiou+dbiou
-  batch_size: 4
+    objective: cbiou+dbiou+gbiou
+  batch_size: 8
   optimizer:
     # 1.0e-04 is way too high, leads to loss explosion
     lr: 1.0e-05

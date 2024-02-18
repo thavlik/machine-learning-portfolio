@@ -5,7 +5,10 @@ __pycache__/
 data/
 README.md
 logs/
+logs2/
 logs_remote/
+ray_results/
+saves/
 *.mp4
 *.part
 *.gif
