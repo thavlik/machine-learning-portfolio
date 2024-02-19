@@ -3,6 +3,7 @@ import torch
 
 import numpy as np
 import pytorch_lightning as pl
+import yaml
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 from pytorch_lightning.core.saving import save_hparams_to_yaml
@@ -370,7 +371,7 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
     print(
         f"======= Training {config['model_params']['name']}/{config['logging_params']['name']} (Experiment {run_args['exp_no']+1}/{run_args['total_experiments']}) ======="
     )
-    print(config)
+    print(yaml.safe_dump(config))
     results = runner.fit(experiment)
     #return experiment, results
 
