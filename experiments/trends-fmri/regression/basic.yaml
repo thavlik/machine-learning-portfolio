@@ -8,10 +8,6 @@ model_params:
 
 exp_params:
   manual_seed: 6602
-  #save_weights:
-  #  every_n_steps: 10_000
-  #  delete_old: true
-  #  local: {}
   data:
     name: trends-fmri
     training:

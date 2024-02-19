@@ -4,29 +4,29 @@ model_params:
   arch: ResNetLocalizer2d
   name: ResNetLocalizer2d
   pooling: max
-  batch_normalize: false
+  batch_normalize: true
   hidden_dims: [64, 128, 256, 512, 512, 512]
   output_activation: sigmoid
 
 exp_params:
-  warmup_steps: 64
-  reduce_lr_on_plateau:
-    factor: 0.1
-    patience: 1
-    threshold: 1.0e-04
+  scheduler:
+    warmup_steps: 256
+    reduce_lr_on_plateau:
+      factor: 0.1
+      patience: 1
+      threshold: 1.0e-04
   save_weights:
     every_n_steps: 10_000
-    delete_old: true
     local: {}
   loss_params:
     objective: cbiou+dbiou+gbiou
-  batch_size: 2
+  batch_size: 10
   optimizer:
-    lr: 1.0e-06
+    lr: 0.0002
     weight_decay: 1.0e-07
   data:
     name: deeplesion
-    split: 0.7
+    split: 0.3
     flatten_labels: true
     loader:
       num_workers: 4
@@ -34,18 +34,17 @@ exp_params:
     training:
       root: /opt/data/deeplesion
       only_positives: true
-      #limit: 256
       components:
         - bounding_boxes
   plot:
     fn: localize_lesions
-    sample_every_n_steps: 2_000
+    sample_every_n_steps: 5_000
     batch_size: 9
     params: {}
 
 trainer_params:
   max_epochs: 10_000_000
-  log_every_n_steps: 8
+  log_every_n_steps: 10
   check_val_every_n_epoch: 1
 
 logging_params:

@@ -334,7 +334,8 @@ def experiment_main(config: dict, run_args: dict) -> pl.LightningModule:
         return
     experiment = experiment.cuda(0)
     logger = TensorBoardLogger(save_dir=run_args['save_dir'],
-                               name=config['logging_params']['name'])
+                               name=config['logging_params']['name'],
+                               default_hp_metric=False)
     logger.log_hyperparams(config)
     if run_args['smoke_test']:
         config['trainer_params']['max_steps'] = 5

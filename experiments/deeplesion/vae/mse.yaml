@@ -10,7 +10,6 @@ exp_params:
   warmup_steps: 256
   save_weights:
     every_n_steps: 10_000
-    delete_old: true
     local: {}
   batch_size: 4
   optimizer:

@@ -15,7 +15,6 @@ exp_params:
     threshold: 1.0e-04
   save_weights:
     every_n_steps: 10_000
-    delete_old: true
     local: {}
   data:
     name: grasp-and-lift-eeg

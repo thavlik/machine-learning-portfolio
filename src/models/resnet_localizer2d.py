@@ -45,13 +45,10 @@ class ResNetLocalizer2d(Localizer):
             in_features = int(in_features)
         self.activation = get_activation(output_activation)
         self.prediction = nn.Linear(in_features, 4)
-        if batch_normalize:
-            self.output = nn.Sequential(
-                nn.BatchNorm1d(4),
-                self.activation,
-            )
-        else:
-            self.output = self.activation
+        self.output = nn.Sequential(
+            nn.BatchNorm1d(4),
+            self.activation,
+        ) if batch_normalize else self.activation
 
     def forward(self, x: Tensor) -> Tensor:
         x = self.layers(x)

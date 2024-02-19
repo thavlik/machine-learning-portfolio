@@ -117,18 +117,6 @@
             ]
         },
         {
-            "name": "Python: train DeepLesion HalfRes",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/src/main.py",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "--config",
-                "experiments/deeplesion/localization/halfres.yaml"
-            ]
-        },
-        {
             "name": "Python: train DeepLesion HParams",
             "type": "debugpy",
             "request": "launch",
@@ -140,6 +128,18 @@
                 "experiments/deeplesion/localization/basic_hparams.yaml"
             ],
             "justMyCode": false
+        },
+        {
+            "name": "Python: train DeepLesion HalfRes",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--config",
+                "experiments/deeplesion/localization/halfres.yaml"
+            ]
         },
         {
             "name": "Python: train DeepLesion HalfRes HParams",
