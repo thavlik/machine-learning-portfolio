@@ -1,10 +1,10 @@
+import os
 import torch.utils.data as data
 from torch import Tensor
+from typing import List
 
 import nilearn as nl
 import numpy as np
-import os
-from typing import List
 
 
 class LA5cDataset(data.Dataset):

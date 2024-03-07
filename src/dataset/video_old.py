@@ -1,12 +1,13 @@
+import json
 import os
-import numpy as np
 import torch
 import torch.utils.data as data
 from math import floor
-import youtube_dl
+
 import cv2
+import numpy as np
+import youtube_dl
 from torchvision.transforms import Resize, ToPILImage, ToTensor
-import json
 
 
 def load_links(path):
@@ -193,9 +194,10 @@ class VideoDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    import youtube_dl
-    import cv2
     import time
+
+    import cv2
+    import youtube_dl
     width = 640
     height = 480
     num_frames = 9

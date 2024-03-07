@@ -1,13 +1,13 @@
-import torch.backends.cudnn as cudnn
-
 import argparse
-import cv2
-import decord  # must be imported after torch
 import gc
-import numpy as np
 import os
 import time
+import torch.backends.cudnn as cudnn
 from typing import List, Union
+
+import cv2
+import decord  # must be imported after torch
+import numpy as np
 
 from entry import experiment_main
 from load_config import load_config

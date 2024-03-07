@@ -1,13 +1,13 @@
+import os
 import torch
 import torch.utils.data as data
 from torch.nn import functional as F
+from typing import List
 
 import boto3
 import numpy as np
-import os
 from skimage.io import imread
 from skimage.transform import resize
-from typing import List
 
 
 def read_hu(x):

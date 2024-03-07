@@ -1,13 +1,13 @@
 import os
-import numpy as np
-import nilearn as nl
-import nilearn.plotting
-from math import floor
-import numpy as np
 import torch
 import torch.utils.data as data
+from math import floor
 from torch import Tensor
 from typing import Optional
+
+import nilearn as nl
+import nilearn.plotting
+import numpy as np
 
 
 def load_scenes(path: str) -> list:

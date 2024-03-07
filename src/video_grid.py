@@ -1,6 +1,7 @@
-import numpy as np
 import os
 import subprocess
+
+import numpy as np
 from decord import VideoReader, bridge
 from PIL import Image
 

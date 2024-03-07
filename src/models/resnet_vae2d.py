@@ -1,8 +1,7 @@
 import torch
+from math import ceil
 from torch import Tensor, nn
 from torch.nn import functional as F
-
-from math import ceil
 from typing import List
 
 from .base import BaseVAE

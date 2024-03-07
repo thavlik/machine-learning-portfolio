@@ -1,6 +1,5 @@
-from torch import Size, Tensor, nn
-
 from math import ceil
+from torch import Size, Tensor, nn
 from typing import List
 
 from .localizer import Localizer

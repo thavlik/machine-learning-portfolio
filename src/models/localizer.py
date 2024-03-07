@@ -4,11 +4,8 @@ from torch import Tensor, nn
 from torch.nn import functional as F
 from typing import Optional
 
-from torchvision.ops import (
-    complete_box_iou_loss,
-    distance_box_iou_loss,
-    generalized_box_iou_loss,
-)
+from torchvision.ops import (complete_box_iou_loss, distance_box_iou_loss,
+                             generalized_box_iou_loss)
 
 
 class Localizer(nn.Module):

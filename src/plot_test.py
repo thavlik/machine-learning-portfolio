@@ -1,13 +1,15 @@
 import io
 import os
+
+import matplotlib.pyplot as plt
 import numpy as np
-from plot import plot_comparison
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from PIL import Image, ImageDraw, ImageFont
-import matplotlib.pyplot as plt
+from plotly.subplots import make_subplots
+
+from plot import plot_comparison
 
 img = Image.open('experiments/rsna-intracranial/images/img.png')
 font_path = os.path.join('data', 'fonts', 'arial.ttf')

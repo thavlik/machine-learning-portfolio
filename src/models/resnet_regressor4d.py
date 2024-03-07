@@ -1,5 +1,4 @@
 from torch import Size, Tensor, nn
-
 from typing import List
 
 from .resnet4d import BasicBlock4d

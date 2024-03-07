@@ -1,5 +1,6 @@
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
+
 from .maxpool4d import MaxPool4d
 
 pool1d = {

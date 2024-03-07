@@ -1,11 +1,11 @@
+import json
+import os
 import torch
 import torch.utils.data as data
 from torch import Tensor
-
-import json
-import numpy as np
-import os
 from typing import Optional
+
+import numpy as np
 
 
 def load_scenes(path: str) -> list:

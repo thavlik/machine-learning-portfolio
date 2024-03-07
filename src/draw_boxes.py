@@ -1,7 +1,8 @@
 # Source: https://www.kaggle.com/kmader/deeplesion-overview
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import pandas as pd
 from matplotlib.patches import Rectangle
 from skimage.io import imread

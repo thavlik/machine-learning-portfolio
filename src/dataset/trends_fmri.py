@@ -1,10 +1,10 @@
+import os
 import torch
 import torch.utils.data as data
 
 import h5py
 import nilearn as nl
 import numpy as np
-import os
 
 
 def load_subject(filename: str, mask_niimg):

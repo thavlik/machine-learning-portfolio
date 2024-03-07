@@ -1,6 +1,5 @@
-from torch import Tensor, nn
-
 from math import ceil
+from torch import Tensor, nn
 from typing import List
 
 from .base import BaseVAE

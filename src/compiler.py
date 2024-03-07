@@ -1,8 +1,9 @@
 import argparse
 import json
-import youtube_dl
 import os
 import sys
+
+import youtube_dl
 
 parser = argparse.ArgumentParser(description='Youtube dataset compiler')
 parser.add_argument(

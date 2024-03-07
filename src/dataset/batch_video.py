@@ -1,6 +1,6 @@
+import os
 import torch
 
-import os
 from decord import VideoLoader, cpu
 
 

@@ -1,26 +1,20 @@
+import os
+import sys
 import torch
 
 import matplotlib.pyplot as plt
-import os
 import pytorch3d
-import sys
 from pytorch3d.io import load_obj, load_objs_as_meshes
-from pytorch3d.renderer import (
-    DirectionalLights,
-    FoVPerspectiveCameras,
-    Materials,
-    MeshRasterizer,
-    MeshRenderer,
-    PointLights,
-    RasterizationSettings,
-    SoftPhongShader,
-    TexturesUV,
-    TexturesVertex,
-    look_at_view_transform,
-)
+from pytorch3d.renderer import (DirectionalLights, FoVPerspectiveCameras,
+                                Materials, MeshRasterizer, MeshRenderer,
+                                PointLights, RasterizationSettings,
+                                SoftPhongShader, TexturesUV, TexturesVertex,
+                                look_at_view_transform)
 from pytorch3d.structures import Meshes
-from pytorch3d.transforms import Rotate, Transform3d, Translate, random_rotations
-from pytorch3d.vis.plotly_vis import AxisArgs, plot_batch_individually, plot_scene
+from pytorch3d.transforms import (Rotate, Transform3d, Translate,
+                                  random_rotations)
+from pytorch3d.vis.plotly_vis import (AxisArgs, plot_batch_individually,
+                                      plot_scene)
 from pytorch3d.vis.texture_vis import texturesuv_image_matplotlib
 
 device = torch.device("cuda")

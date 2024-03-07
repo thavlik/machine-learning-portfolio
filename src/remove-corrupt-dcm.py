@@ -1,8 +1,9 @@
 import argparse
 import os
-import pydicom
 import sys
 import time
+
+import pydicom
 
 from dataset import normalized_dicom_pixels
 

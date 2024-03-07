@@ -1,7 +1,6 @@
+from math import ceil
 from torch import Size, Tensor, nn
 from torch.nn import functional as F
-
-from math import ceil
 from typing import List
 
 from .classifier import Classifier

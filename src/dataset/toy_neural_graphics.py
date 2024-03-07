@@ -1,14 +1,17 @@
 import os
-import numpy as np
 import torch
 import torch.utils.data as data
-from pytorch3d.io import load_objs_as_meshes, load_obj
-from pytorch3d.transforms import random_rotation, Translate, Rotate, Transform3d
-from pytorch3d.renderer import (look_at_view_transform, FoVPerspectiveCameras,
-                                PointLights, DirectionalLights, Materials,
-                                RasterizationSettings, MeshRenderer,
-                                MeshRasterizer, SoftPhongShader,
-                                HardFlatShader, TexturesUV, TexturesVertex)
+
+import numpy as np
+from pytorch3d.io import load_obj, load_objs_as_meshes
+from pytorch3d.renderer import (DirectionalLights, FoVPerspectiveCameras,
+                                HardFlatShader, Materials, MeshRasterizer,
+                                MeshRenderer, PointLights,
+                                RasterizationSettings, SoftPhongShader,
+                                TexturesUV, TexturesVertex,
+                                look_at_view_transform)
+from pytorch3d.transforms import (Rotate, Transform3d, Translate,
+                                  random_rotation)
 
 
 class ToyNeuralGraphicsDataset(data.Dataset):

@@ -1,8 +1,8 @@
+import os
 import torch
 import torch.utils.data as data
 
 import boto3
-import os
 import pydicom
 
 CQ500_HEADER = 'name,Category,R1:ICH,R1:IPH,R1:IVH,R1:SDH,R1:EDH,R1:SAH,R1:BleedLocation-Left,R1:BleedLocation-Right,R1:ChronicBleed,R1:Fracture,R1:CalvarialFracture,R1:OtherFracture,R1:MassEffect,R1:MidlineShift,R2:ICH,R2:IPH,R2:IVH,R2:SDH,R2:EDH,R2:SAH,R2:BleedLocation-Left,R2:BleedLocation-Right,R2:ChronicBleed,R2:Fracture,R2:CalvarialFracture,R2:OtherFracture,R2:MassEffect,R2:MidlineShift,R3:ICH,R3:IPH,R3:IVH,R3:SDH,R3:EDH,R3:SAH,R3:BleedLocation-Left,R3:BleedLocation-Right,R3:ChronicBleed,R3:Fracture,R3:CalvarialFracture,R3:OtherFracture,R3:MassEffect,R3:MidlineShift\n'

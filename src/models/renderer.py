@@ -1,8 +1,7 @@
 import torch
+from abc import abstractmethod
 from torch import Tensor, nn
 from torch.nn import functional as F
-
-from abc import abstractmethod
 from typing import List
 
 from .inception import InceptionV3

@@ -1,11 +1,11 @@
+import gzip
+import os
 import torch
 import torch.utils.data as data
 from torch import Tensor
 from torch.nn import functional as F
 
 import boto3
-import gzip
-import os
 import pydicom
 
 from .dicom_util import normalized_dicom_pixels

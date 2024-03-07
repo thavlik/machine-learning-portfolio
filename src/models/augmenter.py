@@ -1,7 +1,6 @@
 import torch
-from torch import Tensor, nn
-
 from abc import abstractmethod
+from torch import Tensor, nn
 from typing import List
 
 

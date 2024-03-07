@@ -949,11 +949,8 @@ if __name__ == '__main__':
     from skimage import exposure
     from skimage.transform import resize
 
-    from dataset import (
-        GraspAndLiftEEGDataset,
-        RSNAIntracranialDataset,
-        TReNDSfMRIDataset,
-    )
+    from dataset import (GraspAndLiftEEGDataset, RSNAIntracranialDataset,
+                         TReNDSfMRIDataset)
     from dataset.dicom_util import normalized_dicom_pixels
     np.random.seed(int(time()))
 

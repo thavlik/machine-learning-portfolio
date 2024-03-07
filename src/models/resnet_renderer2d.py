@@ -1,7 +1,7 @@
 from torch import Tensor, nn
+from typing import List
 
 import numpy as np
-from typing import List
 
 from .renderer import BaseRenderer
 from .resnet2d import TransposeBasicBlock2d

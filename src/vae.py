@@ -1,10 +1,9 @@
+import gc
+import os
 import torch
 from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
-
-import gc
-import os
 from typing import Iterator, Tuple
 
 from base_experiment import BaseExperiment

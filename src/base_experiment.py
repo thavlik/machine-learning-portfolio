@@ -5,7 +5,8 @@ import torch
 from abc import abstractmethod
 from torch import Tensor, optim
 from torch.nn.parameter import Parameter
-from torch.optim.lr_scheduler import ChainedScheduler, LRScheduler, ReduceLROnPlateau
+from torch.optim.lr_scheduler import (ChainedScheduler, LRScheduler,
+                                      ReduceLROnPlateau)
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, Dataset
 from typing import Iterator, Optional

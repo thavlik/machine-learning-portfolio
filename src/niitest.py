@@ -1,9 +1,10 @@
+import os
+
 import matplotlib.pyplot as plt
 import nibabel as nib
 import nilearn as nl
 import nilearn.plotting as nlplt
 import numpy as np
-import os
 
 img = nl.image.load_img(
     'E:/openneuro/ds000030-download/sub-10159/anat/sub-10159_T1w.nii.gz')

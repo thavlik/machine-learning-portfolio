@@ -1,10 +1,12 @@
 import os
-import numpy as np
-import nilearn as nl
-import nilearn.plotting as nlplt
+
 import matplotlib.pyplot as plt
 import nibabel as nib
-from dataset.trends_fmri import load_subject, TReNDSfMRIDataset
+import nilearn as nl
+import nilearn.plotting as nlplt
+import numpy as np
+
+from dataset.trends_fmri import TReNDSfMRIDataset, load_subject
 
 base_path = '/data/trends-fmri'
 smri_filename = os.path.join(base_path, 'ch2better.nii')

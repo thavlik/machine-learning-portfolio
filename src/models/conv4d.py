@@ -4,9 +4,9 @@ from __future__ import division
 
 import torch
 from torch import nn
+from typing import Callable, Tuple, Union
 
 import numpy as np
-from typing import Callable, Tuple, Union
 
 
 class Conv4d(nn.Module):

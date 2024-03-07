@@ -1,8 +1,8 @@
-from torch.utils.data import DataLoader
-
 import argparse
 import sys
 from multiprocessing import cpu_count
+from torch.utils.data import DataLoader
+
 from tqdm import tqdm
 
 from dataset import get_dataset

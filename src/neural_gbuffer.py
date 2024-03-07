@@ -1,12 +1,12 @@
+import gc
+import os
 import torch
 from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import DataLoader
-
-import gc
-import os
-import pytorch_lightning as pl
 from typing import Iterator
+
+import pytorch_lightning as pl
 
 from dataset import get_dataset
 from merge_strategy import deep_merge

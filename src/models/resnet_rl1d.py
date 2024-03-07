@@ -1,8 +1,8 @@
-from torch import nn
-
 from math import ceil
-from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
+from torch import nn
 from typing import List
+
+from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
 
 from .resnet1d import BasicBlock1d
 from .util import get_pooling1d

@@ -1,9 +1,8 @@
+import os
 import torch
 from torch import Tensor
 from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset
-
-import os
 from typing import Iterator
 
 from base_experiment import BaseExperiment

@@ -1,14 +1,14 @@
+import os
+import time
 import torch
 import torch.nn.functional as F
 import torch.utils.data as data
+import zipfile
 from torch import Tensor
+from typing import List, Optional
 
 import numpy as np
-import os
 import requests
-import time
-import zipfile
-from typing import List, Optional
 
 
 def recursive_listdir(path: str, suffix: str) -> list:

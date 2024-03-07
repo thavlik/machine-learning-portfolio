@@ -1,5 +1,4 @@
 from torch import Tensor, nn
-
 from typing import List
 
 from .base import reparameterize
