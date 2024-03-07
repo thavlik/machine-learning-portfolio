@@ -1,0 +1,15 @@
+name: Lint with yapf & isort
+run-name: Enforce consistent formatting with yapf & isort
+on: [push]
+jobs:
+  Check-Formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y python3-yapf python3-isort
+      - name: Check formatting with yapf
+        run: python3 -m yapf -rd src/
+      #- name: Check formatting with isort
+      #  run: python3 -m isort --only-modified --diff --check-only src/
