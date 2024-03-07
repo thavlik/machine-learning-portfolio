@@ -4,14 +4,16 @@ import youtube_dl
 import os
 import sys
 
-parser = argparse.ArgumentParser(
-    description='Youtube dataset compiler')
-parser.add_argument('--input',  '-i',
-                    dest="input",
-                    metavar='INPUT',
-                    help='path to text file containing youtube video or playlist links',
-                    default='../dataset/doom/full.txt')
-parser.add_argument('--output', '-o',
+parser = argparse.ArgumentParser(description='Youtube dataset compiler')
+parser.add_argument(
+    '--input',
+    '-i',
+    dest="input",
+    metavar='INPUT',
+    help='path to text file containing youtube video or playlist links',
+    default='../dataset/doom/full.txt')
+parser.add_argument('--output',
+                    '-o',
                     dest="output",
                     metavar='OUTPUT',
                     help='output file path',
@@ -26,13 +28,13 @@ parser.add_argument('--cache_dir',
                     metavar='CACHE_DIR',
                     help='video download path',
                     default='E:/cache')
-parser.add_argument('--clean',
-                    dest="clean",
-                    metavar='CLEAN',
-                    help='remove missing videos from output records (do not download)',
-                    default=False)
+parser.add_argument(
+    '--clean',
+    dest="clean",
+    metavar='CLEAN',
+    help='remove missing videos from output records (do not download)',
+    default=False)
 args = parser.parse_args()
-
 
 completed = []
 videos = []
@@ -62,15 +64,11 @@ def write_videos():
 
 def process_video(video, ydl, download):
     videos.append({
-        k: video[k] for k in ['id',
-                              'ext',
-                              'vcodec',
-                              'uploader_id',
-                              'channel_id',
-                              'duration',
-                              'width',
-                              'height',
-                              'fps']
+        k: video[k]
+        for k in [
+            'id', 'ext', 'vcodec', 'uploader_id', 'channel_id', 'duration',
+            'width', 'height', 'fps'
+        ]
     })
     id = video['id']
     path = os.path.join(args.cache_dir, id + '.mp4')
@@ -87,10 +85,10 @@ def process_video(video, ydl, download):
 
 
 if args.clean:
-    new_videos = [video
-                  for video in videos
-                  if os.path.exists(os.path.join(args.cache_dir,
-                                                 video['id'] + '.mp4'))]
+    new_videos = [
+        video for video in videos
+        if os.path.exists(os.path.join(args.cache_dir, video['id'] + '.mp4'))
+    ]
     print(f'Removed {len(videos)-len(new_videos)} videos')
     videos = new_videos
     write_videos()
@@ -100,8 +98,8 @@ with open(args.input, "r") as f:
     lines = [line.strip() for line in f]
 
 with youtube_dl.YoutubeDL({
-    'verbose': True,
-    'outtmpl': args.cache_dir + '/%(id)s.%(ext)s',
+        'verbose': True,
+        'outtmpl': args.cache_dir + '/%(id)s.%(ext)s',
 }) as ydl:
     for line in lines:
         if line in completed:

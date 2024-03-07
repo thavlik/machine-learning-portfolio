@@ -16,11 +16,12 @@ draw = ImageDraw.Draw(img)
 draw.text((0, 0), "Sample Text", (255, 255, 255), font=font)
 img.show()
 
-
 fig = plt.figure(figsize=(1, 3), dpi=80)
 ax = fig.add_subplot(111)
 ax.imshow(img)
-ax.text(0, 0, str("Label"),
+ax.text(0,
+        0,
+        str("Label"),
         horizontalalignment="left",
         verticalalignment="top")
 buf = io.BytesIO()
@@ -34,7 +35,6 @@ f = d1.getfont()
 
 d1.text((0, 0), "Hello, TutorialsPoint!", fill=(255, 0, 0))
 img.show()
-
 """
 steps = 128
 items = [

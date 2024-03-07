@@ -20,9 +20,7 @@ def load_links(path):
     return links
 
 
-def ensure_video_downloaded(id: str,
-                            ext: str,
-                            cache_path: str,
+def ensure_video_downloaded(id: str, ext: str, cache_path: str,
                             download: bool):
     path = os.path.join(cache_path, f'{id}.mp4')
     if os.path.exists(path):
@@ -33,7 +31,7 @@ def ensure_video_downloaded(id: str,
     if not cache_path.endswith('/'):
         cache_path += '/'
     with youtube_dl.YoutubeDL({
-        'outtmpl': cache_path + '%(id)s.%(ext)s',
+            'outtmpl': cache_path + '%(id)s.%(ext)s',
     }) as ydl:
         video = ydl.extract_info(
             f'https://www.youtube.com/watch?v={id}',
@@ -46,13 +44,8 @@ def ensure_video_downloaded(id: str,
     return path
 
 
-def get_raw_frames(id: str,
-                   ext: str,
-                   total_frames: int,
-                   start_frame: int,
-                   num_frames: int,
-                   skip_frames: int,
-                   cache_path: str,
+def get_raw_frames(id: str, ext: str, total_frames: int, start_frame: int,
+                   num_frames: int, skip_frames: int, cache_path: str,
                    download: bool):
     path = ensure_video_downloaded(id, ext, cache_path, download)
     cap = cv2.VideoCapture(path)
@@ -60,7 +53,7 @@ def get_raw_frames(id: str,
         raise ValueError(f"Error opening video stream or file")
     frames = []
     idx = 0  # counter that starts at the right frame
-    t = start_frame/total_frames
+    t = start_frame / total_frames
     cap.set(cv2.CAP_PROP_POS_FRAMES, t)
     while len(frames) < num_frames:
         ret, frame = cap.read()
@@ -75,26 +68,16 @@ def get_raw_frames(id: str,
     return frames
 
 
-def resize_frames(frames,
-                  width: int,
-                  height: int):
+def resize_frames(frames, width: int, height: int):
     to_pil = ToPILImage()
     resize = Resize((height, width))
     to_tensor = ToTensor()
-    return [to_tensor(resize(to_pil(torch.Tensor(frame))))
-            for frame in frames]
+    return [to_tensor(resize(to_pil(torch.Tensor(frame)))) for frame in frames]
 
 
-def get_frames(id: str,
-               ext: str,
-               total_frames: int,
-               start_frame: int,
-               num_frames: int,
-               skip_frames: int,
-               width: int,
-               height: int,
-               cache_path: str,
-               download: bool):
+def get_frames(id: str, ext: str, total_frames: int, start_frame: int,
+               num_frames: int, skip_frames: int, width: int, height: int,
+               cache_path: str, download: bool):
     frames = get_raw_frames(id=id,
                             ext=ext,
                             total_frames=total_frames,
@@ -107,11 +90,7 @@ def get_frames(id: str,
     return torch.stack(frames)
 
 
-def get_all_frames(id: str,
-                   ext: str,
-                   width: int,
-                   height: int,
-                   cache_path: str,
+def get_all_frames(id: str, ext: str, width: int, height: int, cache_path: str,
                    download: bool):
     path = ensure_video_downloaded(id, ext, cache_path, download)
     cap = cv2.VideoCapture(path)
@@ -206,7 +185,8 @@ class VideoDataset(data.Dataset):
                               cache_path=self.cache_path,
                               download=self.download)
         raise ValueError(
-            f"unable to seek example, was dataset length calculated incorrectly?")
+            f"unable to seek example, was dataset length calculated incorrectly?"
+        )
 
     def __len__(self):
         return self.total_examples
@@ -238,6 +218,7 @@ if __name__ == '__main__':
             avg = delta / n
             samples.append(avg)
             print(
-                f'{avg} seconds per example ({np.mean(samples)} seconds cumulative average)')
+                f'{avg} seconds per example ({np.mean(samples)} seconds cumulative average)'
+            )
             start = time.time()
     print('done')

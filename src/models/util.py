@@ -63,8 +63,7 @@ act_options = {
 
 def get_activation(name: str) -> nn.Module:
     if name not in act_options:
-        raise ValueError(
-            f'Unknown activation function "{name}"')
+        raise ValueError(f'Unknown activation function "{name}"')
     return act_options[name]()
 
 

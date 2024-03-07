@@ -23,16 +23,15 @@ def load_scenes(path: str) -> list:
         return result
 
 
-def calc_scene_examples(scenes: list,
-                        num_frames: int):
+def calc_scene_examples(scenes: list, num_frames: int):
     frame_dur_sec = 2.0
     scene_examples = []
     for i in range(len(scenes)):
-        t0 = scenes[i+0][0]
+        t0 = scenes[i + 0][0]
         if i == len(scenes) - 1:
             t1 = 3599.0 * frame_dur_sec
         else:
-            t1 = scenes[i+1][0]
+            t1 = scenes[i + 1][0]
         dur_sec = t1 - t0
         num_examples = dur_sec / frame_dur_sec - num_frames + 1
         num_examples = floor(num_examples)
@@ -92,23 +91,25 @@ class ForrestGumpRawDataset(data.Dataset):
             raise NotImplementedError
         self.root = root
         self.num_frames = num_frames
-        self.scenes = load_scenes(os.path.join(
-            root, "stimuli", "annotations", "scenes.csv"))
+        self.scenes = load_scenes(
+            os.path.join(root, "stimuli", "annotations", "scenes.csv"))
         if alignment is None:
             self.data_dir = root
             self.identifier = 'acq-raw'
         elif alignment == 'linear':
-            self.data_dir = os.path.join(
-                root, 'derivatives', 'linear_anatomical_alignment')
+            self.data_dir = os.path.join(root, 'derivatives',
+                                         'linear_anatomical_alignment')
             self.identifier = 'rec-dico7Tad2grpbold7Tad'
         elif alignment == 'nonlinear':
-            self.data_dir = os.path.join(
-                root, 'derivatives', 'non-linear_anatomical_alignment')
+            self.data_dir = os.path.join(root, 'derivatives',
+                                         'non-linear_anatomical_alignment')
             self.identifier = 'rec-dico7Tad2grpbold7TadNL'
         else:
             raise ValueError(f"unknown alignment value '{alignment}'")
-        subjects = [f for f in os.listdir(self.data_dir)
-                    if f.startswith('sub-') and len(f) == 6 and int(f[len('sub-'):]) <= 20]
+        subjects = [
+            f for f in os.listdir(self.data_dir) if f.startswith('sub-')
+            and len(f) == 6 and int(f[len('sub-'):]) <= 20
+        ]
         self.subjects = subjects
         self.scene_examples = calc_scene_examples(self.scenes,
                                                   num_frames=num_frames)
@@ -138,9 +139,9 @@ class ForrestGumpRawDataset(data.Dataset):
         for i, file_time in enumerate(self.FILE_DURATIONS):
             file_end_time = file_start_time + file_time
             if file_start_time <= start_time and start_time < file_end_time:
-                start_file = i+1
+                start_file = i + 1
             if file_start_time < end_time and end_time <= file_end_time:
-                end_file = i+1
+                end_file = i + 1
             if start_file is not None and end_file is not None:
                 break
             file_start_time = file_end_time
@@ -155,16 +156,16 @@ class ForrestGumpRawDataset(data.Dataset):
             remainder = int(self.num_frames - start_frames)
 
             start_path = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{start_file}_bold.nii.gz'
-            start_path = os.path.join(self.data_dir, subj,
-                                      'ses-forrestgump', 'func', start_path)
+            start_path = os.path.join(self.data_dir, subj, 'ses-forrestgump',
+                                      'func', start_path)
             start_img = nl.image.load_img(start_path)
             start_img = start_img.get_data()
-            start_img = start_img[:, :, :, start_img.shape[-1]-start_frames:]
+            start_img = start_img[:, :, :, start_img.shape[-1] - start_frames:]
             start_img = np.transpose(start_img, (3, 2, 0, 1))
 
             end_path = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{end_file}_bold.nii.gz'
-            end_path = os.path.join(self.data_dir, subj,
-                                    'ses-forrestgump', 'func', end_path)
+            end_path = os.path.join(self.data_dir, subj, 'ses-forrestgump',
+                                    'func', end_path)
             end_img = nl.image.load_img(end_path)
             end_img = end_img.get_data()
             end_img = end_img[:, :, :, :remainder]
@@ -173,11 +174,11 @@ class ForrestGumpRawDataset(data.Dataset):
             img = np.concatenate([start_img, end_img], axis=0)
         else:
             filename = f'{subj}_ses-forrestgump_task-forrestgump_{self.identifier}_run-0{start_file}_bold.nii.gz'
-            filename = os.path.join(self.data_dir, subj,
-                                    'ses-forrestgump', 'func', filename)
+            filename = os.path.join(self.data_dir, subj, 'ses-forrestgump',
+                                    'func', filename)
             img = nl.image.load_img(filename)
             img = img.get_data()
-            img = img[:, :, :, scene_example:scene_example+self.num_frames]
+            img = img[:, :, :, scene_example:scene_example + self.num_frames]
             img = np.transpose(img, (3, 2, 0, 1))
         return (img, label)
 
@@ -186,12 +187,13 @@ class ForrestGumpRawDataset(data.Dataset):
 
 
 if __name__ == '__main__':
-    ds = ForrestGumpRawDataset(
-        root='/data/openneuro/ds000113-download', alignment='linear')
+    ds = ForrestGumpRawDataset(root='/data/openneuro/ds000113-download',
+                               alignment='linear')
     #print(f'last: {ds[len(ds)-1][1]}')
     for i in range(len(ds.subjects)):
         print(
-            f'subject {i+1}: {ds[ds.examples_per_subject * i][1]}, {ds[ds.examples_per_subject * (i+1) - 1][1]}')
+            f'subject {i+1}: {ds[ds.examples_per_subject * i][1]}, {ds[ds.examples_per_subject * (i+1) - 1][1]}'
+        )
     # for i, x in enumerate(ds):
     #    print(f'{i}. {x[1]}')
     #i = len(ds) - 1

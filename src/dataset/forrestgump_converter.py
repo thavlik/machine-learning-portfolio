@@ -6,6 +6,7 @@ import nilearn.plotting
 from math import ceil
 import numpy as np
 
+
 def convert_forrest_gump(root: str,
                          alignment: str = 'raw',
                          max_chunk_samples: int = 16):
@@ -22,8 +23,10 @@ def convert_forrest_gump(root: str,
         identifier = 'rec-dico7Tad2grpbold7TadNL'
     else:
         raise ValueError(f"unknown alignment value '{alignment}'")
-    subjects = [f for f in os.listdir(data_dir)
-                if f.startswith('sub-') and len(f) == 6 and int(f[len('sub-'):]) <= 20]
+    subjects = [
+        f for f in os.listdir(data_dir)
+        if f.startswith('sub-') and len(f) == 6 and int(f[len('sub-'):]) <= 20
+    ]
     num_frames = 3599
     out_dir = os.path.join(root, 'converted', alignment)
     try:
@@ -37,13 +40,13 @@ def convert_forrest_gump(root: str,
     }
     for subject in subjects:
         print(f'Converting {alignment}/{subject}')
-        subj_no = int(subject[4:])-1
+        subj_no = int(subject[4:]) - 1
         frame_no = 0
         frames = None
         for run in range(8):
             filename = f'{subject}_ses-forrestgump_task-forrestgump_{identifier}_run-0{run+1}_bold.nii.gz'
-            filename = os.path.join(
-                data_dir, subject, 'ses-forrestgump', 'func', filename)
+            filename = os.path.join(data_dir, subject, 'ses-forrestgump',
+                                    'func', filename)
             img = nl.image.load_img(filename)
             img = img.get_data()
             img = np.transpose(img, (3, 2, 0, 1))
@@ -51,7 +54,8 @@ def convert_forrest_gump(root: str,
                 (frames, img), axis=0)
         if frames.shape[0] != num_frames:
             print(
-                f'WARNING: {subject} has {len(frames)} frames, expected {num_frames}')
+                f'WARNING: {subject} has {len(frames)} frames, expected {num_frames}'
+            )
         try:
             os.makedirs(os.path.join(out_dir, subject))
         except:
@@ -75,5 +79,5 @@ def convert_forrest_gump(root: str,
 
 
 if __name__ == '__main__':
-    convert_forrest_gump(
-        '/data/openneuro/ds000113-download', alignment='linear')
+    convert_forrest_gump('/data/openneuro/ds000113-download',
+                         alignment='linear')

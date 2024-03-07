@@ -4,23 +4,15 @@ import torch
 import torch.utils.data as data
 from pytorch3d.io import load_objs_as_meshes, load_obj
 from pytorch3d.transforms import random_rotation, Translate, Rotate, Transform3d
-from pytorch3d.renderer import (
-    look_at_view_transform,
-    FoVPerspectiveCameras,
-    PointLights,
-    DirectionalLights,
-    Materials,
-    RasterizationSettings,
-    MeshRenderer,
-    MeshRasterizer,
-    SoftPhongShader,
-    HardFlatShader,
-    TexturesUV,
-    TexturesVertex
-)
+from pytorch3d.renderer import (look_at_view_transform, FoVPerspectiveCameras,
+                                PointLights, DirectionalLights, Materials,
+                                RasterizationSettings, MeshRenderer,
+                                MeshRasterizer, SoftPhongShader,
+                                HardFlatShader, TexturesUV, TexturesVertex)
 
 
 class ToyNeuralGraphicsDataset(data.Dataset):
+
     def __init__(self,
                  dir: str,
                  rasterization_settings: dict,
@@ -35,9 +27,9 @@ class ToyNeuralGraphicsDataset(data.Dataset):
         self.scale_min = scale_min
         self.scale_max = scale_max
         self.scale_range = scale_max - scale_min
-        objs = [os.path.join(dir, f)
-                for f in os.listdir(dir)
-                if f.endswith('.obj')]
+        objs = [
+            os.path.join(dir, f) for f in os.listdir(dir) if f.endswith('.obj')
+        ]
         self.meshes = load_objs_as_meshes(objs, device=device)
         R, T = look_at_view_transform(0, 0, 0)
         self.cameras = FoVPerspectiveCameras(R=R,
@@ -45,21 +37,18 @@ class ToyNeuralGraphicsDataset(data.Dataset):
                                              znear=znear,
                                              zfar=zfar,
                                              device=device)
-        self.renderer = MeshRenderer(
-            rasterizer=MeshRasterizer(
-                cameras=self.cameras,
-                raster_settings=RasterizationSettings(
-                    **rasterization_settings),
-            ),
-            shader=HardFlatShader(
-                device=device,
-                cameras=self.cameras,
-            )
-        )
+        self.renderer = MeshRenderer(rasterizer=MeshRasterizer(
+            cameras=self.cameras,
+            raster_settings=RasterizationSettings(**rasterization_settings),
+        ),
+                                     shader=HardFlatShader(
+                                         device=device,
+                                         cameras=self.cameras,
+                                     ))
 
     def get_random_transform(self):
-        scale = (torch.rand(1).squeeze() *
-                 self.scale_range + self.scale_min).item()
+        scale = (torch.rand(1).squeeze() * self.scale_range +
+                 self.scale_min).item()
 
         rot = random_rotation()
 
@@ -67,9 +56,10 @@ class ToyNeuralGraphicsDataset(data.Dataset):
         x = x * 2.0 - 1.0
         y = y * 2.0 - 1.0
         trans = torch.Tensor([x, y, d])
-        trans = self.cameras.unproject_points(trans.unsqueeze(0).to(self.device),
-                                              world_coordinates=False,
-                                              scaled_depth_input=True)[0].cpu()
+        trans = self.cameras.unproject_points(
+            trans.unsqueeze(0).to(self.device),
+            world_coordinates=False,
+            scaled_depth_input=True)[0].cpu()
         return scale, rot, trans
 
     def __getitem__(self, index):
@@ -95,9 +85,10 @@ class ToyNeuralGraphicsDataset(data.Dataset):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     ds = ToyNeuralGraphicsDataset('data/',
-                                  rasterization_settings=dict(image_size=256,
-                                                              blur_radius=0.0,
-                                                              faces_per_pixel=1))
+                                  rasterization_settings=dict(
+                                      image_size=256,
+                                      blur_radius=0.0,
+                                      faces_per_pixel=1))
     image, labels = ds[0]
     plt.figure(figsize=(10, 10))
     plt.imshow(image.cpu().numpy())

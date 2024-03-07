@@ -14,8 +14,9 @@ ds = TReNDSfMRIDataset(base_path)
 
 subject_niimg = load_subject(subject_filename, ds.mask)
 grid_size = int(np.ceil(np.sqrt(subject_niimg.shape[0])))
-fig, axes = plt.subplots(grid_size, grid_size,
-                         figsize=(grid_size*10, grid_size*10))
+fig, axes = plt.subplots(grid_size,
+                         grid_size,
+                         figsize=(grid_size * 10, grid_size * 10))
 [axi.set_axis_off() for axi in axes.ravel()]
 row = -1
 for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
@@ -26,7 +27,8 @@ for i, cur_img in enumerate(nl.image.iter_img(subject_niimg)):
                         bg_img=smri_filename,
                         title="IC %d" % i,
                         axes=axes[row, col],
-                        threshold=3, colorbar=False)
+                        threshold=3,
+                        colorbar=False)
 plt.show()
 
 img = nl.image.new_img_like(ds.mask,
