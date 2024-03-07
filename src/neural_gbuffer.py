@@ -32,10 +32,9 @@ class NeuralGBufferExperiment(pl.LightningModule):
         recons = self.model(*labels)
         train_loss = self.model.loss_function(
             recons, orig, **self.params.get('loss_params', {}))
-        self.logger.experiment.log({
-            key: val.item()
-            for key, val in train_loss.items()
-        })
+        self.logger.experiment.log(
+            {key: val.item()
+             for key, val in train_loss.items()})
         if self.global_step > 0:
             for plot, val_indices in zip(self.plots, self.val_indices):
                 if self.global_step % plot['sample_every_n_steps'] == 0:

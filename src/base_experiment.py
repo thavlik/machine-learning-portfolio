@@ -131,10 +131,9 @@ class BaseExperiment(pl.LightningModule):
             self.log(f'val/{metric}', mean, on_epoch=True, on_step=False)
         # Report the averages to ray/tune for hparam optimization.
         if self.enable_tune:
-            train.report({
-                f'val/{metric}': mean
-                for metric, mean in avgs.items()
-            })
+            train.report(
+                {f'val/{metric}': mean
+                 for metric, mean in avgs.items()})
 
     def configure_optimizers(self) -> OptimizerLRScheduler:
         optimizer = optim.Adam(self.trainable_parameters(),
