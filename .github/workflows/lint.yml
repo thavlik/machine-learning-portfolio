@@ -11,5 +11,5 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y python3-yapf python3-isort
       - name: Check formatting with yapf
         run: python3 -m yapf -rd src/
-      #- name: Check formatting with isort
-      #  run: python3 -m isort --only-modified --diff --check-only src/
+      - name: Check formatting with isort
+        run: python3 -m isort --only-modified --diff --check-only src/
