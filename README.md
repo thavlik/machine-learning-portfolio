@@ -1,7 +1,7 @@
 ![banner](images/banner.png)
 
 # Thomas Havlik's Medical AI Portfolio
-[<img src="https://img.shields.io/badge/maintenance%20status-actively%20developed-brightgreen">](https://github.com/thavlik/machine-learning-portfolio)
+[<img src="https://img.shields.io/badge/maintenance%20status-as%20is-yellow">](https://github.com/thavlik/machine-learning-portfolio)
 [<img src="https://img.shields.io/badge/Language-python-FFD43B.svg">](https://www.python.org/)
 [<img src="https://img.shields.io/badge/License-Apache_2.0-orange.svg">](./LICENSE-Apache)
 [<img src="https://img.shields.io/badge/License-MIT-lightblue.svg">](./LICENSE-MIT)
