@@ -1,4 +1,3 @@
-#from .toy_neural_graphics import *
 from torch import Size
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import WeightedRandomSampler
@@ -71,7 +70,6 @@ datasets = {
     'rsna-intracranial': RSNAIntracranialDataset,
     'trends-fmri': TReNDSfMRIDataset,
     'grasp-and-lift-eeg': GraspAndLiftEEGDataset,
-    #'toy-neural-graphics': ToyNeuralGraphicsDataset,
 }
 
 

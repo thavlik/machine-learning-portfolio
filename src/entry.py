@@ -19,7 +19,6 @@ from load_config import load_config
 from localization import LocalizationExperiment
 from merge_strategy import deep_merge
 from models import create_model
-from neural_gbuffer import neural_gbuffer
 from plot import plot_comparison
 from vae import VAEExperiment
 
@@ -310,7 +309,6 @@ entrypoints = {
     'vae3d': vae3d,
     'vae4d': vae4d,
     'hparam_search': hparam_search,
-    'neural_gbuffer': neural_gbuffer,
 }
 
 

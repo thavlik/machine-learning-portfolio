@@ -23,7 +23,6 @@ This is a list of tasks that I have "solved", meaning that I've trained a model 
 These are tasks that I haven't solved yet, mostly because training on fMRI scans is nontrivial and requires way more video memory than I have at my disposal. As the potential for machine interpretation of fMRI data is enormous, I am determined to deliver on a project with this modality.
 - [StudyForrest](experiments/forrestgump/README.md) (WIP): infer features of an audio-only film with fMRI
 - [LA5c Study](experiments/la5c/README.md) (WIP): predict participants' questionnaire answers from their MRI scans
-- [Neural Rendering](experiments/graphics/README.md) (WIP): single-shot, differentiable 3D rendering
 
 ## Datasets
 These are datasets that I have compiled. My interest in the modeling of visual manifolds was first inspired by [recurrent dreams of mine that assume the form of video games](https://en.wikipedia.org/wiki/Tetris_effect), particularly those from my childhood. I have always found such media of dreaming to be both visually intuitive and semantically potent - attributes critical for unsupervised learning. 
